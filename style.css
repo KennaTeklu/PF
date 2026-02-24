@@ -1018,7 +1018,7 @@ input:checked + .slider:before {
     max-width: 400px;
 }
 .notification.show {
-    transform: translateX(0);
+    transform: translateX(0) !important;
 }
 .notification i {
     font-size: 1.5rem;
