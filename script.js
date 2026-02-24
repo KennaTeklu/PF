@@ -492,6 +492,7 @@ const featureStatusData = [
 let currentWorkout = null;
 let muscleLastTrained = {};
 let charts = {};
+let notificationTimeout;
 
 // ---------- UTILITY FUNCTIONS ----------
 function getAllMuscleGroups() {
@@ -524,8 +525,12 @@ function showNotification(message, type = "success") {
     const icons = { success: 'fa-check-circle', warning: 'fa-exclamation-triangle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
     notification.style.borderLeftColor = colors[type] || colors.success;
     notification.querySelector('i').className = `fas ${icons[type] || icons.success}`;
+    
+    // Clear any existing timeout to prevent overlapping
+    if (notificationTimeout) clearTimeout(notificationTimeout);
+    
     notification.classList.add('show');
-    setTimeout(() => {
+    notificationTimeout = setTimeout(() => {
         notification.classList.remove('show');
     }, 4000);
 }
