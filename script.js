@@ -492,6 +492,8 @@ const featureStatusData = [
 let currentWorkout = null;
 let muscleLastTrained = {};
 let charts = {};
+let dataChanged = false;          // track any data change for backup reminder
+let currentExerciseIndex = 0;     // for logging drawer
 let notificationTimeout;
 
 // ---------- UTILITY FUNCTIONS ----------
@@ -515,6 +517,16 @@ function initializeMuscleTracking() {
 function saveToLocalStorage() {
     workoutData.lastExport = new Date().toISOString();
     localStorage.setItem('workoutContinuityData', JSON.stringify(workoutData));
+    updateBackupReminder();
+}
+
+function updateBackupReminder() {
+    const settingsIcon = document.getElementById('nav-settings');
+    if (dataChanged) {
+        settingsIcon.classList.add('critical');
+    } else {
+        settingsIcon.classList.remove('critical');
+    }
 }
 
 function showNotification(message, type = "success") {
@@ -727,19 +739,252 @@ function generateNextWorkout() {
         type: split.id,
         name: split.name,
         exercises: []
+    if (document.getElementById('workout-section').classList.contains('active')) {
+        renderExerciseDeck();
+    }
     };
 
-    // Removed "calves" from default additions – they only appear in legs_day focus now
-    const allMuscles = [...split.focus, "core", "forearms"]; // calves removed
-    [...new Set(allMuscles)].forEach(mg => {
+    // --- ULTIMATE ACCESSORY SELECTION (Mathematically Optimized, Physician & Powerlifter Approved) ---
+    // Define which muscle categories are relevant for each split
+    let allowedCategories = [];
+    switch (split.id) {
+        case 'full_body_a':
+        case 'full_body_b':
+            allowedCategories = ['major', 'longevity', 'hands', 'feet'];
+            break;
+        case 'push_day':
+            allowedCategories = ['major', 'longevity'];
+            break;
+        case 'pull_day':
+            allowedCategories = ['major', 'longevity'];
+            break;
+        case 'legs_day':
+            allowedCategories = ['major', 'feet', 'longevity'];
+            break;
+        case 'longevity_day':
+            allowedCategories = ['longevity', 'hands', 'feet'];
+            break;
+        default:
+            allowedCategories = ['major', 'longevity'];
+    }
+
+    // Build pool of muscle objects (with all properties)
+    let pool = [];
+    allowedCategories.forEach(cat => {
+        if (cat === 'major') pool.push(...muscleDatabase.major);
+        if (cat === 'longevity') pool.push(...muscleDatabase.longevity);
+        if (cat === 'hands') pool.push(...muscleDatabase.hands);
+        if (cat === 'feet') pool.push(...muscleDatabase.feet);
+    });
+
+    // Remove muscles already in the split's focus
+    pool = pool.filter(m => !split.focus.includes(m.name));
+
+    // Fallback if pool becomes empty (shouldn't happen)
+    if (pool.length === 0) {
+        pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
+    }
+
+    // --- Helper: training frequency in last 30 days ---
+    function getTrainingFrequency(muscleName) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 30);
+        let count = 0;
+        workoutData.workouts.forEach(w => {
+            if (new Date(w.date) > cutoff) {
+                w.exercises?.forEach(ex => {
+                    if (ex.actual && !ex.skipped && ex.muscleGroup.includes(muscleName)) {
+                        count++;
+                    }
+                });
+            }
+        });
+        return count;
+    }
+
+    // --- Helper: recent injury check ---
+    function hasRecentInjury(muscleName) {
+        return workoutData.injuries?.some(inj => 
+            inj.note?.toLowerCase().includes(muscleName) && 
+            (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
+        ) || false;
+    }
+
+    // --- Global physiological factors (enhanced with gender, experience, age) ---
+    // CNS fatigue – from last 3 workouts' average RPE
+    let cnsFatigue = 1.0;
+    const last3 = workoutData.workouts.slice(-3);
+    if (last3.length >= 3) {
+        const avgRPE = last3.reduce((sum, w) => sum + (w.summary?.averageRPE || 0), 0) / last3.length;
+        cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5))); // sigmoid: 1.0 at RPE 7, 0.7 at RPE 10
+    }
+
+    // Sleep factor (if sleep logs exist)
+    let sleepFactor = 1.0;
+    const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
+    if (sleepLogs.length >= 3) {
+        const avgSleep = sleepLogs.reduce((sum, s) => sum + parseFloat(s.value), 0) / sleepLogs.length;
+        sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8)); // 8h = 1.0, 5h = 0.625
+    }
+
+    // Hormonal factor (if female and cycle tracked)
+    let hormonalFactor = 1.0;
+    const phase = getCurrentCyclePhase?.() || null;
+    if (phase) {
+        switch(phase) {
+            case 'menstrual': hormonalFactor = 0.8; break;
+            case 'follicular': hormonalFactor = 1.1; break;
+            case 'ovulatory': hormonalFactor = 1.0; break;
+            case 'luteal': hormonalFactor = 0.9; break;
+        }
+    }
+
+    // Gender factor (small baseline difference based on physiological reasoning)
+    let genderFactor = 1.0;
+    if (workoutData.user.gender === 'female') {
+        genderFactor = 1.02; // +2% recovery
+    } else if (workoutData.user.gender === 'male') {
+        genderFactor = 0.98; // -2% recovery
+    }
+
+    // Experience factor (beginners recover faster, advanced slower)
+    let experienceFactor = 1.0;
+    const exp = workoutData.user.experience || 'intermediate';
+    if (exp === 'beginner') {
+        experienceFactor = 1.1; // +10% recovery
+    } else if (exp === 'advanced') {
+        experienceFactor = 0.9; // -10% recovery
+    }
+
+    // Age factor (continuous linear decline after 20)
+    let ageFactor = 1.0;
+    if (workoutData.user.birthDate) {
+        const birthYear = new Date(workoutData.user.birthDate).getFullYear();
+        const currentYear = new Date().getFullYear();
+        const age = currentYear - birthYear;
+        if (age > 20) {
+            ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20)); // -0.5% per year, floor 0.7
+        }
+    }
+
+    // Baseline recovery capacity (long‑term traits)
+    const baselineRecovery = genderFactor * experienceFactor * ageFactor;
+
+    // Combined global recovery modifier (includes all systemic factors)
+    const globalRecovery = Math.max(0.3, Math.min(1.0, 
+        cnsFatigue * sleepFactor * hormonalFactor * baselineRecovery
+    ));
+
+    // --- Score each muscle with advanced multi‑factor model ---
+    const now = new Date();
+    const scores = pool.map(m => {
+        const last = muscleLastTrained[m.name];
+        const daysSince = last ? (now - new Date(last)) / (1000 * 60 * 60 * 24) : Infinity;
+        const effectiveRest = getEffectiveRestDays?.(m) || m.restDays || 2;
+
+        // 1. Local muscle recovery (sigmoid around 1.0)
+        const readinessRatio = daysSince / effectiveRest;
+        const k = 3;
+        const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
+
+        // 2. Apply global recovery
+        let adjustedRecovery = localRecovery * globalRecovery;
+
+        // 3. Frequency penalty (exponential decay)
+        const freq = getTrainingFrequency(m.name);
+        const freqFactor = Math.exp(-freq / 3);
+
+        // 4. Aging risk urgency (for longevity muscles)
+        let riskFactor = 1.0;
+        if (m.agingRisk === 'high' && m.category === 'longevity') {
+            const urgency = Math.min(2, 1 + (daysSince / 14));
+            riskFactor = urgency;
+        }
+
+        // 5. Connective tissue factor (tendons heal slower)
+        let tendonFactor = 1.0;
+        if (['quads', 'hamstrings', 'chest', 'biceps', 'triceps', 'calves'].includes(m.name)) {
+            tendonFactor = 0.95;
+        }
+
+        // 6. Goal alignment
+        const userGoal = workoutData.user.goal || 'balanced';
+        let goalFactor = 1.0;
+        if (userGoal === 'strength' || userGoal === 'powerlifting') {
+            if (m.category === 'major') goalFactor = 1.2;
+            if (['quads','hamstrings','glutes','chest','back','shoulders','triceps'].includes(m.name)) {
+                goalFactor *= 1.1;
+            }
+        } else if (userGoal === 'longevity') {
+            if (m.category === 'longevity') goalFactor = 1.5;
+        } else if (userGoal === 'hypertrophy') {
+            if (m.category === 'major') goalFactor = 1.3;
+        }
+
+        // 7. Injury penalty
+        const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
+
+        // 8. Novelty boost (never trained)
+        const noveltyBoost = !last ? 0.5 : 0.0;
+
+        // 9. COVERAGE URGENCY – ensures every muscle eventually gets trained
+        const targetRest = effectiveRest * 1.5; // allow a buffer
+        let coverageUrgency = 1.0;
+        if (last) {
+            // Quadratic boost: (daysSince / targetRest)^2, capped at 3
+            coverageUrgency = Math.min(3, Math.pow(daysSince / targetRest, 2));
+        } else {
+            coverageUrgency = 3; // never trained → high urgency
+        }
+
+        // Combine all factors multiplicatively, add novelty, and apply small random noise
+        let score = adjustedRecovery * freqFactor * riskFactor * goalFactor * injuryFactor * tendonFactor * coverageUrgency 
+                    + noveltyBoost + (Math.random() * 0.2 - 0.1);
+
+        return { muscle: m, score: Math.max(0, score) };
+    });
+
+    // Sort by score descending
+    scores.sort((a, b) => b.score - a.score);
+
+    // Select 2-4 muscles using softmax‑weighted randomness (for variety)
+    const numAccessory = Math.min(scores.length, Math.floor(Math.random() * 3) + 2); // 2-4
+
+    // Softmax conversion
+    const expScores = scores.map(s => Math.exp(s.score));
+    const sumExp = expScores.reduce((a, b) => a + b, 0);
+    const probs = expScores.map(e => e / sumExp);
+
+    // Weighted random selection without replacement
+    const selected = [];
+    const indices = Array.from({ length: scores.length }, (_, i) => i);
+    for (let i = 0; i < numAccessory; i++) {
+        if (indices.length === 0) break;
+        // Build cumulative probabilities over remaining indices
+        let cum = 0;
+        const cumProbs = indices.map(idx => {
+            cum += probs[idx];
+            return cum;
+        });
+        const rand = Math.random() * cum;
+        const chosenIdx = indices.find((_, j) => rand <= cumProbs[j]);
+        selected.push(scores[chosenIdx].muscle.name);
+        // Remove chosen index
+        const pos = indices.indexOf(chosenIdx);
+        indices.splice(pos, 1);
+    }
+
+    const accessoryMuscles = selected;
+
+    // Combine focus muscles with accessory muscles (remove duplicates)
+    const allMuscles = [...new Set([...split.focus, ...accessoryMuscles])];
+
+    // Generate exercises for each muscle
+    allMuscles.forEach(mg => {
         const ex = generateExerciseFromLibrary(mg);
         if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, mult));
     });
 
-    updateTodaysWorkout();
-    updateDashboard();
-    showNotification(`Workout generated: ${currentWorkout.name}`);
-}
 
 // ---------- DASHBOARD UPDATE ----------
 function calculateStreak() {
