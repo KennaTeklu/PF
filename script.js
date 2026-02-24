@@ -1,8 +1,14 @@
 // ==================== COMPLETE JAVASCRIPT – WORKOUT CONTINUITY SYSTEM ULTIMATE EDITION ====================
-// This script includes all functionality from previous rounds plus new compendium and status features.
+// This script includes all functionality from previous rounds plus new compendium, status features,
+// and the following enhancements:
+// - Systemic Fatigue Factor (workouts in last 7 days affect rest days)
+// - Tendon Guard (rolling RPE average triggers deload warning)
+// - Calves only appear in legs_day (fixed)
+// - "Start Today" button on dashboard
+// - Mobile-first navigation categories
 
 // ---------- GLOBAL DATA STRUCTURES ----------
-const workoutData = {
+let workoutData = {
     user: {
         name: "",
         birthDate: null,
@@ -29,7 +35,8 @@ const workoutData = {
     workouts: [],          // completed workouts (history)
     exercises: {},          // exercise history and PRs
     goals: [],              // from first file
-    injuries: []            // from first file
+    injuries: [],            // from first file
+    lastExport: new Date().toISOString() // for sync
 };
 
 // ---------- MUSCLE DATABASE (40+ groups) ----------
@@ -415,6 +422,7 @@ exerciseCompendium.forEach(group => {
 });
 
 // ---------- WORKOUT PROGRAM SPLITS ----------
+// Note: "calves" is only in legs_day focus
 const workoutProgram = {
     splits: [
         { id: "full_body_a", name: "Full Body A (Strength)", focus: ["quads","chest","back","shoulders"], restAfter: 2 },
@@ -504,6 +512,7 @@ function initializeMuscleTracking() {
 }
 
 function saveToLocalStorage() {
+    workoutData.lastExport = new Date().toISOString();
     localStorage.setItem('workoutContinuityData', JSON.stringify(workoutData));
 }
 
@@ -574,6 +583,69 @@ function getPhaseMultiplier(phase) {
     }
 }
 
+// ---------- NEW: SYSTEMIC FATIGUE FACTOR ----------
+function getSystemicFatigueMultiplier() {
+    // Count workouts in last 7 days
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 7);
+    const recentWorkouts = workoutData.workouts.filter(w => new Date(w.date) > cutoff).length;
+    // Quadratic penalty: more workouts = longer recovery needed
+    // Base 1.0, then increase by 0.05 * (workouts^1.5)
+    let fatigue = 1.0 + 0.05 * Math.pow(recentWorkouts, 1.5);
+    return Math.min(fatigue, 2.0); // cap at 2x rest days
+}
+
+function getEffectiveRestDays(muscle) {
+    const base = muscle.restDays || 2;
+    const fatigueMult = getSystemicFatigueMultiplier();
+    return Math.round(base * fatigueMult);
+}
+
+// Override daysSinceTrained to use effective rest days for status
+function getRecoveryStatus(muscle) {
+    const last = muscleLastTrained[muscle.name];
+    if (!last) return { pct: 0, status: 'Not trained', statusClass: 'status-not-ready', daysText: 'Never' };
+    const days = Math.floor((new Date() - new Date(last)) / (1000*60*60*24));
+    const needed = getEffectiveRestDays(muscle);
+    const pct = Math.min(100, (days / needed) * 100);
+    let status, statusClass;
+    if (days >= needed) {
+        status = 'Ready';
+        statusClass = 'status-ready';
+    } else if (days >= needed - 1) {
+        status = 'Soon';
+        statusClass = 'status-close';
+    } else {
+        status = 'Resting';
+        statusClass = 'status-not-ready';
+    }
+    const daysText = `${days} day${days !== 1 ? 's' : ''} ago`;
+    return { pct, status, statusClass, daysText };
+}
+
+// ---------- NEW: TENDON GUARD (Rolling RPE Average) ----------
+function getRollingRPEAverage() {
+    const recentWorkouts = workoutData.workouts.slice(-15);
+    if (recentWorkouts.length === 0) return null;
+    let totalRPE = 0;
+    let count = 0;
+    recentWorkouts.forEach(w => {
+        if (w.summary?.averageRPE) {
+            totalRPE += parseFloat(w.summary.averageRPE);
+            count++;
+        }
+    });
+    return count > 0 ? totalRPE / count : null;
+}
+
+function getInjuryRiskFactor() {
+    const avgRPE = getRollingRPEAverage();
+    if (avgRPE === null) return "Analyzing...";
+    if (avgRPE > 8.5) return "Deload Recommended (High Tendon Strain)";
+    if (avgRPE < 5) return "Intensity Low (Increase Effort)";
+    return "Optimal Training Zone";
+}
+
 // ---------- EXERCISE GENERATION ----------
 function generateExerciseFromLibrary(muscleGroup) {
     if (!ultimateExerciseLibrary) return null;
@@ -600,11 +672,17 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     const history = workoutData.exercises[exercise.id];
     let prescribedWeight = null;
     let notes = "";
+    
+    // Apply deload if rolling RPE > 8.5
+    const avgRPE = getRollingRPEAverage();
+    const deloadMultiplier = (avgRPE !== null && avgRPE > 8.5) ? 0.8 : 1.0;
+    
     if (history && history.bestWeight) {
         const last = history.bestWeight;
         const prog = workoutData.user.settings.progressionRate || 0.02;
-        prescribedWeight = Math.round(last * (1 + prog) * phaseMultiplier);
+        prescribedWeight = Math.round(last * (1 + prog) * phaseMultiplier * deloadMultiplier);
         notes = `Based on last session: ${last} lbs, adjusted for phase.`;
+        if (deloadMultiplier < 1) notes += " Deload active (high RPE trend).";
     } else {
         const baseWeight = workoutData.user.weight || 150;
         let multiplier = 0.3;
@@ -613,8 +691,9 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
         else if (exercise.name.toLowerCase().includes("curl")) multiplier = 0.2;
         else if (exercise.name.toLowerCase().includes("press")) multiplier = 0.4;
         prescribedWeight = Math.round(baseWeight * multiplier / 5) * 5;
-        prescribedWeight = Math.round(prescribedWeight * phaseMultiplier);
+        prescribedWeight = Math.round(prescribedWeight * phaseMultiplier * deloadMultiplier);
         notes = `First time! Try ${prescribedWeight} lbs as starting weight.`;
+        if (deloadMultiplier < 1) notes += " Deload active (high RPE trend).";
     }
     exercise.prescribed.weight = prescribedWeight;
     exercise.progressionNotes = notes;
@@ -645,7 +724,8 @@ function generateNextWorkout() {
         exercises: []
     };
 
-    const allMuscles = [...split.focus, "core", "forearms", "calves"];
+    // Removed "calves" from default additions – they only appear in legs_day focus now
+    const allMuscles = [...split.focus, "core", "forearms"]; // calves removed
     [...new Set(allMuscles)].forEach(mg => {
         const ex = generateExerciseFromLibrary(mg);
         if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, mult));
@@ -707,6 +787,9 @@ function updateDashboard() {
 
     // Longevity score
     document.getElementById('longevityScore').innerText = calculateLongevityScore().score;
+
+    // Tendon Guard / Injury Risk
+    document.getElementById('risk-val').innerText = getInjuryRiskFactor();
 
     // Calendar, PRs, projection, badges
     renderActivityCalendar();
@@ -964,6 +1047,9 @@ function getRpeDescription(rpe) {
 }
 
 function saveExercisePerformance(index) {
+    // Haptic feedback
+    if (navigator.vibrate) navigator.vibrate(50);
+    
     const exercise = currentWorkout.exercises[index];
     const weight = parseFloat(document.getElementById(`weight_${index}`).value);
     const sets = parseInt(document.getElementById(`sets_${index}`).value);
@@ -1203,7 +1289,7 @@ function updateRPEChart() {
     });
 }
 
-// ---------- RECOVERY SECTION ----------
+// ---------- RECOVERY SECTION (updated with systemic fatigue) ----------
 function updateRecoverySection() {
     calculateMuscleLastTrained();
     updateCategoryRecovery('majorMuscleRecovery', muscleDatabase.major);
@@ -1240,52 +1326,34 @@ function updateCategoryRecovery(containerId, muscles) {
 }
 
 function createRecoveryElement(muscle) {
-    const last = muscleLastTrained[muscle.name];
+    const status = getRecoveryStatus(muscle);
     const el = document.createElement('div');
     el.className = 'recovery-item recovery-item-desktop';
-    let pct = 100, status = 'Ready', statusClass = 'recovery-ready', daysText = 'Not trained';
-    if (last) {
-        const days = Math.floor((new Date() - new Date(last)) / (1000*60*60*24));
-        pct = Math.min(100, (days / muscle.restDays) * 100);
-        daysText = `${days} day${days!==1?'s':''} ago`;
-        if (days >= muscle.restDays) { status = 'Ready'; statusClass = 'recovery-ready'; }
-        else if (days >= muscle.restDays-1) { status = 'Soon'; statusClass = 'recovery-close'; }
-        else { status = 'Resting'; statusClass = 'recovery-not-ready'; }
-    }
     const risk = muscle.agingRisk ? `<span class="badge badge-${muscle.agingRisk==='high'?'danger':muscle.agingRisk==='medium'?'warning':'success'}" style="margin-left:5px;">${muscle.agingRisk.toUpperCase()}</span>` : '';
     el.innerHTML = `
         <span style="min-width:150px;">${muscle.display}${risk}</span>
-        <span style="min-width:100px;">${daysText}</span>
-        <div class="recovery-bar"><div class="recovery-fill ${statusClass}" style="width:${pct}%"></div></div>
-        <span style="min-width:80px; text-align:right; color:var(--${statusClass.split('-')[1]})">${status}</span>
+        <span style="min-width:100px;">${status.daysText}</span>
+        <div class="recovery-bar"><div class="recovery-fill ${status.statusClass.replace('status-','recovery-')}" style="width:${status.pct}%"></div></div>
+        <span style="min-width:80px; text-align:right; color:var(--${status.statusClass.split('-')[1]})">${status.status}</span>
     `;
     return el;
 }
 
 function createMobileRecoveryElement(muscle) {
-    const last = muscleLastTrained[muscle.name];
+    const status = getRecoveryStatus(muscle);
     const el = document.createElement('div');
     el.className = 'recovery-item-mobile';
-    let pct = 100, status = 'Ready', statusClass = 'status-ready', daysText = 'Not trained';
-    if (last) {
-        const days = Math.floor((new Date() - new Date(last)) / (1000*60*60*24));
-        pct = Math.min(100, (days / muscle.restDays) * 100);
-        daysText = `${days} day${days!==1?'s':''} ago`;
-        if (days >= muscle.restDays) { status = 'Ready'; statusClass = 'status-ready'; }
-        else if (days >= muscle.restDays-1) { status = 'Soon'; statusClass = 'status-close'; }
-        else { status = 'Resting'; statusClass = 'status-not-ready'; }
-    }
     const risk = muscle.agingRisk ? `<span class="badge badge-${muscle.agingRisk==='high'?'danger':muscle.agingRisk==='medium'?'warning':'success'}" style="margin-left:5px;">${muscle.agingRisk.toUpperCase()}</span>` : '';
     el.innerHTML = `
         <div class="recovery-item-mobile-content">
             <div class="recovery-item-header">
                 <span class="recovery-item-muscle">${muscle.display}${risk}</span>
-                <span class="recovery-item-status ${statusClass}">${status}</span>
+                <span class="recovery-item-status ${status.statusClass}">${status.status}</span>
             </div>
-            <div class="recovery-item-details"><span>${daysText}</span><span>${muscle.restDays} day rest</span></div>
+            <div class="recovery-item-details"><span>${status.daysText}</span><span>${getEffectiveRestDays(muscle)} day rest</span></div>
             <div class="recovery-item-bar-container">
-                <div class="recovery-item-bar-label"><span>Recovery</span><span>${Math.round(pct)}%</span></div>
-                <div class="recovery-bar"><div class="recovery-fill ${statusClass.replace('status-','recovery-')}" style="width:${pct}%"></div></div>
+                <div class="recovery-item-bar-label"><span>Recovery</span><span>${Math.round(status.pct)}%</span></div>
+                <div class="recovery-bar"><div class="recovery-fill ${status.statusClass.replace('status-','recovery-')}" style="width:${status.pct}%"></div></div>
             </div>
         </div>
     `;
@@ -1301,8 +1369,9 @@ function updateRecoveryRecommendations() {
         const last = muscleLastTrained[m.name];
         if (!last && (m.category==='longevity'||m.category==='hands'||m.category==='feet')) neglected.push(m);
         else if (last) {
+            const needed = getEffectiveRestDays(m);
             const days = Math.floor((new Date() - new Date(last)) / (1000*60*60*24));
-            if (days >= m.restDays) ready.push(m);
+            if (days >= needed) ready.push(m);
         }
     });
     let html = '';
@@ -1543,7 +1612,12 @@ function loadRecoveryInsights() {
 function getReadyMuscles() {
     const ready = [];
     getAllMuscleGroups().forEach(m => {
-        if (muscleLastTrained[m.name] && daysSinceTrained(m.name) >= m.restDays) ready.push(m.display);
+        const last = muscleLastTrained[m.name];
+        if (last) {
+            const needed = getEffectiveRestDays(m);
+            const days = Math.floor((new Date() - new Date(last)) / (1000*60*60*24));
+            if (days >= needed) ready.push(m.display);
+        }
     });
     return ready;
 }
@@ -1887,7 +1961,14 @@ function processImport() {
         reader.onload = e => {
             try {
                 const data = JSON.parse(e.target.result);
-                loadData(data);
+                // Timestamp conflict resolution
+                if (data.lastExport && workoutData.lastExport && new Date(data.lastExport) > new Date(workoutData.lastExport)) {
+                    if (confirm("Imported data is newer than current data. Replace?")) {
+                        loadData(data);
+                    }
+                } else {
+                    loadData(data);
+                }
                 showMainApp();
                 showLoading(false);
                 closeModal('importModal');
@@ -1898,7 +1979,13 @@ function processImport() {
     } else if (json) {
         try {
             const data = JSON.parse(json);
-            loadData(data);
+            if (data.lastExport && workoutData.lastExport && new Date(data.lastExport) > new Date(workoutData.lastExport)) {
+                if (confirm("Imported data is newer than current data. Replace?")) {
+                    loadData(data);
+                }
+            } else {
+                loadData(data);
+            }
             showMainApp();
             showLoading(false);
             closeModal('importModal');
@@ -1955,6 +2042,7 @@ function loadData(data) {
     workoutData.exercises = data.exercises || {};
     workoutData.goals = data.goals || [];
     workoutData.injuries = data.injuries || [];
+    workoutData.lastExport = data.lastExport || new Date().toISOString();
     if (data.user?.sleepLogs) workoutData.user.sleepLogs = data.user.sleepLogs;
     if (data.user?.weightHistory) workoutData.user.weightHistory = data.user.weightHistory;
     calculateMuscleLastTrained();
@@ -2068,6 +2156,16 @@ function updateNavigation() {
     document.getElementById('welcomeAvatar').innerText = name.charAt(0).toUpperCase();
     document.getElementById('welcomeStreak').innerText = streak;
     document.getElementById('welcomeLevel').innerText = exp.charAt(0).toUpperCase()+exp.slice(1);
+    
+    // Backup reminder (red if lastExport > 7 days)
+    const lastExport = new Date(workoutData.lastExport || workoutData.user.created);
+    const daysSinceExport = Math.floor((new Date() - lastExport) / (1000*60*60*24));
+    const backupBtn = document.querySelector('[onclick="exportWorkoutData()"]');
+    if (backupBtn && daysSinceExport > 7) {
+        backupBtn.style.backgroundColor = 'var(--danger)';
+        backupBtn.style.color = 'white';
+        backupBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Export (Backup Old)';
+    }
 }
 
 // ---------- EXERCISE SEARCH ----------
@@ -2180,13 +2278,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Auto-add close buttons to all modals
 document.addEventListener('DOMContentLoaded', function() {
-    // Find all modal elements
     document.querySelectorAll('.modal').forEach(modal => {
-        // Find or create close button
         const modalContent = modal.querySelector('.modal-content');
         if (!modalContent) return;
-
-        // Check if close button already exists
         if (!modalContent.querySelector('.modal-close')) {
             const closeBtn = document.createElement('span');
             closeBtn.className = 'modal-close';
@@ -2194,12 +2288,8 @@ document.addEventListener('DOMContentLoaded', function() {
             closeBtn.setAttribute('onclick', `closeModal('${modal.id}')`);
             modalContent.insertBefore(closeBtn, modalContent.firstChild);
         }
-
-        // Close on overlay click (optional)
         modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
+            if (e.target === this) this.classList.remove('active');
         });
     });
 });
