@@ -10,6 +10,7 @@
 </head>
 <body>
     <!-- NAVIGATION BAR (Categorized) -->
+    <!-- NAVIGATION BAR -->
     <nav class="navbar">
         <a href="#" class="nav-brand" onclick="showSection('dashboard'); return false;">
             <i class="fas fa-dumbbell"></i>
@@ -19,53 +20,28 @@
             <i class="fas fa-bars"></i>
         </button>
         <div class="nav-menu" id="navMenu">
-            <!-- Core -->
-            <div class="nav-category">CORE</div>
-            <a href="#" class="nav-item active" onclick="showSection('dashboard'); return false;"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="#" class="nav-item" onclick="showSection('workout'); return false;"><i class="fas fa-dumbbell"></i> Today's Workout</a>
-            <a href="#" class="nav-item" onclick="showSection('history'); return false;"><i class="fas fa-history"></i> History</a>
-            <a href="#" class="nav-item" onclick="showSection('progress'); return false;"><i class="fas fa-chart-line"></i> Progress</a>
-            <a href="#" class="nav-item" onclick="showSection('recovery'); return false;"><i class="fas fa-heartbeat"></i> Recovery</a>
-
-            <!-- Data -->
-            <div class="nav-category">DATA</div>
-            <a href="#" class="nav-item" onclick="showSection('exercise-library'); return false;"><i class="fas fa-book"></i> Exercise Library</a>
-            <a href="#" class="nav-item" onclick="showSection('pr'); return false;"><i class="fas fa-trophy"></i> Personal Records</a>
-            <a href="#" class="nav-item" onclick="showSection('goals'); return false;"><i class="fas fa-bullseye"></i> Goals</a>
-            <a href="#" class="nav-item" onclick="showSection('programs'); return false;"><i class="fas fa-calendar-alt"></i> Programs</a>
-            <a href="#" class="nav-item" onclick="showSection('achievements'); return false;"><i class="fas fa-medal"></i> Achievements</a>
-
-            <!-- Wellness -->
-            <div class="nav-category">WELLNESS</div>
-            <a href="#" class="nav-item" onclick="showSection('recovery-insights'); return false;"><i class="fas fa-chart-line"></i> Recovery Insights</a>
-            <a href="#" class="nav-item" onclick="showSection('warmup'); return false;"><i class="fas fa-fire"></i> Warm‑up / Cool‑down</a>
-            <a href="#" class="nav-item" onclick="showSection('injury'); return false;"><i class="fas fa-bone"></i> Injury Log</a>
-            <a href="#" class="nav-item" onclick="showSection('sleep'); return false;"><i class="fas fa-moon"></i> Sleep</a>
-            <a href="#" class="nav-item" onclick="showSection('load'); return false;"><i class="fas fa-wave-square"></i> Training Load</a>
-            <a href="#" class="nav-item" onclick="showSection('summaries'); return false;"><i class="fas fa-file-pdf"></i> Summaries</a>
-
-            <!-- Community -->
-            <div class="nav-category">COMMUNITY</div>
-            <a href="#" class="nav-item" onclick="showSection('social'); return false;"><i class="fas fa-share-alt"></i> Share</a>
-            <a href="#" class="nav-item" onclick="showSection('comparison'); return false;"><i class="fas fa-balance-scale"></i> Compare</a>
-            <a href="#" class="nav-item" onclick="showSection('calendar'); return false;"><i class="fas fa-calendar"></i> Calendar</a>
-            <a href="#" class="nav-item" onclick="showSection('event'); return false;"><i class="fas fa-clock"></i> Projections</a>
-
-            <!-- Reference -->
-            <div class="nav-category">REFERENCE</div>
-            <a href="#" class="nav-item" onclick="showSection('compendium'); return false;"><i class="fas fa-table"></i> Compendium</a>
-            <a href="#" class="nav-item" onclick="showSection('status'); return false;"><i class="fas fa-clipboard-list"></i> Feature Status</a>
-            <a href="#" class="nav-item" onclick="showSection('health'); return false;"><i class="fas fa-notes-medical"></i> Health Logs</a>
-
-            <!-- System -->
-            <div class="nav-category">SYSTEM</div>
-            <a href="#" class="nav-item" onclick="showSection('settings'); return false;"><i class="fas fa-cog"></i> Settings</a>
-
+            <div class="nav-links">
+                <a href="#" class="nav-item" onclick="showSection('dashboard'); return false;">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('workout'); return false;">
+                    <i class="fas fa-play"></i> Workout
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('library'); return false;">
+                    <i class="fas fa-book"></i> Library
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('history'); return false;">
+                    <i class="fas fa-chart-line"></i> History
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('settings'); return false;">
+                    <i class="fas fa-cog" id="nav-settings"></i> Settings
+                </a>
+            </div>
             <div class="nav-user">
                 <div class="user-avatar" id="navUserAvatar" onclick="showSection('settings')">U</div>
                 <div>
-                    <div style="font-weight: 700; color: var(--dark);" id="navUserName">User</div>
-                    <div style="font-size: 0.85rem; color: var(--gray-500);" id="navUserStats">Beginner • Day 0 Streak</div>
+                    <div id="navUserName">User</div>
+                    <div id="navUserStats">Beginner • 0 streak</div>
                 </div>
             </div>
         </div>
@@ -218,36 +194,26 @@
 
         <!-- ========== WORKOUT SECTION ========== -->
         <div id="workout-section" class="section">
-            <div class="todays-workout">
-                <h2 class="section-title"><i class="fas fa-dumbbell"></i> Today's Workout</h2>
-                <div class="workout-info" id="workoutInfo">
-                    <div class="workout-meta">
-                        <div class="meta-item">
-                            <span class="meta-label">Type:</span>
-                            <span class="meta-value" id="workoutType">Full Body A</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Focus:</span>
-                            <span class="meta-value" id="workoutFocus">Strength</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Est. Time:</span>
-                            <span class="meta-value" id="workoutTime">60 min</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-label">Intensity:</span>
-                            <span class="meta-value" id="workoutIntensity">Moderate</span>
-                        </div>
-                    </div>
+                        <!-- Exercise Deck (visible by default) -->
+            <div class="workout-deck-container">
+                <div class="deck-header">
+                    <h2>Today's Workout</h2>
+                    <button class="btn btn-outline" onclick="generateNextWorkout()">⟳ New</button>
                 </div>
-                <div class="exercise-list" id="exerciseList"></div>
-                <div class="btn-group" style="margin-top: 30px;">
-                    <button class="btn btn-success" onclick="completeWorkout()">
-                        <i class="fas fa-check-circle"></i> Complete Workout
-                    </button>
-                    <button class="btn" onclick="generateNextWorkout()">
-                        <i class="fas fa-sync-alt"></i> Generate New
-                    </button>
+                <div class="workout-deck" id="exercise-deck"></div>
+            </div>
+
+            <!-- Logging Drawer (hidden initially) -->
+            <div class="log-drawer" id="log-drawer">
+                <div class="drawer-header">
+                    <h2 id="log-exercise-name">Exercise</h2>
+                    <i class="fas fa-times" onclick="closeLogDrawer()"></i>
+                </div>
+                <div class="prescribed-info" id="log-prescribed"></div>
+                <div class="log-form" id="log-form"></div>
+                <div class="drawer-footer">
+                    <button class="btn btn-success" onclick="saveLog()">Save</button>
+                    <button class="btn btn-outline" onclick="skipLog()">Skip</button>
                 </div>
             </div>
         </div>
