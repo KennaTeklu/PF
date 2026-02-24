@@ -1971,3 +1971,196 @@ input:checked + .slider:before {
 .modal-content {
     position: relative;
 }
+/* ========== WORKOUT DECK & LOGGING DRAWER ========== */
+
+.workout-deck-container {
+    padding: 15px 0;
+}
+.deck-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 15px;
+}
+.workout-deck {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 15px;
+    padding: 10px 15px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+.workout-deck::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.exercise-card {
+    flex: 0 0 85vw;
+    scroll-snap-align: center;
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    position: relative;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.exercise-card .card-image {
+    width: 100%;
+    height: 160px;
+    background: var(--gray-100);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.exercise-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+.card-prescription {
+    font-size: 1rem;
+    color: var(--gray-600);
+    margin-bottom: 15px;
+}
+.card-prescription strong {
+    color: var(--primary);
+}
+.card-menu {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    z-index: 2;
+}
+.menu-popup {
+    display: none;
+    position: absolute;
+    top: 30px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    padding: 8px 0;
+    min-width: 120px;
+    z-index: 10;
+}
+.menu-popup div {
+    padding: 10px 15px;
+    cursor: pointer;
+}
+.menu-popup div:hover {
+    background: var(--gray-100);
+}
+.card-menu:hover .menu-popup {
+    display: block;
+}
+
+/* Logging Drawer */
+.log-drawer {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 3000;
+    transition: transform 0.3s ease;
+    padding: 30px 20px;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+.log-drawer.active {
+    transform: translateX(-100%);
+}
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.drawer-header i {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--gray-600);
+}
+.prescribed-info {
+    background: var(--gray-100);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-size: 1rem;
+}
+.log-form .form-group {
+    margin-bottom: 20px;
+}
+.drawer-footer {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+.drawer-footer button {
+    flex: 1;
+}
+
+/* Summary Card (appears at end of deck) */
+.summary-card {
+    flex: 0 0 85vw;
+    scroll-snap-align: center;
+    background: white;
+    border-radius: 24px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+.summary-card h3 {
+    margin-bottom: 20px;
+}
+.summary-stats {
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--gray-50);
+    border-radius: 12px;
+}
+.summary-stats p {
+    margin: 8px 0;
+}
+.summary-card .btn-group {
+    margin-top: 20px;
+}
+
+/* Backup reminder pulsing */
+#nav-settings.critical {
+    color: var(--danger);
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Placeholder & shimmer */
+.placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-400);
+    font-size: 2rem;
+}
+.shimmer {
+    background: linear-gradient(90deg, #eff1f3 25%, #e2e2e2 50%, #eff1f3 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
