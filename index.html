@@ -563,9 +563,10 @@
         </div>
     </div>
 
-    <!-- MODALS (all original) -->
+    <!-- MODALS -->
     <div class="modal" id="importModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('importModal')">&times;</span>
             <h2 style="margin-bottom: 20px;">Import Workout Data</h2>
             <p style="margin-bottom: 20px; color: var(--gray-600);">Upload a JSON file or paste your data below.</p>
             <div class="form-group"><label>Upload File</label><input type="file" id="workoutFile" accept=".json"></div>
@@ -579,6 +580,7 @@
 
     <div class="modal" id="importExerciseModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('importExerciseModal')">&times;</span>
             <h2 style="margin-bottom: 20px;">Import Exercise Library</h2>
             <p style="margin-bottom: 20px; color: var(--gray-600);">Upload an exercise library JSON file.</p>
             <div class="form-group"><label>Upload File</label><input type="file" id="exerciseFile" accept=".json"></div>
@@ -591,11 +593,15 @@
     </div>
 
     <div class="modal" id="longevityModal">
-        <div class="modal-content" id="longevityReport"></div>
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('longevityModal')">&times;</span>
+            <div id="longevityReport"></div>
+        </div>
     </div>
 
     <div class="modal" id="periodModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('periodModal')">&times;</span>
             <h2 style="margin-bottom: 20px;">Track Menstrual Cycle</h2>
             <div class="form-group"><label>Last Period Start Date</label><input type="date" id="lastPeriodDate"></div>
             <div class="form-group"><label>Average Cycle Length (days)</label><input type="number" id="cycleLength" value="28"></div>
@@ -609,6 +615,7 @@
 
     <div class="modal" id="exerciseSearchModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('exerciseSearchModal')">&times;</span>
             <h2 id="exerciseSearchTitle" style="margin-bottom: 15px;">Searching...</h2>
             <div id="exerciseSearchBody">Loading...</div>
         </div>
@@ -616,6 +623,7 @@
 
     <div class="modal" id="injuryLogModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('injuryLogModal')">&times;</span>
             <h2>Log Injury / Pain</h2>
             <!-- Form will be filled by JS if needed -->
         </div>
@@ -623,6 +631,7 @@
 
     <div class="modal" id="sleepLogModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('sleepLogModal')">&times;</span>
             <h2>Log Sleep</h2>
             <!-- Form -->
         </div>
@@ -630,6 +639,7 @@
 
     <div class="modal" id="measurementModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('measurementModal')">&times;</span>
             <h2>Add Measurement</h2>
             <!-- Form -->
         </div>
@@ -637,6 +647,7 @@
 
     <div class="modal" id="goalModal">
         <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('goalModal')">&times;</span>
             <h2>Set New Goal</h2>
             <!-- Form -->
         </div>
