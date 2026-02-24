@@ -2,101 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workout Continuity System – Ultimate Edition</title>
-    <!-- External CSS & Libraries -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Workout Continuity – Physiological Intelligence</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- NAVIGATION BAR -->
+    <!-- NAVIGATION BAR (Categorized) -->
     <nav class="navbar">
         <a href="#" class="nav-brand" onclick="showSection('dashboard'); return false;">
             <i class="fas fa-dumbbell"></i>
-            <span>💪 Workout Continuity</span>
+            <span>💪 Continuity OS</span>
         </a>
-        
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
             <i class="fas fa-bars"></i>
         </button>
-        
         <div class="nav-menu" id="navMenu">
-            <a href="#" class="nav-item active" onclick="showSection('dashboard'); return false;">
-                <i class="fas fa-home"></i> <span>Dashboard</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('workout'); return false;">
-                <i class="fas fa-dumbbell"></i> <span>Today's Workout</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('history'); return false;">
-                <i class="fas fa-history"></i> <span>History</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('progress'); return false;">
-                <i class="fas fa-chart-line"></i> <span>Progress</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('recovery'); return false;">
-                <i class="fas fa-heartbeat"></i> <span>Recovery</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('exercise-library'); return false;">
-                <i class="fas fa-book"></i> <span>Library</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('pr'); return false;">
-                <i class="fas fa-trophy"></i> <span>PRs</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('goals'); return false;">
-                <i class="fas fa-bullseye"></i> <span>Goals</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('programs'); return false;">
-                <i class="fas fa-calendar-alt"></i> <span>Programs</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('achievements'); return false;">
-                <i class="fas fa-medal"></i> <span>Achievements</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('recovery-insights'); return false;">
-                <i class="fas fa-chart-line"></i> <span>Insights</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('warmup'); return false;">
-                <i class="fas fa-fire"></i> <span>Warm-up</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('injury'); return false;">
-                <i class="fas fa-bone"></i> <span>Injury Log</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('sleep'); return false;">
-                <i class="fas fa-moon"></i> <span>Sleep</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('load'); return false;">
-                <i class="fas fa-wave-square"></i> <span>Load</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('summaries'); return false;">
-                <i class="fas fa-file-pdf"></i> <span>Summaries</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('social'); return false;">
-                <i class="fas fa-share-alt"></i> <span>Share</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('comparison'); return false;">
-                <i class="fas fa-balance-scale"></i> <span>Compare</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('calendar'); return false;">
-                <i class="fas fa-calendar"></i> <span>Calendar</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('event'); return false;">
-                <i class="fas fa-clock"></i> <span>Projections</span>
-            </a>
-            <!-- NEW: Exercise Compendium -->
-            <a href="#" class="nav-item" onclick="showSection('compendium'); return false;">
-                <i class="fas fa-table"></i> <span>Compendium</span>
-            </a>
-            <!-- NEW: Feature Status -->
-            <a href="#" class="nav-item" onclick="showSection('status'); return false;">
-                <i class="fas fa-clipboard-list"></i> <span>Feature Status</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('health'); return false;">
-                <i class="fas fa-notes-medical"></i> <span>Health Logs</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('settings'); return false;">
-                <i class="fas fa-cog"></i> <span>Settings</span>
-            </a>
-            
+            <!-- Core -->
+            <div class="nav-category">CORE</div>
+            <a href="#" class="nav-item active" onclick="showSection('dashboard'); return false;"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#" class="nav-item" onclick="showSection('workout'); return false;"><i class="fas fa-dumbbell"></i> Today's Workout</a>
+            <a href="#" class="nav-item" onclick="showSection('history'); return false;"><i class="fas fa-history"></i> History</a>
+            <a href="#" class="nav-item" onclick="showSection('progress'); return false;"><i class="fas fa-chart-line"></i> Progress</a>
+            <a href="#" class="nav-item" onclick="showSection('recovery'); return false;"><i class="fas fa-heartbeat"></i> Recovery</a>
+
+            <!-- Data -->
+            <div class="nav-category">DATA</div>
+            <a href="#" class="nav-item" onclick="showSection('exercise-library'); return false;"><i class="fas fa-book"></i> Exercise Library</a>
+            <a href="#" class="nav-item" onclick="showSection('pr'); return false;"><i class="fas fa-trophy"></i> Personal Records</a>
+            <a href="#" class="nav-item" onclick="showSection('goals'); return false;"><i class="fas fa-bullseye"></i> Goals</a>
+            <a href="#" class="nav-item" onclick="showSection('programs'); return false;"><i class="fas fa-calendar-alt"></i> Programs</a>
+            <a href="#" class="nav-item" onclick="showSection('achievements'); return false;"><i class="fas fa-medal"></i> Achievements</a>
+
+            <!-- Wellness -->
+            <div class="nav-category">WELLNESS</div>
+            <a href="#" class="nav-item" onclick="showSection('recovery-insights'); return false;"><i class="fas fa-chart-line"></i> Recovery Insights</a>
+            <a href="#" class="nav-item" onclick="showSection('warmup'); return false;"><i class="fas fa-fire"></i> Warm‑up / Cool‑down</a>
+            <a href="#" class="nav-item" onclick="showSection('injury'); return false;"><i class="fas fa-bone"></i> Injury Log</a>
+            <a href="#" class="nav-item" onclick="showSection('sleep'); return false;"><i class="fas fa-moon"></i> Sleep</a>
+            <a href="#" class="nav-item" onclick="showSection('load'); return false;"><i class="fas fa-wave-square"></i> Training Load</a>
+            <a href="#" class="nav-item" onclick="showSection('summaries'); return false;"><i class="fas fa-file-pdf"></i> Summaries</a>
+
+            <!-- Community -->
+            <div class="nav-category">COMMUNITY</div>
+            <a href="#" class="nav-item" onclick="showSection('social'); return false;"><i class="fas fa-share-alt"></i> Share</a>
+            <a href="#" class="nav-item" onclick="showSection('comparison'); return false;"><i class="fas fa-balance-scale"></i> Compare</a>
+            <a href="#" class="nav-item" onclick="showSection('calendar'); return false;"><i class="fas fa-calendar"></i> Calendar</a>
+            <a href="#" class="nav-item" onclick="showSection('event'); return false;"><i class="fas fa-clock"></i> Projections</a>
+
+            <!-- Reference -->
+            <div class="nav-category">REFERENCE</div>
+            <a href="#" class="nav-item" onclick="showSection('compendium'); return false;"><i class="fas fa-table"></i> Compendium</a>
+            <a href="#" class="nav-item" onclick="showSection('status'); return false;"><i class="fas fa-clipboard-list"></i> Feature Status</a>
+            <a href="#" class="nav-item" onclick="showSection('health'); return false;"><i class="fas fa-notes-medical"></i> Health Logs</a>
+
+            <!-- System -->
+            <div class="nav-category">SYSTEM</div>
+            <a href="#" class="nav-item" onclick="showSection('settings'); return false;"><i class="fas fa-cog"></i> Settings</a>
+
             <div class="nav-user">
                 <div class="user-avatar" id="navUserAvatar" onclick="showSection('settings')">U</div>
                 <div>
@@ -106,12 +70,12 @@
             </div>
         </div>
     </nav>
-    
+
     <!-- IMPORT SCREEN -->
     <div class="import-screen" id="importScreen">
         <h1><i class="fas fa-dumbbell"></i> Workout Continuity System</h1>
         <p class="subtitle">Track your progress, maintain consistency, and optimize your workouts with intelligent recovery tracking</p>
-        
+
         <div class="import-options">
             <div class="import-option" onclick="importWorkoutData()">
                 <i class="fas fa-file-import"></i>
@@ -123,7 +87,7 @@
                     <li><i class="fas fa-check"></i> Import user settings</li>
                 </div>
             </div>
-            
+
             <div class="import-option" onclick="startNewProgram()">
                 <i class="fas fa-plus-circle"></i>
                 <h3>Start Fresh Program</h3>
@@ -134,7 +98,7 @@
                     <li><i class="fas fa-check"></i> Recovery tracking</li>
                 </div>
             </div>
-            
+
             <div class="import-option" onclick="loadSampleData()">
                 <i class="fas fa-vial"></i>
                 <h3>Sample Data</h3>
@@ -146,39 +110,32 @@
                 </div>
             </div>
         </div>
-        
+
         <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--gray-200);">
             <h3 style="margin-bottom: 15px;">Quick Start Options</h3>
             <div class="btn-group" style="justify-content: center;">
-                <button class="btn" onclick="importWorkoutData()">
-                    <i class="fas fa-file-import"></i> Import JSON
-                </button>
-                <button class="btn btn-success" onclick="startNewProgram()">
-                    <i class="fas fa-plus-circle"></i> Start Fresh
-                </button>
-                <button class="btn btn-info" onclick="loadSampleData()">
-                    <i class="fas fa-vial"></i> Load Sample
-                </button>
+                <button class="btn" onclick="importWorkoutData()"><i class="fas fa-file-import"></i> Import JSON</button>
+                <button class="btn btn-success" onclick="startNewProgram()"><i class="fas fa-plus-circle"></i> Start Fresh</button>
+                <button class="btn btn-info" onclick="loadSampleData()"><i class="fas fa-vial"></i> Load Sample</button>
             </div>
         </div>
     </div>
-    
-    <!-- MAIN APPLICATION CONTAINER -->
+
+    <!-- MAIN APPLICATION CONTAINER (all original sections preserved) -->
     <div class="container main-app" id="mainApp">
         <!-- ========== DASHBOARD SECTION ========== -->
         <div id="dashboard-section" class="section active">
-            <!-- ... (existing dashboard content, omitted for brevity – will be restored in final merge) ... -->
             <div class="user-welcome" id="userWelcome">
                 <div class="user-welcome-avatar" id="welcomeAvatar">U</div>
                 <div>
                     <h2 id="welcomeName" style="color: var(--dark);">Welcome back, User!</h2>
                     <p style="color: var(--gray-600);">
-                        <span id="welcomeStreak">0</span> day streak · 
+                        <span id="welcomeStreak">0</span> day streak ·
                         <span id="welcomeLevel">Beginner</span>
                     </p>
                 </div>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="card stat-card">
                     <span class="stat-value" id="statWorkouts">0</span>
@@ -204,8 +161,13 @@
                     <span class="stat-value" id="longevityScore">0</span>
                     <span class="stat-label">Longevity</span>
                 </div>
+                <!-- NEW: Injury Risk Card (Tendon Guard) -->
+                <div class="card stat-card" id="injury-risk-card">
+                    <span class="stat-value" id="risk-val">Analyzing...</span>
+                    <span class="stat-label">RECOVERY QUALITY</span>
+                </div>
             </div>
-            
+
             <div class="dashboard" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 30px;">
                 <div>
                     <div class="card">
@@ -218,9 +180,15 @@
                         <h2 class="title"><i class="fas fa-calendar-check"></i> Next Workout</h2>
                         <div id="dashboardWorkoutInfo"></div>
                         <div class="next-workout-date" id="dashboardNextWorkout">No workout scheduled</div>
-                        <button class="btn btn-primary" onclick="generateNextWorkout()" style="width:100%; margin-top:15px;">
-                            <i class="fas fa-dumbbell"></i> Generate Workout
-                        </button>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="generateNextWorkout()" style="flex:1;">
+                                <i class="fas fa-dumbbell"></i> Generate Workout
+                            </button>
+                            <!-- NEW: Start Today's Workout button -->
+                            <button class="btn btn-success" onclick="if(currentWorkout) showSection('workout'); else { generateNextWorkout(); showSection('workout'); }" style="flex:1;">
+                                <i class="fas fa-play"></i> Start Today
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div>
@@ -247,7 +215,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- ========== WORKOUT SECTION ========== -->
         <div id="workout-section" class="section">
             <div class="todays-workout">
@@ -283,7 +251,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- ========== HISTORY SECTION ========== -->
         <div id="history-section" class="section">
             <div class="workout-history-section">
@@ -308,7 +276,7 @@
                 </table>
             </div>
         </div>
-        
+
         <!-- ========== PROGRESS SECTION ========== -->
         <div id="progress-section" class="section">
             <div class="progress-section">
@@ -341,7 +309,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- ========== RECOVERY SECTION ========== -->
         <div id="recovery-section" class="section">
             <div class="todays-workout">
@@ -367,7 +335,7 @@
                 <div id="recoveryRecommendations" class="recovery-status"></div>
             </div>
         </div>
-        
+
         <!-- ========== EXERCISE LIBRARY SECTION ========== -->
         <div id="exercise-library-section" class="section">
             <div class="todays-workout">
@@ -375,7 +343,7 @@
                 <div class="exercise-library-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== PERSONAL RECORDS SECTION ========== -->
         <div id="pr-section" class="section">
             <div class="todays-workout">
@@ -383,7 +351,7 @@
                 <div class="pr-grid"></div>
             </div>
         </div>
-        
+
         <!-- ========== MEASUREMENTS SECTION ========== -->
         <div id="measurements-section" class="section">
             <div class="todays-workout">
@@ -391,7 +359,7 @@
                 <div class="measurements-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== GOALS SECTION ========== -->
         <div id="goals-section" class="section">
             <div class="todays-workout">
@@ -405,7 +373,7 @@
                 <div class="goals-container" style="margin-top: 30px;"></div>
             </div>
         </div>
-        
+
         <!-- ========== TRAINING PLANS / PROGRAMS ========== -->
         <div id="programs-section" class="section">
             <div class="todays-workout">
@@ -413,7 +381,7 @@
                 <div class="programs-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== ACHIEVEMENTS / BADGES ========== -->
         <div id="achievements-section" class="section">
             <div class="todays-workout">
@@ -421,7 +389,7 @@
                 <div class="badges-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== RECOVERY INSIGHTS ========== -->
         <div id="recovery-insights-section" class="section">
             <div class="todays-workout">
@@ -429,7 +397,7 @@
                 <div class="insights-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== WARM-UP / COOL-DOWN ========== -->
         <div id="warmup-section" class="section">
             <div class="todays-workout">
@@ -437,7 +405,7 @@
                 <div class="routines-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== INJURY / PAIN LOGGER ========== -->
         <div id="injury-section" class="section">
             <div class="todays-workout">
@@ -445,7 +413,7 @@
                 <div class="injury-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== SLEEP TRACKER ========== -->
         <div id="sleep-section" class="section">
             <div class="todays-workout">
@@ -453,7 +421,7 @@
                 <div class="sleep-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== TRAINING LOAD & FATIGUE ========== -->
         <div id="load-section" class="section">
             <div class="todays-workout">
@@ -461,7 +429,7 @@
                 <div class="load-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== MONTHLY / YEARLY SUMMARIES ========== -->
         <div id="summaries-section" class="section">
             <div class="todays-workout">
@@ -469,7 +437,7 @@
                 <div class="summaries-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== SOCIAL / SHARE WORKOUTS ========== -->
         <div id="social-section" class="section">
             <div class="todays-workout">
@@ -477,7 +445,7 @@
                 <div class="share-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== EXERCISE COMPARISON ========== -->
         <div id="comparison-section" class="section">
             <div class="todays-workout">
@@ -485,7 +453,7 @@
                 <div class="comparison-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== WORKOUT CALENDAR ========== -->
         <div id="calendar-section" class="section">
             <div class="todays-workout">
@@ -493,7 +461,7 @@
                 <div class="calendar-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== EVENT / YEARLY GOALS & PROJECTIONS ========== -->
         <div id="event-section" class="section">
             <div class="todays-workout">
@@ -501,7 +469,7 @@
                 <div class="event-container"></div>
             </div>
         </div>
-        
+
         <!-- ========== NEW: EXERCISE COMPENDIUM SECTION ========== -->
         <div id="compendium-section" class="section">
             <div class="todays-workout">
@@ -512,7 +480,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- ========== NEW: FEATURE STATUS SECTION ========== -->
         <div id="status-section" class="section">
             <div class="todays-workout">
@@ -523,7 +491,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- ========== HEALTH LOGS SECTION ========== -->
         <div id="health-section" class="section">
             <div class="grid-3">
@@ -545,7 +513,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- ========== SETTINGS SECTION ========== -->
         <div id="settings-section" class="section">
             <div class="settings-section">
@@ -594,8 +562,8 @@
             </div>
         </div>
     </div>
-    
-    <!-- MODALS (existing) -->
+
+    <!-- MODALS (all original) -->
     <div class="modal" id="importModal">
         <div class="modal-content">
             <h2 style="margin-bottom: 20px;">Import Workout Data</h2>
@@ -608,7 +576,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="importExerciseModal">
         <div class="modal-content">
             <h2 style="margin-bottom: 20px;">Import Exercise Library</h2>
@@ -621,11 +589,11 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="longevityModal">
         <div class="modal-content" id="longevityReport"></div>
     </div>
-    
+
     <div class="modal" id="periodModal">
         <div class="modal-content">
             <h2 style="margin-bottom: 20px;">Track Menstrual Cycle</h2>
@@ -638,48 +606,48 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="exerciseSearchModal">
         <div class="modal-content">
             <h2 id="exerciseSearchTitle" style="margin-bottom: 15px;">Searching...</h2>
             <div id="exerciseSearchBody">Loading...</div>
         </div>
     </div>
-    
+
     <div class="modal" id="injuryLogModal">
         <div class="modal-content">
             <h2>Log Injury / Pain</h2>
             <!-- Form will be filled by JS if needed -->
         </div>
     </div>
-    
+
     <div class="modal" id="sleepLogModal">
         <div class="modal-content">
             <h2>Log Sleep</h2>
             <!-- Form -->
         </div>
     </div>
-    
+
     <div class="modal" id="measurementModal">
         <div class="modal-content">
             <h2>Add Measurement</h2>
             <!-- Form -->
         </div>
     </div>
-    
+
     <div class="modal" id="goalModal">
         <div class="modal-content">
             <h2>Set New Goal</h2>
             <!-- Form -->
         </div>
     </div>
-    
+
     <!-- NOTIFICATION and LOADING -->
     <div class="notification" id="notification">
         <i class="fas fa-check-circle"></i>
         <span id="notificationText">Operation completed successfully!</span>
     </div>
-    
+
     <div class="loading" id="loading">
         <div class="spinner"></div>
         <div style="color: var(--primary); font-weight: 600; font-size: 1.1rem;">Processing your request...</div>
