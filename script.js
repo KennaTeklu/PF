@@ -1263,7 +1263,6 @@ function renderExerciseDeck() {
 
 function fetchExerciseImage(exName, imgId, descId) {
     const imgContainer = document.getElementById(imgId);
-    // Only try to get description container if descId is provided
     const descContainer = descId ? document.getElementById(descId) : null;
     
     if (!imgContainer) {
@@ -1273,24 +1272,17 @@ function fetchExerciseImage(exName, imgId, descId) {
     imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
     if (descContainer) descContainer.innerHTML = '';
 
-    // Helper to request a larger thumbnail
-    const getLargerThumbnail = (url) => {
-        if (!url) return null;
-        return url.replace(/\/(\d+)px-/, '/600px-');
-    };
+    const getLargerThumbnail = (url) => url?.replace(/\/(\d+)px-/, '/600px-');
 
-    // Helper to check relevance
     const isRelevant = (summaryData, exName) => {
         const title = summaryData.title?.toLowerCase() || '';
         const extract = summaryData.extract?.toLowerCase() || '';
         const exLower = exName.toLowerCase();
         if (title.includes(exLower) || extract.includes(exLower)) return true;
         const genericWords = ['sport', 'exercise', 'fitness', 'gym', 'workout', 'physical'];
-        const isGeneric = genericWords.some(word => title.includes(word));
-        return !isGeneric;
+        return !genericWords.some(word => title.includes(word));
     };
 
-    // Helper to show fallback buttons (only used when no image)
     const showFallback = () => {
         imgContainer.innerHTML = `
             <div class="image-fallback">
@@ -1305,7 +1297,6 @@ function fetchExerciseImage(exName, imgId, descId) {
         if (descContainer) descContainer.innerHTML = '';
     };
 
-    // Helper to process summary data
     const processSummary = (summaryData) => {
         exerciseInfoCache[exName] = {
             summary: summaryData,
@@ -1323,11 +1314,19 @@ function fetchExerciseImage(exName, imgId, descId) {
         if (imgUrl) {
             imgUrl = getLargerThumbnail(imgUrl) || imgUrl;
             const img = new Image();
+            const timeout = setTimeout(() => {
+                img.onload = null;
+                img.onerror = null;
+                showFallback();
+            }, 2000); // image load timeout: 2 seconds
+
             img.onload = () => {
+                clearTimeout(timeout);
                 imgContainer.innerHTML = '';
                 imgContainer.appendChild(img);
             };
             img.onerror = () => {
+                clearTimeout(timeout);
                 showFallback();
             };
             img.src = imgUrl;
@@ -1338,49 +1337,41 @@ function fetchExerciseImage(exName, imgId, descId) {
             return;
         }
 
-        // Only set description if a description container exists
         if (descContainer && summaryData.extract) {
             let extract = summaryData.extract;
             const words = extract.split(' ');
-            if (words.length > 30) {
-                extract = words.slice(0, 30).join(' ') + '…';
-            }
+            if (words.length > 30) extract = words.slice(0, 30).join(' ') + '…';
             descContainer.innerHTML = extract;
         }
     };
 
-    const fallback = () => {
-        showFallback();
-        exerciseInfoCache[exName] = { summary: null, extract: null, thumbnail: null };
-    };
+    // Global timeout for Wikipedia search (2.5 seconds)
+    const globalTimeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Wikipedia search timeout')), 2500)
+    );
 
-    // Wikipedia search (same as before)
-    fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&format=json&origin=*`)
-        .then(res => res.json())
-        .then(searchData => {
-            if (searchData.query?.search?.length) {
-                const title = searchData.query.search[0].title;
-                return fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
-                    .then(res => res.json())
-                    .then(processSummary)
-                    .catch(() => fallback());
-            } else {
-                return fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&format=json&origin=*`)
-                    .then(res => res.json())
-                    .then(secondSearch => {
-                        if (secondSearch.query?.search?.length) {
-                            const title = secondSearch.query.search[0].title;
-                            return fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
-                                .then(res => res.json())
-                                .then(processSummary)
-                                .catch(() => fallback());
-                        } else {
-                            fallback();
-                        }
-                    });
-            }
-        })
-        .catch(() => fallback());
+    const search1 = fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&format=json&origin=*`).then(r => r.json());
+    const search2 = fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&format=json&origin=*`).then(r => r.json());
+
+    Promise.race([
+        Promise.any([search1, search2]), // first successful search
+        globalTimeout
+    ])
+    .then(searchData => {
+        if (searchData.query?.search?.length) {
+            const title = searchData.query.search[0].title;
+            return fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
+                .then(res => res.json())
+                .then(processSummary)
+                .catch(() => showFallback());
+        } else {
+            showFallback();
+        }
+    })
+    .catch(() => {
+        // Timeout or both searches failed
+        showFallback();
+    });
 }
 
 function showExerciseDetails(exName, index) {
