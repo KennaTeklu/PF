@@ -105,12 +105,6 @@ const muscleDatabase = {
     ]
 };
 
-
-// HELPER FUNCTION: Get image or default placeholder
-function getMuscleImage(id) {
-    return muscleImageLibrary[id] || "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Human_muscle_system.svg/500px-Human_muscle_system.svg.png";
-}
-
 // ==================== EXERCISE COMPENDIUM DATA ====================
 const exerciseCompendium = [
     {
