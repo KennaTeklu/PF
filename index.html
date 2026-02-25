@@ -629,7 +629,17 @@
         <div class="spinner"></div>
         <div style="color: var(--primary); font-weight: 600; font-size: 1.1rem;">Processing your request...</div>
     </div>
-
+    <!-- Unsaved Changes Modal -->
+    <div class="modal" id="unsavedModal">
+        <div class="modal-content">
+            <h3>Unsaved Changes</h3>
+            <p>You have unsaved changes in your workout. Leave anyway?</p>
+            <div class="btn-group">
+                <button class="btn btn-danger" id="unsavedConfirm">Yes, leave</button>
+                <button class="btn btn-outline" id="unsavedCancel">No, stay</button>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
