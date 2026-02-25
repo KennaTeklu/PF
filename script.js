@@ -544,6 +544,14 @@ function showNotification(message, type = "success") {
     }, 4000);
 }
 
+function closeNotification() {
+    const notification = document.getElementById('notification');
+    notification.classList.remove('show');
+    if (notificationTimeout) {
+        clearTimeout(notificationTimeout);
+        notificationTimeout = null;
+    }
+}
 
 // ---------- DRAFT FUNCTIONS ----------
 function saveDraft() {
@@ -1218,13 +1226,13 @@ function renderExerciseDeck() {
             <div class="card-menu">
                 <i class="fas fa-ellipsis-v"></i>
                 <div class="menu-popup">
-                    <div onclick="shareExercise('${safeName}')">Share</div>
-                    <div onclick="showAnatomy('${safeName}')">Anatomy</div>
+                    <div onclick="shareExercise('${safeName}'); event.stopPropagation();">Share</div>
+                    <div onclick="showAnatomy('${safeName}'); event.stopPropagation();">Anatomy</div>
                 </div>
             </div>
             <div class="card-image" id="img-${index}"></div>
             <h3>${ex.name}
-                <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index})" title="More info">
+                <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index}); event.stopPropagation();" title="More info">
                     <i class="fas fa-info-circle"></i>
                 </span>
             </h3>
@@ -1232,27 +1240,42 @@ function renderExerciseDeck() {
                 <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
             </div>
             <p class="exercise-description" id="desc-${index}"></p>
+            <div class="card-actions">
+                <button class="action-btn web-btn" onclick="googleSearch('${safeName}', 'web'); event.stopPropagation();">
+                    <i class="fas fa-search"></i> Web
+                </button>
+                <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
+                    <i class="fas fa-image"></i> Images
+                </button>
+            </div>
         `;
 
-        // --- Prevent card click when clicking on the three-dot menu ---
+        // --- Three-dot menu click handler ---
         const menu = card.querySelector('.card-menu');
+        const popup = menu.querySelector('.menu-popup');
         menu.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop event from reaching the card
+            e.stopPropagation();
+            popup.classList.toggle('show');
         });
 
-        // Also stop propagation on menu popup items (Share and Anatomy)
-        const popupItems = card.querySelectorAll('.menu-popup div');
-        popupItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation(); // Stop event from reaching the card
-            });
+        // Close popup when clicking elsewhere
+        document.addEventListener('click', function closePopup(e) {
+            if (!card.contains(e.target)) {
+                popup.classList.remove('show');
+            }
+        });
+
+        // Prevent card click when clicking on info icon or action buttons
+        card.querySelectorAll('.info-icon, .action-btn').forEach(el => {
+            el.addEventListener('click', (e) => e.stopPropagation());
         });
 
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon')) {
+            if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
                 openLogDrawer(index);
             }
         });
+
         attachSwipeListeners(card, index);
         deck.appendChild(card);
         fetchExerciseImage(ex.name, `img-${index}`, `desc-${index}`);
@@ -1288,24 +1311,16 @@ function fetchExerciseImage(exName, imgId, descId) {
         return !isGeneric;
     };
 
-    const showFallback = () => {
-        imgContainer.innerHTML = `
-            <div class="image-fallback">
-                <button class="fallback-btn web-btn" onclick="googleSearch('${exName.replace(/'/g, "\\'")}', 'web'); event.stopPropagation();">
-                    <i class="fas fa-search"></i> Web
-                </button>
-                <button class="fallback-btn images-btn" onclick="googleSearch('${exName.replace(/'/g, "\\'")}', 'images'); event.stopPropagation();">
-                    <i class="fas fa-image"></i> Images
-                </button>
-            </div>
-        `;
+    // Show placeholder (dumbbell) – no buttons (they are permanently below)
+    const showPlaceholder = () => {
+        imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
         if (descContainer) descContainer.innerHTML = '';
     };
 
     // Process a list of search results, try them in order until one works
     const trySearchResults = (titles, index = 0) => {
         if (index >= titles.length) {
-            showFallback();
+            showPlaceholder();
             return;
         }
         const title = titles[index];
@@ -1385,12 +1400,12 @@ function fetchExerciseImage(exName, imgId, descId) {
     ])
     .then(titles => {
         if (titles.length === 0) {
-            showFallback();
+            showPlaceholder();
             return;
         }
         trySearchResults(titles);
     })
-    .catch(() => showFallback());
+    .catch(() => showPlaceholder());
 }
 
 function showExerciseDetails(exName, index) {
