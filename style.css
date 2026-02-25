@@ -2274,6 +2274,27 @@ input:checked + .slider:before {
     align-items: center;
     justify-content: center;
 }
+.celebration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--warning);
+    animation: confetti-fall 3s linear forwards;
+}
+@keyframes confetti-fall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
 .shimmer {
     background: linear-gradient(90deg, #eff1f3 25%, #e2e2e2 50%, #eff1f3 75%);
     background-size: 200% 100%;
