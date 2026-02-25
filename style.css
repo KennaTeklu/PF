@@ -2058,31 +2058,149 @@ input:checked + .slider:before {
     position: relative;
 }
 /* ========== WORKOUT DECK – VERTICAL SNAP ========== */
-.workout-deck-container {
-    padding: 15px 0;
-}
-.deck-header {
+.workout-session-header-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
-    padding: 0 15px;
+    background: white;
+    padding: 20px 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--gray-200);
 }
-.workout-deck {
+
+.workout-session-info h2 { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
+.workout-session-tags { display: flex; gap: 8px; margin-top: 5px; }
+
+.workout-tag-pill {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+}
+
+.workout-session-controls { display: flex; gap: 10px; }
+
+.btn-complete-workout {
+    background: var(--success);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+.btn-new-workout {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.workout-deck-scroller {
     display: flex;
     flex-direction: column;
+    gap: 20px;
     overflow-y: auto;
     scroll-snap-type: y mandatory;
-    height: calc(100vh - var(--nav-height) - 120px);
-    padding: 0;
-    gap: 0;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* hide scrollbar for cleaner look */
-    scroll-padding: 10px 0;
+    height: calc(100vh - 250px);
+    padding-bottom: 100px;
 }
-.workout-deck::-webkit-scrollbar {
-    display: none;
+
+.exercise-card {
+    scroll-snap-align: start;
+    background: white;
+    border-radius: 24px;
+    padding: 25px;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    transition: var(--transition);
+}
+
+.exercise-card .card-image {
+    width: 100%;
+    height: 200px;
+    background: var(--gray-50);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.exercise-card .card-image img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-prescription {
+    background: var(--gray-50);
+    padding: 15px;
+    border-radius: 14px;
+    margin: 15px 0;
+}
+
+.exercise-description { font-size: 0.9rem; color: var(--gray-600); line-height: 1.5; }
+
+.log-drawer {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    height: 90%;
+    background: white;
+    z-index: 3000;
+    transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 30px;
+    border-radius: 30px 30px 0 0;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+    overflow-y: auto;
+}
+
+.log-drawer.active { bottom: 0; }
+
+.log-prescribed-display {
+    background: var(--primary-soft);
+    color: var(--primary);
+    padding: 15px;
+    border-radius: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.btn-save-log {
+    width: 100%;
+    background: var(--primary);
+    color: white;
+    padding: 18px;
+    border-radius: 16px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-skip-log {
+    width: 100%;
+    background: var(--gray-100);
+    color: var(--gray-600);
+    padding: 12px;
+    border-radius: 16px;
+    font-weight: 700;
+    border: none;
+    margin-top: 10px;
+}
+
+.shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer-load 1.5s infinite;
+}
+
+@keyframes shimmer-load {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 /* ========== LOGGING DRAWER ========== */
