@@ -2608,3 +2608,30 @@ input:checked + .slider:before {
     .library-header-bar { flex-direction: column; gap: 15px; text-align: center; }
     .library-search-box { width: 100%; }
 }
+.muscle-tag {
+    position: relative;
+    cursor: help;
+}
+
+.muscle-tag:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 140px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: white;
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg);
+    z-index: 5000;
+}
+
+/* JavaScript will inject the background image URL into a CSS variable */
+.muscle-tag:hover::after {
+    background-image: var(--muscle-img);
+}
