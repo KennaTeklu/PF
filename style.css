@@ -1020,6 +1020,18 @@ input:checked + .slider:before {
 .notification.show {
     transform: translateX(0) !important;
 }
+.notification-close {
+    margin-left: auto;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--gray-500);
+    transition: color 0.2s;
+    line-height: 1;
+}
+.notification-close:hover {
+    color: var(--danger);
+}
 .notification i {
     font-size: 1.5rem;
     color: var(--success);
@@ -2015,6 +2027,7 @@ input:checked + .slider:before {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; /* hide scrollbar for cleaner look */
+    scroll-padding: 10px 0;
 }
 .workout-deck::-webkit-scrollbar {
     display: none;
@@ -2163,13 +2176,7 @@ input:checked + .slider:before {
 .card-prescription strong {
     color: var(--primary);
 }
-.card-menu {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-    z-index: 2;
-}
+
 .menu-popup {
     display: none;
     position: absolute;
@@ -2189,7 +2196,7 @@ input:checked + .slider:before {
 .menu-popup div:hover {
     background: var(--gray-100);
 }
-.card-menu:hover .menu-popup {
+.card-menu .menu-popup.show {
     display: block;
 }
 
@@ -2273,7 +2280,44 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer;
+    z-index: 2;
+    user-select: none; 
 }
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
+}
+.card-actions .action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: transform 0.2s;
+}
+.card-actions .action-btn:hover {
+    transform: scale(1.05);
+}
+.card-actions .web-btn {
+    background: #4285F4;
+    color: white;
+}
+.card-actions .images-btn {
+    background: #DB4437;
+    color: white;
+}
+
 .celebration-overlay {
     position: fixed;
     top: 0;
