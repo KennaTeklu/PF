@@ -101,97 +101,83 @@
     <div class="container main-app" id="mainApp">
         <!-- ========== DASHBOARD SECTION ========== -->
         <div id="dashboard-section" class="section active">
-            <div class="user-welcome" id="userWelcome">
-                <div class="user-welcome-avatar" id="welcomeAvatar">U</div>
-                <div>
-                    <h2 id="welcomeName" style="color: var(--dark);">Welcome back, User!</h2>
-                    <p style="color: var(--gray-600);">
-                        <span id="welcomeStreak">0</span> day streak ·
-                        <span id="welcomeLevel">Beginner</span>
-                    </p>
+    
+            <div class="user-welcome-injury-risk-bar">
+                <div class="user-welcome-info-group">
+                    <div class="user-welcome-avatar" id="welcomeAvatar">U</div>
+                    <div class="user-welcome-text">
+                        <h2 id="welcomeName">User</h2>
+                        <div class="user-welcome-status-tags">
+                            <span class="welcome-badge-pill"><i class="fas fa-fire"></i> <span id="welcomeStreak">0</span> Streak</span>
+                            <span class="welcome-badge-pill" id="welcomeLevel">Beginner</span>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="injury-risk-card-integrated" id="injury-risk-card">
+                    <div class="injury-risk-status-indicator">
+                        <div class="injury-risk-dot"></div>
+                        <div class="injury-risk-text-group">
+                            <small>PHYSIOLOGICAL STATE</small>
+                            <strong id="risk-val">Analyzing...</strong>
+                        </div>
+                    </div>
+                    <div class="dash-acwr-mini-box">
+                        <small>ACWR</small>
+                        <strong id="dash-acwr">1.0</strong>
+                    </div>
                 </div>
             </div>
-
-            <div class="stats-grid">
-                <div class="card stat-card">
-                    <span class="stat-value" id="statWorkouts">0</span>
-                    <span class="stat-label">Total Workouts</span>
+        
+            <div class="dashboard-main-grid">
+                <div class="card dashboard-chart-card">
+                    <div class="card-header-flex">
+                        <h3><i class="fas fa-chart-line"></i> Performance Trend</h3>
+                        <div class="stat-volume-pill"><span id="statVolume">0</span> <small>lbs total</small></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="dashboardChart"></canvas>
+                    </div>
                 </div>
-                <div class="card stat-card">
-                    <span class="stat-value" id="statStreak">0</span>
-                    <span class="stat-label">Day Streak</span>
+        
+                <div class="card longevity-vitality-card">
+                    <h3><i class="fas fa-heartbeat"></i> Vitality Index</h3>
+                    <div class="longevity-score-display">
+                        <span id="longevityScore" class="longevity-score-number">0</span>
+                    </div>
+                    <div class="stat-progress-container">
+                        <div class="stat-progress-label">Goal Progress <span id="statProgress">0%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+                    </div>
                 </div>
-                <div class="card stat-card">
-                    <span class="stat-value" id="statVolume">0</span>
-                    <span class="stat-label">Total Volume</span>
-                </div>
-                <div class="card stat-card">
-                    <span class="stat-value" id="statProgress">0%</span>
-                    <span class="stat-label">Goal Progress</span>
-                </div>
-                <div class="card stat-card">
-                    <span class="stat-value" id="dash-acwr">1.0</span>
-                    <span class="stat-label">Load (ACWR)</span>
-                </div>
-                <div class="card stat-card">
-                    <span class="stat-value" id="longevityScore">0</span>
-                    <span class="stat-label">Longevity</span>
-                </div>
-                <!-- NEW: Injury Risk Card (Tendon Guard) -->
-                <div class="card stat-card" id="injury-risk-card">
-                    <span class="stat-value" id="risk-val">Analyzing...</span>
-                    <span class="stat-label">RECOVERY QUALITY</span>
+        
+                <div class="card dashboard-workout-next-card">
+                    <h3><i class="fas fa-play"></i> Next Session</h3>
+                    <div id="dashboardWorkoutInfo" class="dashboard-workout-info-summary"></div>
+                    <div class="dashboard-next-workout-date-pill" id="dashboardNextWorkout">No workout</div>
+                    <button class="btn-start-today-workout" onclick="if(currentWorkout) showSection('workout'); else { generateNextWorkout(); showSection('workout'); }">
+                        START TODAY
+                    </button>
                 </div>
             </div>
-
-            <div class="dashboard" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-bottom: 30px;">
-                <div>
-                    <div class="card">
-                        <h2 class="title"><i class="fas fa-chart-line"></i> Recent Volume</h2>
-                        <div class="chart-container">
-                            <canvas id="dashboardChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2 class="title"><i class="fas fa-calendar-check"></i> Next Workout</h2>
-                        <div id="dashboardWorkoutInfo"></div>
-                        <div class="next-workout-date" id="dashboardNextWorkout">No workout scheduled</div>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button class="btn btn-primary" onclick="generateNextWorkout()" style="flex:1;">
-                                <i class="fas fa-dumbbell"></i> Generate Workout
-                            </button>
-                            <!-- NEW: Start Today's Workout button -->
-                            <button class="btn btn-success" onclick="if(currentWorkout) showSection('workout'); else { generateNextWorkout(); showSection('workout'); }" style="flex:1;">
-                                <i class="fas fa-play"></i> Start Today
-                            </button>
-                        </div>
-                    </div>
+        
+            <div class="dashboard-momentum-footer">
+                <div class="card activity-calendar-card">
+                    <h3>Consistency</h3>
+                    <div class="calendar-grid" id="activity-calendar"></div>
                 </div>
-                <div>
-                    <div class="card">
-                        <h2 class="title"><i class="fas fa-calendar"></i> Activity (90 days)</h2>
-                        <div class="calendar-grid" id="activity-calendar"></div>
-                    </div>
-                    <div class="card">
-                        <h2 class="title"><i class="fas fa-trophy"></i> Personal Records</h2>
-                        <div id="dash-prs-list" style="font-size:0.9rem;"></div>
-                    </div>
-                    <div class="card">
-                        <h2 class="title"><i class="fas fa-chart-line"></i> 2030 Projection</h2>
-                        <div class="projection-box" id="projection-box">
-                            <p style="font-size:0.9rem; margin-bottom:10px;">Based on consistency:</p>
-                            <h3 id="strength-forecast" style="color:white;">Calculating...</h3>
-                            <p id="forecast-note" style="font-size:0.75rem; margin-top:10px;"></p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h2 class="title"><i class="fas fa-medal"></i> Achievements</h2>
-                        <div class="badge-grid" id="badge-grid"></div>
-                    </div>
+        
+                <div class="card dash-prs-list-card">
+                    <h3>Personal Records</h3>
+                    <div id="dash-prs-list" class="dash-prs-list-container"></div>
+                </div>
+        
+                <div class="card badge-grid-card">
+                    <h3>Achievements</h3>
+                    <div class="badge-grid" id="badge-grid"></div>
                 </div>
             </div>
         </div>
-
         <!-- ========== WORKOUT SECTION ========== -->
         <div id="workout-section" class="section">
                         <!-- Exercise Deck (visible by default) -->
