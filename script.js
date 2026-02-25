@@ -1274,13 +1274,18 @@ function fetchExerciseImage(exName, imgId, descId) {
 
     const getLargerThumbnail = (url) => url?.replace(/\/(\d+)px-/, '/600px-');
 
+    // Enhanced relevance check: also try without common suffixes
     const isRelevant = (summaryData, exName) => {
         const title = summaryData.title?.toLowerCase() || '';
         const extract = summaryData.extract?.toLowerCase() || '';
         const exLower = exName.toLowerCase();
+        // Remove common words like "exercise", "workout" from exName for matching
+        const exCore = exLower.replace(/\s+(exercise|workout|movement|technique|how to).*$/, '');
         if (title.includes(exLower) || extract.includes(exLower)) return true;
-        const genericWords = ['sport', 'exercise', 'fitness', 'gym', 'workout', 'physical'];
-        return !genericWords.some(word => title.includes(word));
+        if (exCore && (title.includes(exCore) || extract.includes(exCore))) return true;
+        const genericWords = ['sport', 'exercise', 'fitness', 'gym', 'workout', 'physical', 'training'];
+        const isGeneric = genericWords.some(word => title.includes(word));
+        return !isGeneric;
     };
 
     const showFallback = () => {
@@ -1297,81 +1302,95 @@ function fetchExerciseImage(exName, imgId, descId) {
         if (descContainer) descContainer.innerHTML = '';
     };
 
-    const processSummary = (summaryData) => {
-        exerciseInfoCache[exName] = {
-            summary: summaryData,
-            extract: summaryData.extract,
-            thumbnail: summaryData.thumbnail?.source,
-            title: summaryData.title
-        };
-
-        if (!isRelevant(summaryData, exName)) {
+    // Process a list of search results, try them in order until one works
+    const trySearchResults = (titles, index = 0) => {
+        if (index >= titles.length) {
             showFallback();
             return;
         }
+        const title = titles[index];
+        fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
+            .then(res => res.json())
+            .then(summaryData => {
+                exerciseInfoCache[exName] = {
+                    summary: summaryData,
+                    extract: summaryData.extract,
+                    thumbnail: summaryData.thumbnail?.source,
+                    title: summaryData.title
+                };
 
-        let imgUrl = summaryData.thumbnail?.source;
-        if (imgUrl) {
-            imgUrl = getLargerThumbnail(imgUrl) || imgUrl;
-            const img = new Image();
-            const timeout = setTimeout(() => {
-                img.onload = null;
-                img.onerror = null;
-                showFallback();
-            }, 2000); // image load timeout: 2 seconds
+                if (!isRelevant(summaryData, exName)) {
+                    // Try next result
+                    trySearchResults(titles, index + 1);
+                    return;
+                }
 
-            img.onload = () => {
-                clearTimeout(timeout);
-                imgContainer.innerHTML = '';
-                imgContainer.appendChild(img);
-            };
-            img.onerror = () => {
-                clearTimeout(timeout);
-                showFallback();
-            };
-            img.src = imgUrl;
-            img.alt = exName;
-            img.loading = 'lazy';
-        } else {
-            showFallback();
-            return;
-        }
+                let imgUrl = summaryData.thumbnail?.source;
+                if (imgUrl) {
+                    imgUrl = getLargerThumbnail(imgUrl) || imgUrl;
+                    const img = new Image();
+                    const timeout = setTimeout(() => {
+                        img.onload = null;
+                        img.onerror = null;
+                        // If image load times out, try next result
+                        trySearchResults(titles, index + 1);
+                    }, 3000);
+                    img.onload = () => {
+                        clearTimeout(timeout);
+                        imgContainer.innerHTML = '';
+                        imgContainer.appendChild(img);
+                    };
+                    img.onerror = () => {
+                        clearTimeout(timeout);
+                        // If image fails, try next result
+                        trySearchResults(titles, index + 1);
+                    };
+                    img.src = imgUrl;
+                    img.alt = exName;
+                    img.loading = 'lazy';
+                } else {
+                    // No thumbnail, try next result
+                    trySearchResults(titles, index + 1);
+                    return;
+                }
 
-        if (descContainer && summaryData.extract) {
-            let extract = summaryData.extract;
-            const words = extract.split(' ');
-            if (words.length > 30) extract = words.slice(0, 30).join(' ') + '…';
-            descContainer.innerHTML = extract;
-        }
+                if (descContainer && summaryData.extract) {
+                    let extract = summaryData.extract;
+                    const words = extract.split(' ');
+                    if (words.length > 30) {
+                        extract = words.slice(0, 30).join(' ') + '…';
+                    }
+                    descContainer.innerHTML = extract;
+                }
+            })
+            .catch(() => trySearchResults(titles, index + 1));
     };
 
-    // Global timeout for Wikipedia search (2.5 seconds)
-    const globalTimeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Wikipedia search timeout')), 2500)
-    );
+    // Perform searches in parallel, get up to 3 top titles from each
+    const searchPromises = [
+        fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&srlimit=3&format=json&origin=*`)
+            .then(r => r.json())
+            .then(data => data.query?.search?.map(item => item.title) || []),
+        fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&srlimit=3&format=json&origin=*`)
+            .then(r => r.json())
+            .then(data => data.query?.search?.map(item => item.title) || [])
+    ];
 
-    const search1 = fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&format=json&origin=*`).then(r => r.json());
-    const search2 = fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&format=json&origin=*`).then(r => r.json());
+    // Global timeout for search (3 seconds)
+    const timeoutPromise = new Promise(resolve => setTimeout(() => resolve([]), 3000));
 
     Promise.race([
-        Promise.any([search1, search2]), // first successful search
-        globalTimeout
+        Promise.all(searchPromises).then(results => [...new Set([...results[0], ...results[1]])]), // merge and unique
+        timeoutPromise
     ])
-    .then(searchData => {
-        if (searchData.query?.search?.length) {
-            const title = searchData.query.search[0].title;
-            return fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
-                .then(res => res.json())
-                .then(processSummary)
-                .catch(() => showFallback());
-        } else {
+    .then(titles => {
+        if (titles.length === 0) {
             showFallback();
+            return;
         }
+        trySearchResults(titles);
     })
-    .catch(() => {
-        // Timeout or both searches failed
-        showFallback();
-    });
+    .catch(() => showFallback());
 }
 
 function showExerciseDetails(exName, index) {
