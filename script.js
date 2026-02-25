@@ -1256,26 +1256,62 @@ function fetchExerciseImage(exName, imgId, descId) {
     imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
     if (descContainer) descContainer.innerHTML = '';
 
+    // Helper to check if the page is relevant to the exercise
+    const isRelevant = (summaryData, exName) => {
+        const title = summaryData.title?.toLowerCase() || '';
+        const extract = summaryData.extract?.toLowerCase() || '';
+        const exLower = exName.toLowerCase();
+        // If title contains the exercise name OR extract contains it, consider relevant
+        if (title.includes(exLower) || extract.includes(exLower)) return true;
+        // If title contains generic words and no mention of exercise, reject
+        const genericWords = ['sport', 'exercise', 'fitness', 'gym', 'workout', 'physical'];
+        const isGeneric = genericWords.some(word => title.includes(word));
+        return !isGeneric; // if generic, treat as irrelevant
+    };
+
+    // Helper to show fallback buttons
+    const showFallback = () => {
+        imgContainer.innerHTML = `
+            <div class="image-fallback">
+                <button class="fallback-btn web-btn" onclick="googleSearch('${exName.replace(/'/g, "\\'")}', 'web'); event.stopPropagation();">
+                    <i class="fas fa-search"></i> Web
+                </button>
+                <button class="fallback-btn images-btn" onclick="googleSearch('${exName.replace(/'/g, "\\'")}', 'images'); event.stopPropagation();">
+                    <i class="fas fa-image"></i> Images
+                </button>
+            </div>
+        `;
+        if (descContainer) descContainer.innerHTML = '';
+    };
+
     // Helper to process summary data
     const processSummary = (summaryData) => {
         // Store in cache
         exerciseInfoCache[exName] = {
             summary: summaryData,
             extract: summaryData.extract,
-            thumbnail: summaryData.thumbnail?.source
+            thumbnail: summaryData.thumbnail?.source,
+            title: summaryData.title
         };
 
-        // Set image
+        // Check relevance
+        if (!isRelevant(summaryData, exName)) {
+            showFallback();
+            return;
+        }
+
+        // Set image if available
         if (summaryData.thumbnail?.source) {
             imgContainer.innerHTML = `<img src="${summaryData.thumbnail.source}" alt="${exName}" loading="lazy">`;
         } else {
-            imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
+            showFallback();
+            return;
         }
         // Set description (truncated)
         if (descContainer && summaryData.extract) {
             let extract = summaryData.extract;
             const words = extract.split(' ');
-            if (words.length > 30) { // shorter truncation for card
+            if (words.length > 30) {
                 extract = words.slice(0, 30).join(' ') + '…';
             }
             descContainer.innerHTML = extract;
@@ -1283,8 +1319,7 @@ function fetchExerciseImage(exName, imgId, descId) {
     };
 
     const fallback = () => {
-        imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
-        if (descContainer) descContainer.innerHTML = '';
+        showFallback();
         exerciseInfoCache[exName] = { summary: null, extract: null, thumbnail: null };
     };
 
