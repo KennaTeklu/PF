@@ -1284,128 +1284,86 @@ function renderExerciseDeck() {
     addSummaryCard();
 }
 
-function fetchExerciseImage(exName, imgId, descId) {
+async function fetchExerciseImage(exName, imgId, descId) {
     const imgContainer = document.getElementById(imgId);
     const descContainer = descId ? document.getElementById(descId) : null;
-    
-    if (!imgContainer) {
-        console.warn(`Image container #${imgId} not found`);
-        return;
-    }
+    if (!imgContainer) return;
+
+    // 1. Loading state
     imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
     if (descContainer) descContainer.innerHTML = '';
 
+    // Advanced Feature: Convert tiny thumbnails to High-Res
     const getLargerThumbnail = (url) => url?.replace(/\/(\d+)px-/, '/600px-');
 
-    // Enhanced relevance check: also try without common suffixes
-    const isRelevant = (summaryData, exName) => {
-        const title = summaryData.title?.toLowerCase() || '';
-        const extract = summaryData.extract?.toLowerCase() || '';
-        const exLower = exName.toLowerCase();
-        // Remove common words like "exercise", "workout" from exName for matching
-        const exCore = exLower.replace(/\s+(exercise|workout|movement|technique|how to).*$/, '');
-        if (title.includes(exLower) || extract.includes(exLower)) return true;
-        if (exCore && (title.includes(exCore) || extract.includes(exCore))) return true;
-        const genericWords = ['sport', 'exercise', 'fitness', 'gym', 'workout', 'physical', 'training'];
-        const isGeneric = genericWords.some(word => title.includes(word));
-        return !isGeneric;
+    // Advanced Feature: Verify if the page is actually fitness-related
+    const isRelevant = (data, name) => {
+        const text = (data.title + " " + (data.extract || "")).toLowerCase();
+        const fitnessWords = ['exercise', 'workout', 'muscle', 'training', 'lifting', 'bodybuilding', 'movement'];
+        return text.includes(name.toLowerCase()) || fitnessWords.some(kw => text.includes(kw));
     };
 
-    // Show placeholder (dumbbell) – no buttons (they are permanently below)
-    const showPlaceholder = () => {
+    try {
+        // --- STEP 1: THE REST API (The "Something" that works in the simple version) ---
+        // We try this FIRST because it is the most reliable.
+        const restUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(exName)}`;
+        const response = await fetch(restUrl);
+        const data = await response.json();
+
+        // If the REST API found a direct match with an image, use it and STOP.
+        if (data.title && data.thumbnail && data.type !== 'disambiguation') {
+            updateExerciseUI(exName, data, imgContainer, descContainer, getLargerThumbnail);
+            return; 
+        }
+
+        // --- STEP 2: PARALLEL SEARCH (The "Advanced" Backup) ---
+        // We only do this if Step 1 failed. We search for "[Name]" and "[Name] exercise" at once.
+        const searchTerms = [exName, `${exName} exercise`];
+        const searchRequests = searchTerms.map(term => 
+            fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*`)
+            .then(r => r.json())
+        );
+
+        const searchData = await Promise.all(searchRequests);
+        const titles = [...new Set([
+            ...searchData[0].query.search.map(s => s.title),
+            ...searchData[1].query.search.map(s => s.title)
+        ])];
+
+        // Loop through the search results and try to find a valid movement page
+        for (const title of titles) {
+            const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+            const sumData = await sumRes.json();
+
+            if (sumData.thumbnail && isRelevant(sumData, exName)) {
+                updateExerciseUI(exName, sumData, imgContainer, descContainer, getLargerThumbnail);
+                return;
+            }
+        }
+
+        // If nothing was found
         imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
-        if (descContainer) descContainer.innerHTML = '';
-    };
 
-    // Process a list of search results, try them in order until one works
-    const trySearchResults = (titles, index = 0) => {
-        if (index >= titles.length) {
-            showPlaceholder();
-            return;
-        }
-        const title = titles[index];
-        fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
-            .then(res => res.json())
-            .then(summaryData => {
-                exerciseInfoCache[exName] = {
-                    summary: summaryData,
-                    extract: summaryData.extract,
-                    thumbnail: summaryData.thumbnail?.source,
-                    title: summaryData.title
-                };
+    } catch (err) {
+        console.error("Fetch failed", err);
+        imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-image-slash"></i></div>';
+    }
+}
 
-                if (!isRelevant(summaryData, exName)) {
-                    // Try next result
-                    trySearchResults(titles, index + 1);
-                    return;
-                }
+// Helper to keep the main function clean
+function updateExerciseUI(name, data, imgContainer, descContainer, highResFn) {
+    exerciseInfoCache[name] = data; // Save to global cache
 
-                let imgUrl = summaryData.thumbnail?.source;
-                if (imgUrl) {
-                    imgUrl = getLargerThumbnail(imgUrl) || imgUrl;
-                    const img = new Image();
-                    const timeout = setTimeout(() => {
-                        img.onload = null;
-                        img.onerror = null;
-                        // If image load times out, try next result
-                        trySearchResults(titles, index + 1);
-                    }, 3000);
-                    img.onload = () => {
-                        clearTimeout(timeout);
-                        imgContainer.innerHTML = '';
-                        imgContainer.appendChild(img);
-                    };
-                    img.onerror = () => {
-                        clearTimeout(timeout);
-                        // If image fails, try next result
-                        trySearchResults(titles, index + 1);
-                    };
-                    img.src = imgUrl;
-                    img.alt = exName;
-                    img.loading = 'lazy';
-                } else {
-                    // No thumbnail, try next result
-                    trySearchResults(titles, index + 1);
-                    return;
-                }
+    // Set Image
+    const img = new Image();
+    img.onload = () => { imgContainer.innerHTML = ''; imgContainer.appendChild(img); };
+    img.src = highResFn(data.thumbnail.source);
 
-                if (descContainer && summaryData.extract) {
-                    let extract = summaryData.extract;
-                    const words = extract.split(' ');
-                    if (words.length > 30) {
-                        extract = words.slice(0, 30).join(' ') + '…';
-                    }
-                    descContainer.innerHTML = extract;
-                }
-            })
-            .catch(() => trySearchResults(titles, index + 1));
-    };
-
-    // Perform searches in parallel, get up to 3 top titles from each
-    const searchPromises = [
-        fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&srlimit=3&format=json&origin=*`)
-            .then(r => r.json())
-            .then(data => data.query?.search?.map(item => item.title) || []),
-        fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&srlimit=3&format=json&origin=*`)
-            .then(r => r.json())
-            .then(data => data.query?.search?.map(item => item.title) || [])
-    ];
-
-    // Global timeout for search (3 seconds)
-    const timeoutPromise = new Promise(resolve => setTimeout(() => resolve([]), 3000));
-
-    Promise.race([
-        Promise.all(searchPromises).then(results => [...new Set([...results[0], ...results[1]])]), // merge and unique
-        timeoutPromise
-    ])
-    .then(titles => {
-        if (titles.length === 0) {
-            showPlaceholder();
-            return;
-        }
-        trySearchResults(titles);
-    })
-    .catch(() => showPlaceholder());
+    // Set Text (Advanced truncated description)
+    if (descContainer && data.extract) {
+        const words = data.extract.split(' ');
+        descContainer.innerHTML = words.length > 30 ? words.slice(0, 30).join(' ') + '...' : data.extract;
+    }
 }
 
 function showExerciseDetails(exName, index) {
@@ -1629,6 +1587,34 @@ function skipLog() {
         }
     }
     refreshSummaryCard();
+}
+
+function updateExerciseHistory(exercise) {
+    if (!workoutData.exercises[exercise.id]) {
+        workoutData.exercises[exercise.id] = { history: [] };
+    }
+    const avgReps = exercise.actual.reps.reduce((a,b)=>a+b,0)/exercise.actual.reps.length || 0;
+    const volume = exercise.actual.weight * exercise.actual.sets * avgReps;
+    const historyEntry = {
+        date: new Date().toISOString(),
+        weight: exercise.actual.weight,
+        sets: exercise.actual.sets,
+        reps: exercise.actual.reps,
+        rpe: exercise.actual.rpe,
+        volume: volume
+    };
+    workoutData.exercises[exercise.id].history.push(historyEntry);
+    const currentBest = workoutData.exercises[exercise.id].bestWeight || 0;
+    if (exercise.actual.weight > currentBest) {
+        workoutData.exercises[exercise.id].bestWeight = exercise.actual.weight;
+        workoutData.exercises[exercise.id].bestReps = Math.max(...exercise.actual.reps);
+        workoutData.exercises[exercise.id].lastTrained = new Date().toISOString();
+    }
+    exercise.muscleGroup.forEach(muscle => {
+        muscleLastTrained[muscle] = new Date().toISOString();
+    });
+    saveToLocalStorage();
+    updateDashboard();
 }
 
 function calculateWorkoutVolume(workout) {
