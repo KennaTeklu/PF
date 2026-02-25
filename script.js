@@ -1263,7 +1263,9 @@ function renderExerciseDeck() {
 
 function fetchExerciseImage(exName, imgId, descId) {
     const imgContainer = document.getElementById(imgId);
-    const descContainer = document.getElementById(descId);
+    // Only try to get description container if descId is provided
+    const descContainer = descId ? document.getElementById(descId) : null;
+    
     if (!imgContainer) {
         console.warn(`Image container #${imgId} not found`);
         return;
@@ -1271,14 +1273,13 @@ function fetchExerciseImage(exName, imgId, descId) {
     imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
     if (descContainer) descContainer.innerHTML = '';
 
-    // Helper to request a larger thumbnail (increase pixel size)
+    // Helper to request a larger thumbnail
     const getLargerThumbnail = (url) => {
         if (!url) return null;
-        // Replace the pixel size in the URL (e.g., /300px-... -> /600px-...)
         return url.replace(/\/(\d+)px-/, '/600px-');
     };
 
-    // Helper to check relevance (same as before)
+    // Helper to check relevance
     const isRelevant = (summaryData, exName) => {
         const title = summaryData.title?.toLowerCase() || '';
         const extract = summaryData.extract?.toLowerCase() || '';
@@ -1289,7 +1290,7 @@ function fetchExerciseImage(exName, imgId, descId) {
         return !isGeneric;
     };
 
-    // Helper to show fallback buttons
+    // Helper to show fallback buttons (only used when no image)
     const showFallback = () => {
         imgContainer.innerHTML = `
             <div class="image-fallback">
@@ -1306,7 +1307,6 @@ function fetchExerciseImage(exName, imgId, descId) {
 
     // Helper to process summary data
     const processSummary = (summaryData) => {
-        // Store in cache
         exerciseInfoCache[exName] = {
             summary: summaryData,
             extract: summaryData.extract,
@@ -1319,14 +1319,12 @@ function fetchExerciseImage(exName, imgId, descId) {
             return;
         }
 
-        // Get larger thumbnail if available
         let imgUrl = summaryData.thumbnail?.source;
         if (imgUrl) {
             imgUrl = getLargerThumbnail(imgUrl) || imgUrl;
-            // Preload image to ensure it loads before displaying
             const img = new Image();
             img.onload = () => {
-                imgContainer.innerHTML = ''; // clear placeholder
+                imgContainer.innerHTML = '';
                 imgContainer.appendChild(img);
             };
             img.onerror = () => {
@@ -1340,7 +1338,7 @@ function fetchExerciseImage(exName, imgId, descId) {
             return;
         }
 
-        // Set description
+        // Only set description if a description container exists
         if (descContainer && summaryData.extract) {
             let extract = summaryData.extract;
             const words = extract.split(' ');
