@@ -483,6 +483,9 @@ let charts = {};
 let dataChanged = false;          // track any data change for backup reminder
 let currentExerciseIndex = 0;     // for logging drawer
 let notificationTimeout;
+// --- Unsaved changes tracking ---
+let workoutDirty = false;
+let dirtyExercises = new Set();
 
 // ---------- UTILITY FUNCTIONS ----------
 function getAllMuscleGroups() {
@@ -516,6 +519,12 @@ function updateBackupReminder() {
         settingsIcon.classList.remove('critical');
     }
 }
+window.addEventListener('beforeunload', (e) => {
+    if (workoutDirty) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+    }
+});
 
 function showNotification(message, type = "success") {
     const notification = document.getElementById('notification');
@@ -532,6 +541,111 @@ function showNotification(message, type = "success") {
     notificationTimeout = setTimeout(() => {
         notification.classList.remove('show');
     }, 4000);
+}
+
+
+// ---------- DRAFT FUNCTIONS ----------
+function saveDraft() {
+    if (!currentWorkout) return;
+    const draft = {
+        workout: currentWorkout,
+        dirtyIndices: Array.from(dirtyExercises),
+        timestamp: Date.now()
+    };
+    sessionStorage.setItem('workoutDraft', JSON.stringify(draft));
+}
+
+function clearDraft() {
+    sessionStorage.removeItem('workoutDraft');
+}
+
+function restoreDraft() {
+    const draftJson = sessionStorage.getItem('workoutDraft');
+    if (!draftJson) return false;
+    try {
+        const draft = JSON.parse(draftJson);
+        currentWorkout = draft.workout;
+        dirtyExercises = new Set(draft.dirtyIndices);
+        workoutDirty = dirtyExercises.size > 0;
+        updateNavigation();
+        return true;
+    } catch (e) {
+        console.error('Failed to restore draft', e);
+        return false;
+    }
+}
+
+// ---------- CUSTOM UNSAVED MODAL ----------
+function showUnsavedModal(onConfirm, onCancel) {
+    const modal = document.getElementById('unsavedModal');
+    if (!modal) {
+        const modalHtml = `
+            <div class="modal" id="unsavedModal">
+                <div class="modal-content">
+                    <h3>Unsaved Changes</h3>
+                    <p>You have unsaved changes in your workout. Leave anyway?</p>
+                    <div class="btn-group">
+                        <button class="btn btn-danger" id="unsavedConfirm">Yes, leave</button>
+                        <button class="btn btn-outline" id="unsavedCancel">No, stay</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    const modalEl = document.getElementById('unsavedModal');
+    const confirmBtn = document.getElementById('unsavedConfirm');
+    const cancelBtn = document.getElementById('unsavedCancel');
+    
+    const closeHandler = () => {
+        modalEl.classList.remove('active');
+        confirmBtn.removeEventListener('click', confirmHandler);
+        cancelBtn.removeEventListener('click', cancelHandler);
+    };
+    
+    const confirmHandler = () => {
+        closeHandler();
+        if (onConfirm) onConfirm();
+    };
+    
+    const cancelHandler = () => {
+        closeHandler();
+        if (onCancel) onCancel();
+    };
+    
+    confirmBtn.addEventListener('click', confirmHandler);
+    cancelBtn.addEventListener('click', cancelHandler);
+    modalEl.classList.add('active');
+}
+
+// ---------- SWIPE DETECTION ----------
+function attachSwipeListeners(card, index) {
+    let touchstartX = 0;
+    let touchstartY = 0;
+    let touchendX = 0;
+    let touchendY = 0;
+    const threshold = 30;
+    const verticalThreshold = 20;
+
+    const handleTouchStart = (e) => {
+        touchstartX = e.changedTouches[0].screenX;
+        touchstartY = e.changedTouches[0].screenY;
+    };
+
+    const handleTouchEnd = (e) => {
+        touchendX = e.changedTouches[0].screenX;
+        touchendY = e.changedTouches[0].screenY;
+        const deltaX = touchendX - touchstartX;
+        const deltaY = touchendY - touchstartY;
+
+        if (Math.abs(deltaX) > threshold && Math.abs(deltaY) < verticalThreshold) {
+            e.preventDefault();
+            openLogDrawer(index);
+        }
+    };
+
+    card.addEventListener('touchstart', handleTouchStart, { passive: true });
+    card.addEventListener('touchend', handleTouchEnd, { passive: false });
 }
 
 function showLoading(show) {
@@ -758,6 +872,9 @@ function generateNextWorkout() {
     if (pool.length === 0) {
         pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
     }
+
+    // --- Helper: training frequency in last 30 days ---
+
 
     function getTrainingFrequency(muscleName) {
         const cutoff = new Date();
@@ -1115,6 +1232,7 @@ function renderExerciseDeck() {
                 openLogDrawer(index);
             }
         });
+        attachSwipeListeners(card, index);  // <-- NEW
         deck.appendChild(card);
         fetchExerciseImage(ex.name, `img-${index}`);
     });
@@ -1211,6 +1329,29 @@ function openLogDrawer(index) {
     `;
     form.innerHTML = html;
 
+    // --- Mark dirty on any input ---
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.addEventListener('input', () => {
+            dirtyExercises.add(index);
+            workoutDirty = true;
+            saveDraft();
+            updateNavigation();
+        });
+        input.addEventListener('change', () => {
+            dirtyExercises.add(index);
+            workoutDirty = true;
+            saveDraft();
+            updateNavigation();
+        });
+    });
+
+    // Mark dirty just for opening
+    dirtyExercises.add(index);
+    workoutDirty = true;
+    saveDraft();
+    updateNavigation();
+
     document.getElementById('log-drawer').classList.add('active');
 }
 
@@ -1240,17 +1381,28 @@ function saveLog() {
     };
     updateExerciseHistory(exercise);
     dataChanged = true;
+    
+    // --- Clear dirty for this exercise ---
+    dirtyExercises.delete(index);
+    if (dirtyExercises.size === 0) {
+        workoutDirty = false;
+        clearDraft();
+    } else {
+        saveDraft();
+    }
+    updateNavigation();
+    
     closeLogDrawer();
     const nextIndex = index + 1;
     if (nextIndex < currentWorkout.exercises.length) {
         const deck = document.getElementById('exercise-deck');
         if (deck && deck.children[nextIndex]) {
-            deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     } else {
         const deck = document.getElementById('exercise-deck');
         if (deck && deck.lastChild) {
-            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
     refreshSummaryCard();
@@ -1270,18 +1422,29 @@ function skipLog() {
         notes: exercise.actual.notes
     });
     dataChanged = true;
+    
+    // --- Clear dirty for this exercise ---
+    dirtyExercises.delete(index);
+    if (dirtyExercises.size === 0) {
+        workoutDirty = false;
+        clearDraft();
+    } else {
+        saveDraft();
+    }
+    updateNavigation();
+    
     saveToLocalStorage();
     closeLogDrawer();
     const nextIndex = index + 1;
     if (nextIndex < currentWorkout.exercises.length) {
         const deck = document.getElementById('exercise-deck');
         if (deck && deck.children[nextIndex]) {
-            deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     } else {
         const deck = document.getElementById('exercise-deck');
         if (deck && deck.lastChild) {
-            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
     refreshSummaryCard();
@@ -2278,6 +2441,24 @@ function showMainApp() {
 }
 
 function showSection(sectionId) {
+    // If we are currently in workout section and trying to leave, check dirty
+    const currentActive = document.querySelector('.section.active');
+    if (currentActive && currentActive.id === 'workout-section' && sectionId !== 'workout' && workoutDirty) {
+        showUnsavedModal(
+            () => {
+                // Proceed with navigation
+                performSectionChange(sectionId);
+            },
+            () => {
+                // Stay, do nothing
+            }
+        );
+        return;
+    }
+    performSectionChange(sectionId);
+}
+
+function performSectionChange(sectionId) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     const sec = document.getElementById(sectionId + '-section');
     if (sec) sec.classList.add('active');
@@ -2339,6 +2520,15 @@ function updateNavigation() {
         backupBtn.style.backgroundColor = 'var(--danger)';
         backupBtn.style.color = 'white';
         backupBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Export (Backup Old)';
+    }
+        // --- Unsaved indicator on Workout nav link ---
+    const workoutNavItem = Array.from(document.querySelectorAll('.nav-item')).find(n => n.innerText.toLowerCase().includes('workout'));
+    if (workoutNavItem) {
+        if (workoutDirty) {
+            workoutNavItem.classList.add('unsaved');
+        } else {
+            workoutNavItem.classList.remove('unsaved');
+        }
     }
 }
 
@@ -2430,7 +2620,7 @@ function addPeriodButton() {
     }
 }
 
-// ---------- INITIALIZATION ----------
+
 document.addEventListener('DOMContentLoaded', function() {
     const saved = localStorage.getItem('workoutContinuityData');
     if (saved) {
@@ -2446,25 +2636,28 @@ document.addEventListener('DOMContentLoaded', function() {
     loadThemeSettings();
     initializeMuscleTracking();
     if (workoutData.workouts.length > 0) calculateMuscleLastTrained();
-    if (!currentWorkout && workoutData.workouts.length === 0) generateNextWorkout();
+
+    // --- Check for draft ---
+    if (restoreDraft()) {
+        // Ask user if they want to restore
+        showUnsavedModal(
+            () => {
+                // User wants to restore
+                showSection('workout');
+            },
+            () => {
+                // User discards draft
+                clearDraft();
+                dirtyExercises.clear();
+                workoutDirty = false;
+                updateNavigation();
+                if (!currentWorkout && workoutData.workouts.length === 0) generateNextWorkout();
+            }
+        );
+    } else {
+        if (!currentWorkout && workoutData.workouts.length === 0) generateNextWorkout();
+    }
+
     updateNavigation();
     addPeriodButton();
-});
-
-// Auto-add close buttons to all modals
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.modal').forEach(modal => {
-        const modalContent = modal.querySelector('.modal-content');
-        if (!modalContent) return;
-        if (!modalContent.querySelector('.modal-close')) {
-            const closeBtn = document.createElement('span');
-            closeBtn.className = 'modal-close';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.setAttribute('onclick', `closeModal('${modal.id}')`);
-            modalContent.insertBefore(closeBtn, modalContent.firstChild);
-        }
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) this.classList.remove('active');
-        });
-    });
 });
