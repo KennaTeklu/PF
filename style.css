@@ -1971,8 +1971,7 @@ input:checked + .slider:before {
 .modal-content {
     position: relative;
 }
-/* ========== WORKOUT DECK & LOGGING DRAWER ========== */
-
+/* ========== WORKOUT DECK – VERTICAL SNAP ========== */
 .workout-deck-container {
     padding: 15px 0;
 }
@@ -1985,28 +1984,34 @@ input:checked + .slider:before {
 }
 .workout-deck {
     display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 15px;
+    flex-direction: column;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    height: calc(100vh - var(--nav-height) - 120px); /* adjust to your layout */
     padding: 10px 15px;
+    gap: 15px;
+    scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-}
-.workout-deck::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
 }
 
 .exercise-card {
-    flex: 0 0 85vw;
-    scroll-snap-align: center;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+    width: 100%;
     background: white;
     border-radius: 24px;
     padding: 20px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     position: relative;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    box-sizing: border-box;
+    touch-action: pan-y; /* allow vertical scroll, we'll override for horizontal swipes */
 }
+.exercise-card:active {
+    transform: scale(0.99);
+}
+
 .exercise-card .card-image {
     width: 100%;
     height: 160px;
@@ -2023,6 +2028,7 @@ input:checked + .slider:before {
 .exercise-card h3 {
     font-size: 1.3rem;
     margin-bottom: 8px;
+    color: var(--dark);
 }
 .card-prescription {
     font-size: 1rem;
@@ -2062,61 +2068,15 @@ input:checked + .slider:before {
     display: block;
 }
 
-/* Logging Drawer */
-.log-drawer {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 100%;
-    height: 100%;
-    background: white;
-    z-index: 3000;
-    transition: transform 0.3s ease;
-    padding: 30px 20px;
-    box-shadow: -5px 0 20px rgba(0,0,0,0.1);
-    overflow-y: auto;
-}
-.log-drawer.active {
-    transform: translateX(-100%);
-}
-.drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.drawer-header i {
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: var(--gray-600);
-}
-.prescribed-info {
-    background: var(--gray-100);
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-    font-size: 1rem;
-}
-.log-form .form-group {
-    margin-bottom: 20px;
-}
-.drawer-footer {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-}
-.drawer-footer button {
-    flex: 1;
-}
-
-/* Summary Card (appears at end of deck) */
+/* Summary Card (end of deck) */
 .summary-card {
-    flex: 0 0 85vw;
-    scroll-snap-align: center;
+    scroll-snap-align: start;
+    width: 100%;
     background: white;
     border-radius: 24px;
     padding: 25px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    margin-top: 10px;
 }
 .summary-card h3 {
     margin-bottom: 20px;
@@ -2132,6 +2092,27 @@ input:checked + .slider:before {
 }
 .summary-card .btn-group {
     margin-top: 20px;
+}
+
+/* ========== UNSAVED INDICATOR ========== */
+.nav-item.unsaved {
+    position: relative;
+}
+.nav-item.unsaved::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--danger);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 /* Backup reminder pulsing */
