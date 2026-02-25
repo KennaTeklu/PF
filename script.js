@@ -483,6 +483,7 @@ let charts = {};
 let dataChanged = false;          // track any data change for backup reminder
 let currentExerciseIndex = 0;     // for logging drawer
 let notificationTimeout;
+let exerciseInfoCache = {}; // stores { summary, extract, thumbnail } per exercise name
 // --- Unsaved changes tracking ---
 let workoutDirty = false;
 let dirtyExercises = new Set();
@@ -1222,40 +1223,130 @@ function renderExerciseDeck() {
                 </div>
             </div>
             <div class="card-image" id="img-${index}"></div>
-            <h3>${ex.name}</h3>
+            <h3>${ex.name}
+                <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index})" title="More info">
+                    <i class="fas fa-info-circle"></i>
+                </span>
+            </h3>
             <div class="card-prescription">
                 <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
             </div>
+            <p class="exercise-description" id="desc-${index}"></p>
         `;
         card.addEventListener('click', (e) => {
-            if (!e.target.closest('.card-menu')) {
+            if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon')) {
                 openLogDrawer(index);
             }
         });
-        attachSwipeListeners(card, index);  // <-- NEW
+        attachSwipeListeners(card, index);
         deck.appendChild(card);
-        fetchExerciseImage(ex.name, `img-${index}`);
+        fetchExerciseImage(ex.name, `img-${index}`, `desc-${index}`);
     });
 
     addSummaryCard();
 }
 
-function fetchExerciseImage(exName, imgId) {
-    const container = document.getElementById(imgId);
-    if (!container) return;
-    container.innerHTML = '<div class="placeholder shimmer"></div>';
-    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(exName)}`)
+function fetchExerciseImage(exName, imgId, descId) {
+    const imgContainer = document.getElementById(imgId);
+    const descContainer = document.getElementById(descId);
+    if (!imgContainer) {
+        console.warn(`Image container #${imgId} not found`);
+        return;
+    }
+    imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
+    if (descContainer) descContainer.innerHTML = '';
+
+    // Helper to process summary data
+    const processSummary = (summaryData) => {
+        // Store in cache
+        exerciseInfoCache[exName] = {
+            summary: summaryData,
+            extract: summaryData.extract,
+            thumbnail: summaryData.thumbnail?.source
+        };
+
+        // Set image
+        if (summaryData.thumbnail?.source) {
+            imgContainer.innerHTML = `<img src="${summaryData.thumbnail.source}" alt="${exName}" loading="lazy">`;
+        } else {
+            imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
+        }
+        // Set description (truncated)
+        if (descContainer && summaryData.extract) {
+            let extract = summaryData.extract;
+            const words = extract.split(' ');
+            if (words.length > 30) { // shorter truncation for card
+                extract = words.slice(0, 30).join(' ') + '…';
+            }
+            descContainer.innerHTML = extract;
+        }
+    };
+
+    const fallback = () => {
+        imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
+        if (descContainer) descContainer.innerHTML = '';
+        exerciseInfoCache[exName] = { summary: null, extract: null, thumbnail: null };
+    };
+
+    // First, try searching with "exercise" appended
+    fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&format=json&origin=*`)
         .then(res => res.json())
-        .then(data => {
-            if (data.thumbnail && data.thumbnail.source) {
-                container.innerHTML = `<img src="${data.thumbnail.source}" alt="${exName}" loading="lazy">`;
+        .then(searchData => {
+            if (searchData.query?.search?.length) {
+                const title = searchData.query.search[0].title;
+                return fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
+                    .then(res => res.json())
+                    .then(processSummary)
+                    .catch(() => fallback());
             } else {
-                container.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
+                // No results with "exercise", try without it
+                return fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&format=json&origin=*`)
+                    .then(res => res.json())
+                    .then(secondSearch => {
+                        if (secondSearch.query?.search?.length) {
+                            const title = secondSearch.query.search[0].title;
+                            return fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`)
+                                .then(res => res.json())
+                                .then(processSummary)
+                                .catch(() => fallback());
+                        } else {
+                            fallback();
+                        }
+                    });
             }
         })
-        .catch(() => {
-            container.innerHTML = '<div class="placeholder"><i class="fas fa-image-slash"></i></div>';
-        });
+        .catch(() => fallback());
+}
+
+function showExerciseDetails(exName, index) {
+    const cache = exerciseInfoCache[exName];
+    const extract = cache?.extract || 'No description available.';
+    const pageUrl = cache?.summary?.content_urls?.desktop?.page || '';
+    
+    // Use the existing exerciseSearchModal, but repurpose it
+    const modal = document.getElementById('exerciseSearchModal');
+    const title = document.getElementById('exerciseSearchTitle');
+    const body = document.getElementById('exerciseSearchBody');
+    
+    title.textContent = exName;
+    
+    // Build content similar to old search modal
+    let html = `
+        <div class="summary-content">
+            <p>${extract}</p>
+            ${pageUrl ? `<p><a href="${pageUrl}" target="_blank">📖 Read full article on Wikipedia</a></p>` : ''}
+        </div>
+        <div class="feedback-bar" style="margin-top:20px; border-top:1px solid var(--gray-200); padding-top:15px; display:flex; gap:10px; justify-content:space-between;">
+            <button class="like-btn" onclick="closeModal('exerciseSearchModal')"><span>👍</span> Helpful</button>
+            <div class="dislike-group" style="display:flex; gap:10px;">
+                <button class="search-fallback-btn google" onclick="googleSearch('${exName.replace(/'/g, "\\'")}', 'web')"><span>🔍</span> Web</button>
+                <button class="search-fallback-btn images" onclick="googleSearch('${exName.replace(/'/g, "\\'")}', 'images')"><span>📷</span> Images</button>
+            </div>
+        </div>
+    `;
+    
+    body.innerHTML = html;
+    modal.classList.add('active');
 }
 
 function addSummaryCard() {
