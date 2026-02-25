@@ -1221,16 +1221,19 @@ function renderExerciseDeck() {
     deck.innerHTML = '';
 
     if (!currentWorkout || !currentWorkout.exercises.length) {
-        deck.innerHTML = '<div class="empty-state">No workout scheduled. Generate one.</div>';
+        deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
         return;
     }
 
     currentWorkout.exercises.forEach((ex, index) => {
         const card = document.createElement('div');
         card.className = 'exercise-card';
-        card.dataset.index = index;
+        card.dataset.index = index; // Preserved
         const safeName = ex.name.replace(/'/g, "\\'");
         const repsInfo = typeof ex.prescribed.reps === 'string' ? ex.prescribed.reps : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
+        
+        const isDone = ex.actual && !ex.skipped;
+
         card.innerHTML = `
             <div class="card-menu">
                 <i class="fas fa-ellipsis-v"></i>
@@ -1240,26 +1243,28 @@ function renderExerciseDeck() {
                 </div>
             </div>
             <div class="card-image" id="img-${index}"></div>
-            <h3>${ex.name}
-                <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index}); event.stopPropagation();" title="More info">
-                    <i class="fas fa-info-circle"></i>
-                </span>
-            </h3>
-            <div class="card-prescription">
-                <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
-            </div>
-            <p class="exercise-description" id="desc-${index}"></p>
-            <div class="card-actions">
-                <button class="action-btn web-btn" onclick="googleSearch('${safeName}', 'web'); event.stopPropagation();">
-                    <i class="fas fa-search"></i> Web
-                </button>
-                <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
-                    <i class="fas fa-image"></i> Images
-                </button>
+            <div class="exercise-card-content">
+                <h3>${ex.name} ${isDone ? '✅' : ''}
+                    <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index}); event.stopPropagation();" title="More info">
+                        <i class="fas fa-info-circle"></i>
+                    </span>
+                </h3>
+                <div class="card-prescription">
+                    <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
+                </div>
+                <p class="exercise-description" id="desc-${index}"></p>
+                <div class="card-actions">
+                    <button class="action-btn web-btn" onclick="googleSearch('${safeName}', 'web'); event.stopPropagation();">
+                        <i class="fas fa-search"></i> Web
+                    </button>
+                    <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
+                        <i class="fas fa-image"></i> Images
+                    </button>
+                </div>
             </div>
         `;
 
-        // --- Three-dot menu click handler ---
+        // --- Logic Preservation: Three-dot menu popup ---
         const menu = card.querySelector('.card-menu');
         const popup = menu.querySelector('.menu-popup');
         menu.addEventListener('click', (e) => {
@@ -1267,30 +1272,24 @@ function renderExerciseDeck() {
             popup.classList.toggle('show');
         });
 
-        // Close popup when clicking elsewhere
         document.addEventListener('click', function closePopup(e) {
-            if (!card.contains(e.target)) {
-                popup.classList.remove('show');
-            }
+            if (!card.contains(e.target)) popup.classList.remove('show');
         });
 
-        // Prevent card click when clicking on info icon or action buttons
-        card.querySelectorAll('.info-icon, .action-btn').forEach(el => {
-            el.addEventListener('click', (e) => e.stopPropagation());
-        });
-
+        // --- Logic Preservation: Main click to open Log Drawer ---
         card.addEventListener('click', (e) => {
+            // Only open if they didn't click a button or menu
             if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
                 openLogDrawer(index);
             }
         });
 
-        attachSwipeListeners(card, index);
+        attachSwipeListeners(card, index); // Preserved
         deck.appendChild(card);
         fetchExerciseImage(ex.name, `img-${index}`, `desc-${index}`);
     });
 
-    addSummaryCard();
+    addSummaryCard(); // Preserved
 }
 
 async function fetchExerciseImage(exName, imgId, descId) {
@@ -2117,7 +2116,9 @@ function loadExerciseLibrary() {
     
     let html = '';
     const exercises = Object.entries(ultimateExerciseLibrary);
-    document.getElementById('library-count').innerText = exercises.length;
+    
+    const countEl = document.getElementById('library-count');
+    if (countEl) countEl.innerText = exercises.length;
 
     exercises.forEach(([id, ex]) => {
         const pr = workoutData.exercises[id]?.bestWeight;
@@ -2129,16 +2130,31 @@ function loadExerciseLibrary() {
                         ${ex.muscles.map(m => `<span class="library-muscle-tag">${getMuscleDisplayName(m)}</span>`).join('')}
                     </div>
                     <h3>${ex.name}</h3>
-                    ${pr ? `<div class="pr-badge">PR: ${pr} lbs</div>` : ''}
+                    ${pr ? `<div class="pr-badge" style="background:var(--warning); color:white; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:800; display:inline-block; margin-top:8px;">PR: ${pr} lbs</div>` : ''}
                 </div>
             </div>
         `;
     });
     container.innerHTML = html;
     
-    // Trigger image loading
     exercises.forEach(([id, ex]) => {
         fetchExerciseImage(ex.name, `lib-img-${id}`);
+    });
+}
+
+function filterLibrary() {
+    const input = document.getElementById('librarySearchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('.library-exercise-card');
+    
+    cards.forEach(card => {
+        const name = card.querySelector('h3').innerText.toLowerCase();
+        const muscles = card.querySelector('.library-muscle-tags').innerText.toLowerCase();
+        
+        if (name.includes(input) || muscles.includes(input)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
     });
 }
 
