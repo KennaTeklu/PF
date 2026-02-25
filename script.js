@@ -6,6 +6,10 @@
 // - Calves only appear in legs_day (fixed)
 // - "Start Today" button on dashboard
 // - Mobile-first navigation categories
+// - ULTIMATE ACCESSORY SELECTION (mathematically optimized, physician & powerlifter approved)
+// - Swipeable workout deck with auto‑loading images
+// - Side‑drawer logging
+// - Backup reminder (pulsing Settings cog)
 
 // ---------- GLOBAL DATA STRUCTURES ----------
 let workoutData = {
@@ -102,9 +106,6 @@ const muscleDatabase = {
 };
 
 // ==================== EXERCISE COMPENDIUM DATA ====================
-// This replaces the previous placeholder ultimateExerciseLibrary.
-// Organized by muscle group as per the provided tables.
-
 const exerciseCompendium = [
     {
         group: "Quadriceps",
@@ -203,7 +204,6 @@ const exerciseCompendium = [
     {
         group: "Back (Lats, Rhomboids, Traps, Rear Delts)",
         exercises: [
-            // Lats
             { equipment: "Barbell", name: "Bent‑Over Row", setsReps: "3×8–12", progression: "Add 5–10 lbs", notes: "Overhand, underhand" },
             { equipment: "Barbell", name: "Pendlay Row", setsReps: "3×6–10", progression: "Add 5 lbs", notes: "Explosive from floor" },
             { equipment: "Barbell", name: "T‑Bar Row", setsReps: "3×8–12", progression: "Add 10 lbs", notes: "Chest supported" },
@@ -219,13 +219,11 @@ const exerciseCompendium = [
             { equipment: "Kettlebell", name: "Kettlebell Row", setsReps: "3×12 each", progression: "Heavier bell", notes: "Renegade rows" },
             { equipment: "Specialty", name: "Meadows Row", setsReps: "3×8–12", progression: "Add weight", notes: "Unique angle with T‑bar" },
             { equipment: "Specialty", name: "Rack Pull", setsReps: "3×5–8", progression: "Add weight", notes: "Heavy partial ROM" },
-            // Rhomboids & Rear Delts
             { equipment: "Cable", name: "Face Pull", setsReps: "3×15–20", progression: "Increase weight", notes: "External rotation at end" },
             { equipment: "Dumbbell", name: "Bent‑Over Reverse Fly", setsReps: "3×15", progression: "Heavier DB", notes: "Seated or standing" },
             { equipment: "Machine", name: "Reverse Pec Deck", setsReps: "3×15", progression: "Add weight", notes: "Elbows slightly bent" },
             { equipment: "Band", name: "Band Pull‑Apart", setsReps: "3×20", progression: "Thicker band", notes: "Vary grip width" },
             { equipment: "Bodyweight", name: "YTWL (lying on incline)", setsReps: "3×10 each", progression: "Hold longer", notes: "Use light weights" },
-            // Traps
             { equipment: "Barbell", name: "Barbell Shrug", setsReps: "3×12–15", progression: "Add 10 lbs", notes: "Behind back" },
             { equipment: "Barbell", name: "Power Shrug (from hang)", setsReps: "3×6–10", progression: "Add weight", notes: "Explosive" },
             { equipment: "Dumbbell", name: "Dumbbell Shrug", setsReps: "3×12–15", progression: "Heavier DB", notes: "Rotating at top" },
@@ -237,7 +235,6 @@ const exerciseCompendium = [
     {
         group: "Shoulders (Deltoids)",
         exercises: [
-            // Anterior Delts
             { equipment: "Barbell", name: "Overhead Press (strict)", setsReps: "3–5×5", progression: "Add 2.5 lbs", notes: "Seated or standing" },
             { equipment: "Barbell", name: "Push Press", setsReps: "3×6–10", progression: "Add 5 lbs", notes: "Use legs" },
             { equipment: "Dumbbell", name: "Seated Dumbbell Press", setsReps: "3×8–12", progression: "Heavier DB", notes: "Neutral grip" },
@@ -247,14 +244,12 @@ const exerciseCompendium = [
             { equipment: "Bodyweight", name: "Pike Push‑up", setsReps: "3×10–15", progression: "Add reps", notes: "Against wall or free" },
             { equipment: "Kettlebell", name: "Kettlebell Press", setsReps: "3×10 each", progression: "Heavier bell", notes: "Single or double" },
             { equipment: "Specialty", name: "Landmine Press", setsReps: "3×10–12", progression: "Add weight", notes: "Single arm, rotational" },
-            // Lateral Delts
             { equipment: "Dumbbell", name: "Dumbbell Lateral Raise", setsReps: "3×15–20", progression: "Add 2.5 lbs", notes: "Seated, standing, leaning" },
             { equipment: "Cable", name: "Cable Lateral Raise", setsReps: "3×15", progression: "Increase weight", notes: "Low pulley" },
             { equipment: "Machine", name: "Lateral Raise Machine", setsReps: "3×15", progression: "Add weight", notes: "Leaning or upright" },
             { equipment: "Cable", name: "One‑Arm Cable Lateral Raise", setsReps: "3×15 each", progression: "Increase weight", notes: "Handle attached" },
             { equipment: "Bodyweight", name: "Side Lying Raise (no weight)", setsReps: "3×20", progression: "Add reps", notes: "" },
             { equipment: "Band", name: "Banded Lateral Walk", setsReps: "3×20 steps", progression: "Thicker band", notes: "Monster walks" },
-            // Posterior Delts (see also Rhomboids)
             { equipment: "Dumbbell", name: "Bent‑Over Lateral Raise", setsReps: "3×15", progression: "Heavier DB", notes: "Seated or standing" },
             { equipment: "Cable", name: "Cable Face Pull (low pulley)", setsReps: "3×15", progression: "Increase weight", notes: "High pulley for different angle" },
             { equipment: "Machine", name: "Reverse Pec Deck", setsReps: "3×15", progression: "Add weight", notes: "" },
@@ -264,7 +259,6 @@ const exerciseCompendium = [
     {
         group: "Arms",
         exercises: [
-            // Biceps
             { equipment: "Barbell", name: "Barbell Curl", setsReps: "3×8–12", progression: "Add 2.5 lbs", notes: "Wide, close grip" },
             { equipment: "Barbell", name: "EZ‑Bar Curl", setsReps: "3×8–12", progression: "Add 2.5 lbs", notes: "Reduces wrist strain" },
             { equipment: "Dumbbell", name: "Dumbbell Curl", setsReps: "3×10–15", progression: "Heavier DB", notes: "Alternating, hammer, cross‑body" },
@@ -277,7 +271,6 @@ const exerciseCompendium = [
             { equipment: "Bodyweight", name: "Chin‑up (underhand)", setsReps: "3×AMRAP", progression: "Add weight", notes: "Biceps focus" },
             { equipment: "Bodyweight", name: "Ring Curl", setsReps: "3×10", progression: "Increase difficulty", notes: "Unstable" },
             { equipment: "Kettlebell", name: "Kettlebell Curl", setsReps: "3×12 each", progression: "Heavier bell", notes: "Hammer style" },
-            // Triceps
             { equipment: "Barbell", name: "Close‑Grip Bench Press", setsReps: "3×8–12", progression: "Add 5 lbs", notes: "Elbows tucked" },
             { equipment: "Barbell", name: "Skull Crusher (French Press)", setsReps: "3×10–12", progression: "Add 2.5 lbs", notes: "EZ‑bar or straight bar" },
             { equipment: "Dumbbell", name: "Overhead Dumbbell Extension", setsReps: "3×12–15", progression: "Heavier DB", notes: "Single or double" },
@@ -290,7 +283,6 @@ const exerciseCompendium = [
             { equipment: "Bodyweight", name: "Dips (triceps focus)", setsReps: "3×10–20", progression: "Add weight", notes: "Upright torso" },
             { equipment: "Bodyweight", name: "Diamond Push‑up", setsReps: "3×15", progression: "Add reps", notes: "Hands together" },
             { equipment: "Kettlebell", name: "Kettlebell Overhead Extension", setsReps: "3×12", progression: "Heavier bell", notes: "Single arm" },
-            // Forearms
             { equipment: "Barbell", name: "Wrist Curl (palms up)", setsReps: "3×15–20", progression: "Add 2.5 lbs", notes: "Over bench" },
             { equipment: "Barbell", name: "Reverse Wrist Curl (palms down)", setsReps: "3×15–20", progression: "Add 2.5 lbs", notes: "Over bench" },
             { equipment: "Dumbbell", name: "Dumbbell Wrist Curl", setsReps: "3×15", progression: "Heavier DB", notes: "Seated" },
@@ -399,15 +391,12 @@ exerciseCompendium.forEach(group => {
     group.exercises.forEach(ex => {
         if (ex.name && ex.equipment && ex.equipment !== "Phase/Gender Notes") {
             const id = ex.name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-            // map muscles roughly – we'll need to assign appropriate muscle groups
-            // For simplicity, assign to the group name converted to muscle ID
             let muscleId = group.group.toLowerCase().replace(/[^a-z]+/g, '_');
-            if (muscleId === 'back_lats_rhomboids_traps_rear_delts') muscleId = 'back'; // simplify
+            if (muscleId === 'back_lats_rhomboids_traps_rear_delts') muscleId = 'back';
             if (muscleId === 'shoulders_deltoids') muscleId = 'shoulders';
-            if (muscleId === 'arms') muscleId = 'biceps'; // rough
+            if (muscleId === 'arms') muscleId = 'biceps';
             if (muscleId === 'core_abdominals_&_obliques') muscleId = 'core';
             if (muscleId === 'hips_&_adductors_abductors') muscleId = 'adductors';
-
             ultimateExerciseLibrary[id] = {
                 name: ex.name,
                 muscles: [muscleId],
@@ -415,14 +404,13 @@ exerciseCompendium.forEach(group => {
                 defaultSets: parseInt(ex.setsReps) || 3,
                 defaultReps: ex.setsReps.replace(/^\d+–?\d*×/, '') || '8-12',
                 progression: ex.progression,
-                instructions: [ex.notes] // use notes as instruction
+                instructions: [ex.notes]
             };
         }
     });
 });
 
 // ---------- WORKOUT PROGRAM SPLITS ----------
-// Note: "calves" is only in legs_day focus
 const workoutProgram = {
     splits: [
         { id: "full_body_a", name: "Full Body A (Strength)", focus: ["quads","chest","back","shoulders"], restAfter: 2 },
@@ -538,7 +526,6 @@ function showNotification(message, type = "success") {
     notification.style.borderLeftColor = colors[type] || colors.success;
     notification.querySelector('i').className = `fas ${icons[type] || icons.success}`;
     
-    // Clear any existing timeout to prevent overlapping
     if (notificationTimeout) clearTimeout(notificationTimeout);
     
     notification.classList.add('show');
@@ -602,14 +589,11 @@ function getPhaseMultiplier(phase) {
 
 // ---------- NEW: SYSTEMIC FATIGUE FACTOR ----------
 function getSystemicFatigueMultiplier() {
-    // Count workouts in last 7 days
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - 7);
     const recentWorkouts = workoutData.workouts.filter(w => new Date(w.date) > cutoff).length;
-    // Quadratic penalty: more workouts = longer recovery needed
-    // Base 1.0, then increase by 0.05 * (workouts^1.5)
     let fatigue = 1.0 + 0.05 * Math.pow(recentWorkouts, 1.5);
-    return Math.min(fatigue, 2.0); // cap at 2x rest days
+    return Math.min(fatigue, 2.0);
 }
 
 function getEffectiveRestDays(muscle) {
@@ -618,7 +602,6 @@ function getEffectiveRestDays(muscle) {
     return Math.round(base * fatigueMult);
 }
 
-// Override daysSinceTrained to use effective rest days for status
 function getRecoveryStatus(muscle) {
     const last = muscleLastTrained[muscle.name];
     if (!last) return { pct: 0, status: 'Not trained', statusClass: 'status-not-ready', daysText: 'Never' };
@@ -666,7 +649,6 @@ function getInjuryRiskFactor() {
 // ---------- EXERCISE GENERATION ----------
 function generateExerciseFromLibrary(muscleGroup) {
     if (!ultimateExerciseLibrary) return null;
-    // Find exercises that target this muscle group (rough mapping)
     const candidates = Object.values(ultimateExerciseLibrary).filter(ex => 
         ex.muscles && ex.muscles.includes(muscleGroup)
     );
@@ -690,7 +672,6 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     let prescribedWeight = null;
     let notes = "";
     
-    // Apply deload if rolling RPE > 8.5
     const avgRPE = getRollingRPEAverage();
     const deloadMultiplier = (avgRPE !== null && avgRPE > 8.5) ? 0.8 : 1.0;
     
@@ -739,13 +720,9 @@ function generateNextWorkout() {
         type: split.id,
         name: split.name,
         exercises: []
-    if (document.getElementById('workout-section').classList.contains('active')) {
-        renderExerciseDeck();
-    }
     };
 
-    // --- ULTIMATE ACCESSORY SELECTION (Mathematically Optimized, Physician & Powerlifter Approved) ---
-    // Define which muscle categories are relevant for each split
+    // --- ULTIMATE ACCESSORY SELECTION ---
     let allowedCategories = [];
     switch (split.id) {
         case 'full_body_a':
@@ -768,7 +745,6 @@ function generateNextWorkout() {
             allowedCategories = ['major', 'longevity'];
     }
 
-    // Build pool of muscle objects (with all properties)
     let pool = [];
     allowedCategories.forEach(cat => {
         if (cat === 'major') pool.push(...muscleDatabase.major);
@@ -777,15 +753,12 @@ function generateNextWorkout() {
         if (cat === 'feet') pool.push(...muscleDatabase.feet);
     });
 
-    // Remove muscles already in the split's focus
     pool = pool.filter(m => !split.focus.includes(m.name));
 
-    // Fallback if pool becomes empty (shouldn't happen)
     if (pool.length === 0) {
         pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
     }
 
-    // --- Helper: training frequency in last 30 days ---
     function getTrainingFrequency(muscleName) {
         const cutoff = new Date();
         cutoff.setDate(cutoff.getDate() - 30);
@@ -802,7 +775,6 @@ function generateNextWorkout() {
         return count;
     }
 
-    // --- Helper: recent injury check ---
     function hasRecentInjury(muscleName) {
         return workoutData.injuries?.some(inj => 
             inj.note?.toLowerCase().includes(muscleName) && 
@@ -810,28 +782,25 @@ function generateNextWorkout() {
         ) || false;
     }
 
-    // --- Global physiological factors (enhanced with gender, experience, age) ---
-    // CNS fatigue – from last 3 workouts' average RPE
+    // --- Global physiological factors ---
     let cnsFatigue = 1.0;
     const last3 = workoutData.workouts.slice(-3);
     if (last3.length >= 3) {
         const avgRPE = last3.reduce((sum, w) => sum + (w.summary?.averageRPE || 0), 0) / last3.length;
-        cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5))); // sigmoid: 1.0 at RPE 7, 0.7 at RPE 10
+        cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
     }
 
-    // Sleep factor (if sleep logs exist)
     let sleepFactor = 1.0;
     const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
     if (sleepLogs.length >= 3) {
         const avgSleep = sleepLogs.reduce((sum, s) => sum + parseFloat(s.value), 0) / sleepLogs.length;
-        sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8)); // 8h = 1.0, 5h = 0.625
+        sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
     }
 
-    // Hormonal factor (if female and cycle tracked)
     let hormonalFactor = 1.0;
-    const phase = getCurrentCyclePhase?.() || null;
-    if (phase) {
-        switch(phase) {
+    const phaseCycle = getCurrentCyclePhase?.() || null;
+    if (phaseCycle) {
+        switch(phaseCycle) {
             case 'menstrual': hormonalFactor = 0.8; break;
             case 'follicular': hormonalFactor = 1.1; break;
             case 'ovulatory': hormonalFactor = 1.0; break;
@@ -839,75 +808,61 @@ function generateNextWorkout() {
         }
     }
 
-    // Gender factor (small baseline difference based on physiological reasoning)
     let genderFactor = 1.0;
     if (workoutData.user.gender === 'female') {
-        genderFactor = 1.02; // +2% recovery
+        genderFactor = 1.02;
     } else if (workoutData.user.gender === 'male') {
-        genderFactor = 0.98; // -2% recovery
+        genderFactor = 0.98;
     }
 
-    // Experience factor (beginners recover faster, advanced slower)
     let experienceFactor = 1.0;
     const exp = workoutData.user.experience || 'intermediate';
     if (exp === 'beginner') {
-        experienceFactor = 1.1; // +10% recovery
+        experienceFactor = 1.1;
     } else if (exp === 'advanced') {
-        experienceFactor = 0.9; // -10% recovery
+        experienceFactor = 0.9;
     }
 
-    // Age factor (continuous linear decline after 20)
     let ageFactor = 1.0;
     if (workoutData.user.birthDate) {
         const birthYear = new Date(workoutData.user.birthDate).getFullYear();
         const currentYear = new Date().getFullYear();
         const age = currentYear - birthYear;
         if (age > 20) {
-            ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20)); // -0.5% per year, floor 0.7
+            ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
         }
     }
 
-    // Baseline recovery capacity (long‑term traits)
     const baselineRecovery = genderFactor * experienceFactor * ageFactor;
-
-    // Combined global recovery modifier (includes all systemic factors)
     const globalRecovery = Math.max(0.3, Math.min(1.0, 
         cnsFatigue * sleepFactor * hormonalFactor * baselineRecovery
     ));
 
-    // --- Score each muscle with advanced multi‑factor model ---
     const now = new Date();
     const scores = pool.map(m => {
         const last = muscleLastTrained[m.name];
         const daysSince = last ? (now - new Date(last)) / (1000 * 60 * 60 * 24) : Infinity;
         const effectiveRest = getEffectiveRestDays?.(m) || m.restDays || 2;
 
-        // 1. Local muscle recovery (sigmoid around 1.0)
         const readinessRatio = daysSince / effectiveRest;
         const k = 3;
         const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
-
-        // 2. Apply global recovery
         let adjustedRecovery = localRecovery * globalRecovery;
 
-        // 3. Frequency penalty (exponential decay)
         const freq = getTrainingFrequency(m.name);
         const freqFactor = Math.exp(-freq / 3);
 
-        // 4. Aging risk urgency (for longevity muscles)
         let riskFactor = 1.0;
         if (m.agingRisk === 'high' && m.category === 'longevity') {
             const urgency = Math.min(2, 1 + (daysSince / 14));
             riskFactor = urgency;
         }
 
-        // 5. Connective tissue factor (tendons heal slower)
         let tendonFactor = 1.0;
         if (['quads', 'hamstrings', 'chest', 'biceps', 'triceps', 'calves'].includes(m.name)) {
             tendonFactor = 0.95;
         }
 
-        // 6. Goal alignment
         const userGoal = workoutData.user.goal || 'balanced';
         let goalFactor = 1.0;
         if (userGoal === 'strength' || userGoal === 'powerlifting') {
@@ -921,46 +876,33 @@ function generateNextWorkout() {
             if (m.category === 'major') goalFactor = 1.3;
         }
 
-        // 7. Injury penalty
         const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
-
-        // 8. Novelty boost (never trained)
         const noveltyBoost = !last ? 0.5 : 0.0;
 
-        // 9. COVERAGE URGENCY – ensures every muscle eventually gets trained
-        const targetRest = effectiveRest * 1.5; // allow a buffer
+        const targetRest = effectiveRest * 1.5;
         let coverageUrgency = 1.0;
         if (last) {
-            // Quadratic boost: (daysSince / targetRest)^2, capped at 3
             coverageUrgency = Math.min(3, Math.pow(daysSince / targetRest, 2));
         } else {
-            coverageUrgency = 3; // never trained → high urgency
+            coverageUrgency = 3;
         }
 
-        // Combine all factors multiplicatively, add novelty, and apply small random noise
         let score = adjustedRecovery * freqFactor * riskFactor * goalFactor * injuryFactor * tendonFactor * coverageUrgency 
                     + noveltyBoost + (Math.random() * 0.2 - 0.1);
-
         return { muscle: m, score: Math.max(0, score) };
     });
 
-    // Sort by score descending
     scores.sort((a, b) => b.score - a.score);
 
-    // Select 2-4 muscles using softmax‑weighted randomness (for variety)
-    const numAccessory = Math.min(scores.length, Math.floor(Math.random() * 3) + 2); // 2-4
-
-    // Softmax conversion
+    const numAccessory = Math.min(scores.length, Math.floor(Math.random() * 3) + 2);
     const expScores = scores.map(s => Math.exp(s.score));
     const sumExp = expScores.reduce((a, b) => a + b, 0);
     const probs = expScores.map(e => e / sumExp);
 
-    // Weighted random selection without replacement
     const selected = [];
     const indices = Array.from({ length: scores.length }, (_, i) => i);
     for (let i = 0; i < numAccessory; i++) {
         if (indices.length === 0) break;
-        // Build cumulative probabilities over remaining indices
         let cum = 0;
         const cumProbs = indices.map(idx => {
             cum += probs[idx];
@@ -969,22 +911,25 @@ function generateNextWorkout() {
         const rand = Math.random() * cum;
         const chosenIdx = indices.find((_, j) => rand <= cumProbs[j]);
         selected.push(scores[chosenIdx].muscle.name);
-        // Remove chosen index
         const pos = indices.indexOf(chosenIdx);
         indices.splice(pos, 1);
     }
 
     const accessoryMuscles = selected;
-
-    // Combine focus muscles with accessory muscles (remove duplicates)
     const allMuscles = [...new Set([...split.focus, ...accessoryMuscles])];
 
-    // Generate exercises for each muscle
     allMuscles.forEach(mg => {
         const ex = generateExerciseFromLibrary(mg);
         if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, mult));
     });
 
+    updateDashboard();
+    showNotification(`Workout generated: ${currentWorkout.name}`);
+    
+    if (document.getElementById('workout-section').classList.contains('active')) {
+        renderExerciseDeck();
+    }
+}
 
 // ---------- DASHBOARD UPDATE ----------
 function calculateStreak() {
@@ -1021,7 +966,6 @@ function calculateVolumeDays(days) {
 }
 
 function updateDashboard() {
-    // Update stats
     document.getElementById('statWorkouts').innerText = workoutData.workouts.length;
     const streak = calculateStreak();
     document.getElementById('statStreak').innerText = streak;
@@ -1029,31 +973,21 @@ function updateDashboard() {
     const progress = Math.min(100, Math.floor((workoutData.workouts.length / 20) * 100));
     document.getElementById('statProgress').innerText = progress + '%';
 
-    // ACWR
     const last7 = calculateVolumeDays(7);
     const last28 = calculateVolumeDays(28) / 4;
     const acwr = last28 > 0 ? (last7 / last28).toFixed(1) : "1.0";
     document.getElementById('dash-acwr').innerText = acwr;
 
-    // Longevity score
     document.getElementById('longevityScore').innerText = calculateLongevityScore().score;
-
-    // Tendon Guard / Injury Risk
     document.getElementById('risk-val').innerText = getInjuryRiskFactor();
 
-    // Calendar, PRs, projection, badges
     renderActivityCalendar();
     renderDashPRs();
     updateProjection();
     renderBadges();
-
-    // Update navigation
     updateNavigation();
-
-    // Dashboard chart
     updateDashboardChart();
 
-    // Next workout info
     if (currentWorkout) {
         document.getElementById('dashboardWorkoutInfo').innerHTML = `
             <div class="workout-meta">
@@ -1068,8 +1002,6 @@ function updateDashboard() {
         document.getElementById('dashboardWorkoutInfo').innerHTML = '<p>No workout scheduled. Generate one below.</p>';
         document.getElementById('dashboardNextWorkout').innerText = 'No workout';
     }
-
-    // Update longevity score display
     updateLongevityScoreDisplay();
 }
 
@@ -1143,171 +1075,159 @@ function updateDashboardChart() {
                 fill: true
             }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } }
-        }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     });
 }
 
-// ---------- WORKOUT SECTION ----------
-function updateTodaysWorkout() {
-    const container = document.getElementById('exerciseList');
-    container.innerHTML = '';
-    if (!currentWorkout || !currentWorkout.exercises) {
-        container.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled</h3><p>Generate a workout first.</p></div>';
+// ---------- WORKOUT DECK RENDERING (NEW) ----------
+function renderExerciseDeck() {
+    const deck = document.getElementById('exercise-deck');
+    if (!deck) return;
+    deck.innerHTML = '';
+
+    if (!currentWorkout || !currentWorkout.exercises.length) {
+        deck.innerHTML = '<div class="empty-state">No workout scheduled. Generate one.</div>';
         return;
     }
-    currentWorkout.exercises.forEach((exercise, index) => {
-        container.appendChild(createExerciseElement(exercise, index));
-    });
-    document.getElementById('workoutType').innerText = currentWorkout.name;
-    const split = workoutProgram.splits.find(s => s.id === currentWorkout.type);
-    document.getElementById('workoutFocus').innerText = split ? split.focus.join(', ') : 'Strength';
-    document.getElementById('workoutTime').innerText = '60 min';
-    document.getElementById('workoutIntensity').innerText = 'Moderate';
-}
 
-function createExerciseElement(exercise, index) {
-    const div = document.createElement('div');
-    div.className = 'exercise-item';
-    div.id = `exercise_${index}`;
-    const muscles = exercise.muscleGroup.map(m => `<span class="muscle-tag">${getMuscleDisplayName(m)}</span>`).join('');
-    const repsInfo = typeof exercise.prescribed.reps === 'string' ? exercise.prescribed.reps : `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
-    const instructions = exercise.instructions || ["No instructions available."];
-    const instructionsList = instructions.map(i => `<li>${i}</li>`).join('');
-    const safeName = exercise.name.replace(/'/g, "\\'");
-
-    div.innerHTML = `
-        <div class="exercise-header" onclick="togglePerformanceLogging(${index})">
-            <div>
-                <div class="exercise-title">
-                    <i class="fas fa-dumbbell"></i> ${exercise.name}
-                    <span class="search-icon" onclick="event.stopPropagation(); showExerciseSearch('${safeName}');" title="Search Wikipedia/Google" style="cursor:pointer; margin-left:8px; color:var(--info);">
-                        <i class="fas fa-search"></i>
-                    </span>
+    currentWorkout.exercises.forEach((ex, index) => {
+        const card = document.createElement('div');
+        card.className = 'exercise-card';
+        card.dataset.index = index;
+        const safeName = ex.name.replace(/'/g, "\\'");
+        const repsInfo = typeof ex.prescribed.reps === 'string' ? ex.prescribed.reps : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
+        card.innerHTML = `
+            <div class="card-menu">
+                <i class="fas fa-ellipsis-v"></i>
+                <div class="menu-popup">
+                    <div onclick="shareExercise('${safeName}')">Share</div>
+                    <div onclick="showAnatomy('${safeName}')">Anatomy</div>
                 </div>
-                <div class="exercise-muscles">${muscles}</div>
             </div>
-            <div><i class="fas fa-chevron-down"></i></div>
-        </div>
-        <div class="exercise-controls">
-            <button class="exercise-btn show-instructions-btn" onclick="toggleInstructions(${index})">
-                <i class="fas fa-info-circle"></i> Show Instructions
-            </button>
-        </div>
-        <div class="exercise-instructions" id="instructions_${index}">
-            <div class="instructions-title"><i class="fas fa-graduation-cap"></i> How to Perform</div>
-            <div class="instructions-content"><ul>${instructionsList}</ul></div>
-        </div>
-        <div class="exercise-prescription">
-            <div class="prescription-title"><i class="fas fa-bullseye"></i> Today's Prescription</div>
-            <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-                <div>
-                    <div style="font-size:1.5rem; font-weight:800; color:var(--accent);">${exercise.prescribed.weight || '?'} lbs</div>
-                    <div>${exercise.prescribed.sets} sets × ${repsInfo}</div>
-                </div>
-                <div style="font-size:0.9rem; color:var(--gray-600); max-width:200px; margin-top:10px;">${exercise.progressionNotes}</div>
-            </div>
-            <div class="sets-reps-grid" id="setsGrid_${index}"></div>
-        </div>
-        <div class="performance-logging" id="performance_${index}">
-            <h4 style="margin-bottom:15px;"><i class="fas fa-edit"></i> Log Performance</h4>
-            <div class="performance-form" id="performanceForm_${index}"></div>
-            <div class="btn-group">
-                <button class="btn btn-success" onclick="saveExercisePerformance(${index})"><i class="fas fa-save"></i> Save</button>
-                <button class="btn" onclick="skipExercise(${index})"><i class="fas fa-forward"></i> Skip</button>
-            </div>
-        </div>
-    `;
-    setTimeout(() => {
-        updateSetsGrid(index, exercise);
-        createPerformanceForm(index, exercise);
-    }, 10);
-    return div;
-}
-
-function toggleInstructions(index) {
-    const inst = document.getElementById(`instructions_${index}`);
-    inst.classList.toggle('active');
-}
-
-function togglePerformanceLogging(index) {
-    const logging = document.getElementById(`performance_${index}`);
-    logging.classList.toggle('active');
-}
-
-function updateSetsGrid(index, exercise) {
-    const grid = document.getElementById(`setsGrid_${index}`);
-    if (!grid) return;
-    grid.innerHTML = '';
-    for (let i = 0; i < exercise.prescribed.sets; i++) {
-        grid.innerHTML += `
-            <div class="set-item">
-                <div class="set-number">Set ${i+1}</div>
-                <div style="margin-top:5px;">${exercise.prescribed.reps} reps</div>
+            <div class="card-image" id="img-${index}"></div>
+            <h3>${ex.name}</h3>
+            <div class="card-prescription">
+                <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
             </div>
         `;
-    }
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.card-menu')) {
+                openLogDrawer(index);
+            }
+        });
+        deck.appendChild(card);
+        fetchExerciseImage(ex.name, `img-${index}`);
+    });
+
+    addSummaryCard();
 }
 
-function createPerformanceForm(index, exercise) {
-    const form = document.getElementById(`performanceForm_${index}`);
-    if (!form) return;
+function fetchExerciseImage(exName, imgId) {
+    const container = document.getElementById(imgId);
+    if (!container) return;
+    container.innerHTML = '<div class="placeholder shimmer"></div>';
+    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(exName)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.thumbnail && data.thumbnail.source) {
+                container.innerHTML = `<img src="${data.thumbnail.source}" alt="${exName}" loading="lazy">`;
+            } else {
+                container.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
+            }
+        })
+        .catch(() => {
+            container.innerHTML = '<div class="placeholder"><i class="fas fa-image-slash"></i></div>';
+        });
+}
+
+function addSummaryCard() {
+    const deck = document.getElementById('exercise-deck');
+    if (!deck) return;
+    const completedCount = currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length;
+    const skippedCount = currentWorkout.exercises.filter(ex => ex.skipped).length;
+    const total = currentWorkout.exercises.length;
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'summary-card';
+    summaryDiv.innerHTML = `
+        <h3>Workout Summary</h3>
+        <div class="summary-stats">
+            <p>✅ Completed: ${completedCount}</p>
+            <p>⏭️ Skipped: ${skippedCount}</p>
+            <p>📊 Progress: ${Math.round((completedCount/total)*100)}%</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="completeWorkout()">Complete Workout</button>
+            <button class="btn btn-outline" onclick="generateNextWorkout()">Generate New</button>
+        </div>
+    `;
+    deck.appendChild(summaryDiv);
+}
+
+// ---------- LOGGING DRAWER ----------
+function openLogDrawer(index) {
+    currentExerciseIndex = index;
+    const exercise = currentWorkout.exercises[index];
+    if (!exercise) return;
+
+    document.getElementById('log-exercise-name').innerText = exercise.name;
+    const repsInfo = typeof exercise.prescribed.reps === 'string' ? exercise.prescribed.reps : `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
+    document.getElementById('log-prescribed').innerHTML = `
+        <strong>Prescribed:</strong> ${exercise.prescribed.weight} lbs · ${exercise.prescribed.sets} × ${repsInfo}
+    `;
+
+    const form = document.getElementById('log-form');
     let html = `
         <div class="form-group">
-            <label>Weight Used (lbs)</label>
-            <input type="number" id="weight_${index}" value="${exercise.prescribed.weight || ''}">
+            <label>Weight used (lbs)</label>
+            <input type="number" id="log-weight" value="${exercise.prescribed.weight || ''}">
         </div>
         <div class="form-group">
-            <label>Sets Completed</label>
-            <select id="sets_${index}">
+            <label>Sets completed</label>
+            <select id="log-sets">
                 ${Array.from({length: exercise.prescribed.sets+1}, (_, i) => `<option value="${i}" ${i===exercise.prescribed.sets?'selected':''}>${i}</option>`).join('')}
             </select>
         </div>
     `;
     for (let i = 0; i < exercise.prescribed.sets; i++) {
         html += `
-            <div class="form-group" id="repsGroup_${index}_${i}">
-                <label>Set ${i+1} Reps</label>
-                <input type="number" id="reps_${index}_${i}" placeholder="Actual reps">
+            <div class="form-group">
+                <label>Set ${i+1} reps</label>
+                <input type="number" id="log-rep-${i}" placeholder="Actual reps">
             </div>
         `;
     }
     html += `
         <div class="form-group">
             <label>RPE (1-10)</label>
-            <select id="rpe_${index}">
+            <select id="log-rpe">
                 <option value="">Select RPE</option>
-                ${Array.from({length:10}, (_, i) => `<option value="${10-i}">${10-i} - ${getRpeDescription(10-i)}</option>`).join('')}
+                ${Array.from({length:10}, (_, i) => `<option value="${10-i}">${10-i}</option>`).join('')}
             </select>
         </div>
         <div class="form-group">
             <label>Notes</label>
-            <textarea id="notes_${index}" placeholder="How did it feel?"></textarea>
+            <textarea id="log-notes" placeholder="How did it feel?"></textarea>
         </div>
     `;
     form.innerHTML = html;
+
+    document.getElementById('log-drawer').classList.add('active');
 }
 
-function getRpeDescription(rpe) {
-    const desc = {10:"Max effort",9:"Very hard",8:"Hard",7:"Moderately hard",6:"Moderate",5:"Somewhat easy",4:"Easy",3:"Very easy",2:"Easy",1:"Very easy"};
-    return desc[rpe] || "";
+function closeLogDrawer() {
+    document.getElementById('log-drawer').classList.remove('active');
 }
 
-function saveExercisePerformance(index) {
-    // Haptic feedback
-    if (navigator.vibrate) navigator.vibrate(50);
-    
+function saveLog() {
+    const index = currentExerciseIndex;
     const exercise = currentWorkout.exercises[index];
-    const weight = parseFloat(document.getElementById(`weight_${index}`).value);
-    const sets = parseInt(document.getElementById(`sets_${index}`).value);
-    const rpe = parseInt(document.getElementById(`rpe_${index}`).value);
-    const notes = document.getElementById(`notes_${index}`).value;
+    const weight = parseFloat(document.getElementById('log-weight').value);
+    const sets = parseInt(document.getElementById('log-sets').value);
+    const rpe = parseInt(document.getElementById('log-rpe').value);
+    const notes = document.getElementById('log-notes').value;
     const reps = [];
     for (let i = 0; i < sets; i++) {
-        const repInput = document.getElementById(`reps_${index}_${i}`);
+        const repInput = document.getElementById(`log-rep-${i}`);
         if (repInput && repInput.value) reps.push(parseInt(repInput.value));
     }
     if (!weight || sets === 0) {
@@ -1319,76 +1239,73 @@ function saveExercisePerformance(index) {
         completed: new Date().toISOString()
     };
     updateExerciseHistory(exercise);
-    togglePerformanceLogging(index);
-    showNotification(`${exercise.name} saved!`);
+    dataChanged = true;
+    closeLogDrawer();
+    const nextIndex = index + 1;
+    if (nextIndex < currentWorkout.exercises.length) {
+        const deck = document.getElementById('exercise-deck');
+        if (deck && deck.children[nextIndex]) {
+            deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    } else {
+        const deck = document.getElementById('exercise-deck');
+        if (deck && deck.lastChild) {
+            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    }
+    refreshSummaryCard();
 }
 
-function skipExercise(index) {
+function skipLog() {
+    const index = currentExerciseIndex;
     const exercise = currentWorkout.exercises[index];
     exercise.skipped = true;
-    exercise.actual = { skipped: true, notes: document.getElementById(`notes_${index}`)?.value || "Skipped" };
-    togglePerformanceLogging(index);
-    showNotification(`${exercise.name} skipped`);
-}
-
-function updateExerciseHistory(exercise) {
+    exercise.actual = { skipped: true, notes: document.getElementById('log-notes')?.value || "Skipped" };
     if (!workoutData.exercises[exercise.id]) {
         workoutData.exercises[exercise.id] = { history: [] };
     }
-    const avgReps = exercise.actual.reps.reduce((a,b)=>a+b,0)/exercise.actual.reps.length || 0;
-    const volume = exercise.actual.weight * exercise.actual.sets * avgReps;
-    const historyEntry = {
+    workoutData.exercises[exercise.id].history.push({
         date: new Date().toISOString(),
-        weight: exercise.actual.weight,
-        sets: exercise.actual.sets,
-        reps: exercise.actual.reps,
-        rpe: exercise.actual.rpe,
-        volume: volume
-    };
-    workoutData.exercises[exercise.id].history.push(historyEntry);
-    const currentBest = workoutData.exercises[exercise.id].bestWeight || 0;
-    if (exercise.actual.weight > currentBest) {
-        workoutData.exercises[exercise.id].bestWeight = exercise.actual.weight;
-        workoutData.exercises[exercise.id].bestReps = Math.max(...exercise.actual.reps);
-        workoutData.exercises[exercise.id].lastTrained = new Date().toISOString();
-    }
-    exercise.muscleGroup.forEach(muscle => {
-        muscleLastTrained[muscle] = new Date().toISOString();
+        skipped: true,
+        notes: exercise.actual.notes
     });
+    dataChanged = true;
     saveToLocalStorage();
-    updateDashboard();
-}
-
-function completeWorkout() {
-    if (!currentWorkout) { alert("No workout to complete"); return; }
-    const unlogged = currentWorkout.exercises.filter(ex => !ex.actual && !ex.skipped);
-    if (unlogged.length > 0 && !confirm(`You have ${unlogged.length} unlogged exercises. Complete anyway?`)) return;
-    workoutData.workouts.push(currentWorkout);
-    currentWorkout.summary = {
-        totalVolume: calculateWorkoutVolume(currentWorkout),
-        averageRPE: calculateAverageRPE(currentWorkout),
-        completedExercises: currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length
-    };
-    saveToLocalStorage();
-    generateNextWorkout();
-    showNotification(`Workout completed!`);
-    showSection('dashboard');
-}
-
-function calculateWorkoutVolume(workout) {
-    return workout.exercises.reduce((total, ex) => {
-        if (ex.actual && !ex.skipped) {
-            const avgReps = ex.actual.reps.reduce((a,b)=>a+b,0)/ex.actual.reps.length || 0;
-            return total + ex.actual.weight * ex.actual.sets * avgReps;
+    closeLogDrawer();
+    const nextIndex = index + 1;
+    if (nextIndex < currentWorkout.exercises.length) {
+        const deck = document.getElementById('exercise-deck');
+        if (deck && deck.children[nextIndex]) {
+            deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
-        return total;
-    }, 0);
+    } else {
+        const deck = document.getElementById('exercise-deck');
+        if (deck && deck.lastChild) {
+            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    }
+    refreshSummaryCard();
 }
 
-function calculateAverageRPE(workout) {
-    const rpes = workout.exercises.filter(ex => ex.actual?.rpe).map(ex => ex.actual.rpe);
-    if (rpes.length === 0) return null;
-    return (rpes.reduce((a,b)=>a+b,0) / rpes.length).toFixed(1);
+function refreshSummaryCard() {
+    const deck = document.getElementById('exercise-deck');
+    if (deck && deck.lastChild && deck.lastChild.classList.contains('summary-card')) {
+        deck.removeChild(deck.lastChild);
+    }
+    addSummaryCard();
+}
+
+function shareExercise(name) {
+    if (navigator.share) {
+        navigator.share({ title: 'Exercise', text: name });
+    } else {
+        navigator.clipboard.writeText(name);
+        showNotification('Exercise name copied!');
+    }
+}
+
+function showAnatomy(name) {
+    showSection('library');
 }
 
 // ---------- HISTORY SECTION ----------
@@ -1539,7 +1456,7 @@ function updateRPEChart() {
     });
 }
 
-// ---------- RECOVERY SECTION (updated with systemic fatigue) ----------
+// ---------- RECOVERY SECTION ----------
 function updateRecoverySection() {
     calculateMuscleLastTrained();
     updateCategoryRecovery('majorMuscleRecovery', muscleDatabase.major);
@@ -1737,12 +1654,12 @@ function generateLongevityWorkout() {
         const ex = generateExerciseFromLibrary(mg);
         if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, 1.0));
     });
-    updateTodaysWorkout();
+    renderExerciseDeck();
     showSection('workout');
     showNotification("Longevity workout generated!");
 }
 
-// ---------- EXERCISE LIBRARY ----------
+// ---------- EXERCISE LIBRARY (with images) ----------
 function loadExerciseLibrary() {
     const container = document.querySelector('#exercise-library-section .exercise-library-container');
     if (!container) return;
@@ -1751,6 +1668,7 @@ function loadExerciseLibrary() {
         const pr = workoutData.exercises[id]?.bestWeight;
         html += `
             <div class="exercise-card" onclick="showExerciseSearch('${ex.name.replace(/'/g,"\\'")}')">
+                <div class="card-image" id="lib-img-${id}"></div>
                 <h3>${ex.name}</h3>
                 <div class="muscle-tags">${ex.muscles.map(m => `<span class="muscle-tag">${getMuscleDisplayName(m)}</span>`).join('')}</div>
                 <p><small>${ex.equipment}</small></p>
@@ -1759,6 +1677,9 @@ function loadExerciseLibrary() {
         `;
     });
     container.innerHTML = html;
+    Object.keys(ultimateExerciseLibrary).forEach(id => {
+        fetchExerciseImage(ultimateExerciseLibrary[id].name, `lib-img-${id}`);
+    });
 }
 
 // ---------- PERSONAL RECORDS ----------
@@ -1806,6 +1727,7 @@ function addGoal() {
     const date = document.getElementById('goal-date')?.value;
     if (!type || !target) { alert("Please fill in goal type and target"); return; }
     workoutData.goals.push({ type, target, deadline: date, progress: 0 });
+    dataChanged = true;
     saveToLocalStorage();
     showNotification("Goal added!");
     closeModal('goalModal');
@@ -2046,7 +1968,7 @@ function loadEventGoals() {
     if (!container) return;
     const score = calculateLongevityScore().score;
     const streak = calculateStreak();
-    const growth = streak > 5 ? 42 : 15; // placeholder
+    const growth = streak > 5 ? 42 : 15;
     container.innerHTML = `
         <div class="projection-box">
             <h3>2030 Projection</h3>
@@ -2066,6 +1988,7 @@ function logSleep() {
     if (!hrs) { alert("Please enter hours"); return; }
     if (!workoutData.user.sleepLogs) workoutData.user.sleepLogs = [];
     workoutData.user.sleepLogs.push({ date: new Date().toISOString(), value: hrs });
+    dataChanged = true;
     saveToLocalStorage();
     showNotification("Sleep logged!");
     document.getElementById('sleep-hours').value = '';
@@ -2076,6 +1999,7 @@ function logWeight() {
     if (!w) { alert("Please enter weight"); return; }
     if (!workoutData.user.weightHistory) workoutData.user.weightHistory = [];
     workoutData.user.weightHistory.push({ date: new Date().toISOString(), value: w });
+    dataChanged = true;
     saveToLocalStorage();
     showNotification("Weight updated!");
     document.getElementById('body-weight').value = '';
@@ -2086,6 +2010,7 @@ function logInjury() {
     const note = document.getElementById('injury-note').value;
     if (!note) { alert("Please enter a note"); return; }
     workoutData.injuries.push({ date: new Date().toISOString(), level: pain, note });
+    dataChanged = true;
     saveToLocalStorage();
     showNotification("Health status updated.");
     document.getElementById('injury-note').value = '';
@@ -2122,6 +2047,7 @@ function saveSettings() {
         theme: localStorage.getItem('workoutTheme') || 'blue',
         darkMode: localStorage.getItem('workoutDarkMode') === 'true'
     };
+    dataChanged = true;
     saveToLocalStorage();
     updateNavigation();
     showNotification("Settings saved!");
@@ -2211,7 +2137,6 @@ function processImport() {
         reader.onload = e => {
             try {
                 const data = JSON.parse(e.target.result);
-                // Timestamp conflict resolution
                 if (data.lastExport && workoutData.lastExport && new Date(data.lastExport) > new Date(workoutData.lastExport)) {
                     if (confirm("Imported data is newer than current data. Replace?")) {
                         loadData(data);
@@ -2283,6 +2208,8 @@ function exportWorkoutData() {
     link.href = uri;
     link.download = `workout-data-${new Date().toISOString().split('T')[0]}.json`;
     link.click();
+    dataChanged = false;
+    updateBackupReminder();
     showNotification("Data exported!");
 }
 
@@ -2300,7 +2227,7 @@ function loadData(data) {
     if (!currentWorkout && workoutData.workouts.length === 0) generateNextWorkout();
 }
 
-// ---------- NEW: LOAD COMPENDIUM ----------
+// ---------- LOAD COMPENDIUM ----------
 function loadCompendium() {
     const container = document.getElementById('compendium-container');
     if (!container) return;
@@ -2321,7 +2248,7 @@ function loadCompendium() {
     container.innerHTML = html;
 }
 
-// ---------- NEW: LOAD FEATURE STATUS ----------
+// ---------- LOAD FEATURE STATUS ----------
 function loadFeatureStatus() {
     const container = document.getElementById('status-table-container');
     if (!container) return;
@@ -2362,10 +2289,9 @@ function showSection(sectionId) {
 
     if (window.innerWidth <= 1100) document.getElementById('navMenu').classList.remove('active');
 
-    // Load section-specific data
     switch(sectionId) {
         case 'dashboard': updateDashboard(); break;
-        case 'workout': updateTodaysWorkout(); break;
+        case 'workout': renderExerciseDeck(); break;
         case 'history': updateWorkoutHistory(); break;
         case 'progress': updateProgressCharts(); break;
         case 'recovery': updateRecoverySection(); break;
@@ -2387,7 +2313,6 @@ function showSection(sectionId) {
         case 'compendium': loadCompendium(); break;
         case 'status': loadFeatureStatus(); break;
         case 'settings': loadSettingsForm(); break;
-        // health section uses simple HTML, no load needed
     }
 }
 
@@ -2407,7 +2332,6 @@ function updateNavigation() {
     document.getElementById('welcomeStreak').innerText = streak;
     document.getElementById('welcomeLevel').innerText = exp.charAt(0).toUpperCase()+exp.slice(1);
     
-    // Backup reminder (red if lastExport > 7 days)
     const lastExport = new Date(workoutData.lastExport || workoutData.user.created);
     const daysSinceExport = Math.floor((new Date() - lastExport) / (1000*60*60*24));
     const backupBtn = document.querySelector('[onclick="exportWorkoutData()"]');
@@ -2493,6 +2417,7 @@ function savePeriodData() {
         workoutData.user.menstrual.lastPeriodStart = lastDate;
         workoutData.user.menstrual.cycleLength = parseInt(cycleLen) || 28;
         workoutData.user.menstrual.symptoms.push({ date: new Date().toISOString(), notes: symptoms });
+        dataChanged = true;
         saveToLocalStorage();
         closeModal('periodModal');
         showNotification('Period data saved.');
