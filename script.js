@@ -1233,6 +1233,21 @@ function renderExerciseDeck() {
             </div>
             <p class="exercise-description" id="desc-${index}"></p>
         `;
+
+        // --- Prevent card click when clicking on the three-dot menu ---
+        const menu = card.querySelector('.card-menu');
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop event from reaching the card
+        });
+
+        // Also stop propagation on menu popup items (Share and Anatomy)
+        const popupItems = card.querySelectorAll('.menu-popup div');
+        popupItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stop event from reaching the card
+            });
+        });
+
         card.addEventListener('click', (e) => {
             if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon')) {
                 openLogDrawer(index);
