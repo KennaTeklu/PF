@@ -1660,14 +1660,7 @@ input:checked + .slider:before {
     display: grid;
     gap: 20px;
 }
-.summary-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+
 .summary-actions {
     display: flex;
     gap: 10px;
@@ -2017,10 +2010,14 @@ input:checked + .slider:before {
     overflow-y: auto;
     scroll-snap-type: y mandatory;
     height: calc(100vh - var(--nav-height) - 120px);
-    padding: 10px 15px;
-    gap: 15px;
+    padding: 0;
+    gap: 0;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* hide scrollbar for cleaner look */
+}
+.workout-deck::-webkit-scrollbar {
+    display: none;
 }
 
 /* ========== LOGGING DRAWER ========== */
@@ -2205,6 +2202,9 @@ input:checked + .slider:before {
     padding: 25px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .summary-card h3 {
     margin-bottom: 20px;
