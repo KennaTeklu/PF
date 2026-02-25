@@ -1149,11 +1149,40 @@ input:checked + .slider:before {
     margin-bottom: 10px;
     font-size: 1.2rem;
 }
+.exercise-card h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.info-icon {
+    font-size: 1.2rem;
+    color: var(--info);
+    cursor: pointer;
+    margin-left: 8px;
+    transition: color 0.2s;
+}
+.info-icon:hover {
+    color: var(--primary-dark);
+}
 .exercise-card .muscle-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
     margin: 10px 0;
+}
+
+.exercise-description {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    margin-top: 8px;
+    line-height: 1.4;
+    max-height: 3.6em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
 }
 .exercise-card .pr-badge {
     background: var(--warning);
