@@ -823,6 +823,15 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
 
 // ---------- WORKOUT GENERATION ----------
 function generateNextWorkout() {
+    if (workoutDirty) {
+        const confirmDiscard = confirm("You have unsaved logs in this workout. Discard them and generate a new session?");
+        if (!confirmDiscard) return;
+    }
+
+    workoutDirty = false;
+    dirtyExercises.clear();
+    clearDraft();
+    
     const splits = workoutProgram.splits;
     const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
     let split;
@@ -2103,24 +2112,33 @@ function generateLongevityWorkout() {
 
 // ---------- EXERCISE LIBRARY (with images) ----------
 function loadExerciseLibrary() {
-    const container = document.querySelector('#exercise-library-section .exercise-library-container');
+    const container = document.getElementById('exercise-library-container');
     if (!container) return;
+    
     let html = '';
-    Object.entries(ultimateExerciseLibrary).forEach(([id, ex]) => {
+    const exercises = Object.entries(ultimateExerciseLibrary);
+    document.getElementById('library-count').innerText = exercises.length;
+
+    exercises.forEach(([id, ex]) => {
         const pr = workoutData.exercises[id]?.bestWeight;
         html += `
-            <div class="exercise-card" onclick="showExerciseSearch('${ex.name.replace(/'/g,"\\'")}')">
-                <div class="card-image" id="lib-img-${id}"></div>
-                <h3>${ex.name}</h3>
-                <div class="muscle-tags">${ex.muscles.map(m => `<span class="muscle-tag">${getMuscleDisplayName(m)}</span>`).join('')}</div>
-                <p><small>${ex.equipment}</small></p>
-                ${pr ? `<span class="pr-badge">PR: ${pr} lbs</span>` : ''}
+            <div class="library-exercise-card" onclick="showExerciseSearch('${ex.name.replace(/'/g,"\\'")}')">
+                <div class="library-card-image" id="lib-img-${id}"></div>
+                <div class="library-card-info">
+                    <div class="library-muscle-tags">
+                        ${ex.muscles.map(m => `<span class="library-muscle-tag">${getMuscleDisplayName(m)}</span>`).join('')}
+                    </div>
+                    <h3>${ex.name}</h3>
+                    ${pr ? `<div class="pr-badge">PR: ${pr} lbs</div>` : ''}
+                </div>
             </div>
         `;
     });
     container.innerHTML = html;
-    Object.keys(ultimateExerciseLibrary).forEach(id => {
-        fetchExerciseImage(ultimateExerciseLibrary[id].name, `lib-img-${id}`);
+    
+    // Trigger image loading
+    exercises.forEach(([id, ex]) => {
+        fetchExerciseImage(ex.name, `lib-img-${id}`);
     });
 }
 
