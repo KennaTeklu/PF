@@ -155,7 +155,8 @@
                     <h3><i class="fas fa-play"></i> Next Session</h3>
                     <div id="dashboardWorkoutInfo" class="dashboard-workout-info-summary"></div>
                     <div class="dashboard-next-workout-date-pill" id="dashboardNextWorkout">No workout</div>
-                    <button class="btn-start-today-workout" onclick="if(currentWorkout) showSection('workout'); else { generateNextWorkout(); showSection('workout'); }">
+                    <!-- In dashboard-section -->
+                    <button class="btn-start-today-workout" onclick="if(!currentWorkout) generateNextWorkout(); showSection('workout');">
                         START TODAY
                     </button>
                 </div>
