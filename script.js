@@ -1292,69 +1292,49 @@ function renderExerciseDeck() {
     addSummaryCard(); // Preserved
 }
 
-async function fetchExerciseImage(exName, imgId, descId) {
-    const imgContainer = document.getElementById(imgId);
-    const descContainer = descId ? document.getElementById(descId) : null;
-    if (!imgContainer) return;
-
-    // 1. Loading state
-    imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
-    if (descContainer) descContainer.innerHTML = '';
-
-    // Advanced Feature: Convert tiny thumbnails to High-Res
-    const getLargerThumbnail = (url) => url?.replace(/\/(\d+)px-/, '/600px-');
-
-    // Advanced Feature: Verify if the page is actually fitness-related
-    const isRelevant = (data, name) => {
-        const text = (data.title + " " + (data.extract || "")).toLowerCase();
-        const fitnessWords = ['exercise', 'workout', 'muscle', 'training', 'lifting', 'bodybuilding', 'movement'];
-        return text.includes(name.toLowerCase()) || fitnessWords.some(kw => text.includes(kw));
-    };
+async function fetchExerciseImage(exName, imgId) {
+    const container = document.getElementById(imgId);
+    if (!container) return;
 
     try {
-        // --- STEP 1: THE REST API (The "Something" that works in the simple version) ---
-        // We try this FIRST because it is the most reliable.
-        const restUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(exName)}`;
-        const response = await fetch(restUrl);
-        const data = await response.json();
+        // Step 1: Find relevant file on Wikipedia/Commons
+        const search = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + " exercise")}&format=json&origin=*`).then(r => r.json());
+        if (!search.query.search.length) return;
 
-        // If the REST API found a direct match with an image, use it and STOP.
-        if (data.title && data.thumbnail && data.type !== 'disambiguation') {
-            updateExerciseUI(exName, data, imgContainer, descContainer, getLargerThumbnail);
-            return; 
-        }
+        const title = search.query.search[0].title;
+        const pageData = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`).then(r => r.json());
+        
+        if (!pageData.originalimage) throw new Error("No image");
 
-        // --- STEP 2: PARALLEL SEARCH (The "Advanced" Backup) ---
-        // We only do this if Step 1 failed. We search for "[Name]" and "[Name] exercise" at once.
-        const searchTerms = [exName, `${exName} exercise`];
-        const searchRequests = searchTerms.map(term => 
-            fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(term)}&format=json&origin=*`)
-            .then(r => r.json())
-        );
+        // Step 2: Extract Filename for Metadata Lookup
+        const fileName = pageData.originalimage.source.split('/').pop().replace('File:', '');
+        const metaUrl = `https://commons.wikimedia.org/w/api.php?action=query&titles=File:${fileName}&prop=imageinfo&iiprop=extmetadata|url&format=json&origin=*`;
+        const metaRes = await fetch(metaUrl).then(r => r.json());
+        const pages = metaRes.query.pages;
+        const meta = pages[Object.keys(pages)[0]].imageinfo[0].extmetadata;
 
-        const searchData = await Promise.all(searchRequests);
-        const titles = [...new Set([
-            ...searchData[0].query.search.map(s => s.title),
-            ...searchData[1].query.search.map(s => s.title)
-        ])];
+        // Step 3: Parse Metadata (Author, License, Links)
+        const author = meta.Artist ? meta.Artist.value : "Wikimedia Contributor";
+        const license = meta.LicenseShortName ? meta.LicenseShortName.value : "CC BY-SA";
+        const licenseUrl = meta.LicenseUrl ? meta.LicenseUrl.value : "https://creativecommons.org/licenses/by-sa/4.0/";
+        const fileUrl = `https://commons.wikimedia.org/wiki/File:${fileName}`;
 
-        // Loop through the search results and try to find a valid movement page
-        for (const title of titles) {
-            const sumRes = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
-            const sumData = await sumRes.json();
-
-            if (sumData.thumbnail && isRelevant(sumData, exName)) {
-                updateExerciseUI(exName, sumData, imgContainer, descContainer, getLargerThumbnail);
-                return;
-            }
-        }
-
-        // If nothing was found
-        imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
+        // Step 4: Inject HTML with Tooltip Attribution
+        container.innerHTML = `
+            <img src="${pageData.originalimage.source}" alt="${exName}">
+            <div class="attribution-anchor">
+                <i class="fas fa-copyright"></i>
+                <div class="attribution-tooltip">
+                    <a href="${fileUrl}" target="_blank">"${fileName}"</a> by 
+                    <span>${author}</span> via 
+                    <a href="https://commons.wikimedia.org" target="_blank">Wikimedia Commons</a>, 
+                    <a href="${licenseUrl}" target="_blank">${license}</a>
+                </div>
+            </div>
+        `;
 
     } catch (err) {
-        console.error("Fetch failed", err);
-        imgContainer.innerHTML = '<div class="placeholder"><i class="fas fa-image-slash"></i></div>';
+        container.innerHTML = '<div class="placeholder"><i class="fas fa-dumbbell"></i></div>';
     }
 }
 
@@ -2134,6 +2114,7 @@ function loadExerciseLibrary() {
                 </div>
             </div>
         `;
+        fetchExerciseImage(ex.name, `lib-img-${id}`); 
     });
     container.innerHTML = html;
     
