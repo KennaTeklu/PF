@@ -2096,6 +2096,46 @@ input:checked + .slider:before {
     overflow: hidden;
     margin-bottom: 15px;
 }
+
+/* Fallback buttons inside image container */
+.image-fallback {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    height: 100%;
+    width: 100%;
+    background: var(--gray-100);
+    border-radius: 16px;
+}
+.fallback-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s, opacity 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.fallback-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+.web-btn {
+    background: #4285F4;
+    color: white;
+}
+.images-btn {
+    background: #DB4437;
+    color: white;
+}
+.fallback-btn i {
+    font-size: 1.1rem;
+}
 .card-image img {
     width: 100%;
     height: 100%;
