@@ -105,63 +105,6 @@ const muscleDatabase = {
     ]
 };
 
-const muscleImageLibrary = {
-    // MAJOR GROUPS
-    "quads": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Quadriceps.png",
-    "hamstrings": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Hamstring-muscles.png",
-    "glutes": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Gluteus_maximus.png",
-    "chest": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Pectoralis_major.png",
-    "back": "https://upload.wikimedia.org/wikipedia/commons/4/47/Latissimus_dorsi.png",
-    "shoulders": "https://upload.wikimedia.org/wikipedia/commons/5/52/Deltoid_muscle_back.png",
-    "biceps": "https://upload.wikimedia.org/wikipedia/commons/c/c2/Biceps_brachii.png",
-    "triceps": "https://upload.wikimedia.org/wikipedia/commons/4/41/Triceps_brachii.png",
-    "calves": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Gastrocnemius.png",
-    "core": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Rectus_abdominis.png",
-    "forearms": "https://upload.wikimedia.org/wikipedia/commons/c/c7/Forearm_muscles_back.png",
-    "traps": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Trapezius_Gray409.png",
-    "lats": "https://upload.wikimedia.org/wikipedia/commons/4/47/Latissimus_dorsi.png",
-    "rear_delts": "https://upload.wikimedia.org/wikipedia/commons/f/fe/Posterior_deltoid.png",
-    "obliques": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Abdominal_muscles_External_oblique.png",
-    "hip_flexors": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Iliopsoas.png",
-    "adductors": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Adductor_muscles_of_the_hip.png",
-    "abductors": "https://upload.wikimedia.org/wikipedia/commons/0/0e/Gluteus_medius.png",
-    "erectors": "https://upload.wikimedia.org/wikipedia/commons/1/10/Erector_spinae.png",
-    "serratus": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Serratus_anterior.png",
-
-    // LONGEVITY GROUPS
-    "neck": "https://upload.wikimedia.org/wikipedia/commons/3/30/Sternocleidomastoid.png",
-    "deep_neck": "https://upload.wikimedia.org/wikipedia/commons/2/23/Longus_colli.png",
-    "levator_scap": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Levator_scapulae.png",
-    "rhomboids": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Rhomboids.png",
-    "teres": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Teres_major.png",
-    "infraspinatus": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Infraspinatus.png",
-    "supraspinatus": "https://upload.wikimedia.org/wikipedia/commons/3/30/Supraspinatus.png",
-    "subscapularis": "https://upload.wikimedia.org/wikipedia/commons/1/16/Subscapularis.png",
-    "brachialis": "https://upload.wikimedia.org/wikipedia/commons/f/f4/Brachialis.png",
-    "brachioradialis": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Brachioradialis.png",
-    "anconeus": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Anconeus.png",
-    "supinator": "https://upload.wikimedia.org/wikipedia/commons/3/31/Supinator.png",
-    "pronator": "https://upload.wikimedia.org/wikipedia/commons/5/53/Pronator_teres.png",
-    "pec_minor": "https://upload.wikimedia.org/wikipedia/commons/8/8b/Pectoralis_minor.png",
-    "coracobrach": "https://upload.wikimedia.org/wikipedia/commons/7/73/Coracobrachialis.png",
-    "popliteus": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Popliteus.png",
-    "tibialis": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Tibialis.png",
-    "soleus": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Soleus.png",
-    "peroneus_tertius": "https://upload.wikimedia.org/wikipedia/commons/d/db/Fibularis_tertius.png",
-    "articularis_genus": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Articularis_genus.png",
-    "multifidus": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Multifidus.png",
-    "transverse": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Transversus_abdominis.png",
-    "quadratus_plantae": "https://upload.wikimedia.org/wikipedia/commons/0/07/Quadratus_plantae.png",
-
-    // HANDS & FEET
-    "hand_lumbricals": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Lumbrical_muscles_of_hand.png",
-    "hand_interossei": "https://upload.wikimedia.org/wikipedia/commons/3/36/Interossei_muscles_of_hand.png",
-    "thenar": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Thenar_muscles.png",
-    "foot_intrinsics": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Muscles_of_the_foot.png",
-    "foot_interossei": "https://upload.wikimedia.org/wikipedia/commons/2/23/Interossei_muscles_of_foot.png",
-    "abductor_hallucis": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Abductor_hallucis.png",
-    "flexor_brevis": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Flexor_digitorum_brevis.png"
-};
 
 // HELPER FUNCTION: Get image or default placeholder
 function getMuscleImage(id) {
