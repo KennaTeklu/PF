@@ -1271,17 +1271,22 @@ function fetchExerciseImage(exName, imgId, descId) {
     imgContainer.innerHTML = '<div class="placeholder shimmer"></div>';
     if (descContainer) descContainer.innerHTML = '';
 
-    // Helper to check if the page is relevant to the exercise
+    // Helper to request a larger thumbnail (increase pixel size)
+    const getLargerThumbnail = (url) => {
+        if (!url) return null;
+        // Replace the pixel size in the URL (e.g., /300px-... -> /600px-...)
+        return url.replace(/\/(\d+)px-/, '/600px-');
+    };
+
+    // Helper to check relevance (same as before)
     const isRelevant = (summaryData, exName) => {
         const title = summaryData.title?.toLowerCase() || '';
         const extract = summaryData.extract?.toLowerCase() || '';
         const exLower = exName.toLowerCase();
-        // If title contains the exercise name OR extract contains it, consider relevant
         if (title.includes(exLower) || extract.includes(exLower)) return true;
-        // If title contains generic words and no mention of exercise, reject
         const genericWords = ['sport', 'exercise', 'fitness', 'gym', 'workout', 'physical'];
         const isGeneric = genericWords.some(word => title.includes(word));
-        return !isGeneric; // if generic, treat as irrelevant
+        return !isGeneric;
     };
 
     // Helper to show fallback buttons
@@ -1309,20 +1314,33 @@ function fetchExerciseImage(exName, imgId, descId) {
             title: summaryData.title
         };
 
-        // Check relevance
         if (!isRelevant(summaryData, exName)) {
             showFallback();
             return;
         }
 
-        // Set image if available
-        if (summaryData.thumbnail?.source) {
-            imgContainer.innerHTML = `<img src="${summaryData.thumbnail.source}" alt="${exName}" loading="lazy">`;
+        // Get larger thumbnail if available
+        let imgUrl = summaryData.thumbnail?.source;
+        if (imgUrl) {
+            imgUrl = getLargerThumbnail(imgUrl) || imgUrl;
+            // Preload image to ensure it loads before displaying
+            const img = new Image();
+            img.onload = () => {
+                imgContainer.innerHTML = ''; // clear placeholder
+                imgContainer.appendChild(img);
+            };
+            img.onerror = () => {
+                showFallback();
+            };
+            img.src = imgUrl;
+            img.alt = exName;
+            img.loading = 'lazy';
         } else {
             showFallback();
             return;
         }
-        // Set description (truncated)
+
+        // Set description
         if (descContainer && summaryData.extract) {
             let extract = summaryData.extract;
             const words = extract.split(' ');
@@ -1338,7 +1356,7 @@ function fetchExerciseImage(exName, imgId, descId) {
         exerciseInfoCache[exName] = { summary: null, extract: null, thumbnail: null };
     };
 
-    // First, try searching with "exercise" appended
+    // Wikipedia search (same as before)
     fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName + ' exercise')}&format=json&origin=*`)
         .then(res => res.json())
         .then(searchData => {
@@ -1349,7 +1367,6 @@ function fetchExerciseImage(exName, imgId, descId) {
                     .then(processSummary)
                     .catch(() => fallback());
             } else {
-                // No results with "exercise", try without it
                 return fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(exName)}&format=json&origin=*`)
                     .then(res => res.json())
                     .then(secondSearch => {
