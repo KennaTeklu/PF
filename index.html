@@ -108,8 +108,11 @@
                     <div class="user-welcome-text">
                         <h2 id="welcomeName">User</h2>
                         <div class="user-welcome-status-tags">
-                            <span class="welcome-badge-pill"><i class="fas fa-fire"></i> <span id="welcomeStreak">0</span> Streak</span>
+                            <!-- Added id="statStreak" so JS can update the number -->
+                            <span class="welcome-badge-pill"><i class="fas fa-fire"></i> <span id="statStreak">0</span> Day Streak</span>
                             <span class="welcome-badge-pill" id="welcomeLevel">Beginner</span>
+                            <!-- Added Total Workouts pill with id="statWorkouts" -->
+                            <span class="welcome-badge-pill"><i class="fas fa-dumbbell"></i> <span id="statWorkouts">0</span> Workouts</span>
                         </div>
                     </div>
                 </div>
@@ -299,19 +302,21 @@
         </div>
 
         <!-- ========== EXERCISE LIBRARY SECTION ========== -->
-        <div class="library-header-bar">
-            <div class="library-title-group">
-                <h2>Exercise Library</h2>
-                <p><span id="library-count">0</span> Movements Available</p>
+        <div id="library-section" class="section">
+            <div class="library-header-bar">
+                <div class="library-title-group">
+                    <h2>Exercise Library</h2>
+                    <p><span id="library-count">0</span> Movements Available</p>
+                </div>
+                <div class="library-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="librarySearchInput" placeholder="Search exercises or muscles..." onkeyup="filterLibrary()">
+                </div>
             </div>
-            <div class="library-search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="librarySearchInput" placeholder="Search exercises or muscles..." onkeyup="filterLibrary()">
+            
+            <div class="exercise-library-grid-container" id="exercise-library-container">
+                <!-- Cards generated via JS -->
             </div>
-        </div>
-        
-        <div class="exercise-library-grid-container" id="exercise-library-container">
-            <!-- Cards generated via JS -->
         </div>
 
         <!-- ========== PERSONAL RECORDS SECTION ========== -->
