@@ -854,27 +854,15 @@ function generateNextWorkout() {
         exercises: []
     };
 
-    // --- ULTIMATE ACCESSORY SELECTION ---
     let allowedCategories = [];
     switch (split.id) {
         case 'full_body_a':
-        case 'full_body_b':
-            allowedCategories = ['major', 'longevity', 'hands', 'feet'];
-            break;
+        case 'full_body_b': allowedCategories = ['major', 'longevity', 'hands', 'feet']; break;
         case 'push_day':
-            allowedCategories = ['major', 'longevity'];
-            break;
-        case 'pull_day':
-            allowedCategories = ['major', 'longevity'];
-            break;
-        case 'legs_day':
-            allowedCategories = ['major', 'feet', 'longevity'];
-            break;
-        case 'longevity_day':
-            allowedCategories = ['longevity', 'hands', 'feet'];
-            break;
-        default:
-            allowedCategories = ['major', 'longevity'];
+        case 'pull_day': allowedCategories = ['major', 'longevity']; break;
+        case 'legs_day': allowedCategories = ['major', 'feet', 'longevity']; break;
+        case 'longevity_day': allowedCategories = ['longevity', 'hands', 'feet']; break;
+        default: allowedCategories = ['major', 'longevity'];
     }
 
     let pool = [];
@@ -886,10 +874,68 @@ function generateNextWorkout() {
     });
 
     pool = pool.filter(m => !split.focus.includes(m.name));
+    if (pool.length === 0) pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
 
-    if (pool.length === 0) {
-        pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
+    function getTrainingFrequency(muscleName) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 30);
+        let count = 0;
+        workoutData.workouts.forEach(w => {
+            if (new Date(w.date) > cutoff) {
+                w.exercises?.forEach(ex => {
+                    if (ex.actual && !ex.skipped && ex.muscleGroup.includes(muscleName)) count++;
+                });
+            }
+        });
+        return count;
     }
+
+    function hasRecentInjury(muscleName) {
+        return workoutData.injuries?.some(inj => 
+            inj.note?.toLowerCase().includes(muscleName) && 
+            (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
+        ) || false;
+    }
+
+    let cnsFatigue = 1.0;
+    const last3 = workoutData.workouts.slice(-3);
+    if (last3.length >= 3) {
+        const avgRPE = last3.reduce((sum, w) => sum + (parseFloat(w.summary?.averageRPE) || 0), 0) / 3;
+        cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
+    }
+
+    const now = new Date();
+    const scores = pool.map(m => {
+        const last = muscleLastTrained[m.name];
+        const daysSince = last ? (now - new Date(last)) / (1000 * 60 * 60 * 24) : Infinity;
+        const effectiveRest = getEffectiveRestDays(m);
+        const readinessRatio = daysSince / effectiveRest;
+        const localRecovery = 1 / (1 + Math.exp(-3 * (readinessRatio - 1)));
+        const freq = getTrainingFrequency(m.name);
+        const freqFactor = Math.exp(-freq / 3);
+        let riskFactor = (m.agingRisk === 'high' && m.category === 'longevity') ? Math.min(2, 1 + (daysSince / 14)) : 1.0;
+        const userGoal = workoutData.user.goal || 'balanced';
+        let goalFactor = 1.0;
+        if ((userGoal === 'strength' || userGoal === 'powerlifting') && m.category === 'major') goalFactor = 1.2;
+        const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
+        let score = localRecovery * cnsFatigue * freqFactor * riskFactor * goalFactor * injuryFactor;
+        return { muscle: m, score: Math.max(0, score) };
+    });
+
+    scores.sort((a, b) => b.score - a.score);
+    const numAccessory = Math.floor(Math.random() * 3) + 2;
+    const selected = scores.slice(0, numAccessory).map(s => s.muscle.name);
+    const allMuscles = [...new Set([...split.focus, ...selected])];
+
+    allMuscles.forEach(mg => {
+        const ex = generateExerciseFromLibrary(mg);
+        if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, mult));
+    });
+
+    updateDashboard();
+    if (document.getElementById('workout-section').classList.contains('active')) renderExerciseDeck();
+    showNotification(`Workout generated: ${currentWorkout.name}`);
+}
 
     // --- Helper: training frequency in last 30 days ---
 
@@ -1113,8 +1159,21 @@ function updateDashboard() {
     const acwr = last28 > 0 ? (last7 / last28).toFixed(1) : "1.0";
     document.getElementById('dash-acwr').innerText = acwr;
 
-    document.getElementById('longevityScore').innerText = calculateLongevityScore().score;
+    const longevityScore = calculateLongevityScore().score;
+    document.getElementById('longevityScore').innerText = longevityScore;
+    
+    const vitalityFill = document.querySelector('.longevity-vitality-card .progress-fill');
+    if (vitalityFill) vitalityFill.style.width = longevityScore + '%';
+
     document.getElementById('risk-val').innerText = getInjuryRiskFactor();
+    
+    const riskDot = document.querySelector('.injury-risk-dot');
+    const avgRPE = getRollingRPEAverage();
+    if (riskDot) {
+        if (avgRPE > 8.5) riskDot.style.background = 'var(--danger)';
+        else if (avgRPE > 7) riskDot.style.background = 'var(--warning)';
+        else riskDot.style.background = 'var(--success)';
+    }
 
     renderActivityCalendar();
     renderDashPRs();
@@ -1228,10 +1287,9 @@ function renderExerciseDeck() {
     currentWorkout.exercises.forEach((ex, index) => {
         const card = document.createElement('div');
         card.className = 'exercise-card';
-        card.dataset.index = index; // Preserved
+        card.dataset.index = index;
         const safeName = ex.name.replace(/'/g, "\\'");
         const repsInfo = typeof ex.prescribed.reps === 'string' ? ex.prescribed.reps : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
-        
         const isDone = ex.actual && !ex.skipped;
 
         card.innerHTML = `
@@ -1264,7 +1322,6 @@ function renderExerciseDeck() {
             </div>
         `;
 
-        // --- Logic Preservation: Three-dot menu popup ---
         const menu = card.querySelector('.card-menu');
         const popup = menu.querySelector('.menu-popup');
         menu.addEventListener('click', (e) => {
@@ -1272,24 +1329,22 @@ function renderExerciseDeck() {
             popup.classList.toggle('show');
         });
 
-        document.addEventListener('click', function closePopup(e) {
+        document.addEventListener('click', (e) => {
             if (!card.contains(e.target)) popup.classList.remove('show');
         });
 
-        // --- Logic Preservation: Main click to open Log Drawer ---
         card.addEventListener('click', (e) => {
-            // Only open if they didn't click a button or menu
             if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
                 openLogDrawer(index);
             }
         });
 
-        attachSwipeListeners(card, index); // Preserved
+        attachSwipeListeners(card, index);
         deck.appendChild(card);
         fetchExerciseImage(ex.name, `img-${index}`, `desc-${index}`);
     });
 
-    addSummaryCard(); // Preserved
+    addSummaryCard();
 }
 
 async function fetchExerciseImage(exName, imgId) {
@@ -1416,37 +1471,26 @@ function openLogDrawer(index) {
 
     document.getElementById('log-exercise-name').innerText = exercise.name;
     const repsInfo = typeof exercise.prescribed.reps === 'string' ? exercise.prescribed.reps : `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
-    document.getElementById('log-prescribed').innerHTML = `
-        <strong>Prescribed:</strong> ${exercise.prescribed.weight} lbs · ${exercise.prescribed.sets} × ${repsInfo}
-    `;
+    document.getElementById('log-prescribed').innerHTML = `<strong>Prescribed:</strong> ${exercise.prescribed.weight} lbs · ${exercise.prescribed.sets} × ${repsInfo}`;
 
     const form = document.getElementById('log-form');
-    let html = `
+    form.innerHTML = `
         <div class="form-group">
             <label>Weight used (lbs)</label>
             <input type="number" id="log-weight" value="${exercise.prescribed.weight || ''}">
         </div>
         <div class="form-group">
             <label>Sets completed</label>
-            <select id="log-sets">
-                ${Array.from({length: exercise.prescribed.sets+1}, (_, i) => `<option value="${i}" ${i===exercise.prescribed.sets?'selected':''}>${i}</option>`).join('')}
+            <select id="log-sets" onchange="renderRepInputs(${index})">
+                ${Array.from({length: 11}, (_, i) => `<option value="${i}" ${i === exercise.prescribed.sets ? 'selected' : ''}>${i}</option>`).join('')}
             </select>
         </div>
-    `;
-    for (let i = 0; i < exercise.prescribed.sets; i++) {
-        html += `
-            <div class="form-group">
-                <label>Set ${i+1} reps</label>
-                <input type="number" id="log-rep-${i}" placeholder="Actual reps">
-            </div>
-        `;
-    }
-    html += `
+        <div id="log-reps-container"></div>
         <div class="form-group">
             <label>RPE (1-10)</label>
             <select id="log-rpe">
                 <option value="">Select RPE</option>
-                ${Array.from({length:10}, (_, i) => `<option value="${10-i}">${10-i}</option>`).join('')}
+                ${Array.from({length: 10}, (_, i) => `<option value="${10 - i}">${10 - i}</option>`).join('')}
             </select>
         </div>
         <div class="form-group">
@@ -1454,9 +1498,9 @@ function openLogDrawer(index) {
             <textarea id="log-notes" placeholder="How did it feel?"></textarea>
         </div>
     `;
-    form.innerHTML = html;
 
-    // --- Mark dirty on any input ---
+    renderRepInputs(index);
+
     const inputs = form.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         input.addEventListener('input', () => {
@@ -1465,21 +1509,29 @@ function openLogDrawer(index) {
             saveDraft();
             updateNavigation();
         });
-        input.addEventListener('change', () => {
-            dirtyExercises.add(index);
-            workoutDirty = true;
-            saveDraft();
-            updateNavigation();
-        });
     });
 
-    // Mark dirty just for opening
     dirtyExercises.add(index);
     workoutDirty = true;
     saveDraft();
     updateNavigation();
-
     document.getElementById('log-drawer').classList.add('active');
+}
+
+function renderRepInputs(index) {
+    const sets = parseInt(document.getElementById('log-sets').value);
+    const container = document.getElementById('log-reps-container');
+    const exercise = currentWorkout.exercises[index];
+    let html = '';
+    for (let i = 0; i < sets; i++) {
+        html += `
+            <div class="form-group">
+                <label>Set ${i + 1} reps</label>
+                <input type="number" id="log-rep-${i}" placeholder="${exercise.prescribed.reps}">
+            </div>
+        `;
+    }
+    container.innerHTML = html;
 }
 
 function closeLogDrawer() {
@@ -1494,22 +1546,25 @@ function saveLog() {
     const rpe = parseInt(document.getElementById('log-rpe').value);
     const notes = document.getElementById('log-notes').value;
     const reps = [];
+
     for (let i = 0; i < sets; i++) {
         const repInput = document.getElementById(`log-rep-${i}`);
         if (repInput && repInput.value) reps.push(parseInt(repInput.value));
     }
+
     if (!weight || sets === 0) {
         alert("Please enter weight and at least one set");
         return;
     }
+
     exercise.actual = {
         weight, sets, reps, rpe, notes,
         completed: new Date().toISOString()
     };
+
     updateExerciseHistory(exercise);
     dataChanged = true;
     
-    // --- Clear dirty for this exercise ---
     dirtyExercises.delete(index);
     if (dirtyExercises.size === 0) {
         workoutDirty = false;
@@ -1517,19 +1572,16 @@ function saveLog() {
     } else {
         saveDraft();
     }
+
     updateNavigation();
-    
     closeLogDrawer();
+    renderExerciseDeck();
+
     const nextIndex = index + 1;
     if (nextIndex < currentWorkout.exercises.length) {
         const deck = document.getElementById('exercise-deck');
         if (deck && deck.children[nextIndex]) {
             deck.children[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-    } else {
-        const deck = document.getElementById('exercise-deck');
-        if (deck && deck.lastChild) {
-            deck.lastChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }
     refreshSummaryCard();
