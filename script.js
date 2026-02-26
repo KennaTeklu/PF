@@ -1721,35 +1721,6 @@ function celebrate() {
     }, 5000);
 }
 
-function completeWorkout() {
-    if (!currentWorkout) { alert("No workout to complete"); return; }
-    const unlogged = currentWorkout.exercises.filter(ex => !ex.actual && !ex.skipped);
-    if (unlogged.length > 0 && !confirm(`You have ${unlogged.length} unlogged exercises. Complete anyway?`)) return;
-    
-    // Add to history
-    workoutData.workouts.push(currentWorkout);
-    currentWorkout.summary = {
-        totalVolume: calculateWorkoutVolume(currentWorkout),
-        averageRPE: calculateAverageRPE(currentWorkout),
-        completedExercises: currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length
-    };
-    saveToLocalStorage();
-    
-    // Clear dirty state
-    dirtyExercises.clear();
-    workoutDirty = false;
-    clearDraft();
-    updateNavigation();
-    
-    // Generate next workout and show celebration
-    generateNextWorkout();
-    showNotification(`Workout completed! 🎉`);
-    celebrate(); // you'll need to define this function
-    
-    // Go back to dashboard
-    showSection('dashboard');
-}
-
 function celebrate() {
     const overlay = document.createElement('div');
     overlay.className = 'celebration-overlay';
