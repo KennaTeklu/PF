@@ -772,6 +772,111 @@ function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('active');
 }
 
+let modalCurrentCardIndex = 0;
+let modalDeckSlider = null;
+let modalCards = [];
+
+function initModalDeckCarousel() {
+    const deck = document.getElementById('exercise-deck-modal');
+    if (!deck) return;
+
+    deck.classList.add('workout-deck-scroller');
+    deck.innerHTML = `<div class="deck-slider">${deck.innerHTML}</div>`;
+    modalDeckSlider = deck.querySelector('.deck-slider');
+    modalCards = Array.from(modalDeckSlider.children);
+
+    modalCurrentCardIndex = 0;
+    updateModalCardPosition();
+}
+
+function updateModalCardPosition() {
+    if (!modalDeckSlider) return;
+    modalDeckSlider.style.transform = `translateY(-${modalCurrentCardIndex * 100}%)`;
+}
+
+function nextModalCard() {
+    if (modalCurrentCardIndex < modalCards.length - 1) {
+        modalCurrentCardIndex++;
+        updateModalCardPosition();
+    }
+}
+
+function prevModalCard() {
+    if (modalCurrentCardIndex > 0) {
+        modalCurrentCardIndex--;
+        updateModalCardPosition();
+    }
+}
+
+function setupModalSwipeListener() {
+    const deck = document.getElementById('exercise-deck-modal');
+    if (!deck) return;
+
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isSwiping = false;
+
+    deck.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+        isSwiping = false;
+    }, { passive: true });
+
+    deck.addEventListener('touchmove', (e) => {
+        if (!touchStartY) return;
+        const touchY = e.touches[0].clientY;
+        const touchX = e.touches[0].clientX;
+        const deltaY = Math.abs(touchY - touchStartY);
+        const deltaX = Math.abs(touchX - touchStartX);
+        if (deltaY > deltaX && deltaY > 10) {
+            e.preventDefault();
+            isSwiping = true;
+        }
+    }, { passive: false });
+
+    deck.addEventListener('touchend', (e) => {
+        if (!touchStartY) return;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffY = touchEndY - touchStartY;
+        const threshold = 50;
+
+        if (isSwiping && Math.abs(diffY) > threshold) {
+            if (diffY > 0) {
+                prevModalCard(); // swipe down
+            } else {
+                nextModalCard(); // swipe up
+            }
+        }
+
+        touchStartY = 0;
+        touchStartX = 0;
+        isSwiping = false;
+    }, { passive: true });
+}
+
+function addModalDeckNavButtons() {
+    const deck = document.getElementById('exercise-deck-modal');
+    if (!deck) return;
+
+    const oldPrev = deck.querySelector('.deck-nav.prev');
+    const oldNext = deck.querySelector('.deck-nav.next');
+    if (oldPrev) oldPrev.remove();
+    if (oldNext) oldNext.remove();
+
+    const prevBtn = document.createElement('div');
+    prevBtn.className = 'deck-nav prev';
+    prevBtn.innerHTML = '❮';
+    prevBtn.onclick = prevModalCard;
+
+    const nextBtn = document.createElement('div');
+    nextBtn.className = 'deck-nav next';
+    nextBtn.innerHTML = '❯';
+    nextBtn.onclick = nextModalCard;
+
+    deck.appendChild(prevBtn);
+    deck.appendChild(nextBtn);
+}
+
 function formatNumber(num) {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
@@ -1594,6 +1699,131 @@ function addSummaryCard() {
     deck.appendChild(summaryDiv);
 }
 
+function openWorkoutModal() {
+    // Ensure the workout data is ready
+    if (!currentWorkout) {
+        generateNextWorkout();
+    }
+    // Render the deck inside the modal
+    renderExerciseDeckInModal();
+    // Show the modal
+    document.getElementById('workoutModal').classList.add('active');
+    // Optionally hide the regular workout section if it's visible
+    document.getElementById('workout-section').classList.remove('active');
+}
+
+function closeWorkoutModal() {
+    document.getElementById('workoutModal').classList.remove('active');
+    // Return to dashboard (or previous section)
+    showSection('dashboard');
+}
+
+function renderExerciseDeckInModal() {
+    const deck = document.getElementById('exercise-deck-modal');
+    if (!deck) return;
+
+    deck.innerHTML = '';
+
+    if (!currentWorkout || !currentWorkout.exercises.length) {
+        deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
+        return;
+    }
+
+    // Create exercise cards (same as before, but append to this deck)
+    currentWorkout.exercises.forEach((ex, index) => {
+        const card = document.createElement('div');
+        card.className = 'exercise-card';
+        card.dataset.index = index;
+        const safeName = ex.name.replace(/'/g, "\\'");
+        const repsInfo = typeof ex.prescribed.reps === 'string' ? ex.prescribed.reps : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
+        const isDone = ex.actual && !ex.skipped;
+
+        card.innerHTML = `
+            <div class="card-menu">
+                <i class="fas fa-ellipsis-v"></i>
+                <div class="menu-popup">
+                    <div onclick="shareExercise('${safeName}'); event.stopPropagation();">Share</div>
+                    <div onclick="showAnatomy('${safeName}'); event.stopPropagation();">Anatomy</div>
+                </div>
+            </div>
+            <div class="card-image" id="modal-img-${index}"></div>
+            <div class="exercise-card-content">
+                <h3>${ex.name} ${isDone ? '✅' : ''}
+                    <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index}); event.stopPropagation();" title="More info">
+                        <i class="fas fa-info-circle"></i>
+                    </span>
+                </h3>
+                <div class="card-prescription">
+                    <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
+                </div>
+                <p class="exercise-description" id="modal-desc-${index}"></p>
+                <div class="card-actions">
+                    <button class="action-btn web-btn" onclick="googleSearch('${safeName}', 'web'); event.stopPropagation();">
+                        <i class="fas fa-search"></i> Web
+                    </button>
+                    <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
+                        <i class="fas fa-image"></i> Images
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Attach card menu logic
+        const menu = card.querySelector('.card-menu');
+        const popup = menu.querySelector('.menu-popup');
+        menu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            popup.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!card.contains(e.target)) popup.classList.remove('show');
+        });
+
+        // Click on card opens log drawer
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
+                openLogDrawer(index);
+            }
+        });
+
+        deck.appendChild(card);
+        fetchExerciseImage(ex.name, `modal-img-${index}`);
+    });
+
+    // Add summary card (similar to addSummaryCard but for modal)
+    addModalSummaryCard(deck);
+    // After appending all cards and summary, initialize carousel for modal deck
+    initModalDeckCarousel();
+    setupModalSwipeListener();
+    addModalDeckNavButtons();
+}
+
+function addModalSummaryCard(deck) {
+    if (!currentWorkout || !currentWorkout.exercises) return;
+    
+    const completedCount = currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length;
+    const skippedCount = currentWorkout.exercises.filter(ex => ex.skipped).length;
+    const total = currentWorkout.exercises.length;
+    const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+    
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = 'summary-card';
+    summaryDiv.innerHTML = `
+        <h3>Workout Summary</h3>
+        <div class="summary-stats">
+            <p>✅ Completed: ${completedCount}</p>
+            <p>⏭️ Skipped: ${skippedCount}</p>
+            <p>📊 Progress: ${progress}%</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="completeWorkout()">Complete Workout</button>
+            <button class="btn btn-outline" onclick="generateNextWorkout()">Generate New</button>
+        </div>
+    `;
+    deck.appendChild(summaryDiv);
+}
+
 // ---------- LOGGING DRAWER ----------
 function openLogDrawer(index) {
     currentExerciseIndex = index;
@@ -1861,13 +2091,13 @@ function completeWorkout() {
     clearDraft();
     updateNavigation();
     
-    // Generate next workout and show celebration (optional)
+    // Generate next workout for future use
     generateNextWorkout();
     showNotification(`Workout completed! 🎉`);
-    celebrate(); // optional – remove if you don't want confetti
+    celebrate();
     
-    // Go back to dashboard
-    showSection('dashboard');
+    // Close modal and return to dashboard
+    closeWorkoutModal();
 }
 
 function celebrate() {
@@ -2950,9 +3180,13 @@ function showSection(sectionId) {
         );
         return;
     }
-    performSectionChange(sectionId);
+    // Special handling for workout section: open modal instead
+    if (sectionId === 'workout') {
+        openWorkoutModal();
+    } else {
+        performSectionChange(sectionId);
+    }
 }
-
 function performSectionChange(sectionId) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     const sec = document.getElementById(sectionId + '-section');
