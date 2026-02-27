@@ -822,294 +822,304 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
 }
 
 // ---------- WORKOUT GENERATION ----------
-function generateNextWorkout() {
-    if (workoutDirty) {
-        const confirmDiscard = confirm("You have unsaved logs in this workout. Discard them and generate a new session?");
-        if (!confirmDiscard) return;
+/**
+ * SUPERMERGED: generateNextWorkout (Elite v7)
+ * 
+ * Combines:
+ * - Sigmoid recovery with local & global physiological factors (CNS, sleep, hormones, gender, age, experience)
+ * - Frequency, tendon health, aging risk, novelty, injury penalty
+ * - Squared coverage urgency (neglect protection)
+ * - Weighted probability selection (softmax draw) for accessory muscles
+ * - Exercise variety engine (least used per muscle)
+ * - Backup security check & readiness display
+ * - Full UI sync and persistent storage
+ */
+async function generateNextWorkout() {
+  // --- DIRTY CHECK ---
+  if (workoutDirty) {
+    const confirmDiscard = confirm("You have unsaved logs in this workout. Discard them and generate a new session?");
+    if (!confirmDiscard) return;
+  }
+
+  console.log("🧠 System: Initiating Advanced Physiological Scan...");
+  showLoading(true);
+
+  // Reset dirty flags
+  workoutDirty = false;
+  dirtyExercises.clear();
+  clearDraft();
+
+  // --- SECURITY / BACKUP CHECK (from Version B) ---
+  const lastExport = new Date(workoutData.lastExport).getTime() || 0;
+  const backupRequired = (Date.now() - lastExport > 7 * 24 * 60 * 60 * 1000); // 7 days
+
+  // --- SPLIT ROTATION (concise from Version B) ---
+  const splits = workoutProgram.splits;
+  const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
+  let split = lastWorkout
+    ? splits[(splits.findIndex(s => s.id === lastWorkout.type) + 1) % splits.length]
+    : splits[0];
+
+  // --- GLOBAL PHYSIOLOGICAL MULTIPLIERS (from Version A, enhanced) ---
+  const now = new Date();
+
+  // CNS Fatigue (sigmoid)
+  const last3 = workoutData.workouts.slice(-3);
+  const avgRPE = last3.length
+    ? last3.reduce((sum, w) => sum + (parseFloat(w.summary?.averageRPE) || 7), 0) / last3.length
+    : 7;
+  const cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));  // A's formula
+
+  // Sleep factor (last 7 days)
+  const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
+  const avgSleep = sleepLogs.length
+    ? sleepLogs.reduce((sum, s) => sum + parseFloat(s.value), 0) / sleepLogs.length
+    : 8;
+  const sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
+
+  // Hormonal phase factor
+  const phase = getCurrentCyclePhase();
+  const hormonalFactor = getPhaseMultiplier(phase);  // from A/B
+
+  // Gender factor
+  let genderFactor = 1.0;
+  if (workoutData.user.gender === 'female') genderFactor = 1.02;
+  else if (workoutData.user.gender === 'male') genderFactor = 0.98;
+
+  // Age factor
+  let ageFactor = 1.0;
+  if (workoutData.user.birthDate) {
+    const birthYear = new Date(workoutData.user.birthDate).getFullYear();
+    const currentYear = now.getFullYear();
+    const age = currentYear - birthYear;
+    if (age > 20) ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
+  }
+
+  // Experience factor
+  const exp = workoutData.user.experience || 'intermediate';
+  let experienceFactor = 1.0;
+  if (exp === 'beginner') experienceFactor = 1.1;
+  else if (exp === 'advanced') experienceFactor = 0.9;
+
+  // Combine into a single global readiness scaler (used in scoring & display)
+  const globalRecovery = Math.max(0.3, Math.min(1.1,
+    cnsFatigue * sleepFactor * hormonalFactor * genderFactor * ageFactor * experienceFactor
+  ));
+
+  // --- BUILD MUSCLE POOL PER SPLIT (from Version A) ---
+  let allowedCategories = [];
+  switch (split.id) {
+    case 'full_body_a':
+    case 'full_body_b':
+      allowedCategories = ['major', 'longevity', 'hands', 'feet'];
+      break;
+    case 'push_day':
+    case 'pull_day':
+      allowedCategories = ['major', 'longevity'];
+      break;
+    case 'legs_day':
+      allowedCategories = ['major', 'feet', 'longevity'];
+      break;
+    case 'longevity_day':
+      allowedCategories = ['longevity', 'hands', 'feet'];
+      break;
+    default:
+      allowedCategories = ['major', 'longevity'];
+  }
+
+  let pool = [];
+  allowedCategories.forEach(cat => {
+    if (cat === 'major') pool.push(...muscleDatabase.major);
+    if (cat === 'longevity') pool.push(...muscleDatabase.longevity);
+    if (cat === 'hands') pool.push(...muscleDatabase.hands);
+    if (cat === 'feet') pool.push(...muscleDatabase.feet);
+  });
+
+  // Remove muscles that are already in the split's focus, and enforce calves rule (from B)
+  pool = pool.filter(m => {
+    if (split.id !== 'legs_day' && m.name === 'calves') return false; // calves only on legs_day
+    return !split.focus.includes(m.name);
+  });
+
+  // Fallback if pool becomes empty (rare)
+  if (pool.length === 0) {
+    pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
+  }
+
+  // --- HELPER FUNCTIONS (inlined for clarity; assumed to exist globally) ---
+  // (getTrainingFrequency, hasRecentInjury, getEffectiveRestDays are used but assumed defined)
+
+  // --- SCORE EACH MUSCLE (Version A's detailed factors) ---
+  const scores = pool.map(m => {
+    const lastTrained = muscleLastTrained[m.name];
+    const daysSince = lastTrained ? (now - new Date(lastTrained)) / (1000 * 60 * 60 * 24) : Infinity;
+    const effectiveRest = getEffectiveRestDays ? getEffectiveRestDays(m) : (m.restDays || 2);
+
+    // Sigmoid readiness (local recovery)
+    const readinessRatio = daysSince / effectiveRest;
+    const k = 3;  // steepness from A
+    const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
+
+    // Combine local with global recovery
+    let adjustedRecovery = localRecovery * globalRecovery;
+
+    // Frequency factor (trained in last 30 days)
+    const freq = getTrainingFrequency(m.name);
+    const freqFactor = Math.exp(-freq / 3);
+
+    // Aging risk factor (for longevity muscles)
+    let riskFactor = 1.0;
+    if (m.agingRisk === 'high' && m.category === 'longevity') {
+      riskFactor = Math.min(2, 1 + (daysSince / 14));
     }
 
-    workoutDirty = false;
-    dirtyExercises.clear();
-    clearDraft();
-    
-    const splits = workoutProgram.splits;
-    const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
-    let split;
-    if (lastWorkout) {
-        const lastIndex = splits.findIndex(s => s.id === lastWorkout.type);
-        if (lastIndex !== -1) {
-            const nextIndex = (lastIndex + 1) % splits.length;
-            split = splits[nextIndex];
-        } else split = splits[0];
-    } else split = splits[0];
-
-    const phase = getCurrentCyclePhase();
-    const mult = getPhaseMultiplier(phase);
-
-    currentWorkout = {
-        id: `workout_${Date.now()}`,
-        date: new Date().toISOString(),
-        type: split.id,
-        name: split.name,
-        exercises: []
-    };
-
-    let allowedCategories = [];
-    switch (split.id) {
-        case 'full_body_a':
-        case 'full_body_b': allowedCategories = ['major', 'longevity', 'hands', 'feet']; break;
-        case 'push_day':
-        case 'pull_day': allowedCategories = ['major', 'longevity']; break;
-        case 'legs_day': allowedCategories = ['major', 'feet', 'longevity']; break;
-        case 'longevity_day': allowedCategories = ['longevity', 'hands', 'feet']; break;
-        default: allowedCategories = ['major', 'longevity'];
+    // Tendon health penalty (for high‑stress muscles)
+    let tendonFactor = 1.0;
+    if (['quads', 'hamstrings', 'chest', 'biceps', 'triceps', 'calves'].includes(m.name)) {
+      tendonFactor = 0.95;
     }
 
-    let pool = [];
-    allowedCategories.forEach(cat => {
-        if (cat === 'major') pool.push(...muscleDatabase.major);
-        if (cat === 'longevity') pool.push(...muscleDatabase.longevity);
-        if (cat === 'hands') pool.push(...muscleDatabase.hands);
-        if (cat === 'feet') pool.push(...muscleDatabase.feet);
+    // Goal factor (detailed from A)
+    const userGoal = workoutData.user.goal || 'balanced';
+    let goalFactor = 1.0;
+    if (userGoal === 'strength' || userGoal === 'powerlifting') {
+      if (m.category === 'major') goalFactor = 1.2;
+      if (['quads','hamstrings','glutes','chest','back','shoulders','triceps'].includes(m.name)) {
+        goalFactor *= 1.1;
+      }
+    } else if (userGoal === 'longevity') {
+      if (m.category === 'longevity') goalFactor = 1.5;
+    } else if (userGoal === 'hypertrophy') {
+      if (m.category === 'major') goalFactor = 1.3;
+    }
+
+    // Injury penalty
+    const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
+
+    // Novelty boost for never‑trained muscles
+    const noveltyBoost = !lastTrained ? 0.5 : 0.0;
+
+    // Coverage urgency (squared neglect) from A
+    const targetRest = effectiveRest * 1.5;
+    let coverageUrgency = 1.0;
+    if (lastTrained) {
+      coverageUrgency = Math.min(3, Math.pow(daysSince / targetRest, 2));
+    } else {
+      coverageUrgency = 3; // never trained → urgent
+    }
+
+    // Small random jitter
+    const jitter = (Math.random() * 0.2) - 0.1;
+
+    // Final score
+    let score = adjustedRecovery * freqFactor * riskFactor * goalFactor *
+                injuryFactor * tendonFactor * coverageUrgency +
+                noveltyBoost + jitter;
+
+    return { muscle: m, score: Math.max(0, score) };
+  });
+
+  // Sort descending
+  scores.sort((a, b) => b.score - a.score);
+
+  // --- WEIGHTED PROBABILITY SELECTION (softmax style from Version B) ---
+  const accessoryCount = Math.floor(Math.random() * 2) + 2; // 2 or 3
+  const selectedAccessories = [];
+
+  // Take top 10 candidates (or all if fewer) for weighted draw
+  const candidates = scores.slice(0, 10);
+  const candidateIndices = Array.from({ length: candidates.length }, (_, i) => i);
+
+  for (let i = 0; i < accessoryCount && candidateIndices.length > 0; i++) {
+    // Compute total score among remaining candidates
+    const total = candidateIndices.reduce((sum, idx) => sum + candidates[idx].score, 0);
+    let rand = Math.random() * total;
+    const chosenIdx = candidateIndices.find(idx => {
+      rand -= candidates[idx].score;
+      return rand <= 0;
     });
+    if (chosenIdx === undefined) break; // fallback
 
-    pool = pool.filter(m => !split.focus.includes(m.name));
-    if (pool.length === 0) pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
+    selectedAccessories.push(candidates[chosenIdx].muscle.name);
+    // Remove chosen index from pool
+    candidateIndices.splice(candidateIndices.indexOf(chosenIdx), 1);
+  }
 
-    function getTrainingFrequency(muscleName) {
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - 30);
-        let count = 0;
-        workoutData.workouts.forEach(w => {
-            if (new Date(w.date) > cutoff) {
-                w.exercises?.forEach(ex => {
-                    if (ex.actual && !ex.skipped && ex.muscleGroup.includes(muscleName)) count++;
-                });
-            }
-        });
-        return count;
+  // --- BUILD WORKOUT OBJECT ---
+  const phaseMultiplier = getPhaseMultiplier(phase);  // for exercise prescription
+
+  currentWorkout = {
+    id: `workout_${Date.now()}`,
+    date: now.toISOString(),
+    type: split.id,
+    name: split.name,
+    readiness: Math.round(globalRecovery * 100),  // display percentage
+    exercises: [],
+    security: { backupRecommended: backupRequired }
+  };
+
+  // Combine split focus with selected accessories
+  const allMuscles = [...new Set([...split.focus, ...selectedAccessories])];
+
+  // Generate exercises using variety engine (from Version B)
+  allMuscles.forEach(muscleName => {
+    // `pickExerciseVariety` should return a base exercise object for the muscle
+    const exerciseBase = pickExerciseVariety ? pickExerciseVariety(muscleName) : generateExerciseFromLibrary(muscleName);
+    if (exerciseBase) {
+      // Use phase multiplier only for weight prescription (globalRecovery is for display/selection only)
+      const exercise = generateExercisePrescription(exerciseBase, phaseMultiplier);
+      currentWorkout.exercises.push(exercise);
     }
+  });
 
-    function hasRecentInjury(muscleName) {
-        return workoutData.injuries?.some(inj => 
-            inj.note?.toLowerCase().includes(muscleName) && 
-            (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
-        ) || false;
-    }
+  // --- UI SYNC & NOTIFICATIONS ---
+  updateDashboard();
 
-    let cnsFatigue = 1.0;
-    const last3 = workoutData.workouts.slice(-3);
-    if (last3.length >= 3) {
-        const avgRPE = last3.reduce((sum, w) => sum + (parseFloat(w.summary?.averageRPE) || 0), 0) / 3;
-        cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
-    }
+  if (document.getElementById('workout-section').classList.contains('active')) {
+    renderExerciseDeck();
+  }
 
-    const now = new Date();
-    const scores = pool.map(m => {
-        const last = muscleLastTrained[m.name];
-        const daysSince = last ? (now - new Date(last)) / (1000 * 60 * 60 * 24) : Infinity;
-        const effectiveRest = getEffectiveRestDays(m);
-        const readinessRatio = daysSince / effectiveRest;
-        const localRecovery = 1 / (1 + Math.exp(-3 * (readinessRatio - 1)));
-        const freq = getTrainingFrequency(m.name);
-        const freqFactor = Math.exp(-freq / 3);
-        let riskFactor = (m.agingRisk === 'high' && m.category === 'longevity') ? Math.min(2, 1 + (daysSince / 14)) : 1.0;
-        const userGoal = workoutData.user.goal || 'balanced';
-        let goalFactor = 1.0;
-        if ((userGoal === 'strength' || userGoal === 'powerlifting') && m.category === 'major') goalFactor = 1.2;
-        const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
-        let score = localRecovery * cnsFatigue * freqFactor * riskFactor * goalFactor * injuryFactor;
-        return { muscle: m, score: Math.max(0, score) };
-    });
+  showLoading(false);
 
-    scores.sort((a, b) => b.score - a.score);
-    const numAccessory = Math.floor(Math.random() * 3) + 2;
-    const selected = scores.slice(0, numAccessory).map(s => s.muscle.name);
-    const allMuscles = [...new Set([...split.focus, ...selected])];
+  if (backupRequired) {
+    showNotification("🔐 Security: Backup recommended before training.", "warning");
+    document.getElementById('nav-settings')?.classList.add('critical');
+  } else {
+    showNotification(`✅ Generated: ${currentWorkout.name} (${currentWorkout.readiness}% Readiness)`, "success");
+  }
 
-    allMuscles.forEach(mg => {
-        const ex = generateExerciseFromLibrary(mg);
-        if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, mult));
-    });
-
-    updateDashboard();
-    if (document.getElementById('workout-section').classList.contains('active')) renderExerciseDeck();
-    showNotification(`Workout generated: ${currentWorkout.name}`);
+  saveToLocalStorage();
 }
 
-    // --- Helper: training frequency in last 30 days ---
+// ====================== //
+// Required helpers (assumed to exist globally, but shown for completeness)
+// ====================== //
 
-
-    function getTrainingFrequency(muscleName) {
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - 30);
-        let count = 0;
-        workoutData.workouts.forEach(w => {
-            if (new Date(w.date) > cutoff) {
-                w.exercises?.forEach(ex => {
-                    if (ex.actual && !ex.skipped && ex.muscleGroup.includes(muscleName)) {
-                        count++;
-                    }
-                });
-            }
-        });
-        return count;
+/**
+ * Counts how many times a muscle was actually trained in the last 30 days.
+ */
+function getTrainingFrequency(muscleName) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  let count = 0;
+  workoutData.workouts.forEach(w => {
+    if (new Date(w.date) > cutoff) {
+      w.exercises?.forEach(ex => {
+        if (ex.actual && !ex.skipped && ex.muscleGroup.includes(muscleName)) count++;
+      });
     }
+  });
+  return count;
+}
 
-    function hasRecentInjury(muscleName) {
-        return workoutData.injuries?.some(inj => 
-            inj.note?.toLowerCase().includes(muscleName) && 
-            (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
-        ) || false;
-    }
-
-    // --- Global physiological factors ---
-    let cnsFatigue = 1.0;
-    const last3 = workoutData.workouts.slice(-3);
-    if (last3.length >= 3) {
-        const avgRPE = last3.reduce((sum, w) => sum + (w.summary?.averageRPE || 0), 0) / last3.length;
-        cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
-    }
-
-    let sleepFactor = 1.0;
-    const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
-    if (sleepLogs.length >= 3) {
-        const avgSleep = sleepLogs.reduce((sum, s) => sum + parseFloat(s.value), 0) / sleepLogs.length;
-        sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
-    }
-
-    let hormonalFactor = 1.0;
-    const phaseCycle = getCurrentCyclePhase?.() || null;
-    if (phaseCycle) {
-        switch(phaseCycle) {
-            case 'menstrual': hormonalFactor = 0.8; break;
-            case 'follicular': hormonalFactor = 1.1; break;
-            case 'ovulatory': hormonalFactor = 1.0; break;
-            case 'luteal': hormonalFactor = 0.9; break;
-        }
-    }
-
-    let genderFactor = 1.0;
-    if (workoutData.user.gender === 'female') {
-        genderFactor = 1.02;
-    } else if (workoutData.user.gender === 'male') {
-        genderFactor = 0.98;
-    }
-
-    let experienceFactor = 1.0;
-    const exp = workoutData.user.experience || 'intermediate';
-    if (exp === 'beginner') {
-        experienceFactor = 1.1;
-    } else if (exp === 'advanced') {
-        experienceFactor = 0.9;
-    }
-
-    let ageFactor = 1.0;
-    if (workoutData.user.birthDate) {
-        const birthYear = new Date(workoutData.user.birthDate).getFullYear();
-        const currentYear = new Date().getFullYear();
-        const age = currentYear - birthYear;
-        if (age > 20) {
-            ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
-        }
-    }
-
-    const baselineRecovery = genderFactor * experienceFactor * ageFactor;
-    const globalRecovery = Math.max(0.3, Math.min(1.0, 
-        cnsFatigue * sleepFactor * hormonalFactor * baselineRecovery
-    ));
-
-    const now = new Date();
-    const scores = pool.map(m => {
-        const last = muscleLastTrained[m.name];
-        const daysSince = last ? (now - new Date(last)) / (1000 * 60 * 60 * 24) : Infinity;
-        const effectiveRest = getEffectiveRestDays?.(m) || m.restDays || 2;
-
-        const readinessRatio = daysSince / effectiveRest;
-        const k = 3;
-        const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
-        let adjustedRecovery = localRecovery * globalRecovery;
-
-        const freq = getTrainingFrequency(m.name);
-        const freqFactor = Math.exp(-freq / 3);
-
-        let riskFactor = 1.0;
-        if (m.agingRisk === 'high' && m.category === 'longevity') {
-            const urgency = Math.min(2, 1 + (daysSince / 14));
-            riskFactor = urgency;
-        }
-
-        let tendonFactor = 1.0;
-        if (['quads', 'hamstrings', 'chest', 'biceps', 'triceps', 'calves'].includes(m.name)) {
-            tendonFactor = 0.95;
-        }
-
-        const userGoal = workoutData.user.goal || 'balanced';
-        let goalFactor = 1.0;
-        if (userGoal === 'strength' || userGoal === 'powerlifting') {
-            if (m.category === 'major') goalFactor = 1.2;
-            if (['quads','hamstrings','glutes','chest','back','shoulders','triceps'].includes(m.name)) {
-                goalFactor *= 1.1;
-            }
-        } else if (userGoal === 'longevity') {
-            if (m.category === 'longevity') goalFactor = 1.5;
-        } else if (userGoal === 'hypertrophy') {
-            if (m.category === 'major') goalFactor = 1.3;
-        }
-
-        const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
-        const noveltyBoost = !last ? 0.5 : 0.0;
-
-        const targetRest = effectiveRest * 1.5;
-        let coverageUrgency = 1.0;
-        if (last) {
-            coverageUrgency = Math.min(3, Math.pow(daysSince / targetRest, 2));
-        } else {
-            coverageUrgency = 3;
-        }
-
-        let score = adjustedRecovery * freqFactor * riskFactor * goalFactor * injuryFactor * tendonFactor * coverageUrgency 
-                    + noveltyBoost + (Math.random() * 0.2 - 0.1);
-        return { muscle: m, score: Math.max(0, score) };
-    });
-
-    scores.sort((a, b) => b.score - a.score);
-
-    const numAccessory = Math.min(scores.length, Math.floor(Math.random() * 3) + 2);
-    const expScores = scores.map(s => Math.exp(s.score));
-    const sumExp = expScores.reduce((a, b) => a + b, 0);
-    const probs = expScores.map(e => e / sumExp);
-
-    const selected = [];
-    const indices = Array.from({ length: scores.length }, (_, i) => i);
-    for (let i = 0; i < numAccessory; i++) {
-        if (indices.length === 0) break;
-        let cum = 0;
-        const cumProbs = indices.map(idx => {
-            cum += probs[idx];
-            return cum;
-        });
-        const rand = Math.random() * cum;
-        const chosenIdx = indices.find((_, j) => rand <= cumProbs[j]);
-        selected.push(scores[chosenIdx].muscle.name);
-        const pos = indices.indexOf(chosenIdx);
-        indices.splice(pos, 1);
-    }
-
-    const accessoryMuscles = selected;
-    const allMuscles = [...new Set([...split.focus, ...accessoryMuscles])];
-
-    allMuscles.forEach(mg => {
-        const ex = generateExerciseFromLibrary(mg);
-        if (ex) currentWorkout.exercises.push(generateExercisePrescription(ex, mult));
-    });
-
-    updateDashboard();
-    showNotification(`Workout generated: ${currentWorkout.name}`);
-    
-    if (document.getElementById('workout-section').classList.contains('active')) {
-        renderExerciseDeck();
-    }
+/**
+ * Checks if there's a recent injury note mentioning this muscle (last 14 days).
+ */
+function hasRecentInjury(muscleName) {
+  return workoutData.injuries?.some(inj =>
+    inj.note?.toLowerCase().includes(muscleName) &&
+    (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
+  ) || false;
 }
 
 // ---------- DASHBOARD UPDATE ----------
