@@ -1628,27 +1628,6 @@ function renderExerciseDeckInModal() {
     setupModalIntersectionObserver();
 }
 
-// Navigation for modal deck using scrollIntoView
-let modalCurrentCardIndex = 0; // Keep this variable if you want to track index for keyboard nav
-
-function navigateModalDeck(direction) {
-    const deck = document.getElementById('exercise-deck-modal');
-    const cards = deck.querySelectorAll('.exercise-card, .summary-card');
-    if (cards.length === 0) return;
-
-    // Find current index based on scroll position (optional, but nice for keyboard)
-    // For simplicity, we'll use the stored modalCurrentCardIndex
-    const newIndex = Math.max(0, Math.min(cards.length - 1, modalCurrentCardIndex + direction));
-    cards[newIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // The Intersection Observer will update modalCurrentCardIndex and header
-}
-
-function nextModalCard() {
-    navigateModalDeck(1);
-}
-
-function prevModalCard() {
-    navigateModalDeck(-1);
 }
 
 function addModalSummaryCard(deck) {
