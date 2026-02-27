@@ -1497,6 +1497,56 @@ function updateModalWorkoutHeader() {
     document.getElementById('modalWorkoutIntensity').innerText = 'Moderate';
 }
 
+// ---------- MODAL DECK FUNCTIONS ----------
+let modalObserver; // Keep reference for cleanup
+let modalCurrentCardIndex = 0; // Track current card index for keyboard navigation
+
+function setupModalIntersectionObserver() {
+    // Disconnect previous observer if any
+    if (modalObserver) modalObserver.disconnect();
+
+    modalObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const card = entry.target;
+                const index = card.dataset.index;
+                if (index !== undefined) {
+                    modalCurrentCardIndex = parseInt(index);
+                    const ex = currentWorkout?.exercises[modalCurrentCardIndex];
+                    if (ex) {
+                        document.getElementById('modalWorkoutType').innerText = ex.name;
+                    }
+                }
+            }
+        });
+    }, { threshold: 0.6 });
+
+    // Observe all cards and the summary card
+    const deck = document.getElementById('exercise-deck-modal');
+    if (!deck) return;
+    deck.querySelectorAll('.exercise-card, .summary-card').forEach(card => {
+        modalObserver.observe(card);
+    });
+}
+
+function navigateModalDeck(direction) {
+    const deck = document.getElementById('exercise-deck-modal');
+    const cards = deck.querySelectorAll('.exercise-card, .summary-card');
+    if (cards.length === 0) return;
+
+    const newIndex = Math.max(0, Math.min(cards.length - 1, modalCurrentCardIndex + direction));
+    cards[newIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Index will be updated by the Intersection Observer
+}
+
+function nextModalCard() {
+    navigateModalDeck(1);
+}
+
+function prevModalCard() {
+    navigateModalDeck(-1);
+}
+
 function renderExerciseDeckInModal() {
     const deck = document.getElementById('exercise-deck-modal');
     if (!deck) return;
