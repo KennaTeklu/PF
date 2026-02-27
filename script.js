@@ -1289,6 +1289,7 @@ function updateDashboardChart() {
 // ---------- WORKOUT DECK RENDERING (NEW) ----------
 function renderExerciseDeck() {
     const deck = document.getElementById('exercise-deck');
+    if (deck) deck.scrollLeft = 0;
     if (!deck) return;
     deck.innerHTML = '';
 
