@@ -1311,6 +1311,9 @@ async function generateNextWorkout() {
     // --- UI SYNC & NOTIFICATIONS ---
     updateDashboard();
 
+    // Update modal header if modal is open
+    updateModalWorkoutHeader();
+
     if (document.getElementById('workout-section').classList.contains('active')) {
       renderExerciseDeck();
     }
@@ -1330,7 +1333,6 @@ async function generateNextWorkout() {
     showLoading(false);
   }
 }
-
 // ====================== //
 // Required helpers (assumed to exist globally, but shown for completeness)
 // ====================== //
@@ -1752,6 +1754,8 @@ function openWorkoutModal() {
     }
     // Render the deck inside the modal
     renderExerciseDeckInModal();
+    // Update the modal header with current workout info
+    updateModalWorkoutHeader();
     // Show the modal
     document.getElementById('workoutModal').classList.add('active');
     // Optionally hide the regular workout section if it's visible
@@ -1762,6 +1766,25 @@ function closeWorkoutModal() {
     document.getElementById('workoutModal').classList.remove('active');
     // Return to dashboard (or previous section)
     showSection('dashboard');
+}
+
+function updateModalWorkoutHeader() {
+    if (!currentWorkout) return;
+    const modal = document.getElementById('workoutModal');
+    if (!modal || !modal.classList.contains('active')) return; // only update if modal is open
+
+    document.getElementById('modalWorkoutType').innerText = currentWorkout.name;
+
+    // Optionally update focus, time, intensity from the split or workout
+    const split = workoutProgram.splits.find(s => s.id === currentWorkout.type);
+    if (split) {
+        document.getElementById('modalWorkoutFocus').innerText = split.focus.join(', ');
+    } else {
+        document.getElementById('modalWorkoutFocus').innerText = 'General';
+    }
+    // Placeholder values – adjust as needed
+    document.getElementById('modalWorkoutTime').innerText = '60 min';
+    document.getElementById('modalWorkoutIntensity').innerText = 'Moderate';
 }
 
 function renderExerciseDeckInModal() {
