@@ -1047,15 +1047,6 @@ input:checked + .slider:before {
 }
 
 /* Fullscreen modal for workout */
-.modal-content-fullscreen {
-    width: 100vw;
-    height: 100vh;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-}
 
 .workout-modal-header {
     display: flex;
@@ -2613,12 +2604,7 @@ input:checked + .slider:before {
 }
 
 /* ========== WORKOUT SECTION – PAGE FLIP CAROUSEL ========== */
-#workout-section {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - var(--nav-height) - 25px);
-    overflow: hidden;
-}
+
 
 .workout-session-header-bar {
     flex-shrink: 0;
@@ -2637,37 +2623,76 @@ input:checked + .slider:before {
     width: 100%;
 }
 
-/* The slider – moves left/right with transform */
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* ========== FULLSCREEN WORKOUT MODAL ========== */
+.modal-content-fullscreen {
+    width: 100vw;
+    height: 100vh;
+    background: white;           /* or var(--gray-900) if you prefer dark */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Header inside modal – adjust as needed */
+.workout-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    flex-shrink: 0;
+}
+
+/* The deck container – now specifically for the modal */
+#exercise-deck-modal {
+    flex: 1;                     /* takes all remaining space */
+    width: 100%;
+    position: relative;
+    overflow: hidden;            /* we control movement, no scrollbars */
+}
+
+/* The slider – stacks cards vertically and moves up/down */
 .deck-slider {
     display: flex;
+    flex-direction: column;      /* vertical stacking */
     height: 100%;
     width: 100%;
-    transition: transform 0.3s ease-out;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); /* smooth snap */
     will-change: transform;
 }
 
-/* Every card (exercise or summary) is a full page */
+/* Every card (exercise or summary) exactly fills the slider's viewport */
 .exercise-card,
 .summary-card {
-    flex: 0 0 100%;
+    flex: 0 0 100%;              /* exactly one screen height */
+    width: 100%;
     height: 100%;
-    overflow-y: auto;        /* scroll inside if content is long */
+    overflow-y: auto;             /* scroll inside if content too long */
     padding: 20px 25px;
     box-sizing: border-box;
     background: white;
-    border-right: 2px solid var(--gray-200); /* visual separator */
+    border-bottom: 2px solid var(--gray-200); /* visual separator between pages */
 }
 
-/* Remove separator on the last card */
+/* Remove bottom border on the last card */
 .exercise-card:last-child,
 .summary-card:last-child {
-    border-right: none;
+    border-bottom: none;
 }
 
-/* Image container */
+/* Image container – takes a portion of the card */
 .exercise-card .card-image {
     width: 100%;
-    height: min(45vh, 450px);
+    height: 35vh;                 /* fixed proportion, adapts to screen height */
     background: var(--gray-50);
     border-radius: 16px;
     margin-bottom: 20px;
@@ -2682,7 +2707,7 @@ input:checked + .slider:before {
     display: block;
 }
 
-/* Attribution tooltip – unchanged */
+/* Attribution tooltip – unchanged, but included for completeness */
 .attribution-anchor {
     position: absolute;
     bottom: 10px;
@@ -2729,11 +2754,11 @@ input:checked + .slider:before {
     text-decoration: none;
 }
 
-/* Optional navigation arrows */
+/* Optional navigation arrows (up/down) – you can keep or remove */
 .deck-nav {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translateX(-50%);
     width: 40px;
     height: 40px;
     background: rgba(0, 0, 0, 0.5);
@@ -2752,8 +2777,8 @@ input:checked + .slider:before {
     opacity: 1;
 }
 .deck-nav.prev {
-    left: 10px;
+    top: 10px;
 }
 .deck-nav.next {
-    right: 10px;
+    bottom: 10px;
 }
