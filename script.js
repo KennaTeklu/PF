@@ -657,6 +657,109 @@ function attachSwipeListeners(card, index) {
     card.addEventListener('touchend', handleTouchEnd, { passive: false });
 }
 
+// ---------- PAGE FLIP CAROUSEL ----------
+let currentCardIndex = 0;
+let deckSlider = null;
+let cards = [];
+
+function initDeckCarousel() {
+    const deck = document.getElementById('exercise-deck');
+    if (!deck) return;
+
+    // Wrap all existing cards in a slider div
+    deck.classList.add('workout-deck-scroller'); // ensure class is set
+    deck.innerHTML = `<div class="deck-slider">${deck.innerHTML}</div>`;
+    deckSlider = deck.querySelector('.deck-slider');
+    cards = Array.from(deckSlider.children);
+
+    currentCardIndex = 0;
+    updateCardPosition();
+}
+
+function updateCardPosition() {
+    if (!deckSlider) return;
+    deckSlider.style.transform = `translateX(-${currentCardIndex * 100}%)`;
+}
+
+function nextCard() {
+    if (currentCardIndex < cards.length - 1) {
+        currentCardIndex++;
+        updateCardPosition();
+    }
+}
+
+function prevCard() {
+    if (currentCardIndex > 0) {
+        currentCardIndex--;
+        updateCardPosition();
+    }
+}
+
+// Touch swipe detection
+let touchStartX = 0;
+
+function setupSwipeListener() {
+    const deck = document.getElementById('exercise-deck');
+    if (!deck) return;
+
+    deck.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    deck.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+        const threshold = 50;
+
+        if (Math.abs(diff) > threshold) {
+            if (diff > 0) {
+                prevCard();  // swipe right
+            } else {
+                nextCard();  // swipe left
+            }
+        }
+    }, { passive: true });
+}
+
+// Keyboard arrow keys
+window.addEventListener('keydown', (e) => {
+    const workoutSection = document.getElementById('workout-section');
+    if (!workoutSection || !workoutSection.classList.contains('active')) return;
+
+    if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevCard();
+    } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        nextCard();
+    }
+});
+
+// Optional navigation buttons
+function addDeckNavButtons() {
+    const deck = document.getElementById('exercise-deck');
+    if (!deck) return;
+
+    // Remove any existing nav buttons
+    const oldPrev = deck.querySelector('.deck-nav.prev');
+    const oldNext = deck.querySelector('.deck-nav.next');
+    if (oldPrev) oldPrev.remove();
+    if (oldNext) oldNext.remove();
+
+    const prevBtn = document.createElement('div');
+    prevBtn.className = 'deck-nav prev';
+    prevBtn.innerHTML = '❮';
+    prevBtn.onclick = prevCard;
+
+    const nextBtn = document.createElement('div');
+    nextBtn.className = 'deck-nav next';
+    nextBtn.innerHTML = '❯';
+    nextBtn.onclick = nextCard;
+
+    deck.appendChild(prevBtn);
+    deck.appendChild(nextBtn);
+}
+
 function showLoading(show) {
     document.getElementById('loading').classList.toggle('active', show);
 }
@@ -1289,8 +1392,9 @@ function updateDashboardChart() {
 // ---------- WORKOUT DECK RENDERING (NEW) ----------
 function renderExerciseDeck() {
     const deck = document.getElementById('exercise-deck');
-    if (deck) deck.scrollLeft = 0;
     if (!deck) return;
+
+    // Clear the deck completely (including any leftover slider or buttons)
     deck.innerHTML = '';
 
     if (!currentWorkout || !currentWorkout.exercises.length) {
@@ -1298,6 +1402,7 @@ function renderExerciseDeck() {
         return;
     }
 
+    // Create exercise cards
     currentWorkout.exercises.forEach((ex, index) => {
         const card = document.createElement('div');
         card.className = 'exercise-card';
@@ -1336,6 +1441,7 @@ function renderExerciseDeck() {
             </div>
         `;
 
+        // Attach card menu logic (unchanged)
         const menu = card.querySelector('.card-menu');
         const popup = menu.querySelector('.menu-popup');
         menu.addEventListener('click', (e) => {
@@ -1347,18 +1453,24 @@ function renderExerciseDeck() {
             if (!card.contains(e.target)) popup.classList.remove('show');
         });
 
+        // Click on card (but not on menu, info, or buttons) opens log drawer
         card.addEventListener('click', (e) => {
             if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
                 openLogDrawer(index);
             }
         });
 
-        attachSwipeListeners(card, index);
         deck.appendChild(card);
-        fetchExerciseImage(ex.name, `img-${index}`, `desc-${index}`);
+        fetchExerciseImage(ex.name, `img-${index}`);
     });
 
-    addSummaryCard();
+    // Add summary card
+    addSummaryCard(); // This should append to deck (not to a slider)
+
+    // Initialize carousel AFTER all cards are in the deck
+    initDeckCarousel();
+    setupSwipeListener();
+    addDeckNavButtons();
 }
 
 async function fetchExerciseImage(exName, imgId) {
@@ -1458,17 +1570,11 @@ function addSummaryCard() {
     const deck = document.getElementById('exercise-deck');
     if (!deck) return;
     
-    // Guard against missing workout
-    if (!currentWorkout || !currentWorkout.exercises) {
-        deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
-        return;
-    }
+    if (!currentWorkout || !currentWorkout.exercises) return;
     
     const completedCount = currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length;
     const skippedCount = currentWorkout.exercises.filter(ex => ex.skipped).length;
     const total = currentWorkout.exercises.length;
-    
-    // Avoid division by zero
     const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
     
     const summaryDiv = document.createElement('div');
