@@ -1628,8 +1628,6 @@ function renderExerciseDeckInModal() {
     setupModalIntersectionObserver();
 }
 
-}
-
 function addModalSummaryCard(deck) {
     if (!currentWorkout || !currentWorkout.exercises) return;
     
