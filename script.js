@@ -3051,4 +3051,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateNavigation();
     addPeriodButton();
+    window.addEventListener('resize', () => {
+        const deck = document.getElementById('exercise-deck');
+        if (deck) deck.style.overflowX = 'auto'; // forces reflow if needed
+    });
 });
