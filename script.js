@@ -1194,9 +1194,9 @@ function updateDashboard() {
     }
     updateLongevityScoreDisplay();
 }
-
 function renderActivityCalendar() {
     const cal = document.getElementById('activity-calendar');
+    if (!cal) return; // Guard against missing element
     cal.innerHTML = '';
     for (let i = 0; i < 90; i++) {
         const day = new Date();
@@ -1210,15 +1210,23 @@ function renderActivityCalendar() {
 
 function renderDashPRs() {
     const list = document.getElementById('dash-prs-list');
-    const prs = Object.entries(workoutData.exercises)
-        .filter(([_, data]) => data.bestWeight)
+    if (!list) return; // Guard against missing element
+    
+    const exercises = workoutData.exercises || {};
+    const prs = Object.entries(exercises)
+        .filter(([_, data]) => data && data.bestWeight)
         .sort((a,b) => b[1].bestWeight - a[1].bestWeight)
         .slice(0, 5);
-    list.innerHTML = prs.map(([id, data]) => `
-        <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee">
-            <span>${id.replace(/_/g,' ')}</span><strong>${data.bestWeight} lbs</strong>
-        </div>
-    `).join('') || '<p style="color:#aaa">No records yet.</p>';
+    
+    if (prs.length === 0) {
+        list.innerHTML = '<p style="color:#aaa">No records yet.</p>';
+    } else {
+        list.innerHTML = prs.map(([id, data]) => `
+            <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee">
+                <span>${id.replace(/_/g,' ')}</span><strong>${data.bestWeight} lbs</strong>
+            </div>
+        `).join('');
+    }
 }
 
 function updateProjection() {
@@ -1241,6 +1249,7 @@ function updateProjection() {
 
 function renderBadges() {
     const grid = document.getElementById('badge-grid');
+    if (!grid) return; // Guard against missing element
     grid.innerHTML = achievements.map(a => `
         <div class="badge-item ${a.check(workoutData) ? 'unlocked' : ''}" title="${a.desc}">
             <i class="fas ${a.icon} badge-icon"></i>
@@ -1250,7 +1259,9 @@ function renderBadges() {
 }
 
 function updateDashboardChart() {
-    const ctx = document.getElementById('dashboardChart').getContext('2d');
+    const canvas = document.getElementById('dashboardChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (charts.dashboard) charts.dashboard.destroy();
     const lastWorkouts = workoutData.workouts.slice(-6);
     const labels = lastWorkouts.map((_, i) => `W${i+1}`);
@@ -1442,9 +1453,20 @@ function showExerciseDetails(exName, index) {
 function addSummaryCard() {
     const deck = document.getElementById('exercise-deck');
     if (!deck) return;
+    
+    // Guard against missing workout
+    if (!currentWorkout || !currentWorkout.exercises) {
+        deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
+        return;
+    }
+    
     const completedCount = currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length;
     const skippedCount = currentWorkout.exercises.filter(ex => ex.skipped).length;
     const total = currentWorkout.exercises.length;
+    
+    // Avoid division by zero
+    const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+    
     const summaryDiv = document.createElement('div');
     summaryDiv.className = 'summary-card';
     summaryDiv.innerHTML = `
@@ -1452,7 +1474,7 @@ function addSummaryCard() {
         <div class="summary-stats">
             <p>✅ Completed: ${completedCount}</p>
             <p>⏭️ Skipped: ${skippedCount}</p>
-            <p>📊 Progress: ${Math.round((completedCount/total)*100)}%</p>
+            <p>📊 Progress: ${progress}%</p>
         </div>
         <div class="btn-group">
             <button class="btn btn-success" onclick="completeWorkout()">Complete Workout</button>
@@ -1518,21 +1540,43 @@ function openLogDrawer(index) {
 }
 
 function renderRepInputs(index) {
-    const sets = parseInt(document.getElementById('log-sets').value);
+    const setsSelect = document.getElementById('log-sets');
     const container = document.getElementById('log-reps-container');
-    const exercise = currentWorkout.exercises[index];
+    const exercise = currentWorkout?.exercises[index];
+    
+    // Guard against missing elements or invalid exercise
+    if (!setsSelect || !container || !exercise) {
+        console.warn("renderRepInputs: missing elements or exercise");
+        return;
+    }
+    
+    const sets = parseInt(setsSelect.value);
+    if (isNaN(sets) || sets < 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    // Convert prescribed reps to a display string for placeholder
+    let placeholderReps = '';
+    if (typeof exercise.prescribed.reps === 'string') {
+        placeholderReps = exercise.prescribed.reps;
+    } else if (exercise.prescribed.reps && typeof exercise.prescribed.reps === 'object') {
+        placeholderReps = `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
+    } else {
+        placeholderReps = 'reps';
+    }
+    
     let html = '';
     for (let i = 0; i < sets; i++) {
         html += `
             <div class="form-group">
                 <label>Set ${i + 1} reps</label>
-                <input type="number" id="log-rep-${i}" placeholder="${exercise.prescribed.reps}">
+                <input type="number" id="log-rep-${i}" placeholder="${placeholderReps}">
             </div>
         `;
     }
     container.innerHTML = html;
 }
-
 function closeLogDrawer() {
     document.getElementById('log-drawer').classList.remove('active');
 }
@@ -2105,9 +2149,9 @@ function generateLongevityRecommendations(scores) {
 
 function updateLongevityScoreDisplay() {
     const score = calculateLongevityScore().score;
-    document.getElementById('longevityScore').innerText = score;
+    const el = document.getElementById('longevityScore');
+    if (el) el.innerText = score;
 }
-
 function generateLongevityWorkout() {
     const split = workoutProgram.splits.find(s => s.id === "longevity_day");
     currentWorkout = {
