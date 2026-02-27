@@ -1044,7 +1044,10 @@ async function generateNextWorkout() {
     const allMuscles = [...new Set([...split.focus, ...selectedAccessories])];
 
     allMuscles.forEach(muscleName => {
-      const exerciseBase = pickExerciseVariety ? pickExerciseVariety(muscleName) : generateExerciseFromLibrary(muscleName);
+      // FIX: Use typeof to safely check if pickExerciseVariety is defined
+      const exerciseBase = (typeof pickExerciseVariety !== 'undefined' && pickExerciseVariety) 
+        ? pickExerciseVariety(muscleName) 
+        : generateExerciseFromLibrary(muscleName);
       if (exerciseBase) {
         const exercise = generateExercisePrescription(exerciseBase, phaseMultiplier);
         currentWorkout.exercises.push(exercise);
