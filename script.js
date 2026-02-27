@@ -2986,7 +2986,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 dirtyExercises.clear();
                 workoutDirty = false;
                 updateNavigation();
-                if (!currentWorkout && workoutData.workouts.length === 0) generateNextWorkout();
+                if (!currentWorkout && workoutData.workouts.length === 0) {
+                generateNextWorkout().catch(err => console.error(err));
             }
         );
     } else {
