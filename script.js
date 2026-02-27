@@ -2976,6 +2976,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (workoutData.workouts.length > 0) calculateMuscleLastTrained();
 
     // --- Check for draft ---
+    // --- Check for draft ---
     if (restoreDraft()) {
         // Ask user if they want to restore
         showUnsavedModal(
@@ -2990,7 +2991,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 workoutDirty = false;
                 updateNavigation();
                 if (!currentWorkout && workoutData.workouts.length === 0) {
-                generateNextWorkout().catch(err => console.error(err));
+                    generateNextWorkout().catch(err => console.error(err));
+                }
             }
         );
     } else {
