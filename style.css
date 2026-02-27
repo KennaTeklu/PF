@@ -2102,69 +2102,6 @@ input:checked + .slider:before {
     cursor: pointer;
 }
 
-/* Ensure the workout section fills the available space */
-#workout-section {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - var(--nav-height) - 25px); /* adjust for nav + padding */
-    overflow: hidden;
-}
-
-.workout-session-header-bar {
-    flex-shrink: 0; /* keep header at top */
-}
-
-.workout-deck-scroller {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    gap: 0; /* no gap between pages */
-    height: 100%; /* take remaining height */
-    padding: 0;
-    margin: 0;
-    scroll-behavior: smooth; /* instant but smooth */
-    -webkit-overflow-scrolling: touch; /* smooth on iOS */
-    scrollbar-width: none; /* hide scrollbar (optional) */
-}
-
-.workout-deck-scroller::-webkit-scrollbar {
-    display: none; /* hide scrollbar for Chrome/Safari */
-}
-
-.exercise-card {
-    scroll-snap-align: start;
-    flex: 0 0 100%; /* each card takes full width of container */
-    height: 100%; /* full height */
-    background: white;
-    border-radius: 0; /* remove rounding for seamless full‑screen look (optional) */
-    padding: 20px 25px;
-    border: none; /* remove border if you want edge‑to‑edge */
-    box-shadow: none; /* remove shadow, or keep a subtle one if desired */
-    overflow-y: auto; /* allow internal scrolling if content is long */
-    box-sizing: border-box;
-    /* keep any other existing styles like position, transition if needed */
-}
-
-/* Optional: add a subtle separator between pages (like a thin shadow on the right edge) */
-.exercise-card:not(:last-child) {
-    border-right: 2px solid var(--gray-200);
-}
-
-/* If you want to keep the summary card as a full page too, ensure it matches */
-.summary-card {
-    scroll-snap-align: start;
-    flex: 0 0 100%;
-    height: 100%;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .exercise-card .card-image img { width: 100%; height: 100%; object-fit: cover; }
 
 .card-prescription {
@@ -2239,15 +2176,6 @@ input:checked + .slider:before {
 
 .exercise-card:active {
     transform: scale(0.99);
-}
-
-.exercise-card .card-image {
-    width: 100%;
-    height: 160px;
-    background: var(--gray-100);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 15px;
 }
 
 /* Fallback buttons inside image container */
@@ -2628,14 +2556,84 @@ input:checked + .slider:before {
     position: relative; /* needed for absolute positioning of attribution */
 }
 
+/* ========== WORKOUT SECTION – HORIZONTAL PAGE FLIP ========== */
+#workout-section {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--nav-height) - 25px); /* full viewport minus nav & padding */
+    overflow: hidden; /* prevent any scrolling on the section itself */
+}
+
+.workout-session-header-bar {
+    flex-shrink: 0; /* header stays at top */
+    background: white;
+    padding: 20px 25px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--gray-200);
+}
+
+/* Deck scroller – horizontal scroll with snap */
+.workout-deck-scroller {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    gap: 0; /* no gap between pages */
+    height: 100%; /* fill remaining height */
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* hide scrollbar for Firefox */
+}
+
+.workout-deck-scroller::-webkit-scrollbar {
+    display: none; /* hide scrollbar for Chrome/Safari */
+}
+
+/* Exercise cards – each takes full width and height of scroller */
+.exercise-card {
+    scroll-snap-align: start;
+    flex: 0 0 100%; /* exactly 100% of container width */
+    height: 100%; /* fill scroller height */
+    background: white;
+    border-radius: 0; /* remove rounding for edge‑to‑edge */
+    padding: 20px 25px;
+    border: none;
+    box-shadow: none;
+    overflow-y: auto; /* allow internal scrolling for long content */
+    box-sizing: border-box;
+    position: relative;
+    transition: none; /* remove any transition that might cause lag */
+}
+
+/* Optional separator between cards */
+.exercise-card:not(:last-child) {
+    border-right: 2px solid var(--gray-200);
+}
+
+/* Image container inside card – now larger */
+.exercise-card .card-image {
+    width: 100%;
+    height: min(45vh, 450px); /* adapts to screen size */
+    background: var(--gray-50);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative; /* for attribution anchor */
+}
+
 .card-image img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* ensures full image is visible, may add letterboxing */
+    object-fit: contain; /* ensure full image visible, may add letterboxing */
     display: block;
 }
 
-/* The Legal Tooltip – unchanged, but included for reference */
+/* The Legal Tooltip (unchanged) */
 .attribution-anchor {
     position: absolute;
     bottom: 10px;
@@ -2680,4 +2678,18 @@ input:checked + .slider:before {
 .attribution-tooltip a {
     color: var(--primary);
     text-decoration: none;
+}
+
+/* Summary card – also as a full page */
+.summary-card {
+    scroll-snap-align: start;
+    flex: 0 0 100%;
+    height: 100%;
+    background: white;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
