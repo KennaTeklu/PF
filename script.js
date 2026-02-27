@@ -800,7 +800,8 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     
     if (history && history.bestWeight) {
         const last = history.bestWeight;
-        const prog = workoutData.user.settings.progressionRate || 0.02;
+        // Safely access progressionRate
+        const prog = workoutData.user.settings?.progressionRate ?? 0.02;
         prescribedWeight = Math.round(last * (1 + prog) * phaseMultiplier * deloadMultiplier);
         notes = `Based on last session: ${last} lbs, adjusted for phase.`;
         if (deloadMultiplier < 1) notes += " Deload active (high RPE trend).";
