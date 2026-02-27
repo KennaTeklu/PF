@@ -627,36 +627,6 @@ function showUnsavedModal(onConfirm, onCancel) {
     modalEl.classList.add('active');
 }
 
-// ---------- SWIPE DETECTION ----------
-function attachSwipeListeners(card, index) {
-    let touchstartX = 0;
-    let touchstartY = 0;
-    let touchendX = 0;
-    let touchendY = 0;
-    const threshold = 30;
-    const verticalThreshold = 20;
-
-    const handleTouchStart = (e) => {
-        touchstartX = e.changedTouches[0].screenX;
-        touchstartY = e.changedTouches[0].screenY;
-    };
-
-    const handleTouchEnd = (e) => {
-        touchendX = e.changedTouches[0].screenX;
-        touchendY = e.changedTouches[0].screenY;
-        const deltaX = touchendX - touchstartX;
-        const deltaY = touchendY - touchstartY;
-
-        if (Math.abs(deltaX) > threshold && Math.abs(deltaY) < verticalThreshold) {
-            e.preventDefault();
-            openLogDrawer(index);
-        }
-    };
-
-    card.addEventListener('touchstart', handleTouchStart, { passive: true });
-    card.addEventListener('touchend', handleTouchEnd, { passive: false });
-}
-
 function showLoading(show) {
     document.getElementById('loading').classList.toggle('active', show);
 }
