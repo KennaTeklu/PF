@@ -2102,25 +2102,67 @@ input:checked + .slider:before {
     cursor: pointer;
 }
 
-.workout-deck-scroller {
+/* Ensure the workout section fills the available space */
+#workout-section {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-    height: calc(100vh - 250px);
-    padding-bottom: 100px;
+    height: calc(100vh - var(--nav-height) - 25px); /* adjust for nav + padding */
+    overflow: hidden;
+}
+
+.workout-session-header-bar {
+    flex-shrink: 0; /* keep header at top */
+}
+
+.workout-deck-scroller {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    gap: 0; /* no gap between pages */
+    height: 100%; /* take remaining height */
+    padding: 0;
+    margin: 0;
+    scroll-behavior: smooth; /* instant but smooth */
+    -webkit-overflow-scrolling: touch; /* smooth on iOS */
+    scrollbar-width: none; /* hide scrollbar (optional) */
+}
+
+.workout-deck-scroller::-webkit-scrollbar {
+    display: none; /* hide scrollbar for Chrome/Safari */
 }
 
 .exercise-card {
     scroll-snap-align: start;
+    flex: 0 0 100%; /* each card takes full width of container */
+    height: 100%; /* full height */
     background: white;
-    border-radius: 24px;
-    padding: 25px;
-    border: 1px solid var(--gray-200);
-    box-shadow: var(--shadow-md);
-    position: relative;
-    transition: var(--transition);
+    border-radius: 0; /* remove rounding for seamless full‑screen look (optional) */
+    padding: 20px 25px;
+    border: none; /* remove border if you want edge‑to‑edge */
+    box-shadow: none; /* remove shadow, or keep a subtle one if desired */
+    overflow-y: auto; /* allow internal scrolling if content is long */
+    box-sizing: border-box;
+    /* keep any other existing styles like position, transition if needed */
+}
+
+/* Optional: add a subtle separator between pages (like a thin shadow on the right edge) */
+.exercise-card:not(:last-child) {
+    border-right: 2px solid var(--gray-200);
+}
+
+/* If you want to keep the summary card as a full page too, ensure it matches */
+.summary-card {
+    scroll-snap-align: start;
+    flex: 0 0 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .exercise-card .card-image {
