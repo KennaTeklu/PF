@@ -2721,34 +2721,7 @@ input:checked + .slider:before {
     text-decoration: none;
 }
 
-/* Optional navigation arrows (up/down) – you can keep or remove */
-.deck-nav {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-    user-select: none;
-}
-.deck-nav:hover {
-    opacity: 1;
-}
-.deck-nav.prev {
-    top: 10px;
-}
-.deck-nav.next {
-    bottom: 10px;
-}
+
 .workout-deck-scroller {
     display: flex;
     overflow-x: auto;
