@@ -1226,6 +1226,9 @@ function updateProjection() {
     const workouts = workoutData.workouts.length;
     const forecast = document.getElementById('strength-forecast');
     const note = document.getElementById('forecast-note');
+    
+    if (!forecast || !note) return; // prevent errors if elements missing
+    
     if (workouts < 3) {
         forecast.innerText = "Need more data";
         return;
@@ -1537,19 +1540,34 @@ function closeLogDrawer() {
 function saveLog() {
     const index = currentExerciseIndex;
     const exercise = currentWorkout.exercises[index];
-    const weight = parseFloat(document.getElementById('log-weight').value);
-    const sets = parseInt(document.getElementById('log-sets').value);
-    const rpe = parseInt(document.getElementById('log-rpe').value);
-    const notes = document.getElementById('log-notes').value;
+    
+    // Safely get form elements
+    const weightInput = document.getElementById('log-weight');
+    const setsSelect = document.getElementById('log-sets');
+    const rpeSelect = document.getElementById('log-rpe');
+    const notesTextarea = document.getElementById('log-notes');
+    
+    // If any critical element is missing, abort
+    if (!weightInput || !setsSelect || !rpeSelect || !notesTextarea) {
+        alert("Log form is not fully loaded. Please try again.");
+        return;
+    }
+    
+    const weight = parseFloat(weightInput.value);
+    const sets = parseInt(setsSelect.value);
+    const rpe = parseInt(rpeSelect.value);
+    const notes = notesTextarea.value;
     const reps = [];
 
+    // Collect rep inputs (they might be missing if sets is 0, but we already check sets)
     for (let i = 0; i < sets; i++) {
         const repInput = document.getElementById(`log-rep-${i}`);
         if (repInput && repInput.value) reps.push(parseInt(repInput.value));
     }
 
-    if (!weight || sets === 0) {
-        alert("Please enter weight and at least one set");
+    // Validate
+    if (isNaN(weight) || weight <= 0 || sets === 0) {
+        alert("Please enter a valid weight and at least one set.");
         return;
     }
 
