@@ -1159,7 +1159,10 @@ function updateDashboard() {
     document.getElementById('longevityScore').innerText = longevityScore;
     
     const vitalityFill = document.querySelector('.longevity-vitality-card .progress-fill');
-    if (vitalityFill) vitalityFill.style.width = longevityScore + '%';
+    if (vitalityFill) {
+        const width = Math.min(longevityScore, 100); // cap at 100%
+        vitalityFill.style.width = width + '%';
+    }
 
     document.getElementById('risk-val').innerText = getInjuryRiskFactor();
     
@@ -2073,8 +2076,12 @@ function calculateLongevityScore() {
     };
     const weights = { gripStrength:0.15, balance:0.15, jointMobility:0.25, posture:0.20, muscleBalance:0.15, consistency:0.10 };
     let total = 0, totalW = 0;
-    Object.keys(scores).forEach(k => { total += scores[k] * (weights[k]||0.1); totalW += (weights[k]||0.1); });
-    const final = Math.round((total / totalW) * 100);
+    Object.keys(scores).forEach(k => { 
+        total += scores[k] * (weights[k] || 0.1); 
+        totalW += (weights[k] || 0.1); 
+    });
+    // Remove the *100 – scores are already percentages (0-100), so weighted average is the final score.
+    const final = Math.round(total / totalW);
     return { score: final, breakdown: scores, risks: assessAgingRisks(scores), recommendations: generateLongevityRecommendations(scores) };
 }
 
