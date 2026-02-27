@@ -2165,15 +2165,6 @@ input:checked + .slider:before {
     align-items: center;
 }
 
-.exercise-card .card-image {
-    width: 100%;
-    height: 200px;
-    background: var(--gray-50);
-    border-radius: 16px;
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-
 .exercise-card .card-image img { width: 100%; height: 100%; object-fit: cover; }
 
 .card-prescription {
@@ -2245,20 +2236,7 @@ input:checked + .slider:before {
     100% { background-position: -200% 0; }
 }
 
-.exercise-card {
-    scroll-snap-align: start;
-    flex-shrink: 0;
-    width: 100%;
-    background: white;
-    border-radius: 24px;
-    padding: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    position: relative;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-    box-sizing: border-box;
-    touch-action: pan-y; /* allow vertical scroll, we'll override for horizontal swipes */
-}
+
 .exercise-card:active {
     transform: scale(0.99);
 }
@@ -2321,12 +2299,6 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.card-image img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    display: block;
 }
 .exercise-card h3 {
     font-size: 1.3rem;
@@ -2646,7 +2618,24 @@ input:checked + .slider:before {
     object-fit: cover;
 }
 
-/* The Legal Tooltip */
+.exercise-card .card-image {
+    width: 100%;
+    height: min(40vh, 400px); /* flexible, but not too tall on large screens */
+    background: var(--gray-50);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    position: relative; /* needed for absolute positioning of attribution */
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* ensures full image is visible, may add letterboxing */
+    display: block;
+}
+
+/* The Legal Tooltip – unchanged, but included for reference */
 .attribution-anchor {
     position: absolute;
     bottom: 10px;
