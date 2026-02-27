@@ -2556,16 +2556,16 @@ input:checked + .slider:before {
     position: relative; /* needed for absolute positioning of attribution */
 }
 
-/* ========== WORKOUT SECTION – HORIZONTAL PAGE FLIP ========== */
+/* ========== WORKOUT SECTION – PAGE FLIP CAROUSEL ========== */
 #workout-section {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - var(--nav-height) - 25px); /* full viewport minus nav & padding */
-    overflow: hidden; /* prevent any scrolling on the section itself */
+    height: calc(100vh - var(--nav-height) - 25px);
+    overflow: hidden;
 }
 
 .workout-session-header-bar {
-    flex-shrink: 0; /* header stays at top */
+    flex-shrink: 0;
     background: white;
     padding: 20px 25px;
     border-radius: 20px;
@@ -2573,67 +2573,60 @@ input:checked + .slider:before {
     border: 1px solid var(--gray-200);
 }
 
-/* Deck scroller – horizontal scroll with snap */
+/* Deck container – holds the slider and navigation buttons */
 .workout-deck-scroller {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    gap: 0; /* no gap between pages */
-    height: 100%; /* fill remaining height */
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* hide scrollbar for Firefox */
-}
-
-.workout-deck-scroller::-webkit-scrollbar {
-    display: none; /* hide scrollbar for Chrome/Safari */
-}
-
-/* Exercise cards – each takes full width and height of scroller */
-.exercise-card {
-    scroll-snap-align: start;
-    flex: 0 0 100%; /* exactly 100% of container width */
-    height: 100%; /* fill scroller height */
-    background: white;
-    border-radius: 0; /* remove rounding for edge‑to‑edge */
-    padding: 20px 25px;
-    border: none;
-    box-shadow: none;
-    overflow-y: auto; /* allow internal scrolling for long content */
-    box-sizing: border-box;
     position: relative;
-    transition: none; /* remove any transition that might cause lag */
+    flex: 1;               /* take remaining height */
+    overflow: hidden;       /* no scrollbar, ever */
+    width: 100%;
 }
 
-/* Optional separator between cards */
-.exercise-card:not(:last-child) {
-    border-right: 2px solid var(--gray-200);
+/* The slider – moves left/right with transform */
+.deck-slider {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    transition: transform 0.3s ease-out;
+    will-change: transform;
 }
 
-/* Image container inside card – now larger */
+/* Every card (exercise or summary) is a full page */
+.exercise-card,
+.summary-card {
+    flex: 0 0 100%;
+    height: 100%;
+    overflow-y: auto;        /* scroll inside if content is long */
+    padding: 20px 25px;
+    box-sizing: border-box;
+    background: white;
+    border-right: 2px solid var(--gray-200); /* visual separator */
+}
+
+/* Remove separator on the last card */
+.exercise-card:last-child,
+.summary-card:last-child {
+    border-right: none;
+}
+
+/* Image container */
 .exercise-card .card-image {
     width: 100%;
-    height: min(45vh, 450px); /* adapts to screen size */
+    height: min(45vh, 450px);
     background: var(--gray-50);
     border-radius: 16px;
     margin-bottom: 20px;
     overflow: hidden;
-    position: relative; /* for attribution anchor */
+    position: relative;
 }
 
 .card-image img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* ensure full image visible, may add letterboxing */
+    object-fit: contain;
     display: block;
 }
 
-/* The Legal Tooltip (unchanged) */
+/* Attribution tooltip – unchanged */
 .attribution-anchor {
     position: absolute;
     bottom: 10px;
@@ -2680,16 +2673,31 @@ input:checked + .slider:before {
     text-decoration: none;
 }
 
-/* Summary card – also as a full page */
-.summary-card {
-    scroll-snap-align: start;
-    flex: 0 0 100%;
-    height: 100%;
-    background: white;
-    padding: 30px;
+/* Optional navigation arrows */
+.deck-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    text-align: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    user-select: none;
+}
+.deck-nav:hover {
+    opacity: 1;
+}
+.deck-nav.prev {
+    left: 10px;
+}
+.deck-nav.next {
+    right: 10px;
 }
