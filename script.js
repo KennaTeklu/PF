@@ -2837,7 +2837,6 @@ function updateNavigation() {
     document.getElementById('navUserStats').innerText = `${exp.charAt(0).toUpperCase()+exp.slice(1)} • ${streak} Day Streak`;
     document.getElementById('welcomeName').innerText = `Welcome back, ${name}!`;
     document.getElementById('welcomeAvatar').innerText = name.charAt(0).toUpperCase();
-    document.getElementById('welcomeStreak').innerText = streak;
     document.getElementById('welcomeLevel').innerText = exp.charAt(0).toUpperCase()+exp.slice(1);
     
     const lastExport = new Date(workoutData.lastExport || workoutData.user.created);
