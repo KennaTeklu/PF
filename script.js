@@ -823,7 +823,6 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
 
 // ---------- WORKOUT GENERATION ----------
 /**
- * SUPERMERGED: generateNextWorkout (Elite v7)
  * 
  * Combines:
  * - Sigmoid recovery with local & global physiological factors (CNS, sleep, hormones, gender, age, experience)
@@ -2635,10 +2634,15 @@ function processImport() {
                     loadData(data);
                 }
                 showMainApp();
+                updateDashboard();
+                updateNavigation();
                 showLoading(false);
                 closeModal('importModal');
                 showNotification("Data imported!");
-            } catch(err) { showLoading(false); alert("Error parsing JSON"); }
+            } catch(err) { 
+                showLoading(false); 
+                alert("Error parsing JSON"); 
+            }
         };
         reader.readAsText(file);
     } else if (json) {
@@ -2652,11 +2656,19 @@ function processImport() {
                 loadData(data);
             }
             showMainApp();
+            updateDashboard();
+            updateNavigation();
             showLoading(false);
             closeModal('importModal');
             showNotification("Data imported!");
-        } catch(err) { showLoading(false); alert("Error parsing JSON"); }
-    } else { showLoading(false); alert("Please upload a file or paste JSON"); }
+        } catch(err) { 
+            showLoading(false); 
+            alert("Error parsing JSON"); 
+        }
+    } else { 
+        showLoading(false); 
+        alert("Please upload a file or paste JSON"); 
+    }
 }
 
 function processExerciseImport() {
@@ -2704,7 +2716,19 @@ function exportWorkoutData() {
 }
 
 function loadData(data) {
-    workoutData.user = { ...workoutData.user, ...data.user };
+    // Deep merge user object to preserve nested properties (settings, menstrual, etc.)
+    const mergeDeep = (target, source) => {
+        for (const key in source) {
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                if (!target[key]) target[key] = {};
+                mergeDeep(target[key], source[key]);
+            } else {
+                target[key] = source[key];
+            }
+        }
+        return target;
+    };
+    workoutData.user = mergeDeep(workoutData.user, data.user);
     workoutData.workouts = data.workouts || [];
     workoutData.exercises = data.exercises || {};
     workoutData.goals = data.goals || [];
@@ -2714,9 +2738,10 @@ function loadData(data) {
     if (data.user?.weightHistory) workoutData.user.weightHistory = data.user.weightHistory;
     calculateMuscleLastTrained();
     saveToLocalStorage();
-    if (!currentWorkout && workoutData.workouts.length === 0) generateNextWorkout();
+    // Clear any in‑progress workout to avoid stale references
+    currentWorkout = null;
+    if (workoutData.workouts.length === 0) generateNextWorkout();
 }
-
 // ---------- LOAD COMPENDIUM ----------
 function loadCompendium() {
     const container = document.getElementById('compendium-container');
