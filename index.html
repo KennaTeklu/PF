@@ -202,6 +202,19 @@
             <div class="workout-deck-scroller" id="exercise-deck">
                 <!-- Exercise cards generated via JS -->
             </div>
+        
+            <div class="log-drawer" id="log-drawer">
+                <div class="log-drawer-header">
+                    <h2 id="log-exercise-name">Exercise</h2>
+                    <i class="fas fa-times" onclick="closeLogDrawer()"></i>
+                </div>
+                <div class="log-prescribed-display" id="log-prescribed"></div>
+                <div class="log-form-container" id="log-form"></div>
+                <div class="log-drawer-footer">
+                    <button class="btn-save-log" onclick="saveLog()">SAVE PERFORMANCE</button>
+                    <button class="btn-skip-log" onclick="skipLog()">SKIP</button>
+                </div>
+            </div>
         </div>
 
         <!-- ========== HISTORY SECTION ========== -->
@@ -624,18 +637,6 @@
             </div>
         </div>
         <div class="workout-deck-scroller" id="exercise-deck-modal"></div>
-    </div>
-</div>
-<div class="log-drawer" id="log-drawer">
-    <div class="log-drawer-header">
-        <h2 id="log-exercise-name">Exercise</h2>
-        <i class="fas fa-times" onclick="closeLogDrawer()"></i>
-    </div>
-    <div class="log-prescribed-display" id="log-prescribed"></div>
-    <div class="log-form-container" id="log-form"></div>
-    <div class="log-drawer-footer">
-        <button class="btn-save-log" onclick="saveLog()">SAVE PERFORMANCE</button>
-        <button class="btn-skip-log" onclick="skipLog()">SKIP</button>
     </div>
 </div>
     <script src="script.js"></script>
