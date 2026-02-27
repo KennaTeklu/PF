@@ -808,6 +808,29 @@ function prevModalCard() {
     }
 }
 
+// Throttle flag to prevent rapid-fire navigation
+let isAnimating = false;
+
+function navigateModalDeck(direction) {
+    if (isAnimating) return;
+    const newIndex = modalCurrentCardIndex + direction;
+    if (newIndex >= 0 && newIndex < modalCards.length) {
+        isAnimating = true;
+        modalCurrentCardIndex = newIndex;
+        updateModalCardPosition();
+        // Match CSS transition duration (0.5s)
+        setTimeout(() => { isAnimating = false; }, 500);
+    }
+}
+
+function prevModalCard() {
+    navigateModalDeck(-1);
+}
+
+function nextModalCard() {
+    navigateModalDeck(1);
+}
+
 function setupModalSwipeListener() {
     const deck = document.getElementById('exercise-deck-modal');
     if (!deck) return;
@@ -816,6 +839,7 @@ function setupModalSwipeListener() {
     let touchStartX = 0;
     let isSwiping = false;
 
+    // Touch events
     deck.addEventListener('touchstart', (e) => {
         touchStartY = e.touches[0].clientY;
         touchStartX = e.touches[0].clientX;
@@ -829,7 +853,7 @@ function setupModalSwipeListener() {
         const deltaY = Math.abs(touchY - touchStartY);
         const deltaX = Math.abs(touchX - touchStartX);
         if (deltaY > deltaX && deltaY > 10) {
-            e.preventDefault();
+            e.preventDefault(); // Prevent page scroll
             isSwiping = true;
         }
     }, { passive: false });
@@ -852,12 +876,34 @@ function setupModalSwipeListener() {
         touchStartX = 0;
         isSwiping = false;
     }, { passive: true });
+
+    // Wheel event for desktop
+    deck.addEventListener('wheel', (e) => {
+        e.preventDefault(); // Stop page scroll
+        if (Math.abs(e.deltaY) > 10) {
+            navigateModalDeck(e.deltaY > 0 ? 1 : -1);
+        }
+    }, { passive: false });
+
+    // Keyboard arrow keys (optional, but nice)
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('workoutModal');
+        if (!modal || !modal.classList.contains('active')) return;
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            prevModalCard();
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            nextModalCard();
+        }
+    });
 }
 
 function addModalDeckNavButtons() {
     const deck = document.getElementById('exercise-deck-modal');
     if (!deck) return;
 
+    // Remove any existing buttons to avoid duplicates
     const oldPrev = deck.querySelector('.deck-nav.prev');
     const oldNext = deck.querySelector('.deck-nav.next');
     if (oldPrev) oldPrev.remove();
@@ -866,12 +912,12 @@ function addModalDeckNavButtons() {
     const prevBtn = document.createElement('div');
     prevBtn.className = 'deck-nav prev';
     prevBtn.innerHTML = '❮';
-    prevBtn.onclick = prevModalCard;
+    prevBtn.onclick = prevModalCard;  // Uses the throttled navigation
 
     const nextBtn = document.createElement('div');
     nextBtn.className = 'deck-nav next';
     nextBtn.innerHTML = '❯';
-    nextBtn.onclick = nextModalCard;
+    nextBtn.onclick = nextModalCard;  // Uses the throttled navigation
 
     deck.appendChild(prevBtn);
     deck.appendChild(nextBtn);
@@ -1722,79 +1768,112 @@ function renderExerciseDeckInModal() {
     const deck = document.getElementById('exercise-deck-modal');
     if (!deck) return;
 
-    deck.innerHTML = '';
-
     if (!currentWorkout || !currentWorkout.exercises.length) {
         deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
         return;
     }
 
-    // Create exercise cards (same as before, but append to this deck)
+    // Build all cards as a single HTML string
+    let cardsHtml = '';
     currentWorkout.exercises.forEach((ex, index) => {
-        const card = document.createElement('div');
-        card.className = 'exercise-card';
-        card.dataset.index = index;
         const safeName = ex.name.replace(/'/g, "\\'");
         const repsInfo = typeof ex.prescribed.reps === 'string' ? ex.prescribed.reps : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
         const isDone = ex.actual && !ex.skipped;
 
-        card.innerHTML = `
-            <div class="card-menu">
-                <i class="fas fa-ellipsis-v"></i>
-                <div class="menu-popup">
-                    <div onclick="shareExercise('${safeName}'); event.stopPropagation();">Share</div>
-                    <div onclick="showAnatomy('${safeName}'); event.stopPropagation();">Anatomy</div>
+        cardsHtml += `
+            <div class="exercise-card" data-index="${index}">
+                <div class="card-menu">
+                    <i class="fas fa-ellipsis-v"></i>
+                    <div class="menu-popup">
+                        <div onclick="shareExercise('${safeName}'); event.stopPropagation();">Share</div>
+                        <div onclick="showAnatomy('${safeName}'); event.stopPropagation();">Anatomy</div>
+                    </div>
                 </div>
-            </div>
-            <div class="card-image" id="modal-img-${index}"></div>
-            <div class="exercise-card-content">
-                <h3>${ex.name} ${isDone ? '✅' : ''}
-                    <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index}); event.stopPropagation();" title="More info">
-                        <i class="fas fa-info-circle"></i>
-                    </span>
-                </h3>
-                <div class="card-prescription">
-                    <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
-                </div>
-                <p class="exercise-description" id="modal-desc-${index}"></p>
-                <div class="card-actions">
-                    <button class="action-btn web-btn" onclick="googleSearch('${safeName}', 'web'); event.stopPropagation();">
-                        <i class="fas fa-search"></i> Web
-                    </button>
-                    <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
-                        <i class="fas fa-image"></i> Images
-                    </button>
+                <div class="card-image" id="modal-img-${index}"></div>
+                <div class="exercise-card-content">
+                    <h3>${ex.name} ${isDone ? '✅' : ''}
+                        <span class="info-icon" onclick="showExerciseDetails('${safeName}', ${index}); event.stopPropagation();" title="More info">
+                            <i class="fas fa-info-circle"></i>
+                        </span>
+                    </h3>
+                    <div class="card-prescription">
+                        <strong>${ex.prescribed.weight || '?'} lbs</strong> · ${ex.prescribed.sets} × ${repsInfo}
+                    </div>
+                    <p class="exercise-description" id="modal-desc-${index}"></p>
+                    <div class="card-actions">
+                        <button class="action-btn web-btn" onclick="googleSearch('${safeName}', 'web'); event.stopPropagation();">
+                            <i class="fas fa-search"></i> Web
+                        </button>
+                        <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
+                            <i class="fas fa-image"></i> Images
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
+    });
 
-        // Attach card menu logic
+    // Add summary card
+    const completedCount = currentWorkout.exercises.filter(ex => ex.actual && !ex.skipped).length;
+    const skippedCount = currentWorkout.exercises.filter(ex => ex.skipped).length;
+    const total = currentWorkout.exercises.length;
+    const progress = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+
+    cardsHtml += `
+        <div class="summary-card">
+            <h3>Workout Summary</h3>
+            <div class="summary-stats">
+                <p>✅ Completed: ${completedCount}</p>
+                <p>⏭️ Skipped: ${skippedCount}</p>
+                <p>📊 Progress: ${progress}%</p>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="completeWorkout()">Complete Workout</button>
+                <button class="btn btn-outline" onclick="generateNextWorkout()">Generate New</button>
+            </div>
+        </div>
+    `;
+
+    // Wrap cards in the slider container
+    deck.innerHTML = `<div class="deck-slider">${cardsHtml}</div>`;
+
+    // Re‑establish references
+    modalDeckSlider = deck.querySelector('.deck-slider');
+    modalCards = Array.from(modalDeckSlider.children);
+    modalCurrentCardIndex = 0;
+
+    // Attach event listeners to each card's menu (since they are newly created)
+    document.querySelectorAll('#exercise-deck-modal .exercise-card').forEach((card, index) => {
         const menu = card.querySelector('.card-menu');
-        const popup = menu.querySelector('.menu-popup');
-        menu.addEventListener('click', (e) => {
-            e.stopPropagation();
-            popup.classList.toggle('show');
-        });
+        const popup = menu?.querySelector('.menu-popup');
+        if (menu && popup) {
+            menu.addEventListener('click', (e) => {
+                e.stopPropagation();
+                popup.classList.toggle('show');
+            });
+        }
 
+        // Global click to close any open popup
         document.addEventListener('click', (e) => {
-            if (!card.contains(e.target)) popup.classList.remove('show');
+            if (!card.contains(e.target)) {
+                popup?.classList.remove('show');
+            }
         });
 
-        // Click on card opens log drawer
+        // Click on card (but not menu, info, or buttons) opens log drawer
         card.addEventListener('click', (e) => {
             if (!e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
                 openLogDrawer(index);
             }
         });
 
-        deck.appendChild(card);
+        // Load image for this card
+        const ex = currentWorkout.exercises[index];
         fetchExerciseImage(ex.name, `modal-img-${index}`);
     });
 
-    // Add summary card (similar to addSummaryCard but for modal)
-    addModalSummaryCard(deck);
-    // After appending all cards and summary, initialize carousel for modal deck
-    initModalDeckCarousel();
+    // Initialize the carousel logic
+    updateModalCardPosition();
     setupModalSwipeListener();
     addModalDeckNavButtons();
 }
