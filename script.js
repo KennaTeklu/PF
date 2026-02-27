@@ -1782,25 +1782,6 @@ function celebrate() {
     }, 5000);
 }
 
-function celebrate() {
-    const overlay = document.createElement('div');
-    overlay.className = 'celebration-overlay';
-    document.body.appendChild(overlay);
-    
-    for (let i = 0; i < 100; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.animationDelay = Math.random() * 2 + 's';
-        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        overlay.appendChild(confetti);
-    }
-    
-    setTimeout(() => {
-        overlay.remove();
-    }, 5000);
-}
-
 function refreshSummaryCard() {
     const deck = document.getElementById('exercise-deck');
     if (deck && deck.lastChild && deck.lastChild.classList.contains('summary-card')) {
@@ -2207,7 +2188,6 @@ function loadExerciseLibrary() {
     container.innerHTML = html;
     
     exercises.forEach(([id, ex]) => {
-        fetchExerciseImage(ex.name, `lib-img-${id}`);
     });
 }
 
