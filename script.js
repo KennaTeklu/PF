@@ -1630,7 +1630,7 @@ function renderExerciseDeckInModal() {
 }
 
 // Navigation for modal deck using scrollIntoView
-let modalCurrentCardIndex = 0; // Keep this variable if you want to track index for keyboard nav
+modalCurrentCardIndex = 0; // Keep this variable if you want to track index for keyboard nav
 
 function navigateModalDeck(direction) {
     const deck = document.getElementById('exercise-deck-modal');
