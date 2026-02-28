@@ -1550,9 +1550,6 @@ function updateModalWorkoutHeader() {
     document.getElementById('modalWorkoutIntensity').innerText = 'Moderate';
 }
 
-// ---------- MODAL DECK FUNCTIONS ----------
-let modalObserver; // Keep reference for cleanup
-
 function setupModalIntersectionObserver() {
     // Disconnect previous observer if any
     if (modalObserver) modalObserver.disconnect();
