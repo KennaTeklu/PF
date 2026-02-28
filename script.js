@@ -1323,7 +1323,7 @@ function renderExerciseDeck() {
         return;
     }
 
-    // Build cards as direct children of deck (no slider wrapper)
+    // Build cards as direct children of deck
     currentWorkout.exercises.forEach((ex, index) => {
         const card = document.createElement('div');
         card.className = 'exercise-card';
@@ -1334,6 +1334,7 @@ function renderExerciseDeck() {
             : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
         const isDone = ex.actual && !ex.skipped;
 
+        // Generate the HTML for the card including the new per‑card drawer
         card.innerHTML = `
             <div class="card-menu">
                 <i class="fas fa-ellipsis-v"></i>
@@ -1360,11 +1361,50 @@ function renderExerciseDeck() {
                     <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
                         <i class="fas fa-image"></i> Images
                     </button>
+                    <!-- NEW: Log button to open the per‑card drawer -->
+                    <button class="action-btn log-btn" data-index="${index}">
+                        <i class="fas fa-pencil-alt"></i> Log
+                    </button>
+                </div>
+            </div>
+            <!-- NEW: Per‑card drawer (initially hidden) -->
+            <div class="card-drawer" id="drawer-${index}" style="display: none;">
+                <div class="drawer-content">
+                    <div class="log-prescribed-display">
+                        <strong>Prescribed:</strong> ${ex.prescribed.weight || '?'} lbs · ${ex.prescribed.sets} × ${repsInfo}
+                    </div>
+                    <div class="form-group">
+                        <label>Weight used (lbs)</label>
+                        <input type="number" class="log-weight" value="${ex.prescribed.weight || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Sets completed</label>
+                        <select class="log-sets" data-index="${index}">
+                            ${Array.from({length: 11}, (_, i) => `<option value="${i}" ${i === ex.prescribed.sets ? 'selected' : ''}>${i}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="log-reps-container" id="reps-${index}"></div>
+                    <div class="form-group">
+                        <label>RPE (1-10)</label>
+                        <select class="log-rpe">
+                            <option value="">Select RPE</option>
+                            ${Array.from({length: 10}, (_, i) => `<option value="${10 - i}">${10 - i}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea class="log-notes" placeholder="How did it feel?"></textarea>
+                    </div>
+                    <div class="drawer-actions">
+                        <button class="btn-save-log" data-index="${index}">SAVE</button>
+                        <button class="btn-skip-log" data-index="${index}">SKIP</button>
+                        <button class="btn-close-drawer" data-index="${index}">CLOSE</button>
+                    </div>
                 </div>
             </div>
         `;
 
-        // Menu popup logic (unchanged)
+        // Menu popup logic
         const menu = card.querySelector('.card-menu');
         const popup = menu.querySelector('.menu-popup');
         menu.addEventListener('click', (e) => {
@@ -1372,21 +1412,91 @@ function renderExerciseDeck() {
             popup.classList.toggle('show');
         });
 
+        // Attach event listeners for the per‑card drawer
+        const logBtn = card.querySelector('.log-btn');
+        const drawer = card.querySelector('.card-drawer');
+        const setsSelect = card.querySelector('.log-sets');
+        const repsContainer = card.querySelector(`#reps-${index}`);
+
+        // Function to render rep inputs based on sets
+        const renderRepInputs = () => {
+            const sets = parseInt(setsSelect.value);
+            if (isNaN(sets) || sets < 0) {
+                repsContainer.innerHTML = '';
+                return;
+            }
+            let html = '';
+            for (let i = 0; i < sets; i++) {
+                html += `
+                    <div class="stepper-group">
+                        <label>Set ${i + 1} reps</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="-1">−</button>
+                            <input type="number" class="rep-input" id="rep-${index}-${i}" value="8" min="0" step="1">
+                            <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="1">+</button>
+                        </div>
+                    </div>
+                `;
+            }
+            repsContainer.innerHTML = html;
+        };
+
+        // Initial render of rep inputs
+        renderRepInputs();
+
+        // Update rep inputs when sets change
+        setsSelect.addEventListener('change', renderRepInputs);
+
+        // Toggle drawer on log button click
+        logBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Close any other open drawer
+            document.querySelectorAll('.card-drawer[style*="display: block"]').forEach(d => d.style.display = 'none');
+            // Open this drawer
+            drawer.style.display = 'block';
+        });
+
+        // Close button inside drawer
+        card.querySelector('.btn-close-drawer').addEventListener('click', (e) => {
+            e.stopPropagation();
+            drawer.style.display = 'none';
+        });
+
+        // Save and Skip buttons (will be handled by separate functions later)
+        card.querySelector('.btn-save-log').addEventListener('click', (e) => {
+            e.stopPropagation();
+            // We'll define savePerCardLog(index) later
+            savePerCardLog(index);
+        });
+
+        card.querySelector('.btn-skip-log').addEventListener('click', (e) => {
+            e.stopPropagation();
+            // We'll define skipPerCardLog(index) later
+            skipPerCardLog(index);
+        });
+
+        // Stepper buttons (delegation because they are dynamically added)
+        repsContainer.addEventListener('click', (e) => {
+            const stepBtn = e.target.closest('.step-btn');
+            if (!stepBtn) return;
+            const delta = parseInt(stepBtn.dataset.delta);
+            const setIdx = stepBtn.dataset.set;
+            const input = document.getElementById(`rep-${index}-${setIdx}`);
+            if (input) {
+                const newVal = (parseFloat(input.value) || 0) + delta;
+                input.value = Math.max(0, newVal);
+                input.dispatchEvent(new Event('input')); // mark dirty if needed
+            }
+        });
+
         deck.appendChild(card);
         fetchExerciseImage(ex.name, `img-${index}`);
     });
 
     // Append summary card
-    addSummaryCard(); // This function should remain unchanged
+    addSummaryCard();
 
-    // --- NEW: Event delegation for card clicks ---
-    deck.addEventListener('click', (e) => {
-        const card = e.target.closest('.exercise-card');
-        if (card && !e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
-            const index = card.dataset.index;
-            openLogDrawer(index);
-        }
-    });
+    // No global click delegation needed anymore – each card handles its own drawer
 }
 
 async function fetchExerciseImage(exName, imgId) {
