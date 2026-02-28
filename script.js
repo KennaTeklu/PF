@@ -1854,7 +1854,6 @@ function saveLog() {
     const rpeSelect = document.getElementById('log-rpe');
     const notesTextarea = document.getElementById('log-notes');
     
-    // If any critical element is missing, abort
     if (!weightInput || !setsSelect || !rpeSelect || !notesTextarea) {
         alert("Log form is not fully loaded. Please try again.");
         return;
@@ -1866,16 +1865,29 @@ function saveLog() {
     const notes = notesTextarea.value;
     const reps = [];
 
-    // Collect rep inputs (they might be missing if sets is 0, but we already check sets)
-    for (let i = 0; i < sets; i++) {
-        const repInput = document.getElementById(`log-rep-${i}`);
-        if (repInput && repInput.value) reps.push(parseInt(repInput.value));
+    // Validate weight and sets
+    if (isNaN(weight) || weight <= 0) {
+        alert("Please enter a valid weight.");
+        return;
+    }
+    if (isNaN(sets) || sets <= 0) {
+        alert("Please select at least one set.");
+        return;
     }
 
-    // Validate
-    if (isNaN(weight) || weight <= 0 || sets === 0) {
-        alert("Please enter a valid weight and at least one set.");
-        return;
+    // Collect and validate rep inputs
+    for (let i = 0; i < sets; i++) {
+        const repInput = document.getElementById(`log-rep-${i}`);
+        if (!repInput) {
+            alert(`Rep input for set ${i+1} is missing. Please try again.`);
+            return;
+        }
+        const repVal = parseInt(repInput.value);
+        if (isNaN(repVal) || repVal <= 0) {
+            alert(`Please enter a valid number of reps for set ${i+1}.`);
+            return;
+        }
+        reps.push(repVal);
     }
 
     exercise.actual = {
@@ -1885,6 +1897,9 @@ function saveLog() {
 
     updateExerciseHistory(exercise);
     dataChanged = true;
+    
+    // Haptic feedback
+    if (navigator.vibrate) navigator.vibrate(50);
     
     dirtyExercises.delete(index);
     if (dirtyExercises.size === 0) {
@@ -1906,6 +1921,69 @@ function saveLog() {
         }
     }
     refreshSummaryCard();
+
+    // Start rest timer
+    startRestTimer();
+}
+
+function startRestTimer() {
+    // Remove any existing timer overlay
+    const existing = document.querySelector('.rest-timer-overlay');
+    if (existing) existing.remove();
+
+    let seconds = workoutData.user.settings?.restTime || 90;
+    const timerOverlay = document.createElement('div');
+    timerOverlay.className = 'rest-timer-overlay';
+    document.body.appendChild(timerOverlay);
+
+    const interval = setInterval(() => {
+        seconds--;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerOverlay.innerHTML = `
+            <div class="timer-box">
+                <small>REST</small>
+                <div class="timer-digits">${mins}:${secs.toString().padStart(2, '0')}</div>
+                <button class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); clearInterval(${interval})">SKIP</button>
+            </div>
+        `;
+        if (seconds <= 0) {
+            clearInterval(interval);
+            timerOverlay.remove();
+            if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
+            showNotification("Rest Over! Next Set.", "info");
+        }
+    }, 1000);
+}
+
+function startRestTimer() {
+    // Remove any existing timer overlay
+    const existing = document.querySelector('.rest-timer-overlay');
+    if (existing) existing.remove();
+
+    let seconds = workoutData.user.settings?.restTime || 90;
+    const timerOverlay = document.createElement('div');
+    timerOverlay.className = 'rest-timer-overlay';
+    document.body.appendChild(timerOverlay);
+
+    const interval = setInterval(() => {
+        seconds--;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerOverlay.innerHTML = `
+            <div class="timer-box">
+                <small>REST</small>
+                <div class="timer-digits">${mins}:${secs.toString().padStart(2, '0')}</div>
+                <button class="btn btn-danger" onclick="this.parentElement.parentElement.remove(); clearInterval(${interval})">SKIP</button>
+            </div>
+        `;
+        if (seconds <= 0) {
+            clearInterval(interval);
+            timerOverlay.remove();
+            if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
+            showNotification("Rest Over! Next Set.", "info");
+        }
+    }, 1000);
 }
 
 function skipLog() {
