@@ -1014,16 +1014,17 @@ async function generateNextWorkout() {
     const allMuscles = [...new Set([...split.focus, ...selectedAccessories])];
 
     allMuscles.forEach(muscleName => {
-      // FIX: Use typeof to safely check if pickExerciseVariety is defined
-      const exerciseBase = (typeof pickExerciseVariety !== 'undefined' && pickExerciseVariety) 
-        ? pickExerciseVariety(muscleName) 
-        : generateExerciseFromLibrary(muscleName);
+      const exerciseBase = generateExerciseFromLibrary(muscleName);
       if (exerciseBase) {
         const exercise = generateExercisePrescription(exerciseBase, phaseMultiplier);
         currentWorkout.exercises.push(exercise);
       }
     });
-
+      
+    if (document.getElementById('workoutModal')?.classList.contains('active')) {
+      renderExerciseDeckInModal();
+    }
+      
     // --- UI SYNC & NOTIFICATIONS ---
     updateDashboard();
 
