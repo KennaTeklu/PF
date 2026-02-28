@@ -487,6 +487,12 @@ let exerciseInfoCache = {}; // stores { summary, extract, thumbnail } per exerci
 // --- Unsaved changes tracking ---
 let workoutDirty = false;
 let dirtyExercises = new Set();
+// --- Modal Deck variables for vertical paging ---
+let modalDeckSlider = null;          // reference to the .deck-slider element
+let modalCards = [];                 // array of cards inside the slider
+let modalCurrentCardIndex = 0;       // currently visible card index
+let isAnimating = false;             // prevents rapid successive swipes
+let modalObserver = null;   
 
 // ---------- UTILITY FUNCTIONS ----------
 function getAllMuscleGroups() {
@@ -625,6 +631,52 @@ function showUnsavedModal(onConfirm, onCancel) {
     confirmBtn.addEventListener('click', confirmHandler);
     cancelBtn.addEventListener('click', cancelHandler);
     modalEl.classList.add('active');
+}
+
+function updateModalCardPosition() {
+    if (!modalDeckSlider) return;
+    // Move the slider up/down based on the index (negative Y offset)
+    const offset = modalCurrentCardIndex * 100;
+    modalDeckSlider.style.transform = `translateY(-${offset}%)`;
+}
+function navigateModalDeck(direction) {
+    if (isAnimating) return;
+    const newIndex = modalCurrentCardIndex + direction;
+    if (newIndex >= 0 && newIndex < modalCards.length) {
+        isAnimating = true;
+        modalCurrentCardIndex = newIndex;
+        updateModalCardPosition();
+        setTimeout(() => { isAnimating = false; }, 500); // match CSS transition
+    }
+}
+
+function setupModalSwipeListener() {
+    const deck = document.getElementById('exercise-deck-modal');
+    if (!deck) return;
+
+    let startY = 0;
+
+    // Touch start
+    deck.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    // Touch end – detect swipe up/down
+    deck.addEventListener('touchend', (e) => {
+        const endY = e.changedTouches[0].clientY;
+        const diff = startY - endY; // positive = up (next), negative = down (prev)
+        if (Math.abs(diff) > 50) {  // 50px threshold
+            navigateModalDeck(diff > 0 ? 1 : -1);
+        }
+    }, { passive: true });
+
+    // Mouse wheel (desktop)
+    deck.addEventListener('wheel', (e) => {
+        e.preventDefault(); // stop page scroll
+        if (Math.abs(e.deltaY) > 10) {
+            navigateModalDeck(e.deltaY > 0 ? 1 : -1);
+        }
+    }, { passive: false });
 }
 
 function showLoading(show) {
@@ -1500,7 +1552,6 @@ function updateModalWorkoutHeader() {
 
 // ---------- MODAL DECK FUNCTIONS ----------
 let modalObserver; // Keep reference for cleanup
-let modalCurrentCardIndex = 0; // Track current card index for keyboard navigation
 
 function setupModalIntersectionObserver() {
     // Disconnect previous observer if any
@@ -1552,14 +1603,20 @@ function renderExerciseDeckInModal() {
     const deck = document.getElementById('exercise-deck-modal');
     if (!deck) return;
 
-    deck.innerHTML = ''; // Clear old content
+    // Clear old content
+    deck.innerHTML = '';
 
     if (!currentWorkout || !currentWorkout.exercises.length) {
         deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
         return;
     }
 
-    // Create exercise cards as direct children of deck
+    // Create the slider container
+    const slider = document.createElement('div');
+    slider.className = 'deck-slider';
+    deck.appendChild(slider);
+
+    // Build exercise cards
     currentWorkout.exercises.forEach((ex, index) => {
         const card = document.createElement('div');
         card.className = 'exercise-card';
@@ -1609,15 +1666,15 @@ function renderExerciseDeckInModal() {
             popup.classList.toggle('show');
         });
 
-        deck.appendChild(card);
+        slider.appendChild(card);
         fetchExerciseImage(ex.name, `modal-img-${index}`);
     });
 
-    // Add summary card using the existing function
-    addModalSummaryCard(deck);
+    // Add summary card (must be inside the slider)
+    addModalSummaryCard(slider);   // <-- now receives the slider, not the deck
 
     // Event delegation for card clicks (opens log drawer)
-    deck.addEventListener('click', (e) => {
+    slider.addEventListener('click', (e) => {
         const card = e.target.closest('.exercise-card');
         if (card && !e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
             const index = card.dataset.index;
@@ -1625,12 +1682,17 @@ function renderExerciseDeckInModal() {
         }
     });
 
-    // Set up Intersection Observer to update header
+    // Store references for paging logic
+    modalDeckSlider = slider;
+    modalCards = Array.from(slider.children);
+    modalCurrentCardIndex = 0;
+
+    // Ensure the slider starts at the first card
+    updateModalCardPosition();        // <-- function that sets transform: translateY(0%)
+
+    // Optional: keep header sync (modify observer to watch slider children)
     setupModalIntersectionObserver();
 }
-
-// Navigation for modal deck using scrollIntoView
-modalCurrentCardIndex = 0; // Keep this variable if you want to track index for keyboard nav
 
 function navigateModalDeck(direction) {
     const deck = document.getElementById('exercise-deck-modal');
@@ -3262,3 +3324,5 @@ document.addEventListener('keydown', (e) => {
         prevModalCard();
     }
 });
+    // Set up swipe listeners
+    setupModalSwipeListener();
