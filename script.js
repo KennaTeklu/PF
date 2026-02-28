@@ -683,6 +683,14 @@ function showLoading(show) {
     document.getElementById('loading').classList.toggle('active', show);
 }
 
+function changeValue(id, delta) {
+    const input = document.getElementById(id);
+    if (!input) return;
+    const newVal = (parseFloat(input.value) || 0) + delta;
+    input.value = Math.max(0, newVal);
+    input.dispatchEvent(new Event('input')); // marks as dirty
+}
+
 function showModal(modalId) {
     document.getElementById(modalId).classList.add('active');
 }
@@ -1796,7 +1804,6 @@ function renderRepInputs(index) {
     const container = document.getElementById('log-reps-container');
     const exercise = currentWorkout?.exercises[index];
     
-    // Guard against missing elements or invalid exercise
     if (!setsSelect || !container || !exercise) {
         console.warn("renderRepInputs: missing elements or exercise");
         return;
@@ -1808,22 +1815,26 @@ function renderRepInputs(index) {
         return;
     }
     
-    // Convert prescribed reps to a display string for placeholder
-    let placeholderReps = '';
+    // Determine a sensible default rep value (e.g., the lower bound of prescribed reps)
+    let defaultRep = 8; // fallback
     if (typeof exercise.prescribed.reps === 'string') {
-        placeholderReps = exercise.prescribed.reps;
+        // try to extract a number from the string, e.g. "8-12" -> 8
+        const match = exercise.prescribed.reps.match(/\d+/);
+        if (match) defaultRep = parseInt(match[0]);
     } else if (exercise.prescribed.reps && typeof exercise.prescribed.reps === 'object') {
-        placeholderReps = `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
-    } else {
-        placeholderReps = 'reps';
+        defaultRep = exercise.prescribed.reps.min || 8;
     }
     
     let html = '';
     for (let i = 0; i < sets; i++) {
         html += `
-            <div class="form-group">
-                <label>Set ${i + 1} reps</label>
-                <input type="number" id="log-rep-${i}" placeholder="${placeholderReps}">
+            <div class="stepper-group">
+                <label>Set ${i + 1} Reps</label>
+                <div class="stepper-control">
+                    <button class="step-btn" onclick="changeValue('log-rep-${i}', -1)">−</button>
+                    <input type="number" id="log-rep-${i}" value="${defaultRep}" min="0" step="1">
+                    <button class="step-btn" onclick="changeValue('log-rep-${i}', 1)">+</button>
+                </div>
             </div>
         `;
     }
