@@ -2782,3 +2782,6 @@ input:checked + .slider:before {
 .deck-nav.next {
     bottom: 10px;
 }
+.log-drawer.active {
+    z-index: 9999 !important;
+}
