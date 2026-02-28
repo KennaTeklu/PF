@@ -2782,3 +2782,42 @@ input:checked + .slider:before {
 .deck-nav.next {
     bottom: 10px;
 }
+.stepper-group {
+    margin-bottom: 20px;
+}
+.stepper-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.stepper-control input {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    flex: 1;
+    min-width: 0;
+    border: 2px solid var(--gray-300);
+    border-radius: 12px;
+    padding: 12px 0;
+}
+.step-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 2.2rem;
+    font-weight: bold;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    touch-action: manipulation;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.step-btn:active {
+    background: var(--primary-dark);
+    transform: scale(0.95);
+}
