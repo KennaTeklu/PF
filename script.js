@@ -1,4 +1,4 @@
-// ==================== COMPLETE JAVASCRIPT – WORKOUT CONTINUITY SYSTEM ULTIMATE EDITION ====================
+    // ==================== COMPLETE JAVASCRIPT – WORKOUT CONTINUITY SYSTEM ULTIMATE EDITION ====================
 // This script includes all functionality from previous rounds plus new compendium, status features,
 // and the following enhancements:
 // - Systemic Fatigue Factor (workouts in last 7 days affect rest days)
@@ -433,86 +433,45 @@ const achievements = [
     { id: 'longevity_master', name: 'Longevity Master', desc: 'Longevity score ≥80', icon: 'fa-heart', check: (d) => calculateLongevityScore().score >= 80 }
 ];
 
-// ---------- FEATURE STATUS DATA ----------
-const featureStatusData = [
-    { area: "Core App Structure", feature: "Navigation Bar", description: "Fixed top bar with brand, menu items, user avatar, and mobile toggle.", status: "Implemented", notes: "Fully functional" },
-    { area: "Core App Structure", feature: "Import Screen", description: "Three options: Import JSON, Start Fresh, Load Sample.", status: "Implemented", notes: "Functions exist; sample data partial" },
-    { area: "Core App Structure", feature: "Main App Sections", description: "Dashboard, Workout, History, Progress, Recovery, Settings.", status: "Implemented", notes: "Placeholders need original content" },
-    { area: "20 New Sections", feature: "Exercise Library, Personal Records, Body Measurements, etc.", description: "Section divs added with basic structure.", status: "Partial", notes: "Load functions mostly placeholders" },
-    { area: "Data Structures", feature: "workoutData", description: "Core user data, workouts, exercises, history, menstrual tracking.", status: "Implemented", notes: "Fully defined" },
-    { area: "Data Structures", feature: "muscleDatabase", description: "40+ muscle groups with rest days, aging risk.", status: "Implemented", notes: "Complete" },
-    { area: "Data Structures", feature: "workoutProgram", description: "Split definitions (full body, push/pull, longevity).", status: "Implemented", notes: "Complete" },
-    { area: "Data Structures", feature: "exerciseCompendium", description: "Hundreds of exercises with equipment, progression, notes.", status: "Implemented", notes: "Fully populated from tables" },
-    { area: "Exercise & Workout Features", feature: "Exercise Generation", description: "Random selection from library based on muscle focus.", status: "Implemented", notes: "Uses compendium data" },
-    { area: "Exercise & Workout Features", feature: "Workout Generation", description: "Cycles through splits, applies phase multiplier.", status: "Implemented", notes: "Works" },
-    { area: "Exercise & Workout Features", feature: "Exercise Search Modal", description: "🔍 icon opens Wikipedia summary + Google fallback.", status: "Implemented", notes: "Uses Wikipedia API" },
-    { area: "Exercise & Workout Features", feature: "Performance Logging", description: "Forms to log weight, reps, RPE, notes.", status: "Implemented", notes: "Fully functional" },
-    { area: "Tracking & Analytics", feature: "Muscle Recovery", description: "Calculates last trained date, recovery percentage.", status: "Implemented", notes: "Works" },
-    { area: "Tracking & Analytics", feature: "Recovery Insights", description: "Shows ready muscles and fatigue level.", status: "Partial", notes: "Basic implementation" },
-    { area: "Tracking & Analytics", feature: "Personal Records", description: "Displays best lifts.", status: "Implemented", notes: "Works" },
-    { area: "Tracking & Analytics", feature: "Progress Charts", description: "Volume, strength, frequency, RPE charts.", status: "Implemented", notes: "Needs sample data" },
-    { area: "Tracking & Analytics", feature: "Workout Calendar", description: "GitHub-style activity grid.", status: "Partial", notes: "Uses real workout dates" },
-    { area: "Tracking & Analytics", feature: "Exercise Comparison", description: "Compare two exercises (needs 5+ sessions).", status: "Partial", notes: "Chart not yet implemented" },
-    { area: "Tracking & Analytics", feature: "Training Load", description: "Acute:chronic workload ratio.", status: "Partial", notes: "Placeholder" },
-    { area: "Health & Wellness", feature: "Menstrual Cycle Tracking", description: "Phase detection and workout intensity multiplier.", status: "Implemented", notes: "Complete" },
-    { area: "Health & Wellness", feature: "Period Modal", description: "Log last period date, cycle length, symptoms.", status: "Implemented", notes: "Form exists" },
-    { area: "Health & Wellness", feature: "Injury / Pain Logger", description: "Log injuries and get warnings.", status: "Partial", notes: "Storage exists, warnings basic" },
-    { area: "Health & Wellness", feature: "Sleep Tracker", description: "Log sleep hours and quality.", status: "Partial", notes: "Storage exists, UI basic" },
-    { area: "Health & Wellness", feature: "Body Measurements", description: "Track weight, body fat, etc.", status: "Missing", notes: "Placeholder only" },
-    { area: "Longevity Features", feature: "Longevity Score", description: "Composite score from grip, balance, mobility, etc.", status: "Implemented", notes: "Uses muscle data" },
-    { area: "Longevity Features", feature: "Longevity Report Modal", description: "Displays score breakdown, aging risks.", status: "Implemented", notes: "Complete" },
-    { area: "Longevity Features", feature: "Longevity Workout", description: "Generates workout focused on joint health.", status: "Implemented", notes: "Works" },
-    { area: "Goals & Motivation", feature: "Goal Setting", description: "Create and track strength/consistency goals.", status: "Partial", notes: "Basic storage" },
-    { area: "Goals & Motivation", feature: "Achievements / Badges", description: "Unlock badges for milestones.", status: "Implemented", notes: "Basic set" },
-    { area: "Goals & Motivation", feature: "Social Sharing", description: "Share workout summaries; export JSON.", status: "Partial", notes: "Export works, share placeholder" },
-    { area: "Goals & Motivation", feature: "Event / Yearly Goals", description: "2030 projection with focus areas.", status: "Partial", notes: "Static text" },
-    { area: "Data Management", feature: "Export / Import", description: "JSON export/import for all data.", status: "Implemented", notes: "Functions exist" },
-    { area: "Data Management", feature: "Local Storage", description: "Auto-save to localStorage.", status: "Implemented", notes: "Works" },
-    { area: "UI/UX", feature: "Theme System", description: "Blue, green, purple, orange, dark mode with CSS variables.", status: "Implemented", notes: "Complete" },
-    { area: "UI/UX", feature: "Responsive Design", description: "Mobile-friendly layouts for all sections.", status: "Implemented", notes: "CSS includes media queries" },
-    { area: "UI/UX", feature: "Notifications", description: "Toast-style messages.", status: "Implemented", notes: "Works" },
-    { area: "UI/UX", feature: "Loading Overlay", description: "Spinner for async operations.", status: "Implemented", notes: "Works" },
-    { area: "New Sections", feature: "Exercise Compendium", description: "Massive table of all exercises by muscle group.", status: "Implemented", notes: "Dynamic from data" },
-    { area: "New Sections", feature: "Feature Status", description: "Table showing implementation status of all features.", status: "Implemented", notes: "Dynamic from data" }
-];
-
-// ---------- ENHANCED MUSICLE‑TO‑EXERCISE MAP ----------
+// ---------- COMPREHENSIVE MUSCLE‑TO‑EXERCISE MAP ----------
+// This map ensures every muscle in muscleDatabase has at least one exercise.
 const muscleToExercises = (function buildMuscleMap() {
   const map = {};
 
-  // Helper to add an exercise to one or more muscle IDs
   function addExercise(muscleIds, exercise) {
-    muscleIds.forEach(id => {
+    const ids = Array.isArray(muscleIds) ? muscleIds : [muscleIds];
+    ids.forEach(id => {
       if (!map[id]) map[id] = [];
-      map[id].push(exercise);
+      if (!map[id].some(e => e.name === exercise.name)) {
+        map[id].push(exercise);
+      }
     });
   }
 
   exerciseCompendium.forEach(group => {
-    // Determine which muscle IDs this group primarily targets
-    let primaryIds = [];
     const groupName = group.group.toLowerCase();
+    let primaryIds = [];
 
     if (groupName.includes('quad')) primaryIds = ['quads'];
     else if (groupName.includes('hamstring')) primaryIds = ['hamstrings'];
     else if (groupName.includes('glute')) primaryIds = ['glutes'];
     else if (groupName.includes('chest')) primaryIds = ['chest'];
     else if (groupName.includes('back')) {
-      // Back group targets multiple muscles
       primaryIds = ['back', 'lats', 'rhomboids', 'traps', 'rear_delts'];
     }
     else if (groupName.includes('shoulder')) {
-      primaryIds = ['shoulders', 'rear_delts']; // also front/rear later
+      primaryIds = ['shoulders', 'rear_delts'];
     }
     else if (groupName.includes('arms')) {
-      // We'll split by exercise name later; for now mark all arm muscles
       primaryIds = ['biceps', 'triceps', 'forearms'];
     }
     else if (groupName.includes('core')) {
-      primaryIds = ['core', 'obliques', 'erectors']; // add transverse, etc.
+      primaryIds = ['core', 'obliques', 'erectors'];
     }
     else if (groupName.includes('calf')) primaryIds = ['calves'];
-    else if (groupName.includes('hip')) primaryIds = ['hip_flexors', 'adductors', 'abductors'];
+    else if (groupName.includes('hip')) {
+      primaryIds = ['hip_flexors', 'adductors', 'abductors'];
+    }
     else if (groupName.includes('neck')) primaryIds = ['neck', 'deep_neck'];
     else if (groupName.includes('feet')) {
       primaryIds = ['foot_intrinsics', 'foot_interossei', 'abductor_hallucis', 'flexor_brevis'];
@@ -521,16 +480,12 @@ const muscleToExercises = (function buildMuscleMap() {
       primaryIds = ['hand_lumbricals', 'hand_interossei', 'thenar'];
     }
     else {
-      // fallback – use a cleaned version of the group name as a single ID
-      let fallbackId = groupName.replace(/[^a-z]+/g, '_');
-      // remove trailing underscores
-      fallbackId = fallbackId.replace(/_$/, '');
-      primaryIds = [fallbackId];
+      const fallback = groupName.replace(/[^a-z]+/g, '_').replace(/_$/, '');
+      primaryIds = [fallback];
     }
 
-    // Now process each exercise in the group
     group.exercises.forEach(ex => {
-      if (ex.equipment === "Phase/Gender Notes") return; // skip notes
+      if (ex.equipment === "Phase/Gender Notes") return;
 
       const exObj = {
         name: ex.name,
@@ -539,93 +494,156 @@ const muscleToExercises = (function buildMuscleMap() {
         defaultReps: ex.setsReps.replace(/^\d+–?\d*×/, '') || '8-12',
         progression: ex.progression,
         instructions: [ex.notes],
-        // Store the primary IDs; we may add more based on name later
         muscleIds: [...primaryIds]
       };
 
-      // Refine based on exercise name for arms
+      const nameLower = ex.name.toLowerCase();
+
+      // Arms refinements
       if (groupName.includes('arms')) {
-        const nameLower = ex.name.toLowerCase();
         if (nameLower.includes('curl') || nameLower.includes('chin')) {
           exObj.muscleIds = ['biceps'];
+          if (nameLower.includes('hammer')) {
+            exObj.muscleIds.push('brachialis', 'brachioradialis');
+          }
         } else if (nameLower.includes('pushdown') || nameLower.includes('extension') || nameLower.includes('dip')) {
           exObj.muscleIds = ['triceps'];
-        } else if (nameLower.includes('wrist') || nameLower.includes('grip') || nameLower.includes('farmer') || nameLower.includes('dead hang') || nameLower.includes('pinch')) {
-          exObj.muscleIds = ['forearms'];
+          if (nameLower.includes('extension')) exObj.muscleIds.push('anconeus');
+        } else if (nameLower.includes('wrist') || nameLower.includes('grip') || nameLower.includes('farmer') ||
+                   nameLower.includes('dead hang') || nameLower.includes('pinch') || nameLower.includes('roller')) {
+          exObj.muscleIds = ['forearms', 'brachioradialis'];
+          if (nameLower.includes('pronat') || nameLower.includes('supinat')) {
+            exObj.muscleIds.push('pronator', 'supinator');
+          }
         } else {
-          exObj.muscleIds = ['biceps', 'triceps', 'forearms']; // fallback
+          exObj.muscleIds = ['biceps', 'triceps', 'forearms'];
         }
       }
 
-      // Add rotator cuff specifics for shoulder/back exercises
+      // Shoulder / rotator cuff refinements
       if (groupName.includes('shoulder') || groupName.includes('back')) {
-        const nameLower = ex.name.toLowerCase();
         if (nameLower.includes('external rotation') || nameLower.includes('face pull')) {
           exObj.muscleIds.push('infraspinatus', 'supraspinatus');
         }
         if (nameLower.includes('internal rotation')) {
           exObj.muscleIds.push('subscapularis');
         }
+        if (nameLower.includes('shrug')) {
+          exObj.muscleIds.push('traps', 'levator_scap');
+        }
+        if (nameLower.includes('ytwl') || nameLower.includes('y raise')) {
+          exObj.muscleIds.push('infraspinatus', 'supraspinatus', 'subscapularis', 'teres');
+        }
+        if (nameLower.includes('rear delt') || nameLower.includes('reverse fly')) {
+          exObj.muscleIds.push('rear_delts', 'infraspinatus');
+        }
       }
 
-      // Add core specifics
+      // Back refinements (teres, rhomboids)
+      if (groupName.includes('back')) {
+        if (nameLower.includes('row') || nameLower.includes('pulldown')) {
+          exObj.muscleIds.push('teres', 'rhomboids', 'lats');
+        }
+        if (nameLower.includes('pull up') || nameLower.includes('chin up')) {
+          exObj.muscleIds.push('teres', 'lats', 'brachialis');
+        }
+      }
+
+      // Core refinements
       if (groupName.includes('core')) {
-        const nameLower = ex.name.toLowerCase();
-        if (nameLower.includes('side') || nameLower.includes('oblique')) {
+        if (nameLower.includes('side') || nameLower.includes('oblique') || nameLower.includes('woodchop')) {
           exObj.muscleIds.push('obliques');
         }
-        if (nameLower.includes('plank') || nameLower.includes('rollout')) {
+        if (nameLower.includes('plank') || nameLower.includes('rollout') || nameLower.includes('dragon')) {
           exObj.muscleIds.push('transverse');
+        }
+        if (nameLower.includes('sit up') || nameLower.includes('crunch')) {
+          exObj.muscleIds.push('core');
+        }
+        if (nameLower.includes('back extension') || nameLower.includes('hyperextension')) {
+          exObj.muscleIds.push('erectors', 'multifidus');
         }
       }
 
-      // Remove duplicates in muscleIds
-      exObj.muscleIds = [...new Set(exObj.muscleIds)];
+      // Hips refinements
+      if (groupName.includes('hip')) {
+        if (nameLower.includes('adduction')) exObj.muscleIds = ['adductors'];
+        if (nameLower.includes('abduction')) exObj.muscleIds = ['abductors', 'glutes'];
+        if (nameLower.includes('copenhagen')) exObj.muscleIds = ['adductors', 'core'];
+      }
 
-      // Add this exercise to the map under each muscle ID
-      exObj.muscleIds.forEach(mid => {
-        if (!map[mid]) map[mid] = [];
-        // avoid duplicate exercise entries for the same muscle
-        if (!map[mid].some(e => e.name === exObj.name)) {
-          map[mid].push(exObj);
+      // Feet refinements
+      if (groupName.includes('feet')) {
+        exObj.muscleIds = ['foot_intrinsics', 'foot_interossei', 'abductor_hallucis', 'flexor_brevis'];
+        if (nameLower.includes('inversion') || nameLower.includes('eversion')) {
+          exObj.muscleIds.push('tibialis', 'peroneus_tertius');
         }
-      });
+      }
+
+      // Hands refinements
+      if (groupName.includes('hand')) {
+        exObj.muscleIds = ['hand_lumbricals', 'hand_interossei', 'thenar'];
+      }
+
+      // Additional small muscles
+      if (nameLower.includes('leg curl') || nameLower.includes('hamstring curl')) {
+        exObj.muscleIds.push('popliteus');
+      }
+      if (groupName.includes('quad')) {
+        exObj.muscleIds.push('articularis_genus');
+      }
+      if (nameLower.includes('push up') || nameLower.includes('dip') || nameLower.includes('press')) {
+        if (groupName.includes('chest') || groupName.includes('shoulder')) {
+          exObj.muscleIds.push('serratus');
+        }
+      }
+      if (groupName.includes('chest') && (nameLower.includes('incline') || nameLower.includes('fly'))) {
+        exObj.muscleIds.push('pec_minor');
+      }
+      if (groupName.includes('chest') || groupName.includes('shoulder')) {
+        exObj.muscleIds.push('coracobrach');
+      }
+      if (groupName.includes('calf') && nameLower.includes('seated')) {
+        exObj.muscleIds.push('soleus');
+      } else if (groupName.includes('calf')) {
+        exObj.muscleIds.push('soleus', 'calves');
+      }
+
+      exObj.muscleIds = [...new Set(exObj.muscleIds)];
+      addExercise(exObj.muscleIds, exObj);
     });
   });
 
+  // Verify all muscles have exercises
+  const allMuscles = (() => {
+    const groups = [muscleDatabase.major, muscleDatabase.longevity, muscleDatabase.hands, muscleDatabase.feet];
+    return groups.flat().map(m => m.name);
+  })();
+  const missing = allMuscles.filter(m => !map[m] || map[m].length === 0);
+  if (missing.length) {
+    console.warn('⚠️ The following muscles still have no exercises:', missing);
+  } else {
+    console.log('✅ All muscles have exercises!');
+  }
   return map;
 })();
 
-console.log('Muscle map built. Sample:', Object.keys(muscleToExercises).slice(0, 10));
-
-// ---------- GLOBAL VARIABLES ----------
-let currentWorkout = null;
-let muscleLastTrained = {};
-let charts = {};
-let dataChanged = false;          // track any data change for backup reminder
-let currentExerciseIndex = 0;     // for logging drawer
-let notificationTimeout;
-let exerciseInfoCache = {}; // stores { summary, extract, thumbnail } per exercise name
-// --- Unsaved changes tracking ---
-let workoutDirty = false;
-let dirtyExercises = new Set();
-
-// ---------- UTILITY FUNCTIONS ----------
+// ---------- HELPER FUNCTIONS (required for generateNextWorkout) ----------
 function getAllMuscleGroups() {
-    return [
-        ...muscleDatabase.major,
-        ...muscleDatabase.longevity,
-        ...muscleDatabase.hands,
-        ...muscleDatabase.feet
-    ];
+  return [
+    ...muscleDatabase.major,
+    ...muscleDatabase.longevity,
+    ...muscleDatabase.hands,
+    ...muscleDatabase.feet
+  ];
 }
 
 function initializeMuscleTracking() {
-    getAllMuscleGroups().forEach(muscle => {
-        if (!muscleLastTrained[muscle.name]) {
-            muscleLastTrained[muscle.name] = null;
-        }
-    });
+  getAllMuscleGroups().forEach(muscle => {
+    if (!muscleLastTrained[muscle.name]) {
+      muscleLastTrained[muscle.name] = null;
+    }
+  });
 }
 
 function saveToLocalStorage() {
