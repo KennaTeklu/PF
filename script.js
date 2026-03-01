@@ -825,27 +825,41 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
 // ---------- WORKOUT GENERATION ----------
 
 async function generateNextWorkout() {
-  // ----- 1. Dirty Check -----
+  // --- DIRTY CHECK ---
   if (workoutDirty) {
     const confirmDiscard = confirm("You have unsaved logs in this workout. Discard them and generate a new session?");
     if (!confirmDiscard) return;
   }
 
-  console.log("🧠 Coach: Analysing your body...");
+  console.log("🧠 System: Initiating Advanced Physiological Scan...");
   showLoading(true);
 
   try {
-    // Reset dirty state
+    // Reset dirty flags
     workoutDirty = false;
     dirtyExercises.clear();
     clearDraft();
 
-    // ----- 2. Global Physiological Factors (used for intensity adjustment) -----
+    // --- SECURITY / BACKUP CHECK ---
+    const lastExport = new Date(workoutData.lastExport).getTime() || 0;
+    const backupRequired = (Date.now() - lastExport > 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    // --- SPLIT ROTATION ---
+    const splits = workoutProgram.splits;
+    const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
+    let split = lastWorkout
+      ? splits[(splits.findIndex(s => s.id === lastWorkout.type) + 1) % splits.length]
+      : splits[0];
+
+    // --- GLOBAL PHYSIOLOGICAL MULTIPLIERS (unchanged) ---
     const now = new Date();
-    const phase = getCurrentCyclePhase();
-    const hormonalFactor = getPhaseMultiplier(phase);
-    const avgRPE = getRollingRPEAverage() || 7;
-    const cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5))); // sigmoid fatigue
+
+    // CNS Fatigue (sigmoid)
+    const last3 = workoutData.workouts.slice(-3);
+    const avgRPE = last3.length
+      ? last3.reduce((sum, w) => sum + (parseFloat(w.summary?.averageRPE) || 7), 0) / last3.length
+      : 7;
+    const cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
 
     // Sleep factor (last 7 days)
     const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
@@ -854,55 +868,56 @@ async function generateNextWorkout() {
       : 8;
     const sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
 
-    // Age factor (linear decline after 20)
+    // Hormonal phase factor
+    const phase = getCurrentCyclePhase();
+    const hormonalFactor = getPhaseMultiplier(phase);
+
+    // Gender factor
+    let genderFactor = 1.0;
+    if (workoutData.user.gender === 'female') genderFactor = 1.02;
+    else if (workoutData.user.gender === 'male') genderFactor = 0.98;
+
+    // Age factor
     let ageFactor = 1.0;
     if (workoutData.user.birthDate) {
-      const age = new Date().getFullYear() - new Date(workoutData.user.birthDate).getFullYear();
-      ageFactor = age > 20 ? Math.max(0.7, 1 - 0.005 * (age - 20)) : 1.0;
+      const birthYear = new Date(workoutData.user.birthDate).getFullYear();
+      const currentYear = now.getFullYear();
+      const age = currentYear - birthYear;
+      if (age > 20) ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
     }
 
-    // Experience factor (beginners recover faster, advanced slower)
+    // Experience factor
     const exp = workoutData.user.experience || 'intermediate';
-    const experienceFactor = exp === 'beginner' ? 1.1 : exp === 'advanced' ? 0.9 : 1.0;
+    let experienceFactor = 1.0;
+    if (exp === 'beginner') experienceFactor = 1.1;
+    else if (exp === 'advanced') experienceFactor = 0.9;
 
-    // Gender baseline (small adjustment)
-    const genderFactor = workoutData.user.gender === 'female' ? 1.02 : 0.98;
-
-    // Combined global readiness (caps between 0.3 and 1.1)
+    // Combine into a single global readiness scaler
     const globalRecovery = Math.max(0.3, Math.min(1.1,
-      cnsFatigue * sleepFactor * hormonalFactor * ageFactor * experienceFactor * genderFactor
+      cnsFatigue * sleepFactor * hormonalFactor * genderFactor * ageFactor * experienceFactor
     ));
 
-    // ----- 3. Select Next Split (rotational) -----
-    const splits = workoutProgram.splits;
-    const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
-    let split = lastWorkout
-      ? splits[(splits.findIndex(s => s.id === lastWorkout.type) + 1) % splits.length]
-      : splits[0]; // start with first split if no history
+    // --- BUILD MUSCLE POOL PER SPLIT (same as before) ---
+    let allowedCategories = [];
+    switch (split.id) {
+      case 'full_body_a':
+      case 'full_body_b':
+        allowedCategories = ['major', 'longevity', 'hands', 'feet'];
+        break;
+      case 'push_day':
+      case 'pull_day':
+        allowedCategories = ['major', 'longevity'];
+        break;
+      case 'legs_day':
+        allowedCategories = ['major', 'feet', 'longevity'];
+        break;
+      case 'longevity_day':
+        allowedCategories = ['longevity', 'hands', 'feet'];
+        break;
+      default:
+        allowedCategories = ['major', 'longevity'];
+    }
 
-    // ----- 4. Build Muscle Target List -----
-    // Primary muscles: directly from split.focus (mandatory)
-    const primaryMuscles = [...split.focus];
-
-    // Secondary pool: all other muscles that are allowed in this split, excluding primary.
-    const allowedCategories = (() => {
-      switch (split.id) {
-        case 'full_body_a':
-        case 'full_body_b':
-          return ['major', 'longevity', 'hands', 'feet'];
-        case 'push_day':
-        case 'pull_day':
-          return ['major', 'longevity'];
-        case 'legs_day':
-          return ['major', 'feet', 'longevity']; // calves will be included via major
-        case 'longevity_day':
-          return ['longevity', 'hands', 'feet'];
-        default:
-          return ['major', 'longevity'];
-      }
-    })();
-
-    // Build full muscle pool from the allowed categories
     let pool = [];
     allowedCategories.forEach(cat => {
       if (cat === 'major') pool.push(...muscleDatabase.major);
@@ -911,162 +926,117 @@ async function generateNextWorkout() {
       if (cat === 'feet') pool.push(...muscleDatabase.feet);
     });
 
-    // Remove duplicates and primary muscles (they will be trained anyway)
-    pool = pool.filter((muscle, index, self) =>
-      self.findIndex(m => m.name === muscle.name) === index && !primaryMuscles.includes(muscle.name)
-    );
-
-    // ----- ENFORCE CALVES RULE -----
-    // If split is NOT legs_day, remove calves from the pool entirely.
-    if (split.id !== 'legs_day') {
-      pool = pool.filter(m => m.name !== 'calves');
-    }
-
-    // ----- 5. Score Each Muscle in the Pool for Neglect & Readiness -----
-    const scores = pool.map(muscle => {
-      const lastTrained = muscleLastTrained[muscle.name];
-      const daysSince = lastTrained ? (now - new Date(lastTrained)) / (1000 * 60 * 60 * 24) : Infinity;
-
-      // Effective rest days (taking systemic fatigue into account)
-      const effectiveRest = getEffectiveRestDays ? getEffectiveRestDays(muscle) : (muscle.restDays || 2);
-
-      // Sigmoid recovery based on readiness ratio
-      const readinessRatio = daysSince / effectiveRest;
-      const k = 3;
-      const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
-
-      // Combine with global recovery
-      let adjustedRecovery = localRecovery * globalRecovery;
-
-      // Frequency penalty (muscles trained too often get lower score)
-      const freq = getTrainingFrequency(muscle.name);
-      const freqPenalty = Math.exp(-freq / 3); // fewer frequency = higher score
-
-      // Aging risk boost – high‑risk muscles get a little extra urgency if neglected
-      let agingBoost = 1.0;
-      if (muscle.agingRisk === 'high' && muscle.category === 'longevity') {
-        agingBoost = Math.min(2.0, 1 + (daysSince / 14)); // urgency increases with neglect
-      }
-
-      // Goal factor – align with user's primary goal
-      const userGoal = workoutData.user.goal || 'balanced';
-      let goalFactor = 1.0;
-      if (userGoal === 'strength' || userGoal === 'powerlifting') {
-        if (muscle.category === 'major') goalFactor = 1.3;
-        if (['quads','hamstrings','glutes','chest','back','shoulders','triceps'].includes(muscle.name)) {
-          goalFactor *= 1.1;
-        }
-      } else if (userGoal === 'longevity') {
-        if (muscle.category === 'longevity') goalFactor = 1.8;
-      } else if (userGoal === 'hypertrophy') {
-        if (muscle.category === 'major') goalFactor = 1.5;
-      }
-
-      // Injury factor – if recently injured, severely reduce chance
-      const injuryFactor = hasRecentInjury(muscle.name) ? 0.2 : 1.0;
-
-      // Neglect urgency – squared to strongly prioritise muscles that have been ignored
-      let neglectUrgency = 1.0;
-      if (lastTrained) {
-        neglectUrgency = Math.pow(daysSince / effectiveRest, 2);
-      } else {
-        neglectUrgency = 5.0; // never trained → very high urgency
-      }
-      neglectUrgency = Math.min(3.0, neglectUrgency); // cap to avoid extreme dominance
-
-      // Small random jitter (±0.1) to break ties and add variety
-      const jitter = (Math.random() * 0.2) - 0.1;
-
-      // Final score = product of all factors
-      let score = adjustedRecovery * freqPenalty * agingBoost * goalFactor *
-                  injuryFactor * neglectUrgency + jitter;
-
-      return { muscle: muscle.name, score: Math.max(0, score) };
+    // --- FIXED: Explicitly remove calves unless it's legs_day ---
+    pool = pool.filter(m => {
+      // Exclude calves on non‑legs days
+      if (split.id !== 'legs_day' && m.name === 'calves') return false;
+      // Also remove any muscle that is already in the split's main focus
+      return !split.focus.includes(m.name);
     });
 
-    // Sort descending by score
-    scores.sort((a, b) => b.score - a.score);
-
-    // ----- 6. Select Secondary Muscles (top 2‑4 based on score) -----
-    const secondaryCount = Math.min(4, Math.floor(Math.random() * 3) + 2); // 2‑4
-    const secondaryMuscles = scores.slice(0, secondaryCount).map(s => s.muscle);
-
-    // Combine primary + secondary, remove duplicates (just in case)
-    const allTargetMuscles = [...new Set([...primaryMuscles, ...secondaryMuscles])];
-
-    console.log(`Coach: Selected muscles – ${allTargetMuscles.join(', ')}`);
-
-    // ----- 7. Pick Exercises for Each Target Muscle (with variety) -----
-    const exercises = [];
-    const phaseMultiplier = getPhaseMultiplier(phase);
-
-    for (const muscleName of allTargetMuscles) {
-      // Get candidate exercises from the compendium that target this muscle
-      const candidates = Object.values(ultimateExerciseLibrary).filter(ex =>
-        ex.muscles && ex.muscles.includes(muscleName)
-      );
-
-      if (candidates.length === 0) {
-        console.warn(`No exercise found for muscle ${muscleName}, skipping.`);
-        continue;
-      }
-
-      // Choose an exercise with variety: prefer exercises that haven't been used recently
-      // We'll use a simple method: random selection, but weighted by how recently it was used.
-      // For now, pure random to keep it simple.
-      const chosenBase = candidates[Math.floor(Math.random() * candidates.length)];
-
-      // Build exercise object
-      let exercise = {
-        id: chosenBase.name.toLowerCase().replace(/\s/g, '_'),
-        name: chosenBase.name,
-        muscleGroup: [muscleName], // primary muscle; can add more if needed
-        prescribed: {
-          sets: chosenBase.defaultSets || 3,
-          reps: chosenBase.defaultReps || '8-12',
-          weight: null
-        },
-        actual: null,
-        progressionNotes: chosenBase.progression || '',
-        equipment: chosenBase.equipment || '',
-        instructions: chosenBase.instructions || []
-      };
-
-      // Generate weight prescription (uses history, global factors, phase)
-      exercise = generateExercisePrescription(exercise, phaseMultiplier);
-      exercises.push(exercise);
+    // Fallback if pool becomes empty
+    if (pool.length === 0) {
+      pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
     }
 
-    // ----- 8. Build Final Workout Object -----
+    // --- NEW: ACCESSORY SELECTION BASED ON NEGLECT (fair rotation) ---
+    const accessoryCount = Math.floor(Math.random() * 2) + 2; // 2 or 3 accessories
+
+    // Compute a "neglect score" for each candidate muscle: (daysSince / effectiveRest)²
+    // Higher score = more overdue → higher chance of being selected.
+    const candidates = pool.map(m => {
+      const lastTrained = muscleLastTrained[m.name];
+      const daysSince = lastTrained
+        ? (now - new Date(lastTrained)) / (1000 * 60 * 60 * 24)
+        : Infinity; // never trained → highest priority
+
+      const effectiveRest = getEffectiveRestDays ? getEffectiveRestDays(m) : (m.restDays || 2);
+
+      // Base neglect factor: 0 if just trained, grows quadratically after rest days
+      let neglect = daysSince / effectiveRest;
+      neglect = Math.min(3, Math.pow(neglect, 2)); // cap at 3 to avoid extreme outliers
+
+      // Small random jitter (±5%) to break ties
+      const jitter = 0.95 + Math.random() * 0.1;
+
+      // Optional: lightly nudge based on user goal (preserve some influence)
+      let goalBoost = 1.0;
+      const userGoal = workoutData.user.goal || 'balanced';
+      if (userGoal === 'longevity' && m.category === 'longevity') goalBoost = 1.3;
+      else if (userGoal === 'strength' && m.category === 'major') goalBoost = 1.2;
+      else if (userGoal === 'hypertrophy' && m.category === 'major') goalBoost = 1.2;
+
+      // Injury penalty (if muscle is injured, almost never select)
+      const injuryPenalty = hasRecentInjury(m.name) ? 0.1 : 1.0;
+
+      // Final weight = neglect * goalBoost * injuryPenalty * jitter
+      const weight = neglect * goalBoost * injuryPenalty * jitter;
+
+      return { muscle: m, weight };
+    });
+
+    // Filter out any zero‑weight candidates (injured, etc.)
+    const validCandidates = candidates.filter(c => c.weight > 0);
+
+    // Weighted random selection without replacement
+    const selectedAccessories = [];
+    const available = [...validCandidates]; // copy to mutate
+
+    for (let i = 0; i < accessoryCount && available.length > 0; i++) {
+      const totalWeight = available.reduce((sum, c) => sum + c.weight, 0);
+      let rand = Math.random() * totalWeight;
+      const idx = available.findIndex(c => {
+        rand -= c.weight;
+        return rand <= 0;
+      });
+      if (idx === -1) break; // safety
+      selectedAccessories.push(available[idx].muscle.name);
+      available.splice(idx, 1); // remove to avoid duplicates
+    }
+
+    // --- BUILD WORKOUT OBJECT (rest unchanged) ---
+    const phaseMultiplier = getPhaseMultiplier(phase);
+
     currentWorkout = {
       id: `workout_${Date.now()}`,
       date: now.toISOString(),
       type: split.id,
       name: split.name,
       readiness: Math.round(globalRecovery * 100),
-      exercises: exercises,
-      security: {
-        backupRecommended: (new Date() - new Date(workoutData.lastExport)) > 7 * 24 * 60 * 60 * 1000
-      }
+      exercises: [],
+      security: { backupRecommended: backupRequired }
     };
 
-    // ----- 9. UI Updates & Notifications -----
+    const allMuscles = [...new Set([...split.focus, ...selectedAccessories])];
+
+    allMuscles.forEach(muscleName => {
+      // Use pickExerciseVariety if defined, otherwise fallback to random from library
+      const exerciseBase = (typeof pickExerciseVariety !== 'undefined' && pickExerciseVariety) 
+        ? pickExerciseVariety(muscleName) 
+        : generateExerciseFromLibrary(muscleName);
+      if (exerciseBase) {
+        const exercise = generateExercisePrescription(exerciseBase, phaseMultiplier);
+        currentWorkout.exercises.push(exercise);
+      }
+    });
+
+    // --- UI SYNC & NOTIFICATIONS (unchanged) ---
     updateDashboard();
+
     if (document.getElementById('workout-section').classList.contains('active')) {
       renderExerciseDeck();
     }
 
-    if (currentWorkout.security.backupRecommended) {
-      showNotification("🔐 Backup reminder: export your data.", "warning");
+    if (backupRequired) {
+      showNotification("🔐 Security: Backup recommended before training.", "warning");
       document.getElementById('nav-settings')?.classList.add('critical');
     } else {
-      showNotification(`✅ New workout: ${currentWorkout.name} (Readiness ${currentWorkout.readiness}%)`, "success");
+      showNotification(`✅ Generated: ${currentWorkout.name} (${currentWorkout.readiness}% Readiness)`, "success");
     }
 
     saveToLocalStorage();
-
   } catch (error) {
-    console.error("Coach error:", error);
+    console.error("Error generating workout:", error);
     showNotification("❌ Failed to generate workout. Check console.", "error");
   } finally {
     showLoading(false);
