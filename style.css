@@ -1066,24 +1066,29 @@ input:checked + .slider:before {
 .btn-close-workout {
     background: var(--gray-100);
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 50%;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: bold;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     color: var(--gray-700);
     transition: var(--transition);
+    touch-action: manipulation;
+    box-sizing: border-box;
+    padding: 0;
+    line-height: 1;
 }
 
 .btn-close-workout:hover {
     background: var(--gray-200);
     color: var(--danger);
 }
-
 /* Ensure the deck takes remaining space */
 #workoutModal .workout-deck-scroller {
     flex: 1;
@@ -1325,11 +1330,18 @@ input:checked + .slider:before {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     transition: background 0.2s, transform 0.1s;
     touch-action: manipulation;
+    box-sizing: border-box;        /* Added for consistency */
 }
 
 .drawer-content .step-btn:active {
     background: var(--primary-dark);
     transform: scale(0.95);
+}
+
+/* Optional hover effect for desktop */
+.drawer-content .step-btn:hover {
+    background: var(--primary-dark);
+    opacity: 0.9;
 }
 
 .drawer-actions {
@@ -1533,8 +1545,11 @@ input:checked + .slider:before {
     margin: 20px 0;
     flex-wrap: wrap;
 }
+
 .share-btn {
-    padding: 15px 25px;
+    padding: 12px 25px;           /* Slightly reduced vertical padding (was 15px) to keep visual balance while ensuring min-height */
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 30px;
     border: none;
     font-weight: 600;
@@ -1542,12 +1557,32 @@ input:checked + .slider:before {
     transition: var(--transition);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
+    touch-action: manipulation;    /* Prevents double-tap zoom */
+    box-sizing: border-box;
+    line-height: 1.2;
 }
-.share-btn.twitter { background: #1DA1F2; color: white; }
-.share-btn.facebook { background: #4267B2; color: white; }
-.share-btn.copy { background: var(--gray-700); color: white; }
-.share-btn:hover { transform: translateY(-3px); opacity: 0.9; }
+
+.share-btn.twitter {
+    background: #1DA1F2;
+    color: white;
+}
+
+.share-btn.facebook {
+    background: #4267B2;
+    color: white;
+}
+
+.share-btn.copy {
+    background: var(--gray-700);
+    color: white;
+}
+
+.share-btn:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
 
 /* Calendar */
 .calendar-container {
@@ -2233,25 +2268,43 @@ input:checked + .slider:before {
 
 .workout-session-controls { display: flex; gap: 10px; }
 
+.btn-complete-workout,
+.btn-new-workout {
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 10px 20px;          /* Keep original padding for visual balance */
+    box-sizing: border-box;
+    line-height: 1.2;
+    transition: background 0.2s, transform 0.1s;
+    touch-action: manipulation;   /* Prevents double-tap zoom on mobile */
+}
+
 .btn-complete-workout {
     background: var(--success);
     color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: 800;
-    cursor: pointer;
     box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+    font-weight: 800;
 }
 
 .btn-new-workout {
     background: var(--gray-100);
     color: var(--gray-700);
-    border: none;
-    padding: 10px 15px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
+    padding: 10px 15px;           /* Slightly narrower horizontal padding */
+}
+
+/* Optional hover effects (unchanged) */
+.btn-complete-workout:hover {
+    background: var(--success-dark, #0f9d6e);
+}
+.btn-new-workout:hover {
+    background: var(--gray-200);
 }
 
 .exercise-card .card-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -2512,7 +2565,9 @@ input:checked + .slider:before {
     justify-content: center;
 }
 .card-actions .action-btn {
-    padding: 8px 16px;
+    padding: 10px 16px;               /* Slightly increased vertical padding (was 8px) to help meet min-height */
+    min-width: 44px;
+    min-height: 44px;
     border: none;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -2520,21 +2575,37 @@ input:checked + .slider:before {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background 0.2s;
+    touch-action: manipulation;        /* Prevents double-tap zoom */
+    box-sizing: border-box;
+    line-height: 1.2;
 }
+
 .card-actions .action-btn:hover {
     transform: scale(1.05);
 }
+
 .card-actions .web-btn {
     background: #4285F4;
     color: white;
 }
+
 .card-actions .images-btn {
     background: #DB4437;
     color: white;
 }
 
+/* New style for the Log button to make it visible */
+.card-actions .log-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.card-actions .log-btn:hover {
+    background: var(--primary-dark);
+}
 .celebration-overlay {
     position: fixed;
     top: 0;
