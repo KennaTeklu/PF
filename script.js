@@ -884,6 +884,7 @@ function getRollingRPEAverage() {
 }
 
 // ---------- IMPROVED WORKOUT GENERATION (COACH ALGORITHM) ----------
+// ---------- IMPROVED WORKOUT GENERATION (WITH FULL EXERCISE MAPPING) ----------
 async function generateNextWorkout() {
   // ----- 1. Dirty check -----
   if (workoutDirty) {
@@ -941,7 +942,6 @@ async function generateNextWorkout() {
       : splits[0];
 
     // ----- 4. Expand split focus to actual muscle names -----
-    // Some focus items are categories (e.g., "feet_ankles") – we expand them.
     function expandFocusItem(item) {
       // Direct muscle names
       if (getAllMuscleGroups().some(m => m.name === item)) return [item];
@@ -950,16 +950,14 @@ async function generateNextWorkout() {
       if (item === 'feet_ankles') {
         return muscleDatabase.feet.map(m => m.name);
       }
-      if (item === 'forearms') return ['forearms']; // already a muscle name
-      if (item === 'neck') return ['neck', 'deep_neck']; // maybe both? Adjust as needed
-      // Add more mappings as you like
-      return []; // fallback
+      if (item === 'forearms') return ['forearms'];
+      if (item === 'neck') return ['neck', 'deep_neck'];
+      return [];
     }
 
-    // Build primary muscles list by expanding each focus item
     const primaryMuscles = split.focus.flatMap(expandFocusItem).filter(Boolean);
 
-    // ----- 5. Build accessory pool (all muscles except primary, with category restrictions) -----
+    // ----- 5. Build accessory pool -----
     const allowedCategories = (() => {
       switch (split.id) {
         case 'full_body_a':
@@ -995,31 +993,21 @@ async function generateNextWorkout() {
       pool = pool.filter(m => m.name !== 'calves');
     }
 
-    // ----- 6. Score each muscle in the pool for neglect & readiness -----
+    // ----- 6. Score each muscle in the pool -----
     const scores = pool.map(muscle => {
       const lastTrained = muscleLastTrained[muscle.name];
       const daysSince = lastTrained ? (now - new Date(lastTrained)) / (1000 * 60 * 60 * 24) : Infinity;
-
       const effectiveRest = getEffectiveRestDays ? getEffectiveRestDays(muscle) : (muscle.restDays || 2);
-
-      // Sigmoid recovery
       const readinessRatio = daysSince / effectiveRest;
       const k = 3;
       const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
-
       let adjustedRecovery = localRecovery * globalRecovery;
-
-      // Frequency penalty
       const freq = getTrainingFrequency(muscle.name);
       const freqPenalty = Math.exp(-freq / 3);
-
-      // Aging risk boost
       let agingBoost = 1.0;
       if (muscle.agingRisk === 'high' && muscle.category === 'longevity') {
         agingBoost = Math.min(2.0, 1 + (daysSince / 14));
       }
-
-      // Goal factor
       const userGoal = workoutData.user.goal || 'balanced';
       let goalFactor = 1.0;
       if (userGoal === 'strength' || userGoal === 'powerlifting') {
@@ -1032,76 +1020,36 @@ async function generateNextWorkout() {
       } else if (userGoal === 'hypertrophy') {
         if (muscle.category === 'major') goalFactor = 1.5;
       }
-
-      // Injury factor
       const injuryFactor = hasRecentInjury(muscle.name) ? 0.2 : 1.0;
-
-      // Neglect urgency (squared)
       let neglectUrgency = 1.0;
       if (lastTrained) {
         neglectUrgency = Math.pow(daysSince / effectiveRest, 2);
       } else {
-        neglectUrgency = 5.0; // never trained → high urgency
+        neglectUrgency = 5.0;
       }
       neglectUrgency = Math.min(3.0, neglectUrgency);
-
-      // Small random jitter
       const jitter = (Math.random() * 0.2) - 0.1;
-
       let score = adjustedRecovery * freqPenalty * agingBoost * goalFactor *
                   injuryFactor * neglectUrgency + jitter;
-
       return { muscle: muscle.name, score: Math.max(0, score) };
     });
 
     scores.sort((a, b) => b.score - a.score);
 
     // ----- 7. Select secondary muscles (2‑4) -----
-    const secondaryCount = Math.min(4, Math.floor(Math.random() * 3) + 2); // 2‑4
+    const secondaryCount = Math.min(4, Math.floor(Math.random() * 3) + 2);
     const secondaryMuscles = scores.slice(0, secondaryCount).map(s => s.muscle);
 
     // Combine primary + secondary, remove duplicates
     const allTargetMuscles = [...new Set([...primaryMuscles, ...secondaryMuscles])];
     console.log(`Coach: Selected muscles – ${allTargetMuscles.join(', ')}`);
 
-    // ----- 8. Build exercise list for each muscle -----
-    // Ensure we have a muscle → exercises map. Use ultimateExerciseLibrary if available, else build from compendium.
-    let muscleToExercises = {};
-    if (typeof ultimateExerciseLibrary !== 'undefined' && ultimateExerciseLibrary) {
-      // Invert ultimateExerciseLibrary: for each exercise, add it under each muscle it targets.
-      Object.values(ultimateExerciseLibrary).forEach(ex => {
-        ex.muscles.forEach(m => {
-          if (!muscleToExercises[m]) muscleToExercises[m] = [];
-          muscleToExercises[m].push(ex);
-        });
-      });
-    } else {
-      // Build from exerciseCompendium directly
-      exerciseCompendium.forEach(group => {
-        // Determine muscle ID for this group (same logic as used to build ultimateExerciseLibrary)
-        let muscleId = group.group.toLowerCase().replace(/[^a-z]+/g, '_');
-        if (muscleId === 'back_lats_rhomboids_traps_rear_delts') muscleId = 'back';
-        if (muscleId === 'shoulders_deltoids') muscleId = 'shoulders';
-        if (muscleId === 'arms') muscleId = 'biceps';
-        if (muscleId === 'core_abdominals_&_obliques') muscleId = 'core';
-        if (muscleId === 'hips_&_adductors_abductors') muscleId = 'adductors';
-
-        group.exercises.forEach(ex => {
-          if (ex.name && ex.equipment && ex.equipment !== "Phase/Gender Notes") {
-            const exObj = {
-              name: ex.name,
-              muscles: [muscleId],
-              equipment: ex.equipment,
-              defaultSets: parseInt(ex.setsReps) || 3,
-              defaultReps: ex.setsReps.replace(/^\d+–?\d*×/, '') || '8-12',
-              progression: ex.progression,
-              instructions: [ex.notes]
-            };
-            if (!muscleToExercises[muscleId]) muscleToExercises[muscleId] = [];
-            muscleToExercises[muscleId].push(exObj);
-          }
-        });
-      });
+    // ----- 8. Use the pre‑built muscleToExercises map -----
+    // This map should have been created earlier using the enhanced mapping code.
+    if (typeof muscleToExercises === 'undefined') {
+      console.error("❌ muscleToExercises map is missing! Please define it before this function.");
+      showNotification("Error: Exercise map missing", "error");
+      return;
     }
 
     const exercises = [];
@@ -1114,14 +1062,14 @@ async function generateNextWorkout() {
         continue;
       }
 
-      // Simple variety: random selection (you could enhance by tracking last used)
+      // Choose a random exercise (you could add variety logic here later)
       const chosenBase = candidates[Math.floor(Math.random() * candidates.length)];
 
       // Build exercise object
       let exercise = {
         id: chosenBase.name.toLowerCase().replace(/\s/g, '_'),
         name: chosenBase.name,
-        muscleGroup: [muscleName], // primary muscle
+        muscleGroup: [muscleName],
         prescribed: {
           sets: chosenBase.defaultSets || 3,
           reps: chosenBase.defaultReps || '8-12',
@@ -1133,7 +1081,6 @@ async function generateNextWorkout() {
         instructions: chosenBase.instructions || []
       };
 
-      // Generate weight prescription using existing function
       exercise = generateExercisePrescription(exercise, phaseMultiplier);
       exercises.push(exercise);
     }
