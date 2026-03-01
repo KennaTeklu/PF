@@ -476,6 +476,128 @@ const featureStatusData = [
     { area: "New Sections", feature: "Feature Status", description: "Table showing implementation status of all features.", status: "Implemented", notes: "Dynamic from data" }
 ];
 
+// ---------- ENHANCED MUSICLE‑TO‑EXERCISE MAP ----------
+const muscleToExercises = (function buildMuscleMap() {
+  const map = {};
+
+  // Helper to add an exercise to one or more muscle IDs
+  function addExercise(muscleIds, exercise) {
+    muscleIds.forEach(id => {
+      if (!map[id]) map[id] = [];
+      map[id].push(exercise);
+    });
+  }
+
+  exerciseCompendium.forEach(group => {
+    // Determine which muscle IDs this group primarily targets
+    let primaryIds = [];
+    const groupName = group.group.toLowerCase();
+
+    if (groupName.includes('quad')) primaryIds = ['quads'];
+    else if (groupName.includes('hamstring')) primaryIds = ['hamstrings'];
+    else if (groupName.includes('glute')) primaryIds = ['glutes'];
+    else if (groupName.includes('chest')) primaryIds = ['chest'];
+    else if (groupName.includes('back')) {
+      // Back group targets multiple muscles
+      primaryIds = ['back', 'lats', 'rhomboids', 'traps', 'rear_delts'];
+    }
+    else if (groupName.includes('shoulder')) {
+      primaryIds = ['shoulders', 'rear_delts']; // also front/rear later
+    }
+    else if (groupName.includes('arms')) {
+      // We'll split by exercise name later; for now mark all arm muscles
+      primaryIds = ['biceps', 'triceps', 'forearms'];
+    }
+    else if (groupName.includes('core')) {
+      primaryIds = ['core', 'obliques', 'erectors']; // add transverse, etc.
+    }
+    else if (groupName.includes('calf')) primaryIds = ['calves'];
+    else if (groupName.includes('hip')) primaryIds = ['hip_flexors', 'adductors', 'abductors'];
+    else if (groupName.includes('neck')) primaryIds = ['neck', 'deep_neck'];
+    else if (groupName.includes('feet')) {
+      primaryIds = ['foot_intrinsics', 'foot_interossei', 'abductor_hallucis', 'flexor_brevis'];
+    }
+    else if (groupName.includes('hand')) {
+      primaryIds = ['hand_lumbricals', 'hand_interossei', 'thenar'];
+    }
+    else {
+      // fallback – use a cleaned version of the group name as a single ID
+      let fallbackId = groupName.replace(/[^a-z]+/g, '_');
+      // remove trailing underscores
+      fallbackId = fallbackId.replace(/_$/, '');
+      primaryIds = [fallbackId];
+    }
+
+    // Now process each exercise in the group
+    group.exercises.forEach(ex => {
+      if (ex.equipment === "Phase/Gender Notes") return; // skip notes
+
+      const exObj = {
+        name: ex.name,
+        equipment: ex.equipment,
+        defaultSets: parseInt(ex.setsReps) || 3,
+        defaultReps: ex.setsReps.replace(/^\d+–?\d*×/, '') || '8-12',
+        progression: ex.progression,
+        instructions: [ex.notes],
+        // Store the primary IDs; we may add more based on name later
+        muscleIds: [...primaryIds]
+      };
+
+      // Refine based on exercise name for arms
+      if (groupName.includes('arms')) {
+        const nameLower = ex.name.toLowerCase();
+        if (nameLower.includes('curl') || nameLower.includes('chin')) {
+          exObj.muscleIds = ['biceps'];
+        } else if (nameLower.includes('pushdown') || nameLower.includes('extension') || nameLower.includes('dip')) {
+          exObj.muscleIds = ['triceps'];
+        } else if (nameLower.includes('wrist') || nameLower.includes('grip') || nameLower.includes('farmer') || nameLower.includes('dead hang') || nameLower.includes('pinch')) {
+          exObj.muscleIds = ['forearms'];
+        } else {
+          exObj.muscleIds = ['biceps', 'triceps', 'forearms']; // fallback
+        }
+      }
+
+      // Add rotator cuff specifics for shoulder/back exercises
+      if (groupName.includes('shoulder') || groupName.includes('back')) {
+        const nameLower = ex.name.toLowerCase();
+        if (nameLower.includes('external rotation') || nameLower.includes('face pull')) {
+          exObj.muscleIds.push('infraspinatus', 'supraspinatus');
+        }
+        if (nameLower.includes('internal rotation')) {
+          exObj.muscleIds.push('subscapularis');
+        }
+      }
+
+      // Add core specifics
+      if (groupName.includes('core')) {
+        const nameLower = ex.name.toLowerCase();
+        if (nameLower.includes('side') || nameLower.includes('oblique')) {
+          exObj.muscleIds.push('obliques');
+        }
+        if (nameLower.includes('plank') || nameLower.includes('rollout')) {
+          exObj.muscleIds.push('transverse');
+        }
+      }
+
+      // Remove duplicates in muscleIds
+      exObj.muscleIds = [...new Set(exObj.muscleIds)];
+
+      // Add this exercise to the map under each muscle ID
+      exObj.muscleIds.forEach(mid => {
+        if (!map[mid]) map[mid] = [];
+        // avoid duplicate exercise entries for the same muscle
+        if (!map[mid].some(e => e.name === exObj.name)) {
+          map[mid].push(exObj);
+        }
+      });
+    });
+  });
+
+  return map;
+})();
+
+console.log('Muscle map built. Sample:', Object.keys(muscleToExercises).slice(0, 10));
+
 // ---------- GLOBAL VARIABLES ----------
 let currentWorkout = null;
 let muscleLastTrained = {};
