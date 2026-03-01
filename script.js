@@ -823,258 +823,349 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
 }
 
 // ---------- WORKOUT GENERATION ----------
-/**
- * 
- * Combines:
- * - Sigmoid recovery with local & global physiological factors (CNS, sleep, hormones, gender, age, experience)
- * - Frequency, tendon health, aging risk, novelty, injury penalty
- * - Squared coverage urgency (neglect protection)
- * - Weighted probability selection (softmax draw) for accessory muscles
- * - Exercise variety engine (least used per muscle)
- * - Backup security check & readiness display
- * - Full UI sync and persistent storage
- */
 async function generateNextWorkout() {
-  // --- DIRTY CHECK ---
   if (workoutDirty) {
-    const confirmDiscard = confirm("You have unsaved logs in this workout. Discard them and generate a new session?");
+    const confirmDiscard = confirm("Unsaved logs. Discard and generate?");
     if (!confirmDiscard) return;
+    if (currentWorkout) {
+      const prevMuscles = currentWorkout.exercises.map(ex => ex.muscleGroup).flat();
+      workoutData.rejectionHistory = workoutData.rejectionHistory || {};
+      prevMuscles.forEach(m => workoutData.rejectionHistory[m] = (workoutData.rejectionHistory[m] || 0) + 1);
+    }
   }
 
-  console.log("🧠 System: Initiating Advanced Physiological Scan...");
   showLoading(true);
+  workoutDirty = false;
+  dirtyExercises.clear();
+  clearDraft();
 
-  try {
-    // Reset dirty flags
-    workoutDirty = false;
-    dirtyExercises.clear();
-    clearDraft();
+  const backupRequired = (Date.now() - new Date(workoutData.lastExport || 0).getTime()) > 604800000;
+  const splits = workoutProgram.splits;
+  const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
+  let split = lastWorkout
+    ? splits[(splits.findIndex(s => s.id === lastWorkout.type) + 1) % splits.length]
+    : splits[0];
 
-    // --- SECURITY / BACKUP CHECK ---
-    const lastExport = new Date(workoutData.lastExport).getTime() || 0;
-    const backupRequired = (Date.now() - lastExport > 7 * 24 * 60 * 60 * 1000); // 7 days
+  const now = new Date();
 
-    // --- SPLIT ROTATION ---
-    const splits = workoutProgram.splits;
-    const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
-    let split = lastWorkout
-      ? splits[(splits.findIndex(s => s.id === lastWorkout.type) + 1) % splits.length]
-      : splits[0];
+  // ---- Physiological State Estimation (Kalman‑like fusion) ----
+  const priorCNS = { mean: 1, variance: 0.1 };
+  const last3 = workoutData.workouts.slice(-3);
+  const avgRPE = last3.length
+    ? last3.reduce((s, w) => s + (parseFloat(w.summary?.averageRPE) || 7), 0) / last3.length
+    : 7;
+  const cnsObs = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
+  const cnsVar = 0.05;
+  const kalmanGain = priorCNS.variance / (priorCNS.variance + cnsVar);
+  const cnsFatigue = priorCNS.mean + kalmanGain * (cnsObs - priorCNS.mean);
+  const cnsVariance = (1 - kalmanGain) * priorCNS.variance;
 
-    // --- GLOBAL PHYSIOLOGICAL MULTIPLIERS ---
-    const now = new Date();
+  const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
+  const avgSleep = sleepLogs.length
+    ? sleepLogs.reduce((s, l) => s + parseFloat(l.value), 0) / sleepLogs.length
+    : 8;
+  const sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
 
-    // CNS Fatigue (sigmoid)
-    const last3 = workoutData.workouts.slice(-3);
-    const avgRPE = last3.length
-      ? last3.reduce((sum, w) => sum + (parseFloat(w.summary?.averageRPE) || 7), 0) / last3.length
-      : 7;
-    const cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
+  const gender = workoutData.user.gender || 'male';
+  const onBirthControl = workoutData.user.onBirthControl || false;
+  const phase = getCurrentCyclePhase(workoutData.user);
+  const cycleFactors = getCycleFactors(phase, gender, onBirthControl);
 
-    // Sleep factor (last 7 days)
-    const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
-    const avgSleep = sleepLogs.length
-      ? sleepLogs.reduce((sum, s) => sum + parseFloat(s.value), 0) / sleepLogs.length
-      : 8;
-    const sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
-
-    // Hormonal phase factor
-    const phase = getCurrentCyclePhase();
-    const hormonalFactor = getPhaseMultiplier(phase);
-
-    // Gender factor
-    let genderFactor = 1.0;
-    if (workoutData.user.gender === 'female') genderFactor = 1.02;
-    else if (workoutData.user.gender === 'male') genderFactor = 0.98;
-
-    // Age factor
-    let ageFactor = 1.0;
-    if (workoutData.user.birthDate) {
-      const birthYear = new Date(workoutData.user.birthDate).getFullYear();
-      const currentYear = now.getFullYear();
-      const age = currentYear - birthYear;
-      if (age > 20) ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
-    }
-
-    // Experience factor
-    const exp = workoutData.user.experience || 'intermediate';
-    let experienceFactor = 1.0;
-    if (exp === 'beginner') experienceFactor = 1.1;
-    else if (exp === 'advanced') experienceFactor = 0.9;
-
-    // Combine into a single global readiness scaler
-    const globalRecovery = Math.max(0.3, Math.min(1.1,
-      cnsFatigue * sleepFactor * hormonalFactor * genderFactor * ageFactor * experienceFactor
-    ));
-
-    // --- BUILD MUSCLE POOL PER SPLIT ---
-    let allowedCategories = [];
-    switch (split.id) {
-      case 'full_body_a':
-      case 'full_body_b':
-        allowedCategories = ['major', 'longevity', 'hands', 'feet'];
-        break;
-      case 'push_day':
-      case 'pull_day':
-        allowedCategories = ['major', 'longevity'];
-        break;
-      case 'legs_day':
-        allowedCategories = ['major', 'feet', 'longevity'];
-        break;
-      case 'longevity_day':
-        allowedCategories = ['longevity', 'hands', 'feet'];
-        break;
-      default:
-        allowedCategories = ['major', 'longevity'];
-    }
-
-    let pool = [];
-    allowedCategories.forEach(cat => {
-      if (cat === 'major') pool.push(...muscleDatabase.major);
-      if (cat === 'longevity') pool.push(...muscleDatabase.longevity);
-      if (cat === 'hands') pool.push(...muscleDatabase.hands);
-      if (cat === 'feet') pool.push(...muscleDatabase.feet);
-    });
-
-    // Remove muscles that are already in the split's focus, and enforce calves rule
-    pool = pool.filter(m => {
-      if (split.id !== 'legs_day' && m.name === 'calves') return false;
-      return !split.focus.includes(m.name);
-    });
-
-    // Fallback if pool becomes empty
-    if (pool.length === 0) {
-      pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
-    }
-
-    // --- SCORE EACH MUSCLE ---
-    const scores = pool.map(m => {
-      const lastTrained = muscleLastTrained[m.name];
-      const daysSince = lastTrained ? (now - new Date(lastTrained)) / (1000 * 60 * 60 * 24) : Infinity;
-      const effectiveRest = getEffectiveRestDays ? getEffectiveRestDays(m) : (m.restDays || 2);
-
-      const readinessRatio = daysSince / effectiveRest;
-      const k = 3;
-      const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
-
-      let adjustedRecovery = localRecovery * globalRecovery;
-
-      const freq = getTrainingFrequency(m.name);
-      const freqFactor = Math.exp(-freq / 3);
-
-      let riskFactor = 1.0;
-      if (m.agingRisk === 'high' && m.category === 'longevity') {
-        riskFactor = Math.min(2, 1 + (daysSince / 14));
-      }
-
-      let tendonFactor = 1.0;
-      if (['quads', 'hamstrings', 'chest', 'biceps', 'triceps', 'calves'].includes(m.name)) {
-        tendonFactor = 0.95;
-      }
-
-      const userGoal = workoutData.user.goal || 'balanced';
-      let goalFactor = 1.0;
-      if (userGoal === 'strength' || userGoal === 'powerlifting') {
-        if (m.category === 'major') goalFactor = 1.2;
-        if (['quads','hamstrings','glutes','chest','back','shoulders','triceps'].includes(m.name)) {
-          goalFactor *= 1.1;
-        }
-      } else if (userGoal === 'longevity') {
-        if (m.category === 'longevity') goalFactor = 1.5;
-      } else if (userGoal === 'hypertrophy') {
-        if (m.category === 'major') goalFactor = 1.3;
-      }
-
-      const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
-
-      const noveltyBoost = !lastTrained ? 0.5 : 0.0;
-
-      const targetRest = effectiveRest * 1.5;
-      let coverageUrgency = 1.0;
-      if (lastTrained) {
-        coverageUrgency = Math.min(3, Math.pow(daysSince / targetRest, 2));
-      } else {
-        coverageUrgency = 3;
-      }
-
-      const jitter = (Math.random() * 0.2) - 0.1;
-
-      let score = adjustedRecovery * freqFactor * riskFactor * goalFactor *
-                  injuryFactor * tendonFactor * coverageUrgency +
-                  noveltyBoost + jitter;
-
-      return { muscle: m, score: Math.max(0, score) };
-    });
-
-    scores.sort((a, b) => b.score - a.score);
-
-    // --- WEIGHTED PROBABILITY SELECTION ---
-    const accessoryCount = Math.floor(Math.random() * 2) + 2;
-    const selectedAccessories = [];
-
-    const candidates = scores.slice(0, 10);
-    const candidateIndices = Array.from({ length: candidates.length }, (_, i) => i);
-
-    for (let i = 0; i < accessoryCount && candidateIndices.length > 0; i++) {
-      const total = candidateIndices.reduce((sum, idx) => sum + candidates[idx].score, 0);
-      let rand = Math.random() * total;
-      const chosenIdx = candidateIndices.find(idx => {
-        rand -= candidates[idx].score;
-        return rand <= 0;
-      });
-      if (chosenIdx === undefined) break;
-
-      selectedAccessories.push(candidates[chosenIdx].muscle.name);
-      candidateIndices.splice(candidateIndices.indexOf(chosenIdx), 1);
-    }
-
-    // --- BUILD WORKOUT OBJECT ---
-    const phaseMultiplier = getPhaseMultiplier(phase);
-
-    currentWorkout = {
-      id: `workout_${Date.now()}`,
-      date: now.toISOString(),
-      type: split.id,
-      name: split.name,
-      readiness: Math.round(globalRecovery * 100),
-      exercises: [],
-      security: { backupRecommended: backupRequired }
-    };
-
-    const allMuscles = [...new Set([...split.focus, ...selectedAccessories])];
-
-    allMuscles.forEach(muscleName => {
-      // FIX: Use typeof to safely check if pickExerciseVariety is defined
-      const exerciseBase = (typeof pickExerciseVariety !== 'undefined' && pickExerciseVariety) 
-        ? pickExerciseVariety(muscleName) 
-        : generateExerciseFromLibrary(muscleName);
-      if (exerciseBase) {
-        const exercise = generateExercisePrescription(exerciseBase, phaseMultiplier);
-        currentWorkout.exercises.push(exercise);
-      }
-    });
-
-    // --- UI SYNC & NOTIFICATIONS ---
-    updateDashboard();
-
-    if (document.getElementById('workout-section').classList.contains('active')) {
-      renderExerciseDeck();
-    }
-
-    if (backupRequired) {
-      showNotification("🔐 Security: Backup recommended before training.", "warning");
-      document.getElementById('nav-settings')?.classList.add('critical');
-    } else {
-      showNotification(`✅ Generated: ${currentWorkout.name} (${currentWorkout.readiness}% Readiness)`, "success");
-    }
-
-    saveToLocalStorage();
-  } catch (error) {
-    console.error("Error generating workout:", error);
-    showNotification("❌ Failed to generate workout. Check console.", "error");
-  } finally {
-    showLoading(false);
+  const genderFactor = gender === 'female' ? 1.02 : gender === 'male' ? 0.98 : 1;
+  let ageFactor = 1;
+  if (workoutData.user.birthDate) {
+    const age = now.getFullYear() - new Date(workoutData.user.birthDate).getFullYear();
+    if (age > 20) ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
   }
+  const expFactor = { beginner: 1.1, intermediate: 1, advanced: 0.9 }[workoutData.user.experience || 'intermediate'];
+
+  // Circadian rhythm: sine wave peak at 8am (for males)
+  const dailyTestosterone = gender === 'male'
+    ? 1 + 0.05 * Math.sin(2 * Math.PI * (now.getHours() - 8) / 24)
+    : 1;
+
+  const globalRecovery = Math.max(0.3, Math.min(1.1,
+    cnsFatigue * sleepFactor * cycleFactors.recovery * genderFactor * ageFactor * expFactor * dailyTestosterone
+  ));
+
+  // ---- Allowed muscle pool per split ----
+  const allowedCategories = {
+    full_body_a: ['major', 'longevity', 'hands', 'feet'],
+    full_body_b: ['major', 'longevity', 'hands', 'feet'],
+    push_day: ['major', 'longevity'],
+    pull_day: ['major', 'longevity'],
+    legs_day: ['major', 'feet', 'longevity'],
+    longevity_day: ['longevity', 'hands', 'feet']
+  }[split.id] || ['major', 'longevity'];
+
+  let pool = [];
+  allowedCategories.forEach(cat => pool.push(...muscleDatabase[cat]));
+  pool = pool.filter(m => (split.id !== 'legs_day' && m.name !== 'calves') && !split.focus.includes(m.name));
+  if (!pool.length) pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
+
+  // ---- Goal and periodization ----
+  const userGoal = workoutData.user.goal || 'balanced';
+  const compDate = workoutData.user.nextCompetition ? new Date(workoutData.user.nextCompetition) : null;
+  const weeksOut = compDate ? Math.max(0, Math.floor((compDate - now) / 604800000)) : null;
+  const peakPhase = weeksOut !== null && weeksOut <= 3 ? 'peak' : weeksOut <= 6 ? 'strength' : weeksOut <= 10 ? 'hypertrophy' : 'offseason';
+  const block = workoutData.currentBlock || peakPhase || (() => {
+    const weeks = Math.floor((now - new Date(workoutData.user.startDate || now)) / 604800000) % 12;
+    return weeks < 4 ? 'hypertrophy' : weeks < 8 ? 'strength' : 'peak';
+  })();
+
+  // Muscle importance weights – can be updated via reinforcement learning
+  const baseImportance = {
+    powerlifting: { quads:2, hamstrings:2, glutes:2, chest:2, triceps:2, 'spinal erectors':2, lats:1.8, traps:1.5, core:1.2 },
+    strength: { quads:1.8, hamstrings:1.8, glutes:1.8, chest:1.8, back:1.8, shoulders:1.5, core:1.3 },
+    hypertrophy: { chest:2, back:2, shoulders:2, quads:2, biceps:1.5, triceps:1.5 },
+    longevity: { 'rotator cuff':2, core:2, glutes:2, 'upper back':2, hamstrings:1.8, calves:1.5 }
+  }[userGoal] || {};
+
+  // Adjust importance based on recent PRs (simple reinforcement)
+  const prAdjustment = (muscle) => {
+    const prs = workoutData.prHistory?.[muscle] || [];
+    if (prs.length < 2) return 1;
+    const trend = (prs[0] - prs[prs.length-1]) / prs[prs.length-1]; // positive if improving
+    return 1 + Math.min(0.2, Math.max(-0.2, trend));
+  };
+  const importance = {};
+  Object.entries(baseImportance).forEach(([muscle, w]) => {
+    importance[muscle] = w * prAdjustment(muscle);
+  });
+
+  const movementMap = {
+    quads:'squat', hamstrings:'hinge', glutes:'hinge', chest:'push', back:'pull', shoulders:'push',
+    biceps:'pull', triceps:'push', lats:'pull', 'spinal erectors':'hinge', core:'core', calves:'push',
+    forearms:'grip', 'rotator cuff':'rotator', 'upper back':'pull', 'lower back':'hinge'
+  };
+
+  // ---- Continuous‑time fatigue model (exponential decay with load) ----
+  function getFatigue(muscle) {
+    let fatigue = 0;
+    workoutData.workouts.forEach(w => {
+      const days = (now - new Date(w.date)) / 86400000;
+      if (days > 21) return;
+      w.exercises?.forEach(ex => {
+        if (ex.actual && !ex.skipped && ex.muscleGroup.includes(muscle)) {
+          const load = (ex.sets || 3) * (ex.reps || 10) * (ex.weight || 100) / 1000;
+          fatigue += load * Math.exp(-days / 4); // time constant 4 days
+        }
+      });
+    });
+    return Math.min(1, fatigue);
+  }
+
+  // ---- Bayesian injury risk prediction (logistic model) ----
+  function injuryRisk(muscle, movement) {
+    // Base risk from population data
+    let logOdds = -2.5; // low base probability ~7.5%
+    if (gender === 'female' && (movement === 'squat' || movement === 'hinge')) {
+      logOdds += 0.5; // increased risk for women in these movements
+    }
+    if (workoutData.injuries?.some(i => i.muscle === muscle)) {
+      logOdds += 1.0; // previous injury increases risk
+    }
+    const fatigue = getFatigue(muscle);
+    logOdds += 1.5 * fatigue; // fatigue increases odds
+    const freq = getTrainingFrequency(muscle);
+    if (freq > 3) logOdds += 0.3 * (freq - 3);
+    // convert to probability
+    const prob = 1 / (1 + Math.exp(-logOdds));
+    // return multiplier (1 = no effect, <1 = less likely to be selected)
+    return 1 - prob * 0.8; // scale so max penalty ~0.2
+  }
+
+  // ---- Muscle scoring with Bayesian prior on recovery ----
+  const scores = pool.map(m => {
+    const last = muscleLastTrained[m.name];
+    const daysSince = last ? (now - new Date(last)) / 86400000 : 30;
+
+    // Prior rest days based on muscle type (Gamma distribution)
+    const baseRest = getEffectiveRestDays?.(m) || m.restDays || 2;
+    const importantMult = importance[m.name] || 1;
+    const adjustedRest = baseRest / importantMult; // important muscles get shorter rest
+
+    // Likelihood of readiness given days since last training
+    const readinessLikelihood = 1 / (1 + Math.exp(-4 * (daysSince / adjustedRest - 1)));
+
+    // Prior: we believe muscle is usually ready after its rest period
+    const priorAlpha = 5; // shape
+    const priorBeta = adjustedRest * 2; // scale
+    const posteriorMean = (priorAlpha + daysSince) / (priorBeta + 1); // crude Bayesian update
+    const readiness = posteriorMean / (1 + posteriorMean); // bounded [0,1]
+
+    // Combine with global factors
+    const fatigue = getFatigue(m.name);
+    const fatigueFactor = 1 - fatigue * 0.7;
+
+    const freq = getTrainingFrequency(m.name);
+    const isStrengthMuscle = m.category === 'major' ||
+      ['quads', 'hamstrings', 'glutes', 'chest', 'back', 'shoulders'].includes(m.name);
+    const strengthMod = isStrengthMuscle ? cycleFactors.strength : 1;
+    const enduranceMod = !isStrengthMuscle ? cycleFactors.endurance : 1;
+
+    const freqFactor = Math.exp(-freq / (importantMult > 1.5 ? 2.5 : 3.5));
+    const goalFactor = userGoal === 'powerlifting' && m.category === 'major' ? 1.3 :
+                       userGoal === 'longevity' && m.category === 'longevity' ? 1.6 :
+                       userGoal === 'hypertrophy' && m.category === 'major' ? 1.3 : 1;
+
+    const blockFactor = block === 'peak' ? 1.2 : block === 'strength' ? 1.1 : block === 'hypertrophy' ? 1.0 : 0.9;
+
+    const injury = injuryRisk(m.name, movementMap[m.name] || '');
+    const novelty = !last ? 0.5 : 0;
+    const urgency = last ? Math.min(3, (daysSince / (baseRest * 2)) ** 2) : 3;
+    const rejection = Math.exp(-0.3 * (workoutData.rejectionHistory?.[m.name] || 0));
+
+    let potentiation = 1;
+    if (last && daysSince < baseRest * 0.3) {
+      potentiation = 1.1; // trained recently but lightly, ready for heavier
+    }
+
+    const jitter = (Math.random() * 0.2) - 0.1;
+
+    const score = (readiness * globalRecovery * fatigueFactor * freqFactor * goalFactor * blockFactor *
+                   injury * urgency * rejection * strengthMod * enduranceMod * potentiation) + novelty + jitter;
+    return { muscle: m, score: Math.max(0, score), movement: movementMap[m.name] || 'other' };
+  });
+
+  scores.sort((a, b) => b.score - a.score);
+  const accessoryCount = Math.floor(Math.random() * 2) + 2;
+  const selected = [];
+  const candidates = scores.slice(0, 15);
+  const usedMovements = new Set();
+
+  // Thompson sampling for movement variety
+  for (let i = 0; i < accessoryCount && candidates.length; i++) {
+    const total = candidates.reduce((s, c) => s + c.score, 0);
+    let r = Math.random() * total;
+    const idx = candidates.findIndex(c => (r -= c.score) <= 0);
+    if (idx === -1) break;
+    const chosen = candidates[idx];
+    // penalize repeated movements (simulated via rejection sampling)
+    if (usedMovements.has(chosen.movement) && Math.random() < 0.7) {
+      candidates.splice(idx, 1);
+      i--;
+      continue;
+    }
+    selected.push(chosen.muscle.name);
+    usedMovements.add(chosen.movement);
+    candidates.splice(idx, 1);
+  }
+
+  // ---- Adaptive phase multipliers (learn from past performance) ----
+  const basePhaseMult = getPhaseMultiplier(phase);
+  const userPhaseHistory = workoutData.phaseHistory || {};
+  const phaseKey = phase.name;
+  let learnedMult = userPhaseHistory[phaseKey]?.avgPerformance || 1.0;
+  learnedMult = Math.max(0.8, Math.min(1.2, learnedMult));
+  const exerciseMult = basePhaseMult * learnedMult;
+
+  let setsMod = 1, repsMod = 1, weightMod = 1;
+  if (gender === 'female' && !onBirthControl) {
+    // Use learned phase modifiers
+    setsMod = userPhaseHistory[phaseKey]?.setsMod || 1;
+    repsMod = userPhaseHistory[phaseKey]?.repsMod || 1;
+    weightMod = userPhaseHistory[phaseKey]?.weightMod || 1;
+    // Blend with default cycle knowledge
+    if (phase.name === 'late_follicular') {
+      setsMod = (setsMod + 1.1) / 2;
+      weightMod = (weightMod + 1.05) / 2;
+    } else if (phase.name === 'ovulatory') {
+      weightMod = (weightMod + 1.08) / 2;
+    } else if (phase.name === 'late_luteal') {
+      setsMod = (setsMod + 0.9) / 2;
+      repsMod = (repsMod + 0.9) / 2;
+    } else if (phase.name === 'menstrual') {
+      setsMod = (setsMod + 0.8) / 2;
+    }
+  } else if (gender === 'male') {
+    if (block === 'peak') {
+      weightMod = 1.1;
+      repsMod = 0.9;
+    } else if (block === 'strength') {
+      weightMod = 1.05;
+    } else if (block === 'hypertrophy') {
+      repsMod = 1.1;
+    }
+  }
+
+  currentWorkout = {
+    id: `workout_${Date.now()}`,
+    date: now.toISOString(),
+    type: split.id,
+    name: split.name,
+    readiness: Math.round(globalRecovery * 100),
+    exercises: [],
+    security: { backupRecommended: backupRequired },
+    block,
+    cyclePhase: gender === 'female' ? phase.name : null,
+    isCompetitionPrep: weeksOut !== null
+  };
+
+  const allMuscles = [...new Set([...split.focus, ...selected])];
+  allMuscles.forEach(m => {
+    // Multi‑armed bandit for exercise selection
+    const base = thompsonSampleExercise(m, workoutData.exerciseHistory) || generateExerciseFromLibrary(m);
+    if (base) {
+      const exercise = generateExercisePrescription(base, exerciseMult, { setsMod, repsMod, weightMod });
+      currentWorkout.exercises.push(exercise);
+    }
+  });
+
+  // Special peak singles for primary lifts
+  const isPrimaryDay = split.name.toLowerCase().includes('squat') || split.name.toLowerCase().includes('bench') || split.name.toLowerCase().includes('deadlift');
+  if (isPrimaryDay && block === 'peak') {
+    const primary = split.name.toLowerCase().includes('squat') ? 'squat' :
+                    split.name.toLowerCase().includes('bench') ? 'bench' : 'deadlift';
+    const singlesExercise = currentWorkout.exercises.find(ex => ex.name.toLowerCase().includes(primary));
+    if (singlesExercise) {
+      singlesExercise.sets = [1, 2, 3].map(attempt => ({ reps: 1, rpe: 9 - attempt, weight: 'working' }));
+    }
+  }
+
+  updateDashboard();
+  if (document.getElementById('workout-section').classList.contains('active')) renderExerciseDeck();
+  showLoading(false);
+
+  if (backupRequired) {
+    showNotification("Backup recommended", "warning");
+    document.getElementById('nav-settings')?.classList.add('critical');
+  } else {
+    showNotification(`${currentWorkout.name} (${currentWorkout.readiness}%)`, "success");
+  }
+  saveToLocalStorage();
+}
+
+function getCycleFactors(phase, gender, onBirthControl) {
+  if (gender !== 'female' || onBirthControl) {
+    return { recovery: 1, strength: 1, endurance: 1, injuryRisk: 1 };
+  }
+  switch (phase.name) {
+    case 'early_follicular': return { recovery: 1.0, strength: 1.0, endurance: 1.0, injuryRisk: 1.0 };
+    case 'late_follicular': return { recovery: 1.1, strength: 1.15, endurance: 1.1, injuryRisk: 1.0 };
+    case 'ovulatory': return { recovery: 1.05, strength: 1.2, endurance: 1.0, injuryRisk: 1.1 };
+    case 'early_luteal': return { recovery: 0.95, strength: 0.95, endurance: 1.05, injuryRisk: 1.2 };
+    case 'late_luteal': return { recovery: 0.9, strength: 0.9, endurance: 1.1, injuryRisk: 1.25 };
+    case 'menstrual': return { recovery: 0.85, strength: 0.85, endurance: 0.9, injuryRisk: 1.1 };
+    default: return { recovery: 1, strength: 1, endurance: 1, injuryRisk: 1 };
+  }
+}
+
+function thompsonSampleExercise(muscle, history) {
+  const exercises = muscleDatabase[muscle]?.exercises || [];
+  if (!exercises.length) return null;
+  // For each exercise, maintain a beta posterior of success (e.g., user didn't skip, RPE matched target)
+  const betaParams = exercises.map(ex => {
+    const data = history?.[ex.id] || { successes: 1, failures: 1 };
+    return { ex, alpha: data.successes, beta: data.failures };
+  });
+  // Sample from Beta(alpha, beta) and pick max
+  const samples = betaParams.map(({ ex, alpha, beta }) => {
+    const sample = jStat.beta.sample(alpha, beta); // requires jStat or similar
+    return { ex, sample };
+  });
+  samples.sort((a, b) => b.sample - a.sample);
+  return samples[0].ex;
 }
 
 // ====================== //
