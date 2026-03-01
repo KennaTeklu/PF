@@ -1707,8 +1707,7 @@ function renderExerciseDeckInModal() {
     const deck = document.getElementById('exercise-deck-modal');
     if (!deck) return;
 
-    // Clear old content
-    deck.innerHTML = '';
+    deck.innerHTML = ''; // Clear old content
 
     if (!currentWorkout || !currentWorkout.exercises.length) {
         deck.innerHTML = '<div class="empty-state"><i class="fas fa-dumbbell"></i><h3>No workout scheduled.</h3></div>';
@@ -1732,6 +1731,7 @@ function renderExerciseDeckInModal() {
             : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
         const isDone = ex.actual && !ex.skipped;
 
+        // Card HTML including the per‑card drawer
         card.innerHTML = `
             <div class="card-menu">
                 <i class="fas fa-ellipsis-v"></i>
@@ -1758,6 +1758,45 @@ function renderExerciseDeckInModal() {
                     <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
                         <i class="fas fa-image"></i> Images
                     </button>
+                    <!-- Log button to open the per‑card drawer -->
+                    <button class="action-btn log-btn" data-index="${index}">
+                        <i class="fas fa-pencil-alt"></i> Log
+                    </button>
+                </div>
+            </div>
+            <!-- Per‑card drawer (initially hidden) -->
+            <div class="card-drawer" id="modal-drawer-${index}" style="display: none;">
+                <div class="drawer-content">
+                    <div class="log-prescribed-display">
+                        <strong>Prescribed:</strong> ${ex.prescribed.weight || '?'} lbs · ${ex.prescribed.sets} × ${repsInfo}
+                    </div>
+                    <div class="form-group">
+                        <label>Weight used (lbs)</label>
+                        <input type="number" class="log-weight" value="${ex.prescribed.weight || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Sets completed</label>
+                        <select class="log-sets" data-index="${index}">
+                            ${Array.from({length: 11}, (_, i) => `<option value="${i}" ${i === ex.prescribed.sets ? 'selected' : ''}>${i}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="log-reps-container" id="modal-reps-${index}"></div>
+                    <div class="form-group">
+                        <label>RPE (1-10)</label>
+                        <select class="log-rpe">
+                            <option value="">Select RPE</option>
+                            ${Array.from({length: 10}, (_, i) => `<option value="${10 - i}">${10 - i}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea class="log-notes" placeholder="How did it feel?"></textarea>
+                    </div>
+                    <div class="drawer-actions">
+                        <button class="btn-save-log" data-index="${index}">SAVE</button>
+                        <button class="btn-skip-log" data-index="${index}">SKIP</button>
+                        <button class="btn-close-drawer" data-index="${index}">CLOSE</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -1770,21 +1809,89 @@ function renderExerciseDeckInModal() {
             popup.classList.toggle('show');
         });
 
+        // Attach event listeners for the per‑card drawer
+        const logBtn = card.querySelector('.log-btn');
+        const drawer = card.querySelector('.card-drawer');
+        const setsSelect = card.querySelector('.log-sets');
+        const repsContainer = card.querySelector(`#modal-reps-${index}`);
+
+        // Function to render rep inputs based on sets
+        const renderRepInputs = () => {
+            const sets = parseInt(setsSelect.value);
+            if (isNaN(sets) || sets < 0) {
+                repsContainer.innerHTML = '';
+                return;
+            }
+            let html = '';
+            for (let i = 0; i < sets; i++) {
+                html += `
+                    <div class="stepper-group">
+                        <label>Set ${i + 1} reps</label>
+                        <div class="stepper-control">
+                            <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="-1">−</button>
+                            <input type="number" class="rep-input" id="modal-rep-${index}-${i}" value="8" min="0" step="1">
+                            <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="1">+</button>
+                        </div>
+                    </div>
+                `;
+            }
+            repsContainer.innerHTML = html;
+        };
+
+        // Initial render of rep inputs
+        renderRepInputs();
+
+        // Update rep inputs when sets change
+        setsSelect.addEventListener('change', renderRepInputs);
+
+        // Toggle drawer on log button click
+        logBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Close any other open drawer in the modal
+            slider.querySelectorAll('.card-drawer[style*="display: block"]').forEach(d => d.style.display = 'none');
+            // Open this drawer
+            drawer.style.display = 'block';
+        });
+
+        // Close button inside drawer
+        card.querySelector('.btn-close-drawer').addEventListener('click', (e) => {
+            e.stopPropagation();
+            drawer.style.display = 'none';
+        });
+
+        // Save and Skip buttons – calling the same global functions as in the regular deck
+        card.querySelector('.btn-save-log').addEventListener('click', (e) => {
+            e.stopPropagation();
+            saveLog(index);
+        });
+
+        card.querySelector('.btn-skip-log').addEventListener('click', (e) => {
+            e.stopPropagation();
+            skipLog(index);
+        });
+
+        // Stepper buttons (delegation)
+        repsContainer.addEventListener('click', (e) => {
+            const stepBtn = e.target.closest('.step-btn');
+            if (!stepBtn) return;
+            const delta = parseInt(stepBtn.dataset.delta);
+            const setIdx = stepBtn.dataset.set;
+            const input = document.getElementById(`modal-rep-${index}-${setIdx}`);
+            if (input) {
+                const newVal = (parseFloat(input.value) || 0) + delta;
+                input.value = Math.max(0, newVal);
+                input.dispatchEvent(new Event('input')); // mark dirty if needed
+            }
+        });
+
         slider.appendChild(card);
         fetchExerciseImage(ex.name, `modal-img-${index}`);
     });
 
-    // Add summary card (must be inside the slider)
-    addModalSummaryCard(slider);   // <-- now receives the slider, not the deck
+    // Add summary card (inside the slider)
+    addModalSummaryCard(slider);
 
-    // Event delegation for card clicks (opens log drawer)
-    slider.addEventListener('click', (e) => {
-        const card = e.target.closest('.exercise-card');
-        if (card && !e.target.closest('.card-menu') && !e.target.closest('.info-icon') && !e.target.closest('.action-btn')) {
-            const index = card.dataset.index;
-            openLogDrawer(index);
-        }
-    });
+    // No global click delegation – each card handles its own drawer
 
     // Store references for paging logic
     modalDeckSlider = slider;
@@ -1792,9 +1899,9 @@ function renderExerciseDeckInModal() {
     modalCurrentCardIndex = 0;
 
     // Ensure the slider starts at the first card
-    updateModalCardPosition();        // <-- function that sets transform: translateY(0%)
+    updateModalCardPosition();
 
-    // Optional: keep header sync (modify observer to watch slider children)
+    // Set up intersection observer for header sync
     setupModalIntersectionObserver();
 }
 
