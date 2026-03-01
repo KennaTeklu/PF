@@ -1462,17 +1462,15 @@ function renderExerciseDeck() {
             drawer.style.display = 'none';
         });
 
-        // Save and Skip buttons (will be handled by separate functions later)
+        // Save and Skip buttons – now calling the correct global functions
         card.querySelector('.btn-save-log').addEventListener('click', (e) => {
             e.stopPropagation();
-            // We'll define savePerCardLog(index) later
-            savePerCardLog(index);
+            saveLog(index);
         });
 
         card.querySelector('.btn-skip-log').addEventListener('click', (e) => {
             e.stopPropagation();
-            // We'll define skipPerCardLog(index) later
-            skipPerCardLog(index);
+            skipLog(index);
         });
 
         // Stepper buttons (delegation because they are dynamically added)
@@ -1498,7 +1496,6 @@ function renderExerciseDeck() {
 
     // No global click delegation needed anymore – each card handles its own drawer
 }
-
 async function fetchExerciseImage(exName, imgId) {
     const container = document.getElementById(imgId);
     if (!container) return;
@@ -1848,127 +1845,52 @@ function addModalSummaryCard(deck) {
 
 // ---------- LOGGING DRAWER ----------
 function openLogDrawer(index) {
-    currentExerciseIndex = index;
-    const exercise = currentWorkout.exercises[index];
-    if (!exercise) return;
+    console.warn('openLogDrawer is deprecated. The logging UI has moved to per‑card drawers.');
+    // No operation – the old global drawer has been removed.
+}
 
-    document.getElementById('log-exercise-name').innerText = exercise.name;
-    const repsInfo = typeof exercise.prescribed.reps === 'string' ? exercise.prescribed.reps : `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
-    document.getElementById('log-prescribed').innerHTML = `<strong>Prescribed:</strong> ${exercise.prescribed.weight} lbs · ${exercise.prescribed.sets} × ${repsInfo}`;
-
-    const form = document.getElementById('log-form');
-    form.innerHTML = `
-        <div class="form-group">
-            <label>Weight used (lbs)</label>
-            <input type="number" id="log-weight" value="${exercise.prescribed.weight || ''}">
-        </div>
-        <div class="form-group">
-            <label>Sets completed</label>
-            <select id="log-sets" onchange="renderRepInputs(${index})">
-                ${Array.from({length: 11}, (_, i) => `<option value="${i}" ${i === exercise.prescribed.sets ? 'selected' : ''}>${i}</option>`).join('')}
-            </select>
-        </div>
-        <div id="log-reps-container"></div>
-        <div class="form-group">
-            <label>RPE (1-10)</label>
-            <select id="log-rpe">
-                <option value="">Select RPE</option>
-                ${Array.from({length: 10}, (_, i) => `<option value="${10 - i}">${10 - i}</option>`).join('')}
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Notes</label>
-            <textarea id="log-notes" placeholder="How did it feel?"></textarea>
-        </div>
-    `;
-
-    renderRepInputs(index);
-
-    const inputs = form.querySelectorAll('input, select, textarea');
-    inputs.forEach(input => {
-        input.addEventListener('input', () => {
-            dirtyExercises.add(index);
-            workoutDirty = true;
-            saveDraft();
-            updateNavigation();
-        });
-    });
-
-    dirtyExercises.add(index);
-    workoutDirty = true;
-    saveDraft();
-    updateNavigation();
-    document.getElementById('log-drawer').classList.add('active');
+function closeLogDrawer() {
+    console.warn('closeLogDrawer is deprecated. The global drawer has been removed.');
+    // No operation – the old global drawer no longer exists.
 }
 
 function renderRepInputs(index) {
-    const setsSelect = document.getElementById('log-sets');
-    const container = document.getElementById('log-reps-container');
-    const exercise = currentWorkout?.exercises[index];
-    
-    // Guard against missing elements or invalid exercise
-    if (!setsSelect || !container || !exercise) {
-        console.warn("renderRepInputs: missing elements or exercise");
-        return;
-    }
-    
-    const sets = parseInt(setsSelect.value);
-    if (isNaN(sets) || sets < 0) {
-        container.innerHTML = '';
-        return;
-    }
-    
-    // Convert prescribed reps to a display string for placeholder
-    let placeholderReps = '';
-    if (typeof exercise.prescribed.reps === 'string') {
-        placeholderReps = exercise.prescribed.reps;
-    } else if (exercise.prescribed.reps && typeof exercise.prescribed.reps === 'object') {
-        placeholderReps = `${exercise.prescribed.reps.min}-${exercise.prescribed.reps.max}`;
-    } else {
-        placeholderReps = 'reps';
-    }
-    
-    let html = '';
-    for (let i = 0; i < sets; i++) {
-        html += `
-            <div class="form-group">
-                <label>Set ${i + 1} reps</label>
-                <input type="number" id="log-rep-${i}" placeholder="${placeholderReps}">
-            </div>
-        `;
-    }
-    container.innerHTML = html;
-}
-function closeLogDrawer() {
-    document.getElementById('log-drawer').classList.remove('active');
+    console.warn('renderRepInputs is deprecated. Rep inputs are now handled inside each card.');
+    // No operation – the old rep input rendering is no longer used.
 }
 
-function saveLog() {
-    const index = currentExerciseIndex;
+function saveLog(index) {
+    const card = document.querySelector(`.exercise-card[data-index="${index}"]`);
+    if (!card) {
+        console.error('Card not found for index', index);
+        return;
+    }
     const exercise = currentWorkout.exercises[index];
-    
-    // Safely get form elements
-    const weightInput = document.getElementById('log-weight');
-    const setsSelect = document.getElementById('log-sets');
-    const rpeSelect = document.getElementById('log-rpe');
-    const notesTextarea = document.getElementById('log-notes');
-    
-    // If any critical element is missing, abort
-    if (!weightInput || !setsSelect || !rpeSelect || !notesTextarea) {
+    if (!exercise) return;
+
+    // Get form elements within this card's drawer
+    const weightInput = card.querySelector('.log-weight');
+    const setsSelect = card.querySelector('.log-sets');
+    const rpeSelect = card.querySelector('.log-rpe');
+    const notesTextarea = card.querySelector('.log-notes');
+    const repsContainer = card.querySelector('.log-reps-container');
+
+    if (!weightInput || !setsSelect || !rpeSelect || !notesTextarea || !repsContainer) {
         alert("Log form is not fully loaded. Please try again.");
         return;
     }
-    
+
     const weight = parseFloat(weightInput.value);
     const sets = parseInt(setsSelect.value);
     const rpe = parseInt(rpeSelect.value);
     const notes = notesTextarea.value;
     const reps = [];
 
-    // Collect rep inputs (they might be missing if sets is 0, but we already check sets)
-    for (let i = 0; i < sets; i++) {
-        const repInput = document.getElementById(`log-rep-${i}`);
-        if (repInput && repInput.value) reps.push(parseInt(repInput.value));
+    // Collect rep inputs from the repsContainer
+    const repInputs = repsContainer.querySelectorAll('.rep-input');
+    for (let i = 0; i < repInputs.length; i++) {
+        const val = parseInt(repInputs[i].value);
+        if (!isNaN(val) && val > 0) reps.push(val);
     }
 
     // Validate
@@ -1984,7 +1906,8 @@ function saveLog() {
 
     updateExerciseHistory(exercise);
     dataChanged = true;
-    
+
+    // Remove this index from dirty set if it was there
     dirtyExercises.delete(index);
     if (dirtyExercises.size === 0) {
         workoutDirty = false;
@@ -1994,9 +1917,15 @@ function saveLog() {
     }
 
     updateNavigation();
-    closeLogDrawer();
+
+    // Close the drawer
+    const drawer = card.querySelector('.card-drawer');
+    if (drawer) drawer.style.display = 'none';
+
+    // Re‑render the deck to update checkmark
     renderExerciseDeck();
 
+    // Optionally scroll to next card
     const nextIndex = index + 1;
     if (nextIndex < currentWorkout.exercises.length) {
         const deck = document.getElementById('exercise-deck');
@@ -2007,22 +1936,33 @@ function saveLog() {
     refreshSummaryCard();
 }
 
-function skipLog() {
-    const index = currentExerciseIndex;
+function skipLog(index) {
+    const card = document.querySelector(`.exercise-card[data-index="${index}"]`);
+    if (!card) {
+        console.error('Card not found for index', index);
+        return;
+    }
     const exercise = currentWorkout.exercises[index];
+    if (!exercise) return;
+
+    // Get notes from the drawer if available
+    const notesTextarea = card.querySelector('.log-notes');
+    const notes = notesTextarea ? notesTextarea.value : "Skipped";
+
     exercise.skipped = true;
-    exercise.actual = { skipped: true, notes: document.getElementById('log-notes')?.value || "Skipped" };
+    exercise.actual = { skipped: true, notes };
+
     if (!workoutData.exercises[exercise.id]) {
         workoutData.exercises[exercise.id] = { history: [] };
     }
     workoutData.exercises[exercise.id].history.push({
         date: new Date().toISOString(),
         skipped: true,
-        notes: exercise.actual.notes
+        notes
     });
     dataChanged = true;
-    
-    // --- Clear dirty for this exercise ---
+
+    // Clear dirty for this exercise
     dirtyExercises.delete(index);
     if (dirtyExercises.size === 0) {
         workoutDirty = false;
@@ -2031,9 +1971,16 @@ function skipLog() {
         saveDraft();
     }
     updateNavigation();
-    
     saveToLocalStorage();
-    closeLogDrawer();
+
+    // Close the drawer
+    const drawer = card.querySelector('.card-drawer');
+    if (drawer) drawer.style.display = 'none';
+
+    // Re‑render the deck to update checkmark
+    renderExerciseDeck();
+
+    // Scroll to next card
     const nextIndex = index + 1;
     if (nextIndex < currentWorkout.exercises.length) {
         const deck = document.getElementById('exercise-deck');
