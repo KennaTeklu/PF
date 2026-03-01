@@ -1311,7 +1311,7 @@ function updateDashboardChart() {
     });
 }
 
-// ---------- WORKOUT DECK RENDERING (NEW) ----------
+// ---------- WORKOUT DECK RENDERING (UPDATED) ----------
 function renderExerciseDeck() {
     const deck = document.getElementById('exercise-deck');
     if (!deck) return;
@@ -1334,7 +1334,7 @@ function renderExerciseDeck() {
             : `${ex.prescribed.reps.min}-${ex.prescribed.reps.max}`;
         const isDone = ex.actual && !ex.skipped;
 
-        // Generate the HTML for the card including the new per‑card drawer
+        // Generate the HTML for the card including the per‑card drawer
         card.innerHTML = `
             <div class="card-menu">
                 <i class="fas fa-ellipsis-v"></i>
@@ -1361,13 +1361,13 @@ function renderExerciseDeck() {
                     <button class="action-btn images-btn" onclick="googleSearch('${safeName}', 'images'); event.stopPropagation();">
                         <i class="fas fa-image"></i> Images
                     </button>
-                    <!-- NEW: Log button to open the per‑card drawer -->
+                    <!-- Log button to open the per‑card drawer -->
                     <button class="action-btn log-btn" data-index="${index}">
                         <i class="fas fa-pencil-alt"></i> Log
                     </button>
                 </div>
             </div>
-            <!-- NEW: Per‑card drawer (initially hidden) -->
+            <!-- Per‑card drawer (initially hidden) -->
             <div class="card-drawer" id="drawer-${index}" style="display: none;">
                 <div class="drawer-content">
                     <div class="log-prescribed-display">
@@ -1375,7 +1375,7 @@ function renderExerciseDeck() {
                     </div>
                     <div class="form-group">
                         <label>Weight used (lbs)</label>
-                        <input type="number" class="log-weight" value="${ex.prescribed.weight || ''}">
+                        <input type="number" class="log-weight" value="${ex.prescribed.weight || ''}" inputmode="decimal" pattern="[0-9]*">
                     </div>
                     <div class="form-group">
                         <label>Sets completed</label>
@@ -1432,7 +1432,7 @@ function renderExerciseDeck() {
                         <label>Set ${i + 1} reps</label>
                         <div class="stepper-control">
                             <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="-1">−</button>
-                            <input type="number" class="rep-input" id="rep-${index}-${i}" value="8" min="0" step="1">
+                            <input type="number" class="rep-input" id="rep-${index}-${i}" value="8" min="0" step="1" inputmode="decimal" pattern="[0-9]*">
                             <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="1">+</button>
                         </div>
                     </div>
@@ -1494,7 +1494,7 @@ function renderExerciseDeck() {
     // Append summary card
     addSummaryCard();
 
-    // No global click delegation needed anymore – each card handles its own drawer
+    // No global click delegation needed – each card handles its own drawer
 }
 async function fetchExerciseImage(exName, imgId) {
     const container = document.getElementById(imgId);
