@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Workout Continuity – Physiological Intelligence</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- NAVIGATION BAR (Categorized) -->
+    <!-- NAVIGATION BAR -->
+<nav class="navbar">
+        <a href="#" class="nav-brand" onclick="showSection('dashboard'); return false;">
+            <i class="fas fa-dumbbell"></i>
+            <span>💪 Continuity OS</span>
+        </a>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="nav-menu" id="navMenu">
+            <div class="nav-links">
+                <a href="#" class="nav-item" onclick="showSection('dashboard'); return false;">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('workout'); return false;">
+                    <i class="fas fa-play"></i> Workout
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('library'); return false;">
+                    <i class="fas fa-book"></i> Library
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('history'); return false;">
+                    <i class="fas fa-chart-line"></i> History
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('settings'); return false;">
+                    <i class="fas fa-cog" id="nav-settings"></i> Settings
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar" id="navUserAvatar" onclick="showSection('settings')">U</div>
+                <div>
+                    <div id="navUserName">User</div>
+                    <div id="navUserStats">Beginner • 0 streak</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- IMPORT SCREEN -->
+    <div class="import-screen" id="importScreen">
+        <h1><i class="fas fa-dumbbell"></i> Workout Continuity System</h1>
+        <p class="subtitle">Track your progress, maintain consistency, and optimize your workouts with intelligent recovery tracking</p>
+
+        <div class="import-options">
+            <div class="import-option" onclick="importWorkoutData()">
+                <i class="fas fa-file-import"></i>
+                <h3>Import JSON Data</h3>
+                <p>Upload your existing workout data in JSON format to continue where you left off</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Import workout history</li>
+                    <li><i class="fas fa-check"></i> Import exercise progress</li>
+                    <li><i class="fas fa-check"></i> Import user settings</li>
+                </ul>
+            </div>
+
+            <div class="import-option" onclick="startNewProgram()">
+                <i class="fas fa-plus-circle"></i>
+                <h3>Start Fresh Program</h3>
+                <p>Begin a new workout program tailored to your fitness level and goals</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Personalized workout plan</li>
+                    <li><i class="fas fa-check"></i> Progressive overload system</li>
+                    <li><i class="fas fa-check"></i> Recovery tracking</li>
+                </ul>
+            </div>
+
+            <div class="import-option" onclick="loadSampleData()">
+                <i class="fas fa-vial"></i>
+                <h3>Sample Data</h3>
+                <p>Try the system with pre-loaded sample data to explore all features</p>
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> 5 sample workouts</li>
+                    <li><i class="fas fa-check"></i> 10+ exercises</li>
+                    <li><i class="fas fa-check"></i> Progress tracking</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid var(--gray-200);">
+            <h3 style="margin-bottom: 15px;">Quick Start Options</h3>
+            <div class="btn-group" style="justify-content: center;">
+                <button class="btn" onclick="importWorkoutData()"><i class="fas fa-file-import"></i> Import JSON</button>
+                <button class="btn btn-success" onclick="startNewProgram()"><i class="fas fa-plus-circle"></i> Start Fresh</button>
+                <button class="btn btn-info" onclick="loadSampleData()"><i class="fas fa-vial"></i> Load Sample</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APPLICATION CONTAINER (all original sections preserved) -->
+    <div class="container main-app" id="mainApp">
+        <!-- ========== DASHBOARD SECTION ========== -->
+        <div id="dashboard-section" class="section active">
+    
+            <div class="user-welcome-injury-risk-bar">
+                <div class="user-welcome-info-group">
+                    <div class="user-welcome-avatar" id="welcomeAvatar">U</div>
+                    <div class="user-welcome-text">
+                        <h2 id="welcomeName">User</h2>
+                        <div class="user-welcome-status-tags">
+                            <!-- Added id="statStreak" so JS can update the number -->
+                            <span class="welcome-badge-pill"><i class="fas fa-fire"></i> <span id="statStreak">0</span> Day Streak</span>
+                            <span class="welcome-badge-pill" id="welcomeLevel">Beginner</span>
+                            <!-- Added Total Workouts pill with id="statWorkouts" -->
+                            <span class="welcome-badge-pill"><i class="fas fa-dumbbell"></i> <span id="statWorkouts">0</span> Workouts</span>
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="injury-risk-card-integrated" id="injury-risk-card">
+                    <div class="injury-risk-status-indicator">
+                        <div class="injury-risk-dot"></div>
+                        <div class="injury-risk-text-group">
+                            <small>PHYSIOLOGICAL STATE</small>
+                            <strong id="risk-val">Analyzing...</strong>
+                        </div>
+                    </div>
+                    <div class="dash-acwr-mini-box">
+                        <small>ACWR</small>
+                        <strong id="dash-acwr">1.0</strong>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="dashboard-main-grid">
+                <div class="card dashboard-chart-card">
+                    <div class="card-header-flex">
+                        <h3><i class="fas fa-chart-line"></i> Performance Trend</h3>
+                        <div class="stat-volume-pill"><span id="statVolume">0</span> <small>lbs total</small></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="dashboardChart"></canvas>
+                    </div>
+                </div>
+        
+                <div class="card longevity-vitality-card">
+                    <h3><i class="fas fa-heartbeat"></i> Vitality Index</h3>
+                    <div class="longevity-score-display">
+                        <span id="longevityScore" class="longevity-score-number">0</span>
+                    </div>
+                    <div class="stat-progress-container">
+                        <div class="stat-progress-label">Goal Progress <span id="statProgress">0%</span></div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>
+                    </div>
+                </div>
+        
+                <div class="card dashboard-workout-next-card">
+                    <h3><i class="fas fa-play"></i> Next Session</h3>
+                    <div id="dashboardWorkoutInfo" class="dashboard-workout-info-summary"></div>
+                    <div class="dashboard-next-workout-date-pill" id="dashboardNextWorkout">No workout</div>
+                    <!-- In dashboard-section -->
+                    <button class="btn-start-today-workout" onclick="if(!currentWorkout) generateNextWorkout(); showSection('workout');">
+                        START TODAY
+                    </button>
+                </div>
+            </div>
+        
+            <div class="dashboard-momentum-footer">
+                <div class="card activity-calendar-card">
+                    <h3>Consistency</h3>
+                    <div class="calendar-grid" id="activity-calendar"></div>
+                </div>
+        
+                <div class="card dash-prs-list-card">
+                    <h3>Personal Records</h3>
+                    <div id="dash-prs-list" class="dash-prs-list-container"></div>
+                </div>
+        
+                <div class="card badge-grid-card">
+                    <h3>Achievements</h3>
+                    <div class="badge-grid" id="badge-grid"></div>
+                </div>
+            </div>
+        </div>
+        <!-- ========== WORKOUT SECTION ========== -->
+                <div id="workout-section" class="section">
+            <div class="workout-session-header-bar">
+                <div class="workout-session-info">
+                    <h2 id="workoutType">Full Body A</h2>
+                    <div class="workout-session-tags">
+                        <span class="workout-tag-pill"><i class="fas fa-bullseye"></i> <span id="workoutFocus">Strength</span></span>
+                        <span class="workout-tag-pill"><i class="fas fa-clock"></i> <span id="workoutTime">60 min</span></span>
+                        <span class="workout-tag-pill"><i class="fas fa-bolt"></i> <span id="workoutIntensity">Moderate</span></span>
+                    </div>
+                </div>
+                <div class="workout-session-controls">
+                    <button class="btn-new-workout" onclick="generateNextWorkout()">⟳ NEW</button>
+                    <button class="btn-complete-workout" onclick="completeWorkout()">COMPLETE</button>
+                </div>
+            </div>
+        
+            <div class="workout-deck-scroller" id="exercise-deck">
+                <!-- Exercise cards generated via JS -->
+            </div>
+        
+            <div class="log-drawer" id="log-drawer">
+                <div class="log-drawer-header">
+                    <h2 id="log-exercise-name">Exercise</h2>
+                    <i class="fas fa-times" onclick="closeLogDrawer()"></i>
+                </div>
+                <div class="log-prescribed-display" id="log-prescribed"></div>
+                <div class="log-form-container" id="log-form"></div>
+                <div class="log-drawer-footer">
+                    <button class="btn-save-log" onclick="saveLog()">SAVE PERFORMANCE</button>
+                    <button class="btn-skip-log" onclick="skipLog()">SKIP</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== HISTORY SECTION ========== -->
+        <div id="history-section" class="section">
+            <div class="workout-history-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin-bottom: 0;"><i class="fas fa-history"></i> Workout History</h2>
+                    <div>
+                        <button class="btn btn-outline" onclick="exportHistoryCSV()">
+                            <i class="fas fa-download"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+                <div class="tabs">
+                    <button class="tab active" onclick="filterHistory('all')">All</button>
+                    <button class="tab" onclick="filterHistory('month')">This Month</button>
+                    <button class="tab" onclick="filterHistory('year')">This Year</button>
+                </div>
+                <table class="history-table" id="workoutHistoryTable">
+                    <thead>
+                        <tr><th>Date</th><th>Workout</th><th>Exercises</th><th>Volume</th><th>RPE</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ========== PROGRESS SECTION ========== -->
+        <div id="progress-section" class="section">
+            <div class="progress-section">
+                <h2 class="section-title"><i class="fas fa-chart-bar"></i> Progress Tracking</h2>
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h3>Volume Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="volumeChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Strength Progress (Top 5)</h3>
+                        <div class="chart-container">
+                            <canvas id="strengthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Workout Frequency</h3>
+                        <div class="chart-container">
+                            <canvas id="frequencyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>RPE Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="rpeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== RECOVERY SECTION ========== -->
+        <div id="recovery-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-heartbeat"></i> Recovery Status</h2>
+                <div class="muscle-recovery">
+                    <div class="muscle-category">
+                        <h4><i class="fas fa-arrow-up"></i> Major Muscle Groups</h4>
+                        <div id="majorMuscleRecovery"></div>
+                    </div>
+                    <div class="muscle-category">
+                        <h4><i class="fas fa-balance-scale"></i> Longevity & Joint Health</h4>
+                        <div id="longevityMuscleRecovery"></div>
+                    </div>
+                    <div class="muscle-category">
+                        <h4><i class="fas fa-hand-paper"></i> Hand Muscles</h4>
+                        <div id="handMuscleRecovery"></div>
+                    </div>
+                    <div class="muscle-category">
+                        <h4><i class="fas fa-shoe-prints"></i> Foot Muscles</h4>
+                        <div id="footMuscleRecovery"></div>
+                    </div>
+                </div>
+                <div id="recoveryRecommendations" class="recovery-status"></div>
+            </div>
+        </div>
+
+        <!-- ========== EXERCISE LIBRARY SECTION ========== -->
+        <div id="library-section" class="section">
+            <div class="library-header-bar">
+                <div class="library-title-group">
+                    <h2>Exercise Library</h2>
+                    <p><span id="library-count">0</span> Movements Available</p>
+                </div>
+                <div class="library-search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="librarySearchInput" placeholder="Search exercises or muscles..." onkeyup="filterLibrary()">
+                </div>
+            </div>
+            
+            <div class="exercise-library-grid-container" id="exercise-library-container">
+                <!-- Cards generated via JS -->
+            </div>
+        </div>
+
+        <!-- ========== PERSONAL RECORDS SECTION ========== -->
+        <div id="pr-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-trophy"></i> Personal Records</h2>
+                <div class="pr-grid"></div>
+            </div>
+        </div>
+
+        <!-- ========== MEASUREMENTS SECTION ========== -->
+        <div id="measurements-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-weight"></i> Body Measurements</h2>
+                <div class="measurements-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== GOALS SECTION ========== -->
+        <div id="goals-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-bullseye"></i> Goal Setting</h2>
+                <div class="grid-3" style="margin-bottom: 20px;">
+                    <div class="form-group"><label>Goal Type</label><select id="goal-type"><option>Strength</option><option>Volume</option><option>Consistency</option></select></div>
+                    <div class="form-group"><label>Target Value</label><input type="number" id="goal-target"></div>
+                    <div class="form-group"><label>Deadline</label><input type="date" id="goal-date"></div>
+                </div>
+                <button class="btn btn-success" onclick="addGoal()">Set Goal</button>
+                <div class="goals-container" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+
+        <!-- ========== TRAINING PLANS / PROGRAMS ========== -->
+        <div id="programs-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Training Plans</h2>
+                <div class="programs-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== ACHIEVEMENTS / BADGES ========== -->
+        <div id="achievements-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-medal"></i> Achievements</h2>
+                <div class="badges-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== RECOVERY INSIGHTS ========== -->
+        <div id="recovery-insights-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> Recovery Insights</h2>
+                <div class="insights-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== WARM-UP / COOL-DOWN ========== -->
+        <div id="warmup-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-fire"></i> Warm‑up / Cool‑down</h2>
+                <div class="routines-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== INJURY / PAIN LOGGER ========== -->
+        <div id="injury-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-bone"></i> Injury & Pain Log</h2>
+                <div class="injury-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== SLEEP TRACKER ========== -->
+        <div id="sleep-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-moon"></i> Sleep Tracker</h2>
+                <div class="sleep-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== TRAINING LOAD & FATIGUE ========== -->
+        <div id="load-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-wave-square"></i> Training Load</h2>
+                <div class="load-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== MONTHLY / YEARLY SUMMARIES ========== -->
+        <div id="summaries-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-file-pdf"></i> Monthly & Yearly Summaries</h2>
+                <div class="summaries-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== SOCIAL / SHARE WORKOUTS ========== -->
+        <div id="social-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-share-alt"></i> Share Workout</h2>
+                <div class="share-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== EXERCISE COMPARISON ========== -->
+        <div id="comparison-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-balance-scale"></i> Exercise Comparison</h2>
+                <div class="comparison-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== WORKOUT CALENDAR ========== -->
+        <div id="calendar-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-calendar"></i> Workout Calendar</h2>
+                <div class="calendar-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== EVENT / YEARLY GOALS & PROJECTIONS ========== -->
+        <div id="event-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-clock"></i> Yearly Goals & Projections</h2>
+                <div class="event-container"></div>
+            </div>
+        </div>
+
+        <!-- ========== NEW: EXERCISE COMPENDIUM SECTION ========== -->
+        <div id="compendium-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-table"></i> Ultimate Exercise Compendium</h2>
+                <p>Browse the complete exercise database by muscle group, equipment, and progression notes.</p>
+                <div class="compendium-container" id="compendium-container">
+                    <!-- Will be populated dynamically by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== NEW: FEATURE STATUS SECTION ========== -->
+        <div id="status-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-clipboard-list"></i> Feature Implementation Status</h2>
+                <p>Overview of all app features, their implementation status, and notes.</p>
+                <div class="status-table-container" id="status-table-container">
+                    <!-- Will be populated dynamically by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== HEALTH LOGS SECTION ========== -->
+        <div id="health-section" class="section">
+            <div class="grid-3">
+                <div class="card">
+                    <h2 class="title"><i class="fas fa-moon"></i> Sleep</h2>
+                    <input type="number" id="sleep-hours" placeholder="Hours slept last night">
+                    <button class="btn btn-outline" style="margin-top:10px; width:100%" onclick="logSleep()">Log Sleep</button>
+                </div>
+                <div class="card">
+                    <h2 class="title"><i class="fas fa-weight"></i> Measurements</h2>
+                    <input type="number" id="body-weight" placeholder="Weight (lbs)">
+                    <button class="btn btn-outline" style="margin-top:10px; width:100%" onclick="logWeight()">Log Weight</button>
+                </div>
+                <div class="card">
+                    <h2 class="title"><i class="fas fa-briefcase-medical"></i> Injury Log</h2>
+                    <select id="injury-pain"><option value="0">No Pain</option><option value="1">Mild Niggle</option><option value="2">Significant Pain</option></select>
+                    <textarea id="injury-note" placeholder="Note area/pain type..." style="margin-top:10px;"></textarea>
+                    <button class="btn btn-danger" style="margin-top:10px; width:100%" onclick="logInjury()">Log Incident</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SETTINGS SECTION ========== -->
+        <div id="settings-section" class="section">
+            <div class="settings-section">
+                <h2 class="section-title"><i class="fas fa-cog"></i> Settings</h2>
+                <div class="settings-grid">
+                    <div class="settings-group">
+                        <h3>Profile Information</h3>
+                        <div class="form-group"><label>Name</label><input type="text" id="settingsName" placeholder="Your name"></div>
+                        <div class="form-group"><label>Birth Date</label><input type="date" id="settingsBirthDate"></div>
+                        <div class="form-group"><label>Gender</label><select id="settingsGender"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+                        <div class="form-group"><label>Weight (lbs)</label><input type="number" id="settingsWeight"></div>
+                        <div class="form-group"><label>Height (in)</label><input type="number" id="settingsHeight"></div>
+                        <div class="form-group"><label>Experience</label><select id="settingsExperience"><option value="beginner">Beginner</option><option value="intermediate">Intermediate</option><option value="advanced">Advanced</option></select></div>
+                        <div class="form-group"><label>Primary Goal</label><select id="settingsGoal"><option value="strength">Strength</option><option value="hypertrophy">Hypertrophy</option><option value="endurance">Endurance</option><option value="longevity">Longevity</option><option value="balanced">Balanced</option></select></div>
+                    </div>
+                    <div class="settings-group">
+                        <h3>Workout Settings</h3>
+                        <div class="form-group"><label>Rest Time (seconds)</label><input type="number" id="settingsRestTime" value="90"></div>
+                        <div class="form-group"><label>Progression Rate (%)</label><input type="number" id="settingsProgression" value="2"></div>
+                        <div class="form-group"><label>Workout Days</label><div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            <label><input type="checkbox" class="workout-day" value="monday"> Mon</label>
+                            <label><input type="checkbox" class="workout-day" value="tuesday"> Tue</label>
+                            <label><input type="checkbox" class="workout-day" value="wednesday"> Wed</label>
+                            <label><input type="checkbox" class="workout-day" value="thursday"> Thu</label>
+                            <label><input type="checkbox" class="workout-day" value="friday"> Fri</label>
+                            <label><input type="checkbox" class="workout-day" value="saturday"> Sat</label>
+                            <label><input type="checkbox" class="workout-day" value="sunday"> Sun</label>
+                        </div></div>
+                        <div class="form-group"><label>Theme</label><div class="theme-controls">
+                            <button class="theme-btn theme-blue" onclick="setTheme('blue')"><span class="theme-preview"></span> Blue</button>
+                            <button class="theme-btn theme-green" onclick="setTheme('green')"><span class="theme-preview"></span> Green</button>
+                            <button class="theme-btn theme-purple" onclick="setTheme('purple')"><span class="theme-preview"></span> Purple</button>
+                            <button class="theme-btn theme-orange" onclick="setTheme('orange')"><span class="theme-preview"></span> Orange</button>
+                        </div></div>
+                        <div class="setting-item">
+                            <span class="setting-label">Dark Mode</span>
+                            <label class="switch"><input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"><span class="slider round"></span></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group" style="margin-top: 30px;">
+                    <button class="btn btn-success" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
+                    <button class="btn" onclick="exportWorkoutData()"><i class="fas fa-download"></i> Export Data</button>
+                    <button class="btn btn-danger" onclick="resetAllData()"><i class="fas fa-trash"></i> Reset All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('importModal')">&times;</span>
+            <h2 style="margin-bottom: 20px;">Import Workout Data</h2>
+            <p style="margin-bottom: 20px; color: var(--gray-600);">Upload a JSON file or paste your data below.</p>
+            <div class="form-group"><label>Upload File</label><input type="file" id="workoutFile" accept=".json"></div>
+            <div class="form-group"><label>Or Paste JSON</label><textarea id="workoutJson" rows="6" placeholder='{"user": {...}, "workouts": [...]}'></textarea></div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="processImport()">Import</button>
+                <button class="btn btn-outline" onclick="closeModal('importModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="importExerciseModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('importExerciseModal')">&times;</span>
+            <h2 style="margin-bottom: 20px;">Import Exercise Library</h2>
+            <p style="margin-bottom: 20px; color: var(--gray-600);">Upload an exercise library JSON file.</p>
+            <div class="form-group"><label>Upload File</label><input type="file" id="exerciseFile" accept=".json"></div>
+            <div class="form-group"><label>Or Paste JSON</label><textarea id="exerciseJson" rows="6" placeholder='{"exercise_id": {...}}'></textarea></div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="processExerciseImport()">Import</button>
+                <button class="btn btn-outline" onclick="closeModal('importExerciseModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="longevityModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('longevityModal')">&times;</span>
+            <div id="longevityReport"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="periodModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('periodModal')">&times;</span>
+            <h2 style="margin-bottom: 20px;">Track Menstrual Cycle</h2>
+            <div class="form-group"><label>Last Period Start Date</label><input type="date" id="lastPeriodDate"></div>
+            <div class="form-group"><label>Average Cycle Length (days)</label><input type="number" id="cycleLength" value="28"></div>
+            <div class="form-group"><label>Symptoms / Notes</label><textarea id="periodSymptoms" rows="3" placeholder="Any symptoms..."></textarea></div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="savePeriodData()">Save</button>
+                <button class="btn btn-outline" onclick="closeModal('periodModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="exerciseSearchModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('exerciseSearchModal')">&times;</span>
+            <h2 id="exerciseSearchTitle" style="margin-bottom: 15px;">Searching...</h2>
+            <div id="exerciseSearchBody">Loading...</div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION and LOADING (updated with inline style) -->
+    <div class="notification" id="notification" style="transform: translateX(150%);">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Operation completed successfully!</span>
+        <span class="notification-close" onclick="closeNotification()">&times;</span>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div style="color: var(--primary); font-weight: 600; font-size: 1.1rem;">Processing your request...</div>
+    </div>
+    <!-- Unsaved Changes Modal -->
+    <div class="modal" id="unsavedModal">
+        <div class="modal-content">
+            <h3>Unsaved Changes</h3>
+            <p>You have unsaved changes in your workout. Leave anyway?</p>
+            <div class="btn-group">
+                <button class="btn btn-danger" id="unsavedConfirm">Yes, leave</button>
+                <button class="btn btn-outline" id="unsavedCancel">No, stay</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
