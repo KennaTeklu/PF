@@ -606,24 +606,25 @@
         </div>
     </div>
     <!-- Workout Fullscreen Modal -->
-    <div class="modal" id="workoutModal">
-    <div class="modal-content-fullscreen">
-        <div class="workout-modal-header">
-            <div class="workout-session-info">
-                <h2 id="modalWorkoutType">Full Body A</h2>
-                <div class="workout-session-tags">
-                    <span class="workout-tag-pill"><i class="fas fa-bullseye"></i> <span id="modalWorkoutFocus">Strength</span></span>
-                    <span class="workout-tag-pill"><i class="fas fa-clock"></i> <span id="modalWorkoutTime">60 min</span></span>
-                    <span class="workout-tag-pill"><i class="fas fa-bolt"></i> <span id="modalWorkoutIntensity">Moderate</span></span>
+        <div class="modal" id="workoutModal">
+        <div class="modal-content-fullscreen">
+            <div class="workout-modal-header">
+                <div class="workout-session-info">
+                    <h2 id="modalWorkoutType">Full Body A</h2>
+                    <div class="workout-session-tags">
+                        <span class="workout-tag-pill"><i class="fas fa-bullseye"></i> <span id="modalWorkoutFocus">Strength</span></span>
+                        <span class="workout-tag-pill"><i class="fas fa-clock"></i> <span id="modalWorkoutTime">60 min</span></span>
+                        <span class="workout-tag-pill"><i class="fas fa-bolt"></i> <span id="modalWorkoutIntensity">Moderate</span></span>
+                    </div>
+                </div>
+                <div class="workout-modal-controls">
+                    <button type="button" class="btn-new-workout" onclick="generateNextWorkout()">⟳ NEW</button>
+                    <button type="button" class="btn-complete-workout" onclick="completeWorkout()">COMPLETE</button>
+                    <button type="button" class="btn-close-workout" onclick="closeWorkoutModal()" aria-label="Close workout" title="Close workout">✕</button>
                 </div>
             </div>
-            <div class="workout-modal-controls">
-                <button class="btn-new-workout" onclick="generateNextWorkout()">⟳ NEW</button>
-                <button class="btn-complete-workout" onclick="completeWorkout()">COMPLETE</button>
-                <button class="btn-close-workout" onclick="closeWorkoutModal()" title="Close workout">✕</button>
-            </div>
+            <div class="workout-deck-scroller" id="exercise-deck-modal"></div>
         </div>
-        <div class="workout-deck-scroller" id="exercise-deck-modal"></div>
     </div>
 </div>
     <script src="script.js"></script>
