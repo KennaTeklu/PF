@@ -1772,7 +1772,7 @@ function renderExerciseDeckInModal() {
                     </div>
                     <div class="form-group">
                         <label>Weight used (lbs)</label>
-                        <input type="number" class="log-weight" value="${ex.prescribed.weight || ''}">
+                        <input type="number" class="log-weight" value="${ex.prescribed.weight || ''}" inputmode="decimal" pattern="[0-9]*">
                     </div>
                     <div class="form-group">
                         <label>Sets completed</label>
@@ -1829,7 +1829,7 @@ function renderExerciseDeckInModal() {
                         <label>Set ${i + 1} reps</label>
                         <div class="stepper-control">
                             <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="-1">−</button>
-                            <input type="number" class="rep-input" id="modal-rep-${index}-${i}" value="8" min="0" step="1">
+                            <input type="number" class="rep-input" id="modal-rep-${index}-${i}" value="8" min="0" step="1" inputmode="decimal" pattern="[0-9]*">
                             <button class="step-btn" data-index="${index}" data-set="${i}" data-delta="1">+</button>
                         </div>
                     </div>
