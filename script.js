@@ -822,15 +822,17 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     return exercise;
 }
 
-// ---------- WORKOUT GENERATION ----------
 async function generateNextWorkout() {
   if (workoutDirty) {
     const confirmDiscard = confirm("Unsaved logs. Discard and generate?");
     if (!confirmDiscard) return;
     if (currentWorkout) {
-      const prevMuscles = currentWorkout.exercises.map(ex => ex.muscleGroup).flat();
-      workoutData.rejectionHistory = workoutData.rejectionHistory || {};
-      prevMuscles.forEach(m => workoutData.rejectionHistory[m] = (workoutData.rejectionHistory[m] || 0) + 1);
+      const prevMuscles = currentWorkout.exercises.flatMap(ex => ex.muscleGroup);
+      workoutData.rejectionHistory ??= {};
+      for (let i = 0; i < prevMuscles.length; i++) {
+        const m = prevMuscles[i];
+        workoutData.rejectionHistory[m] = (workoutData.rejectionHistory[m] || 0) + 1;
+      }
     }
   }
 
@@ -839,57 +841,97 @@ async function generateNextWorkout() {
   dirtyExercises.clear();
   clearDraft();
 
-  const backupRequired = (Date.now() - new Date(workoutData.lastExport || 0).getTime()) > 604800000;
+  const now = Date.now();
+  const backupRequired = (now - new Date(workoutData.lastExport || 0).getTime()) > 604800000;
+
+  // ----- Split selection -----
   const splits = workoutProgram.splits;
-  const lastWorkout = workoutData.workouts[workoutData.workouts.length - 1];
+  const workouts = workoutData.workouts;
+  const lastWorkout = workouts[workouts.length - 1];
   let split = lastWorkout
     ? splits[(splits.findIndex(s => s.id === lastWorkout.type) + 1) % splits.length]
     : splits[0];
 
-  const now = new Date();
+  // ----- Physiological state -----
+  const last3 = workouts.slice(-3);
+  let avgRPE = 7;
+  if (last3.length) {
+    let sum = 0;
+    for (let i = 0; i < last3.length; i++) sum += parseFloat(last3[i].summary?.averageRPE) || 7;
+    avgRPE = sum / last3.length;
+  }
+  const cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
 
-  // ---- Physiological State Estimation (Kalman‑like fusion) ----
-  const priorCNS = { mean: 1, variance: 0.1 };
-  const last3 = workoutData.workouts.slice(-3);
-  const avgRPE = last3.length
-    ? last3.reduce((s, w) => s + (parseFloat(w.summary?.averageRPE) || 7), 0) / last3.length
-    : 7;
-  const cnsObs = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
-  const cnsVar = 0.05;
-  const kalmanGain = priorCNS.variance / (priorCNS.variance + cnsVar);
-  const cnsFatigue = priorCNS.mean + kalmanGain * (cnsObs - priorCNS.mean);
-  const cnsVariance = (1 - kalmanGain) * priorCNS.variance;
-
-  const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
-  const avgSleep = sleepLogs.length
-    ? sleepLogs.reduce((s, l) => s + parseFloat(l.value), 0) / sleepLogs.length
-    : 8;
+  const user = workoutData.user;
+  const sleepLogs = user.sleepLogs?.slice(-7) || [];
+  let avgSleep = 8;
+  if (sleepLogs.length) {
+    let sum = 0;
+    for (let i = 0; i < sleepLogs.length; i++) sum += parseFloat(sleepLogs[i].value);
+    avgSleep = sum / sleepLogs.length;
+  }
   const sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
 
-  const gender = workoutData.user.gender || 'male';
-  const onBirthControl = workoutData.user.onBirthControl || false;
-  const phase = getCurrentCyclePhase(workoutData.user);
+  const gender = user.gender || 'male';
+  const onBirthControl = user.onBirthControl || false;
+  const phase = getCurrentCyclePhase(user);
   const cycleFactors = getCycleFactors(phase, gender, onBirthControl);
 
   const genderFactor = gender === 'female' ? 1.02 : gender === 'male' ? 0.98 : 1;
   let ageFactor = 1;
-  if (workoutData.user.birthDate) {
-    const age = now.getFullYear() - new Date(workoutData.user.birthDate).getFullYear();
+  if (user.birthDate) {
+    const age = new Date().getFullYear() - new Date(user.birthDate).getFullYear();
     if (age > 20) ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
   }
-  const expFactor = { beginner: 1.1, intermediate: 1, advanced: 0.9 }[workoutData.user.experience || 'intermediate'];
-
-  // Circadian rhythm: sine wave peak at 8am (for males)
+  const expFactor = { beginner: 1.1, intermediate: 1, advanced: 0.9 }[user.experience || 'intermediate'];
   const dailyTestosterone = gender === 'male'
-    ? 1 + 0.05 * Math.sin(2 * Math.PI * (now.getHours() - 8) / 24)
+    ? 1 + 0.05 * Math.sin(2 * Math.PI * (new Date().getHours() - 8) / 24)
     : 1;
 
   const globalRecovery = Math.max(0.3, Math.min(1.1,
     cnsFatigue * sleepFactor * cycleFactors.recovery * genderFactor * ageFactor * expFactor * dailyTestosterone
   ));
 
-  // ---- Allowed muscle pool per split ----
-  const allowedCategories = {
+  // ----- Precompute fatigue & frequency (single pass) -----
+  const thirtyDaysAgo = now - 30 * 86400000;
+  const fatigueCache = new Map();
+  const freqCache = new Map();
+  const injuryBaseCache = new Map();
+
+  if (workoutData.injuries) {
+    for (let i = 0; i < workoutData.injuries.length; i++) {
+      const inj = workoutData.injuries[i];
+      if ((now - new Date(inj.date).getTime()) < 21 * 86400000) {
+        const muscle = inj.muscle;
+        injuryBaseCache.set(muscle, (injuryBaseCache.get(muscle) || 0) + 1.0);
+      }
+    }
+  }
+
+  for (let i = 0; i < workouts.length; i++) {
+    const w = workouts[i];
+    const wDate = new Date(w.date).getTime();
+    if (wDate < thirtyDaysAgo) continue;
+    const days = (now - wDate) / 86400000;
+    const decay = Math.exp(-days / 4);
+    const exercises = w.exercises || [];
+    for (let j = 0; j < exercises.length; j++) {
+      const ex = exercises[j];
+      if (!ex.actual || ex.skipped) continue;
+      const load = ((ex.sets || 3) * (ex.reps || 10) * (ex.weight || 100)) / 1000 * decay;
+      const muscleGroups = ex.muscleGroup;
+      for (let k = 0; k < muscleGroups.length; k++) {
+        const m = muscleGroups[k];
+        fatigueCache.set(m, (fatigueCache.get(m) || 0) + load);
+        freqCache.set(m, (freqCache.get(m) || 0) + 1);
+      }
+    }
+  }
+  // Cap fatigue
+  for (const [m, val] of fatigueCache) fatigueCache.set(m, Math.min(1, val));
+
+  // ----- Muscle pool per split -----
+  const allowedCat = {
     full_body_a: ['major', 'longevity', 'hands', 'feet'],
     full_body_b: ['major', 'longevity', 'hands', 'feet'],
     push_day: ['major', 'longevity'],
@@ -898,22 +940,32 @@ async function generateNextWorkout() {
     longevity_day: ['longevity', 'hands', 'feet']
   }[split.id] || ['major', 'longevity'];
 
-  let pool = [];
-  allowedCategories.forEach(cat => pool.push(...muscleDatabase[cat]));
-  pool = pool.filter(m => (split.id !== 'legs_day' && m.name !== 'calves') && !split.focus.includes(m.name));
-  if (!pool.length) pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
+  const pool = [];
+  const catMap = { major: 'major', longevity: 'longevity', hands: 'hands', feet: 'feet' };
+  for (let i = 0; i < allowedCat.length; i++) {
+    const cat = allowedCat[i];
+    pool.push(...muscleDatabase[catMap[cat]]);
+  }
+  // Filter
+  const filtered = [];
+  for (let i = 0; i < pool.length; i++) {
+    const m = pool[i];
+    if ((split.id !== 'legs_day' && m.name === 'calves')) continue;
+    if (split.focus.includes(m.name)) continue;
+    filtered.push(m);
+  }
+  const finalPool = filtered.length ? filtered : muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
 
-  // ---- Goal and periodization ----
-  const userGoal = workoutData.user.goal || 'balanced';
-  const compDate = workoutData.user.nextCompetition ? new Date(workoutData.user.nextCompetition) : null;
+  // ----- Goal & periodization -----
+  const userGoal = user.goal || 'balanced';
+  const compDate = user.nextCompetition ? new Date(user.nextCompetition).getTime() : null;
   const weeksOut = compDate ? Math.max(0, Math.floor((compDate - now) / 604800000)) : null;
   const peakPhase = weeksOut !== null && weeksOut <= 3 ? 'peak' : weeksOut <= 6 ? 'strength' : weeksOut <= 10 ? 'hypertrophy' : 'offseason';
-  const block = workoutData.currentBlock || peakPhase || (() => {
-    const weeks = Math.floor((now - new Date(workoutData.user.startDate || now)) / 604800000) % 12;
+  const block = user.currentBlock || peakPhase || (() => {
+    const weeks = Math.floor((now - new Date(user.startDate || now).getTime()) / 604800000) % 12;
     return weeks < 4 ? 'hypertrophy' : weeks < 8 ? 'strength' : 'peak';
   })();
 
-  // Muscle importance weights – can be updated via reinforcement learning
   const baseImportance = {
     powerlifting: { quads:2, hamstrings:2, glutes:2, chest:2, triceps:2, 'spinal erectors':2, lats:1.8, traps:1.5, core:1.2 },
     strength: { quads:1.8, hamstrings:1.8, glutes:1.8, chest:1.8, back:1.8, shoulders:1.5, core:1.3 },
@@ -921,23 +973,237 @@ async function generateNextWorkout() {
     longevity: { 'rotator cuff':2, core:2, glutes:2, 'upper back':2, hamstrings:1.8, calves:1.5 }
   }[userGoal] || {};
 
-  // Adjust importance based on recent PRs (simple reinforcement)
-  const prAdjustment = (muscle) => {
-    const prs = workoutData.prHistory?.[muscle] || [];
-    if (prs.length < 2) return 1;
-    const trend = (prs[0] - prs[prs.length-1]) / prs[prs.length-1]; // positive if improving
-    return 1 + Math.min(0.2, Math.max(-0.2, trend));
-  };
-  const importance = {};
-  Object.entries(baseImportance).forEach(([muscle, w]) => {
-    importance[muscle] = w * prAdjustment(muscle);
-  });
-
   const movementMap = {
     quads:'squat', hamstrings:'hinge', glutes:'hinge', chest:'push', back:'pull', shoulders:'push',
     biceps:'pull', triceps:'push', lats:'pull', 'spinal erectors':'hinge', core:'core', calves:'push',
     forearms:'grip', 'rotator cuff':'rotator', 'upper back':'pull', 'lower back':'hinge'
   };
+
+  // Precompute rest days
+  const restCache = new Map();
+  for (let i = 0; i < finalPool.length; i++) {
+    const m = finalPool[i];
+    restCache.set(m.name, getEffectiveRestDays?.(m) || m.restDays || 2);
+  }
+
+  // Precompute goal factors per category
+  let majorGoal = 1, longevityGoal = 1;
+  if (userGoal === 'powerlifting') majorGoal = 1.3;
+  else if (userGoal === 'longevity') longevityGoal = 1.6;
+  else if (userGoal === 'hypertrophy') majorGoal = 1.3;
+
+  // Strength muscles set for quick lookup
+  const strengthSet = new Set(['quads','hamstrings','glutes','chest','back','shoulders','triceps','biceps','lats','spinal erectors']);
+
+  // ----- Score muscles (minimized property lookups) -----
+  const scores = [];
+  const rejectionHist = workoutData.rejectionHistory || {};
+  const muscleLast = muscleLastTrained; // assume global
+
+  for (let i = 0; i < finalPool.length; i++) {
+    const m = finalPool[i];
+    const name = m.name;
+    const last = muscleLast[name];
+    const daysSince = last ? (now - new Date(last).getTime()) / 86400000 : 30;
+
+    const baseRest = restCache.get(name);
+    const importantMult = baseImportance[name] || 1;
+    const adjustedRest = baseRest / importantMult;
+
+    // Readiness sigmoid
+    const readiness = 1 / (1 + Math.exp(-4 * (daysSince / adjustedRest - 1)));
+
+    const fatigue = fatigueCache.get(name) || 0;
+    const fatigueFactor = 1 - fatigue * 0.7;
+
+    const freq = freqCache.get(name) || 0;
+    const isStrength = strengthSet.has(name);
+    const strengthMod = isStrength ? cycleFactors.strength : 1;
+    const enduranceMod = !isStrength ? cycleFactors.endurance : 1;
+
+    const freqFactor = Math.exp(-freq / (importantMult > 1.5 ? 2.5 : 3.5));
+
+    const goalFactor = m.category === 'major' ? majorGoal : (m.category === 'longevity' ? longevityGoal : 1);
+
+    const blockFactor = block === 'peak' ? 1.2 : block === 'strength' ? 1.1 : block === 'hypertrophy' ? 1.0 : 0.9;
+
+    // Injury risk
+    let logOdds = -2.5;
+    if (gender === 'female' && (movementMap[name] === 'squat' || movementMap[name] === 'hinge')) logOdds += 0.5;
+    logOdds += injuryBaseCache.get(name) || 0;
+    logOdds += 1.5 * fatigue;
+    if (freq > 3) logOdds += 0.3 * (freq - 3);
+    const prob = 1 / (1 + Math.exp(-logOdds));
+    const injury = 1 - prob * 0.8;
+
+    const novelty = !last ? 0.5 : 0;
+    const urgency = last ? Math.min(3, (daysSince / (baseRest * 2)) ** 2) : 3;
+    const rejection = Math.exp(-0.3 * (rejectionHist[name] || 0));
+
+    const potentiation = (last && daysSince < baseRest * 0.3) ? 1.1 : 1;
+
+    const jitter = (Math.random() * 0.2) - 0.1;
+
+    const score = (readiness * globalRecovery * fatigueFactor * freqFactor * goalFactor * blockFactor *
+                   injury * urgency * rejection * strengthMod * enduranceMod * potentiation) + novelty + jitter;
+
+    scores.push({
+      muscle: m,
+      score: Math.max(0, score),
+      movement: movementMap[name] || 'other'
+    });
+  }
+
+  // ----- Fast top‑K selection (quickselect) -----
+  const k = Math.min(15, scores.length);
+  if (k < scores.length) quickSelectTopK(scores, k, 'score');
+  const candidates = scores.slice(0, k).sort((a, b) => b.score - a.score);
+
+  // ----- Weighted draw with movement variety -----
+  const accessoryCount = Math.floor(Math.random() * 2) + 2;
+  const selected = [];
+  const usedMovements = new Set();
+  const candCopy = candidates.slice(); // we'll mutate
+
+  for (let i = 0; i < accessoryCount && candCopy.length; i++) {
+    let total = 0;
+    for (let j = 0; j < candCopy.length; j++) total += candCopy[j].score;
+    let r = Math.random() * total;
+    let idx = 0;
+    while (idx < candCopy.length - 1 && r > candCopy[idx].score) {
+      r -= candCopy[idx].score;
+      idx++;
+    }
+    const chosen = candCopy[idx];
+    if (usedMovements.has(chosen.movement) && Math.random() < 0.7) {
+      candCopy.splice(idx, 1);
+      i--;
+      continue;
+    }
+    selected.push(chosen.muscle.name);
+    usedMovements.add(chosen.movement);
+    candCopy.splice(idx, 1);
+  }
+
+  // ----- Adaptive phase multipliers (simplified) -----
+  const basePhaseMult = getPhaseMultiplier(phase);
+  const phaseHistory = workoutData.phaseHistory || {};
+  const phaseKey = phase.name;
+  let learnedMult = phaseHistory[phaseKey]?.avgPerformance || 1.0;
+  learnedMult = Math.max(0.8, Math.min(1.2, learnedMult));
+  const exerciseMult = basePhaseMult * learnedMult;
+
+  let setsMod = 1, repsMod = 1, weightMod = 1;
+  if (gender === 'female' && !onBirthControl) {
+    setsMod = phaseHistory[phaseKey]?.setsMod || 1;
+    repsMod = phaseHistory[phaseKey]?.repsMod || 1;
+    weightMod = phaseHistory[phaseKey]?.weightMod || 1;
+    // Blend with defaults
+    if (phase.name === 'late_follicular') {
+      setsMod = (setsMod + 1.1) / 2;
+      weightMod = (weightMod + 1.05) / 2;
+    } else if (phase.name === 'ovulatory') {
+      weightMod = (weightMod + 1.08) / 2;
+    } else if (phase.name === 'late_luteal') {
+      setsMod = (setsMod + 0.9) / 2;
+      repsMod = (repsMod + 0.9) / 2;
+    } else if (phase.name === 'menstrual') {
+      setsMod = (setsMod + 0.8) / 2;
+    }
+  } else if (gender === 'male') {
+    if (block === 'peak') { weightMod = 1.1; repsMod = 0.9; }
+    else if (block === 'strength') weightMod = 1.05;
+    else if (block === 'hypertrophy') repsMod = 1.1;
+  }
+
+  // ----- Build workout -----
+  currentWorkout = {
+    id: `workout_${now}`,
+    date: new Date(now).toISOString(),
+    type: split.id,
+    name: split.name,
+    readiness: Math.round(globalRecovery * 100),
+    exercises: [],
+    security: { backupRecommended: backupRequired },
+    block,
+    cyclePhase: gender === 'female' ? phase.name : null,
+    isCompetitionPrep: weeksOut !== null
+  };
+
+  const allMuscles = [...new Set([...split.focus, ...selected])];
+  for (let i = 0; i < allMuscles.length; i++) {
+    const m = allMuscles[i];
+    const base = pickExerciseVariety?.(m) || generateExerciseFromLibrary(m);
+    if (base) {
+      const exercise = generateExercisePrescription(base, exerciseMult, { setsMod, repsMod, weightMod });
+      currentWorkout.exercises.push(exercise);
+    }
+  }
+
+  const nameLower = split.name.toLowerCase();
+  const isPrimary = nameLower.includes('squat') || nameLower.includes('bench') || nameLower.includes('deadlift');
+  if (isPrimary && block === 'peak') {
+    const primary = nameLower.includes('squat') ? 'squat' : nameLower.includes('bench') ? 'bench' : 'deadlift';
+    const singlesEx = currentWorkout.exercises.find(ex => ex.name.toLowerCase().includes(primary));
+    if (singlesEx) {
+      singlesEx.sets = [1, 2, 3].map(attempt => ({ reps: 1, rpe: 9 - attempt, weight: 'working' }));
+    }
+  }
+
+  // ----- UI update -----
+  updateDashboard();
+  if (document.getElementById('workout-section').classList.contains('active')) renderExerciseDeck();
+  showLoading(false);
+
+  if (backupRequired) {
+    showNotification("Backup recommended", "warning");
+    const nav = document.getElementById('nav-settings');
+    if (nav) nav.classList.add('critical');
+  } else {
+    showNotification(`${currentWorkout.name} (${currentWorkout.readiness}%)`, "success");
+  }
+  saveToLocalStorage();
+}
+
+// Quickselect helper (descending order by score)
+function quickSelectTopK(arr, k, key) {
+  if (k >= arr.length) return;
+  let left = 0, right = arr.length - 1;
+  while (left < right) {
+    const pivot = partition(arr, left, right, key);
+    if (pivot === k) break;
+    else if (pivot < k) left = pivot + 1;
+    else right = pivot - 1;
+  }
+}
+
+function partition(arr, left, right, key) {
+  const pivotVal = arr[right][key];
+  let i = left;
+  for (let j = left; j < right; j++) {
+    if (arr[j][key] > pivotVal) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      i++;
+    }
+  }
+  [arr[i], arr[right]] = [arr[right], arr[i]];
+  return i;
+}
+
+function getCycleFactors(phase, gender, onBirthControl) {
+  if (gender !== 'female' || onBirthControl) {
+    return { recovery: 1, strength: 1, endurance: 1, injuryRisk: 1 };
+  }
+  switch (phase.name) {
+    case 'early_follicular': return { recovery: 1.0, strength: 1.0, endurance: 1.0, injuryRisk: 1.0 };
+    case 'late_follicular': return { recovery: 1.1, strength: 1.15, endurance: 1.1, injuryRisk: 1.0 };
+    case 'ovulatory': return { recovery: 1.05, strength: 1.2, endurance: 1.0, injuryRisk: 1.1 };
+    case 'early_luteal': return { recovery: 0.95, strength: 0.95, endurance: 1.05, injuryRisk: 1.2 };
+    case 'late_luteal': return { recovery: 0.9, strength: 0.9, endurance: 1.1, injuryRisk: 1.25 };
+    case 'menstrual': return { recovery: 0.85, strength: 0.85, endurance: 0.9, injuryRisk: 1.1 };
+    default: return { recovery: 1, strength: 1, endurance: 1, injuryRisk: 1 };
+  }
+}
 
   // ---- Continuous‑time fatigue model (exponential decay with load) ----
   function getFatigue(muscle) {
