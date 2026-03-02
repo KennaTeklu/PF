@@ -43,6 +43,15 @@ let workoutData = {
     lastExport: new Date().toISOString() // for sync
 };
 
+let muscleLastTrained = {};           // tracks last training date for each muscle
+let currentWorkout = null;            // the workout currently being performed
+let charts = {};                      // stores Chart.js instances
+let dataChanged = false;              // for backup reminder
+let dirtyExercises = new Set();       // tracks unsaved exercises
+let workoutDirty = false;             // indicates unsaved changes in current workout
+let notificationTimeout;              // for notifications
+let exerciseInfoCache = {};           // cache for Wikipedia exercise info
+
 // ---------- MUSCLE DATABASE (40+ groups) ----------
 const muscleDatabase = {
     major: [
@@ -432,6 +441,8 @@ const achievements = [
     { id: 'century', name: 'Century Club', desc: '100 total workouts', icon: 'fa-trophy', check: (d) => d.workouts.length >= 100 },
     { id: 'longevity_master', name: 'Longevity Master', desc: 'Longevity score ≥80', icon: 'fa-heart', check: (d) => calculateLongevityScore().score >= 80 }
 ];
+
+
 
 // ---------- COMPREHENSIVE MUSCLE‑TO‑EXERCISE MAP ----------
 // This map ensures every muscle in muscleDatabase has at least one exercise.
