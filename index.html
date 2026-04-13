@@ -3426,6 +3426,18 @@ body.loading * {
 </head>
 <body class="loading">
     <script>
+window.STORAGE_ENABLED = false;
+try {
+    localStorage.setItem('probe', '1');
+    localStorage.removeItem('probe');
+    // Also check IndexedDB
+    window.indexedDB.open('probe_db', 1).onsuccess = (e) => {
+        e.target.result.close();
+        window.STORAGE_ENABLED = true;
+    };
+} catch (e) {
+    console.warn("Storage is blocked in this environment.");
+}
     (function() {
         // Show loader immediately
         const loader = document.getElementById('loading');
@@ -4665,6 +4677,14 @@ function updateMuscleFatigue(exerciseId, weight, reps, rpe, timestamp, phaseMult
       
 // Recompute aggregates from workout history (call after each workout)
 function recomputeAggregates() {
+    // Ensure aggregates object exists
+    if (!workoutData.user.aggregates) {
+        workoutData.user.aggregates = {
+            totalVolumeLast7Days: 0,
+            avgRPELast7Days: 0,
+            volumeByMuscleLast60Days: {}
+        };
+    }
     const now = new Date();
     const sevenDaysAgo = new Date(now); sevenDaysAgo.setDate(now.getDate() - 7);
     const sixtyDaysAgo = new Date(now); sixtyDaysAgo.setDate(now.getDate() - 60);
@@ -8092,6 +8112,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         rebuildFatigueFromHistory();
         calculateMuscleLastTrained();
         backfillLastPerformed();
+        // Ensure aggregates object exists before recompute
+        if (!workoutData.user.aggregates) {
+            workoutData.user.aggregates = {
+                totalVolumeLast7Days: 0,
+                avgRPELast7Days: 0,
+                volumeByMuscleLast60Days: {}
+            };
+        }
         recomputeAggregates();
         updateBodyWeightEstimate();
     } else {
@@ -8374,6 +8402,14 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 // Replace workout trigger logic (place inside DOMContentLoaded or as a standalone)
 document.addEventListener('DOMContentLoaded', function() {
+    // After loading user from Dexie or fresh default
+    if (!workoutData.user.aggregates) {
+        workoutData.user.aggregates = {
+            totalVolumeLast7Days: 0,
+            avgRPELast7Days: 0,
+            volumeByMuscleLast60Days: {}
+        };
+    }
     const trigger = document.getElementById('replaceTrigger');
     const replaceBtn = document.getElementById('replaceButton');
     const container = document.getElementById('replaceWorkoutContainer');
