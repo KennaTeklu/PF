@@ -4600,33 +4600,6 @@ const VERSION_STORAGE_KEY = 'workout_app_version';
       	// Learned coupling matrix (will be updated over time)
         couplingMatrix: {} // will be populated dynamically
     };
-function getTrainingFrequency(muscleName) {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - 30);
-    let count = 0;
-    workoutData.workouts.forEach(w => {
-        if (new Date(w.date) > cutoff) {
-            w.exercises?.forEach(ex => {
-                if (ex.actual && !ex.skipped && ex.muscleGroup && ex.muscleGroup.includes(muscleName)) {
-                    count++;
-                }
-            });
-        }
-    });
-    return count;
-}
-
-function hasRecentInjury(muscleName) {
-    return workoutData.injuries?.some(inj =>
-        inj.note?.toLowerCase().includes(muscleName) &&
-        (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
-    ) || false;
-}
-
-function getSystemicFatigueMultiplier() {
-    const recovery = calculateSystemicRecoveryFactor();
-    return 1 / recovery; // 1.0 (fresh) to 2.0 (fatigued)
-}
 // ==================== DEXIE DATABASE SETUP ====================
 const db = new Dexie('WorkoutApp');
 db.version(1).stores({
@@ -7844,6 +7817,19 @@ function getSystemicFatigueMultiplier() {
 }
 // Move the original generation logic into a helper function
 function performGenerateWorkout() {
+    // ---- 🧹 CLEAN UP ANY LEFTOVER DRAFTS AND OLD WORKOUT STATE ----
+    // 1. Clear all localStorage drafts (they are keyed by workout ID)
+    const draftKeys = Object.keys(localStorage).filter(key => key.startsWith('draft_'));
+    draftKeys.forEach(key => localStorage.removeItem(key));
+    // 2. Clear sessionStorage draft
+    clearDraft();
+    // 3. Reset dirty tracking
+    workoutDirty = false;
+    dirtyExercises = new Set();
+    // 4. Clear any saved workout from Dexie (we're generating a new one)
+    clearSavedWorkout();
+
+    // ---- Original logic starts here ----
     applyFatigueDecay();
     decayMomentumBias();
 
@@ -8126,6 +8112,9 @@ function performGenerateWorkout() {
         });
     }
 
+    // ---- 🔒 SAFETY: ensure no leftover actual data on any exercise ----
+    currentWorkout.exercises.forEach(ex => ex.actual = null);
+
     currentWorkout.exercises = currentWorkout.exercises.sort(() => Math.random() - 0.5);
     saveCurrentWorkoutToStorage();
 
@@ -8146,8 +8135,7 @@ function performGenerateWorkout() {
     }
 
     showSection('workout');
-}    
-// Helper to get muscle‑specific deload multiplier 
+}// Helper to get muscle‑specific deload multiplier 
 function getMuscleDeloadMultiplier(muscleName) {
     if (!workoutData.user.muscleDeloadStatus) return 1.0;
     const status = workoutData.user.muscleDeloadStatus[muscleName];
