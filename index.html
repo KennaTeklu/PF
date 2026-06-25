@@ -3942,6 +3942,14 @@ try {
         <!-- DASHBOARD SECTION -->
         <div id="dashboard-section" class="section active">
           <div class="todays-workout hover-lift">
+            <!-- Start Workout Button – now at the top, centered -->
+            <div style="display: flex; justify-content: center; margin: 10px 0 20px 0;">
+                <button class="btn-luxury-start" onclick="startOrGenerateWorkout()">
+                    <i class="fas fa-play"></i>
+                    <span>Start Workout</span>
+                </button>
+            </div>
+
             <div class="readiness-container">
                 <!-- SIMPLE VIEW (always visible) -->
                 <div class="readiness-simple">
@@ -3963,34 +3971,26 @@ try {
                 <!-- DETAILED VIEW (hidden initially) -->
                 <div class="readiness-details" id="readinessDetails" style="display: none;">
                     <div class="details-header">📊 Detailed Breakdown</div>
-        <div class="details-factors" id="detailsFactors">
-            <!-- populated by JavaScript -->
-        </div>
-        <div class="details-actions">
-            <button class="btn btn-sm btn-outline" id="nerdModeTrigger">🧪 Advanced (Nerd Mode)</button>
-        </div>
-    </div>
+                    <div class="details-factors" id="detailsFactors">
+                        <!-- populated by JavaScript -->
+                    </div>
+                    <div class="details-actions">
+                        <button class="btn btn-sm btn-outline" id="nerdModeTrigger">🧪 Advanced (Nerd Mode)</button>
+                    </div>
+                </div>
 
-    <!-- NERD MODE (hidden initially) -->
-    <div class="readiness-nerd" id="readinessNerd" style="display: none;">
-        <div class="nerd-header">⚙️ Developer Console</div>
-        <div class="nerd-content" id="nerdContent">
-            <!-- populated by JavaScript -->
-        </div>
-    </div>
-</div>
+                <!-- NERD MODE (hidden initially) -->
+                <div class="readiness-nerd" id="readinessNerd" style="display: none;">
+                    <div class="nerd-header">⚙️ Developer Console</div>
+                    <div class="nerd-content" id="nerdContent">
+                        <!-- populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
             <div class="workout-info" id="dashboardWorkoutInfo">
             </div>
-                <div class="badge badge-primary" id="welcomeLevel">Beginner</div>
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
-              <div style="display: flex; justify-content: center; margin: 20px 0 30px 0;">
-                  <button class="btn-luxury-start" onclick="startOrGenerateWorkout()">
-                      <i class="fas fa-play"></i>
-                      <span>Start Workout</span>
-                  </button>
-              </div>
-            </div>
-<!-- Readiness Gauge -->
+            <div class="badge badge-primary" id="welcomeLevel">Beginner</div>
           </div>
             
 <div class="stats-grid">
