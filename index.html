@@ -2834,44 +2834,6 @@ body.device-computer .main-app .user-welcome-compact {
         align-items: flex-start !important;
     }
 }
-/* Readiness Gauge */
-.readiness-gauge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 15px 0 25px 0;
-}
-.readiness-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 1.5rem;
-    color: var(--dark);
-    background: white; /* fallback */
-    transition: background 0.3s;
-}
-.readiness-circle span {
-    background: white;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.readiness-label {
-    margin-top: 5px;
-    font-weight: 600;
-    color: var(--gray-700);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
 .recommendation-card {
     background: white;
     border-radius: var(--border-radius);
@@ -3675,6 +3637,185 @@ body.loading * {
     display: block;
 }
 .attribution-tooltip a { color: var(--primary); }
+/* ---- New Readiness Gauge ---- */
+.readiness-container {
+    background: var(--gray-50);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--gray-200);
+}
+
+.readiness-simple {
+    /* default */
+}
+
+.readiness-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.readiness-icon {
+    font-size: 1.5rem;
+    margin-right: 8px;
+}
+
+.readiness-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--gray-800);
+    flex: 1;
+}
+
+.readiness-toggle {
+    background: none;
+    border: 1px solid var(--gray-300);
+    border-radius: 30px;
+    padding: 4px 16px;
+    font-size: 0.8rem;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.readiness-toggle:hover {
+    background: var(--gray-200);
+}
+
+.readiness-bar-wrapper {
+    position: relative;
+    height: 34px;
+    background: var(--gray-200);
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.readiness-bar {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.readiness-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.readiness-percent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    pointer-events: none;
+}
+
+.readiness-message {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 6px 0 2px;
+    color: var(--gray-800);
+}
+
+.readiness-meta {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+}
+
+/* ---- Detailed View ---- */
+.readiness-details {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.details-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: var(--gray-700);
+}
+
+.details-factors .factor {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+.details-factors .factor:last-child {
+    border-bottom: none;
+}
+.details-factors .factor .label {
+    min-width: 130px;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+.details-factors .factor .mini-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.details-factors .factor .mini-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+.details-factors .factor .value {
+    min-width: 48px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.details-actions {
+    margin-top: 16px;
+    text-align: right;
+}
+
+/* ---- Nerd Mode ---- */
+.readiness-nerd {
+    margin-top: 18px;
+    padding: 16px;
+    background: var(--gray-100);
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--gray-300);
+}
+
+.nerd-header {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    color: var(--gray-700);
+}
+
+.nerd-content {
+    color: var(--gray-800);
+}
+
+.nerd-content pre {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 12px;
+    border-radius: 8px;
+    overflow: auto;
+    font-size: 0.7rem;
+    max-height: 250px;
+}
   </style>
 </head>
 <body class="loading">
@@ -3801,12 +3942,43 @@ try {
         <!-- DASHBOARD SECTION -->
         <div id="dashboard-section" class="section active">
           <div class="todays-workout hover-lift">
-          <div class="readiness-gauge" id="readinessGaugeContainer">
-                <div class="readiness-circle" id="readinessGauge">
-                    <span>--</span>
+            <div class="readiness-container">
+                <!-- SIMPLE VIEW (always visible) -->
+                <div class="readiness-simple">
+                    <div class="readiness-header">
+                        <span class="readiness-icon">🏋️</span>
+                        <span class="readiness-title">Workout Readiness</span>
+                        <button class="readiness-toggle" id="readinessToggle">What is this?</button>
+                    </div>
+                    <div class="readiness-bar-wrapper">
+                        <div class="readiness-bar" id="readinessBar">
+                            <div class="readiness-fill" id="readinessFill" style="width: 0%; background: var(--gray-300);"></div>
+                            <span class="readiness-percent" id="readinessPercent">--</span>
+                        </div>
+                    </div>
+                    <div class="readiness-message" id="readinessMessage">Loading…</div>
+                    <div class="readiness-meta" id="readinessLastWorkout">Last workout: —</div>
                 </div>
-                <div class="readiness-label">Readiness</div>
-            </div>
+
+                <!-- DETAILED VIEW (hidden initially) -->
+                <div class="readiness-details" id="readinessDetails" style="display: none;">
+                    <div class="details-header">📊 Detailed Breakdown</div>
+        <div class="details-factors" id="detailsFactors">
+            <!-- populated by JavaScript -->
+        </div>
+        <div class="details-actions">
+            <button class="btn btn-sm btn-outline" id="nerdModeTrigger">🧪 Advanced (Nerd Mode)</button>
+        </div>
+    </div>
+
+    <!-- NERD MODE (hidden initially) -->
+    <div class="readiness-nerd" id="readinessNerd" style="display: none;">
+        <div class="nerd-header">⚙️ Developer Console</div>
+        <div class="nerd-content" id="nerdContent">
+            <!-- populated by JavaScript -->
+        </div>
+    </div>
+</div>
             <div class="workout-info" id="dashboardWorkoutInfo">
             </div>
                 <div class="badge badge-primary" id="welcomeLevel">Beginner</div>
@@ -8931,6 +9103,43 @@ console.log("Body classes:", document.body.className);
     recomputeAggregates();
     updateBodyWeightEstimate();
 
+    // --- New Readiness Gauge Toggle Handlers ---
+    const toggleBtn = document.getElementById('readinessToggle');
+    const detailsDiv = document.getElementById('readinessDetails');
+    if (toggleBtn && detailsDiv) {
+        toggleBtn.addEventListener('click', function() {
+            const isOpen = detailsDiv.style.display !== 'none';
+            detailsDiv.style.display = isOpen ? 'none' : 'block';
+            toggleBtn.textContent = isOpen ? 'What is this?' : 'Hide details';
+        });
+    }
+
+    const bar = document.getElementById('readinessBar');
+    const nerdDiv = document.getElementById('readinessNerd');
+    if (bar && nerdDiv) {
+        let clickCount = 0;
+        let timer = null;
+        bar.addEventListener('click', function(e) {
+            clickCount++;
+            if (clickCount === 2) {
+                clearTimeout(timer);
+                nerdDiv.style.display = nerdDiv.style.display === 'none' ? 'block' : 'none';
+                clickCount = 0;
+                if (nerdDiv.style.display !== 'none') populateNerdMode();
+            } else {
+                timer = setTimeout(() => { clickCount = 0; }, 400);
+            }
+        });
+    }
+
+    const nerdTrigger = document.getElementById('nerdModeTrigger');
+    if (nerdTrigger && nerdDiv) {
+        nerdTrigger.addEventListener('click', function() {
+            nerdDiv.style.display = nerdDiv.style.display === 'none' ? 'block' : 'none';
+            if (nerdDiv.style.display !== 'none') populateNerdMode();
+        });
+    }
+
 });
     // Replace workout trigger logic – DISABLED to prevent accidental replacement
 document.addEventListener('DOMContentLoaded', function() {
@@ -10309,26 +10518,115 @@ function updateDashboardChart(selectedRange = '12weeks') {
 }
 
 function updateReadinessGauge() {
-    const gauge = document.getElementById('readinessGauge');
-    if (!gauge) return;
     const score = window.lastOverallRecovery || 0;
-    const percentage = Math.min(100, Math.max(0, score));
-    
-    // Determine color
-    let color;
-    if (percentage >= 80) color = '#10b981';      // green
-    else if (percentage >= 60) color = '#f59e0b'; // amber
-    else if (percentage >= 40) color = '#f97316'; // orange
-    else color = '#ef4444';                        // red
-    
-    // Set conic gradient
-    gauge.style.background = `conic-gradient(${color} 0deg ${percentage * 3.6}deg, #e2e8f0 0deg)`;
-    
-    // Update inner text
-    const span = gauge.querySelector('span');
-    if (span) span.textContent = Math.round(percentage);
+    const percent = Math.min(100, Math.max(0, score));
+
+    // --- Simple bar ---
+    const fill = document.getElementById('readinessFill');
+    const percentLabel = document.getElementById('readinessPercent');
+    const message = document.getElementById('readinessMessage');
+    const lastWorkoutEl = document.getElementById('readinessLastWorkout');
+
+    if (fill) fill.style.width = percent + '%';
+    if (percentLabel) percentLabel.textContent = Math.round(percent) + '%';
+
+    // Colour and message
+    let color, msg;
+    if (percent >= 80) {
+        color = 'var(--success)';
+        msg = '💪 Ready for a heavy workout!';
+    } else if (percent >= 50) {
+        color = 'var(--warning)';
+        msg = '😌 Moderate – good for a solid session.';
+    } else {
+        color = 'var(--danger)';
+        msg = '🧘 Light day – prioritise recovery.';
+    }
+    if (fill) fill.style.background = color;
+    if (message) message.textContent = msg;
+
+    // Last workout info
+    const last = workoutData.workouts[workoutData.workouts.length - 1];
+    if (last) {
+        const days = Math.floor((Date.now() - new Date(last.date)) / 86400000);
+        lastWorkoutEl.textContent = `Last workout: ${days} day${days !== 1 ? 's' : ''} ago`;
+    } else {
+        lastWorkoutEl.textContent = 'No workouts logged yet.';
+    }
+
+    // --- Detailed breakdown (always refreshed) ---
+    const factorsContainer = document.getElementById('detailsFactors');
+    if (!factorsContainer) return;
+
+    // Helper functions (if not already defined)
+    const getMuscleRecoveryAvg = () => {
+        // Weighted average of muscle recoveries (same logic as in updateRecoverySection)
+        const allMuscles = getAllMuscleGroups();
+        let totalWeight = 0, weightedRecovery = 0;
+        const weights = { quads:2.0, hamstrings:1.8, glutes:1.8, chest:1.5, back:1.8, shoulders:1.2, biceps:0.8, triceps:0.8, calves:0.6, core:1.0, forearms:0.5, traps:0.7, lats:1.5, rear_delts:0.6, obliques:0.5, hip_flexors:0.5, adductors:0.6, abductors:0.6, erectors:1.2, serratus:0.4, neck:0.4, deep_neck:0.3, levator_scap:0.3, rhomboids:0.5, teres:0.4, infraspinatus:0.4, supraspinatus:0.4, subscapularis:0.4, brachialis:0.3, brachioradialis:0.3, anconeus:0.2, supinator:0.2, pronator:0.2, pec_minor:0.3, coracobrach:0.2, popliteus:0.3, tibialis:0.3, soleus:0.5, peroneus_tertius:0.2, articularis_genus:0.2, multifidus:0.5, transverse:0.5, quadratus_plantae:0.2, hand_lumbricals:0.1, hand_interossei:0.1, thenar:0.1, foot_intrinsics:0.1, foot_interossei:0.1, abductor_hallucis:0.1, flexor_brevis:0.1 };
+        allMuscles.forEach(m => {
+            const days = muscleLastTrained[m.name] ? daysSinceTrained(m.name) : Infinity;
+            const recovery = days >= m.restDays ? 100 : (days / m.restDays) * 100;
+            const w = weights[m.name] || 1.0;
+            weightedRecovery += w * Math.min(100, recovery);
+            totalWeight += w;
+        });
+        return totalWeight > 0 ? weightedRecovery / totalWeight : 100;
+    };
+
+    const getSleepScore = () => {
+        // Placeholder – you can implement actual sleep tracking if available
+        return 80; // default
+    };
+
+    const getHormonalFactor = () => {
+        const phase = getCurrentCyclePhase();
+        return getPhaseMultiplier(phase) || 1.0;
+    };
+
+    const factors = [
+        { label: 'Muscle Recovery', value: getMuscleRecoveryAvg() },
+        { label: 'Systemic Fatigue', value: (1 - calculateSystemicRecoveryFactor()) * 100 },
+        { label: 'Sleep Quality', value: getSleepScore() },
+        { label: 'Hormonal Factor', value: getHormonalFactor() * 100 }
+    ];
+
+    let html = '';
+    factors.forEach(f => {
+        const v = Math.min(100, Math.max(0, f.value));
+        const color = v >= 80 ? 'var(--success)' : (v >= 50 ? 'var(--warning)' : 'var(--danger)');
+        html += `
+            <div class="factor">
+                <span class="label">${f.label}</span>
+                <div class="mini-bar"><div class="mini-fill" style="width:${v}%; background:${color};"></div></div>
+                <span class="value">${Math.round(v)}%</span>
+            </div>
+        `;
+    });
+    factorsContainer.innerHTML = html;
 }
- 
+
+function populateNerdMode() {
+    const container = document.getElementById('nerdContent');
+    if (!container) return;
+    try {
+        const json = JSON.stringify(workoutData, null, 2);
+        container.innerHTML = `
+            <div style="margin-bottom:10px;"><strong>Current workoutData (raw)</strong></div>
+            <pre>${escapeHtml(json)}</pre>
+            <div style="margin-top:10px;">
+                <button class="btn btn-sm" onclick="navigator.clipboard.writeText(JSON.stringify(workoutData, null, 2))">📋 Copy Full JSON</button>
+                <button class="btn btn-sm btn-outline" onclick="location.reload()">🔄 Refresh</button>
+            </div>
+        `;
+    } catch (e) {
+        container.innerHTML = `<p style="color:var(--danger);">Error loading data: ${e.message}</p>`;
+    }
+}
+
+function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 // Get the top recommendation from the recovery section
 function getTopRecommendation() {
     const container = document.getElementById('recoveryRecommendations');
