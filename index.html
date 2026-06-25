@@ -7815,6 +7815,18 @@ function getSystemicFatigueMultiplier() {
   const recovery = calculateSystemicRecoveryFactor(); // 0.5 to 1.0
   return 1 / recovery; // 1.0 to 2.0
 }
+
+function clearDraft() {
+    // Remove any unsaved drafts for the current workout
+    if (currentWorkout && currentWorkout.id) {
+        const prefix = `draft_${currentWorkout.id}_`;
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith(prefix)) {
+                localStorage.removeItem(key);
+            }
+        });
+    }
+}
 // Move the original generation logic into a helper function
 function performGenerateWorkout() {
     // ---- 🧹 CLEAN UP ANY LEFTOVER DRAFTS AND OLD WORKOUT STATE ----
