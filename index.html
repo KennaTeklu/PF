@@ -14127,7 +14127,7 @@ function calculateProjectedEliteDate() {
 
     // If no workouts exist, show placeholder
     if (!workouts || workouts.length === 0) {
-        console.warn("No workout history – returning placeholder date");
+        // console.warn("No workout history – returning placeholder date");
         const placeholder = new Date();
         placeholder.setFullYear(placeholder.getFullYear() + 5);
         return {
