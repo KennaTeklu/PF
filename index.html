@@ -3822,13 +3822,11 @@ body.loading * {
     box-sizing: border-box;
 }
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f1f5f9;
-    padding: 20px 20px 20px 80px;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    color: var(--gray-800);
     min-height: 100vh;
-    background-image: radial-gradient(circle at 20% 30%, rgba(37,99,235,0.06), transparent 60%),
-                      radial-gradient(circle at 80% 70%, rgba(124,58,237,0.06), transparent 60%);
     line-height: 1.6;
+    overflow-x: hidden;
 }
 .app-container { max-width: 1100px; margin: 0 auto; }
 .page-content { max-width: 800px; margin: 0 auto; padding-top: 20px; }
@@ -3913,101 +3911,7 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.04);
     transition: all 0.3s;
 }
-.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-
-.progress-pill {
-    position: fixed;
-    top: 50%;
-    left: 20px;
-    transform: translateY(-50%);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    width: 28px;
-}
-.progress-pill .icon { font-size: 1.6rem; line-height: 1; color: #2563eb; user-select: none; pointer-events: none; }
-.progress-pill .segments {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    width: 20px;
-    min-height: 60px;
-}
-.progress-pill .segments .seg {
-    flex: 1;
-    width: 100%;
-    border-radius: 4px;
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    min-height: 10px;
-    cursor: pointer;
-    position: relative;
-}
-.seg.done { background: #10b981; }
-.seg.in-progress { background: #f59e0b; animation: pulse-amber 1.5s ease-in-out infinite; }
-.seg.skipped { background: #ef4444; }
-.seg.test { background: #7c3aed; }
-.seg.pending { background: #cbd5e1; }
-.seg.in-view {
-    flex: 3 !important;
-    min-height: 28px !important;
-    box-shadow: 0 0 30px rgba(37,99,235,0.4);
-    border: 2px solid rgba(255,255,255,0.5);
-    z-index: 2;
-}
-.seg.in-view.done { background: #10b981; box-shadow: 0 0 30px rgba(16,185,129,0.4); }
-.seg.in-view.in-progress { background: #f59e0b; box-shadow: 0 0 30px rgba(245,158,11,0.4); }
-.seg.in-view.skipped { background: #ef4444; box-shadow: 0 0 30px rgba(239,68,68,0.4); }
-.seg.in-view.test { background: #7c3aed; box-shadow: 0 0 30px rgba(124,58,237,0.4); }
-.seg.in-view.pending { background: #94a3b8; box-shadow: 0 0 30px rgba(148,163,184,0.3); }
-@keyframes pulse-view { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.06); } }
-.seg.in-view { animation: pulse-view 2s ease-in-out infinite; }
-@keyframes pulse-amber { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-.seg::before {
-    content: attr(data-name);
-    position: absolute;
-    left: calc(100% + 12px);
-    top: 50%;
-    transform: translateY(-50%);
-    background: #0f172a;
-    color: white;
-    padding: 2px 10px;
-    border-radius: 6px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 10;
-}
-.seg:hover::before { opacity: 1; }
-.seg::after {
-    content: '⬇';
-    position: absolute;
-    right: -14px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.5rem;
-    opacity: 0;
-    transition: opacity 0.3s;
-    color: #94a3b8;
-}
-.seg:hover::after { opacity: 1; }
-
-.progress-pill .count {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: #0f172a;
-    text-align: center;
-    line-height: 1.2;
-    user-select: none;
-    pointer-events: none;
-}
-.progress-pill .count span { color: #2563eb; }
-
+.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); 
 .exercise-list { display: grid; gap: 16px; }
 .exercise-item {
     background: rgba(255,255,255,0.8);
@@ -5249,16 +5153,42 @@ try {
     </div>
 </div>
   
-<!-- BOTTOM NAV (Floating Pill) -->
+<!-- BOTTOM NAVIGATION FOR COMPUTERS (FIXED) -->
 <div class="bottom-nav" id="bottomNav">
-    <button data-page="home"><i class="fas fa-home"></i><span>Home</span></button>
-    <button data-page="workout" class="active"><i class="fas fa-dumbbell"></i><span>Workout</span></button>
-    <button data-page="resume" id="bottomResumeWorkoutBtn" style="display: none;"><i class="fas fa-redo-alt"></i><span>Resume</span></button>
-    <button data-page="history"><i class="fas fa-history"></i><span>History</span></button>
-    <button data-page="library"><i class="fas fa-book"></i><span>Library</span></button>
-    <button data-page="progress"><i class="fas fa-chart-line"></i><span>Progress</span></button>
-    <button data-page="recovery"><i class="fas fa-heartbeat"></i><span>Recovery</span></button>
-    <button data-page="settings"><i class="fas fa-cog"></i><span>Settings</span></button>
+    <div class="bottom-nav-menu">
+        <a href="#" class="bottom-nav-item" onclick="showSection('dashboard'); return false;">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('workout'); return false;">
+            <i class="fas fa-dumbbell"></i>
+            <span>Workout</span>
+        </a>
+        <a href="#" class="bottom-nav-item" id="bottomResumeWorkoutBtn" style="display: none;" onclick="resumeSavedWorkout(); return false;">
+            <i class="fas fa-redo-alt"></i>
+            <span>Resume</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('history'); return false;">
+            <i class="fas fa-history"></i>
+            <span>History</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('library'); return false;">
+            <i class="fas fa-book"></i>
+            <span>Library</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('progress'); return false;">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('recovery'); return false;">
+            <i class="fas fa-heartbeat"></i>
+            <span>Recovery</span>
+        </a>
+        <a href="#" class="bottom-nav-item" onclick="showSection('settings'); return false;">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </div>
 </div>
 
 <!-- Modal for adding exercises from library -->
@@ -9513,9 +9443,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
         }
         
-        const trapState = { stack: navigationStack, trap: true, ts: Date.now() };
-        try { window.history.replaceState(trapState, '', `#${currentSection}`); } catch(e) {}
-        try { window.history.pushState({ ...trapState, guard: true }, '', `#${currentSection}`); } catch(e) {}
+        // Set the initial history state correctly
+		try { window.history.replaceState({ stack: navigationStack }, '', `#${currentSection}`); } catch(e) {}
     })();
 
     // ========== 1. IMMEDIATELY HIDE IMPORT SCREEN ==========
@@ -9868,18 +9797,6 @@ function showSection(sectionId, replaceState = false) {
         item.classList.remove('active');
         if (item.getAttribute('onclick')?.includes(sectionId)) item.classList.add('active');
     });
-
-document.querySelectorAll('.bottom-nav button[data-page]').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const page = this.dataset.page;
-        // Map 'home' to 'dashboard', 'resume' is special
-        if (page === 'resume') {
-            resumeSavedWorkout();
-            return;
-        }
-        showSection(page);
-    });
-});
     
     if (sectionId === 'history') {
         document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -9932,32 +9849,25 @@ document.querySelectorAll('.bottom-nav button[data-page]').forEach(btn => {
         }
     }, 50);
     
-    // ========== INFINITE NAVIGATION STACK (never loses history) ==========
-    if (!replaceState) {
-        navigationStack.push(sectionId);
-        // Cap at 1000 (more than enough – never "crowded")
-        if (navigationStack.length > 1000) navigationStack = navigationStack.slice(-1000);
-        localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-        
-        const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
-        try { window.history.pushState(state, '', `#${sectionId}`); } catch(e) {}
-        // Double trap: push an extra guard state immediately
-        setTimeout(() => {
-            try { window.history.pushState({ ...state, guard: true }, '', `#${sectionId}`); } catch(e) {}
-        }, 10);
-    } else {
-        // replaceState mode (used for internal back navigation)
-        if (navigationStack.length === 0) navigationStack.push(sectionId);
-        else navigationStack[navigationStack.length - 1] = sectionId;
-        localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-        
-        const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
-        try { window.history.replaceState(state, '', `#${sectionId}`); } catch(e) {}
-        // Also push a guard after replace to maintain trap
-        setTimeout(() => {
-            window.history.pushState({ ...state, guard: true }, '', `#${sectionId}`);
-        }, 10);
-    }
+// ========== INFINITE NAVIGATION STACK (never loses history) ==========
+if (!replaceState) {
+    navigationStack.push(sectionId);
+    // Cap at 1000 (more than enough – never "crowded")
+    if (navigationStack.length > 1000) navigationStack = navigationStack.slice(-1000);
+    localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+    
+    const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
+    try { window.history.pushState(state, '', `#${sectionId}`); } catch(e) {}
+    // No double guard - just one clean state
+} else {
+    // replaceState mode (used for internal back navigation)
+    if (navigationStack.length === 0) navigationStack.push(sectionId);
+    else navigationStack[navigationStack.length - 1] = sectionId;
+    localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+    
+    const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
+    try { window.history.replaceState(state, '', `#${sectionId}`); } catch(e) {}
+    // No double guard
 }
 // If in sandboxed iframe, replace showSection with a version that doesn't use history
 if (window.__INSANDBOX) {
@@ -19960,33 +19870,35 @@ function copyWorkoutLink() {
         }
     }, 5000);
 
-    // ========== ULTIMATE BACK BUTTON HANDLER ==========
-    window.addEventListener('popstate', function(event) {
-        const state = event.state;
-        let currentStack = navigationStack;
-        
-        // Use stack from event state if available (more reliable)
-        if (state && state.stack && Array.isArray(state.stack)) {
-            currentStack = state.stack;
+// ========== ULTIMATE BACK BUTTON HANDLER ==========
+window.addEventListener('popstate', function(event) {
+    const state = event.state;
+    let currentStack = navigationStack;
+    
+    // Use stack from event state if available (more reliable)
+    if (state && state.stack && Array.isArray(state.stack)) {
+        currentStack = state.stack;
+    }
+    
+    // If there is a previous section (stack length > 1)
+    if (currentStack.length > 1) {
+        const newStack = [...currentStack];
+        newStack.pop(); // remove current section
+        const previousSection = newStack[newStack.length - 1];
+        if (previousSection && document.getElementById(`${previousSection}-section`)) {
+            navigationStack = newStack;
+            localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+            showSection(previousSection, true); // replaceState to prevent duplicate pushes
+            return;
         }
-        
-        // If there is a previous section (stack length > 1)
-        if (currentStack.length > 1) {
-            const newStack = [...currentStack];
-            newStack.pop(); // remove current section
-            const previousSection = newStack[newStack.length - 1];
-            if (previousSection && document.getElementById(`${previousSection}-section`)) {
-                navigationStack = newStack;
-                localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-                showSection(previousSection, true);
-                // Re‑arm the guard after navigation
-                setTimeout(() => {
-                    try { window.history.pushState({ stack: navigationStack, guard: true }, '', `#${previousSection}`); } catch(e) {}
-                }, 10);
-                return;
-            }
-        }
-    });
+    } else {
+        // If we are at the root of the stack, just go to dashboard
+        // This prevents getting stuck
+        navigationStack = ['dashboard'];
+        localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+        showSection('dashboard', true);
+    }
+});
 // ================================================================
 // 1. READINESS TOGGLE – Show/hide detailed breakdown
 // ================================================================
