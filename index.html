@@ -5251,38 +5251,14 @@ try {
   
 <!-- BOTTOM NAV (Floating Pill) -->
 <div class="bottom-nav" id="bottomNav">
-    <button data-page="home" onclick="showSection('dashboard'); return false;">
-        <i class="fas fa-home"></i>
-        <span>Home</span>
-    </button>
-    <button data-page="workout" class="active" onclick="showSection('workout'); return false;">
-        <i class="fas fa-dumbbell"></i>
-        <span>Workout</span>
-    </button>
-    <button data-page="resume" id="bottomResumeWorkoutBtn" style="display: none;" onclick="resumeSavedWorkout(); return false;">
-        <i class="fas fa-redo-alt"></i>
-        <span>Resume</span>
-    </button>
-    <button data-page="history" onclick="showSection('history'); return false;">
-        <i class="fas fa-history"></i>
-        <span>History</span>
-    </button>
-    <button data-page="library" onclick="showSection('library'); return false;">
-        <i class="fas fa-book"></i>
-        <span>Library</span>
-    </button>
-    <button data-page="progress" onclick="showSection('progress'); return false;">
-        <i class="fas fa-chart-line"></i>
-        <span>Progress</span>
-    </button>
-    <button data-page="recovery" onclick="showSection('recovery'); return false;">
-        <i class="fas fa-heartbeat"></i>
-        <span>Recovery</span>
-    </button>
-    <button data-page="settings" onclick="showSection('settings'); return false;">
-        <i class="fas fa-cog"></i>
-        <span>Settings</span>
-    </button>
+    <button data-page="home"><i class="fas fa-home"></i><span>Home</span></button>
+    <button data-page="workout" class="active"><i class="fas fa-dumbbell"></i><span>Workout</span></button>
+    <button data-page="resume" id="bottomResumeWorkoutBtn" style="display: none;"><i class="fas fa-redo-alt"></i><span>Resume</span></button>
+    <button data-page="history"><i class="fas fa-history"></i><span>History</span></button>
+    <button data-page="library"><i class="fas fa-book"></i><span>Library</span></button>
+    <button data-page="progress"><i class="fas fa-chart-line"></i><span>Progress</span></button>
+    <button data-page="recovery"><i class="fas fa-heartbeat"></i><span>Recovery</span></button>
+    <button data-page="settings"><i class="fas fa-cog"></i><span>Settings</span></button>
 </div>
 
 <!-- Modal for adding exercises from library -->
@@ -9892,6 +9868,18 @@ function showSection(sectionId, replaceState = false) {
         item.classList.remove('active');
         if (item.getAttribute('onclick')?.includes(sectionId)) item.classList.add('active');
     });
+
+document.querySelectorAll('.bottom-nav button[data-page]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const page = this.dataset.page;
+        // Map 'home' to 'dashboard', 'resume' is special
+        if (page === 'resume') {
+            resumeSavedWorkout();
+            return;
+        }
+        showSection(page);
+    });
+});
     
     if (sectionId === 'history') {
         document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
