@@ -6001,10 +6001,10 @@ function postWorkoutUpdate(workout) {
     // Store last update timestamp
     workoutData.user.lastEWMAUpdate = now.toISOString();
 	
+	updateMuscleDeloadStatus(workout);
   	// ----- Update Bayesian formula probabilities
-  	updateMuscleDeloadStatus(workout);
   	updateFormulaProbabilitiesFromWorkout(workout);
-	saveToLocalStorage().catch(e => console.error('Save failed:', e));
+	await saveToLocalStorage();
 }
 /**
  * Updates Bayesian probabilities for 1RM formulas based on logged sets.
@@ -9913,7 +9913,6 @@ if (typeof window !== 'undefined' && window.__INSANDBOX) {
 window.toggleMobileMenu = function() {
     navMenu.classList.toggle('active');
 };
-}
 function updateNavigation() {
     // Safely get user name
     const userName = (workoutData.user && workoutData.user.name) ? workoutData.user.name : 'User';
