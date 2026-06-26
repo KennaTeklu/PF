@@ -19875,30 +19875,27 @@ window.addEventListener('popstate', function(event) {
     const state = event.state;
     let currentStack = navigationStack;
     
-    // Use stack from event state if available (more reliable)
     if (state && state.stack && Array.isArray(state.stack)) {
         currentStack = state.stack;
     }
     
-    // If there is a previous section (stack length > 1)
     if (currentStack.length > 1) {
         const newStack = [...currentStack];
-        newStack.pop(); // remove current section
+        newStack.pop();
         const previousSection = newStack[newStack.length - 1];
         if (previousSection && document.getElementById(`${previousSection}-section`)) {
             navigationStack = newStack;
             localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-            showSection(previousSection, true); // replaceState to prevent duplicate pushes
+            showSection(previousSection, true);
             return;
         }
     } else {
-        // If we are at the root of the stack, just go to dashboard
-        // This prevents getting stuck
         navigationStack = ['dashboard'];
         localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
         showSection('dashboard', true);
     }
 });
+
 // ================================================================
 // 1. READINESS TOGGLE – Show/hide detailed breakdown
 // ================================================================
@@ -19972,7 +19969,6 @@ function scrollToExercise(idx) {
         cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
         viewportIndex = idx;
         renderPillSegments();
-        // Update in-view class on cards
         cards.forEach((card, i) => {
             card.classList.toggle('in-view', i === viewportIndex);
         });
@@ -20077,7 +20073,6 @@ function springToggle(el) {
     const isActive = el.classList.toggle('active');
     const knob = el.querySelector('.knob');
     if (!knob) {
-        // Legacy switch fallback
         const slider = el.querySelector('.slider');
         if (slider) {
             slider.style.background = isActive ? '#2563eb' : '#cbd5e1';
@@ -20192,7 +20187,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Where exercisesArray is an array of { name, status } objects.
     // The status can be: 'done', 'in-progress', 'skipped', 'test', 'pending'
     console.log('✅ Step 8 complete – all new JavaScript added.');
-	});
 });
 </script>
 </body>
