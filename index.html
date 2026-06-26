@@ -3816,6 +3816,635 @@ body.loading * {
     font-size: 0.7rem;
     max-height: 250px;
 }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f1f5f9;
+    padding: 20px 20px 20px 80px;
+    min-height: 100vh;
+    background-image: radial-gradient(circle at 20% 30%, rgba(37,99,235,0.06), transparent 60%),
+                      radial-gradient(circle at 80% 70%, rgba(124,58,237,0.06), transparent 60%);
+    line-height: 1.6;
+}
+.app-container { max-width: 1100px; margin: 0 auto; }
+.page-content { max-width: 800px; margin: 0 auto; padding-top: 20px; }
+.page-content h1 { font-size: 1.8rem; color: #0f172a; margin-bottom: 12px; font-weight: 700; }
+.page-content .subtitle { color: #64748b; line-height: 1.7; margin-bottom: 16px; font-size: 0.95rem; }
+
+.glass-nav {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 60px;
+    padding: 8px 16px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    flex-wrap: wrap;
+}
+.glass-nav button {
+    background: transparent;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+.glass-nav button:hover { background: rgba(37,99,235,0.08); color: #2563eb; }
+.glass-nav button.active { background: rgba(37,99,235,0.12); color: #2563eb; }
+
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 60px;
+    padding: 8px 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    z-index: 1000;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.bottom-nav button {
+    background: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.6rem;
+    color: #475569;
+    padding: 4px 10px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+.bottom-nav button i { font-size: 1.2rem; margin-bottom: 2px; }
+.bottom-nav button:hover { background: rgba(37,99,235,0.08); color: #2563eb; }
+.bottom-nav button.active { color: #2563eb; background: rgba(37,99,235,0.08); }
+@media (max-width: 768px) {
+    .glass-nav { display: none; }
+    .bottom-nav { display: flex; }
+}
+
+.card {
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+.progress-pill {
+    position: fixed;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 28px;
+}
+.progress-pill .icon { font-size: 1.6rem; line-height: 1; color: #2563eb; user-select: none; pointer-events: none; }
+.progress-pill .segments {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 20px;
+    min-height: 60px;
+}
+.progress-pill .segments .seg {
+    flex: 1;
+    width: 100%;
+    border-radius: 4px;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 10px;
+    cursor: pointer;
+    position: relative;
+}
+.seg.done { background: #10b981; }
+.seg.in-progress { background: #f59e0b; animation: pulse-amber 1.5s ease-in-out infinite; }
+.seg.skipped { background: #ef4444; }
+.seg.test { background: #7c3aed; }
+.seg.pending { background: #cbd5e1; }
+.seg.in-view {
+    flex: 3 !important;
+    min-height: 28px !important;
+    box-shadow: 0 0 30px rgba(37,99,235,0.4);
+    border: 2px solid rgba(255,255,255,0.5);
+    z-index: 2;
+}
+.seg.in-view.done { background: #10b981; box-shadow: 0 0 30px rgba(16,185,129,0.4); }
+.seg.in-view.in-progress { background: #f59e0b; box-shadow: 0 0 30px rgba(245,158,11,0.4); }
+.seg.in-view.skipped { background: #ef4444; box-shadow: 0 0 30px rgba(239,68,68,0.4); }
+.seg.in-view.test { background: #7c3aed; box-shadow: 0 0 30px rgba(124,58,237,0.4); }
+.seg.in-view.pending { background: #94a3b8; box-shadow: 0 0 30px rgba(148,163,184,0.3); }
+@keyframes pulse-view { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.06); } }
+.seg.in-view { animation: pulse-view 2s ease-in-out infinite; }
+@keyframes pulse-amber { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.seg::before {
+    content: attr(data-name);
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #0f172a;
+    color: white;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 10;
+}
+.seg:hover::before { opacity: 1; }
+.seg::after {
+    content: '⬇';
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: #94a3b8;
+}
+.seg:hover::after { opacity: 1; }
+
+.progress-pill .count {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #0f172a;
+    text-align: center;
+    line-height: 1.2;
+    user-select: none;
+    pointer-events: none;
+}
+.progress-pill .count span { color: #2563eb; }
+
+.exercise-list { display: grid; gap: 16px; }
+.exercise-item {
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    padding: 24px 20px;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+    scroll-margin-top: 20px;
+    position: relative;
+    min-height: 160px;
+}
+.exercise-item:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.exercise-item.expanded {
+    border-color: #2563eb;
+    background: rgba(255,255,255,0.95);
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+}
+.exercise-item.expanded::after {
+    content: '📍 You are here';
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    background: #2563eb;
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+}
+.exercise-item.in-view { border-color: rgba(37,99,235,0.2); box-shadow: 0 4px 20px rgba(37,99,235,0.04); }
+.exercise-item.completed { border-color: #10b981; background: rgba(16,185,129,0.05); }
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    cursor: pointer;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.exercise-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+.exercise-muscles { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
+.muscle-tag {
+    background: rgba(37,99,235,0.08);
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #2563eb;
+    font-weight: 600;
+    cursor: default;
+}
+
+.exercise-prescription {
+    background: rgba(16,185,129,0.04);
+    padding: 16px;
+    border-radius: 12px;
+    margin: 12px 0;
+    border-left: 4px solid #10b981;
+}
+.exercise-prescription .prescription-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.prescription-sets { font-size: 0.95rem; color: #334155; font-weight: 600; }
+.prescription-weight { font-size: 1.1rem; font-weight: 800; color: #3b82f6; }
+.last-rpe-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+.sets-reps-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.set-badge {
+    background: #e2e8f0;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.exercise-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.exercise-btn {
+    padding: 6px 14px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.exercise-btn.show-instructions-btn { background: rgba(6,182,212,0.12); color: #0891b2; }
+.exercise-btn.show-instructions-btn:hover { background: rgba(6,182,212,0.2); }
+.exercise-btn.primary { background: #2563eb; color: white; }
+.exercise-btn.primary:hover { background: #1d4ed8; }
+.exercise-btn.gray { background: #e2e8f0; color: #475569; }
+.exercise-btn.gray:hover { background: #cbd5e1; }
+
+.exercise-instructions {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), padding 0.3s, opacity 0.3s;
+    opacity: 0;
+    padding: 0 16px;
+    background: rgba(6,182,212,0.04);
+    border-radius: 12px;
+    margin: 8px 0;
+    border-left: 4px solid #06b6d4;
+}
+.exercise-instructions.active {
+    max-height: 400px;
+    opacity: 1;
+    padding: 16px;
+}
+.exercise-instructions ul { padding-left: 20px; color: #334155; line-height: 1.7; }
+.exercise-instructions ul li { margin-bottom: 6px; }
+
+.record-icon {
+    cursor: pointer;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    border-radius: 40px;
+    min-width: 100px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.15);
+}
+.record-icon:hover { transform: scale(1.03); }
+.record-icon span { font-size: 0.8rem; font-weight: 600; color: white; padding: 0 16px; display: flex; align-items: center; gap: 6px; }
+.record-icon.danger { background: #ef4444; min-width: 40px; border-radius: 50%; }
+.record-icon.danger:hover { background: #dc2626; }
+
+.exercise-test-panel {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 12px 0 0 0;
+    border: 1px dashed #cbd5e1;
+}
+.exercise-test-panel h4 { color: #2563eb; margin-bottom: 8px; font-size: 1rem; }
+.exercise-test-panel .test-fields { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.exercise-test-panel .test-fields label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 4px; }
+.exercise-test-panel .test-fields input {
+    padding: 6px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    width: 120px;
+    font-family: 'Inter', sans-serif;
+}
+.exercise-test-panel .test-fields input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+.btn-test { background: #7c3aed; color: white; border: none; border-radius: 30px; padding: 6px 18px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.btn-test:hover { background: #6d28d9; }
+
+.performance-logging {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s, padding 0.4s;
+    opacity: 0;
+    padding: 0;
+    margin-top: 0;
+}
+.performance-logging.active {
+    max-height: 800px;
+    opacity: 1;
+    padding-top: 16px;
+    margin-top: 12px;
+    border-top: 2px solid #e2e8f0;
+}
+.performance-logging .logger-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 4px 0;
+    font-size: 0.85rem;
+    color: #475569;
+}
+.performance-logging .logger-row label { font-weight: 600; min-width: 60px; }
+.performance-logging .logger-row input[type="number"] {
+    padding: 4px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    width: 60px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+}
+.performance-logging .logger-row .rpe-slider { display: flex; gap: 3px; }
+.performance-logging .logger-row .rpe-slider button {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid #cbd5e1;
+    background: white;
+    font-weight: 600; font-size: 0.7rem;
+    cursor: pointer; transition: 0.2s;
+}
+.performance-logging .logger-row .rpe-slider button.active { background: #2563eb; color: white; border-color: #2563eb; }
+.performance-logging .logger-row .rir { font-weight: 700; color: #2563eb; min-width: 50px; }
+.performance-logging .logger-row .notes-input {
+    flex: 1;
+    padding: 4px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    min-width: 120px;
+}
+.performance-logging .logger-actions {
+    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+}
+.performance-logging .logger-actions button {
+    padding: 6px 20px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+.performance-logging .logger-actions .save { background: #10b981; color: white; }
+.performance-logging .logger-actions .save:hover { background: #059669; }
+.performance-logging .logger-actions .skip { background: transparent; border: 1px solid #cbd5e1; color: #475569; }
+.performance-logging .logger-actions .skip:hover { background: #f1f5f9; }
+
+.library-header-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(4px);
+    padding: 20px 24px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.library-title-group h2 { font-size: 1.4rem; color: #0f172a; margin-bottom: 4px; font-weight: 700; }
+.library-title-group p { color: #64748b; font-size: 0.9rem; font-weight: 600; }
+.library-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+.library-controls select {
+    padding: 8px 14px;
+    border-radius: 30px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    color: #334155;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+.library-search-box {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+}
+.library-search-box i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+.library-search-box input {
+    width: 100%;
+    padding: 10px 16px 10px 44px;
+    border-radius: 30px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+.library-search-box input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); background: white; }
+
+.library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.library-group-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 0 8px 0;
+    margin-top: 16px;
+    border-bottom: 2px solid #e2e8f0;
+    cursor: pointer;
+    user-select: none;
+}
+.library-group-header h3 { font-size: 1.2rem; color: #2563eb; margin: 0; font-weight: 700; }
+.library-group-header .group-toggle { font-size: 1.1rem; color: #94a3b8; transition: transform 0.3s; }
+.library-group-header.collapsed .group-toggle { transform: rotate(-90deg); }
+.library-group-content { display: contents; }
+.library-group-header.collapsed + .library-group-content { display: none; }
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.settings-card { padding: 20px; }
+.settings-card h3 { margin-top: 0; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 700; }
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-row .label { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.9rem; }
+.setting-row .label i { width: 20px; color: #2563eb; }
+
+.toggle-spring {
+    width: 44px;
+    height: 26px;
+    background: #cbd5e1;
+    border-radius: 40px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+.toggle-spring.active { background: #2563eb; }
+.toggle-spring .knob {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.theme-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.theme-swatch {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.theme-swatch.active { border-color: #0f172a; transform: scale(1.1); }
+.theme-swatch.blue { background: #2563eb; }
+.theme-swatch.green { background: #10b981; }
+.theme-swatch.purple { background: #7c3aed; }
+.theme-swatch.orange { background: #f59e0b; }
+
+.drop-zone {
+    border: 2px dashed rgba(0,0,0,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.2s;
+    margin-top: 12px;
+}
+.drop-zone.dragover { border-color: #2563eb; background: rgba(37,99,235,0.05); }
+
+.body-map-container {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+#muscleCanvas {
+    border-radius: 16px;
+    background: rgba(255,255,255,0.4);
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    aspect-ratio: 1 / 1.4;
+    cursor: pointer;
+}
+.recovery-side { flex: 1; min-width: 200px; }
+.recovery-side #muscleInfo {
+    background: rgba(0,0,0,0.02);
+    border-radius: 12px;
+    padding: 12px;
+    min-height: 70px;
+}
+.recovery-side .recommendations { margin-top: 16px; padding: 16px; }
+.recovery-side .recommendations ul { padding-left: 20px; color: #475569; font-size: 0.9rem; }
+
+@media (max-width: 768px) {
+    body { padding: 20px 20px 20px 60px; }
+    .progress-pill { left: 12px; width: 22px; }
+    .progress-pill .icon { font-size: 1.2rem; }
+    .progress-pill .segments { width: 16px; gap: 5px; min-height: 50px; }
+    .progress-pill .segments .seg { min-height: 8px; }
+    .seg.in-view { min-height: 18px !important; flex: 2.5 !important; }
+    .progress-pill .count { font-size: 0.6rem; }
+    .settings-grid { grid-template-columns: 1fr; }
+    .exercise-item .logger-row { flex-direction: column; align-items: stretch; }
+    .exercise-item .logger-row label { min-width: auto; }
+    .library-grid { grid-template-columns: 1fr; }
+    .exercise-header { flex-direction: column; align-items: stretch; }
+    .exercise-test-panel .test-fields { flex-direction: column; align-items: stretch; }
+    .exercise-test-panel .test-fields input { width: 100%; }
+}
+@media (max-width: 500px) {
+    body { padding: 16px 16px 16px 48px; }
+    .progress-pill { left: 8px; width: 18px; }
+    .progress-pill .icon { font-size: 1rem; }
+    .progress-pill .segments { width: 12px; gap: 4px; min-height: 40px; }
+    .progress-pill .segments .seg { min-height: 6px; border-radius: 3px; }
+    .seg.in-view { min-height: 12px !important; flex: 2 !important; }
+    .progress-pill .count { font-size: 0.5rem; }
+    .seg::after { display: none; }
+    .seg::before { font-size: 0.55rem; left: calc(100% + 8px); }
+    .exercise-item { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .seg.in-progress { animation: none; }
+    .seg.in-view { animation: none; }
+}
   </style>
 </head>
 <body class="loading">
@@ -3939,181 +4568,145 @@ try {
     
     <!-- MAIN APPLICATION -->
     <div class="container main-app" id="mainApp">
-        <!-- DASHBOARD SECTION -->
-        <div id="dashboard-section" class="section active">
-          <div class="todays-workout hover-lift">
-            <!-- Start Workout Button – now at the top, centered -->
-            <div style="display: flex; justify-content: center; margin: 10px 0 20px 0;">
-                <button class="btn-luxury-start" onclick="startOrGenerateWorkout()">
-                    <i class="fas fa-play"></i>
-                    <span>Start Workout</span>
+<!-- DASHBOARD SECTION -->
+<div id="dashboard-section" class="section active">
+    <div class="card" style="margin-bottom:16px;">
+        <!-- Start Workout Button -->
+        <div style="display: flex; justify-content: center; margin: 10px 0 20px 0;">
+            <button class="btn-luxury-start" onclick="startOrGenerateWorkout()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:60px;padding:14px 36px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 8px 20px rgba(37,99,235,0.3);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);">
+                <i class="fas fa-play"></i>
+                <span>Start Workout</span>
+            </button>
+        </div>
+
+        <!-- Readiness Gauge (with expandable details) -->
+        <div class="readiness-container">
+            <div class="readiness-simple">
+                <div class="readiness-header">
+                    <span class="readiness-icon">🏋️</span>
+                    <span class="readiness-title">Workout Readiness</span>
+                    <button class="readiness-toggle" id="readinessToggle">What is this?</button>
+                </div>
+                <div class="readiness-bar-wrapper">
+                    <div class="readiness-bar" id="readinessBar">
+                        <div class="readiness-fill" id="readinessFill" style="width: 0%; background: var(--gray-300);"></div>
+                        <span class="readiness-percent" id="readinessPercent">--</span>
+                    </div>
+                </div>
+                <div class="readiness-message" id="readinessMessage">Loading…</div>
+                <div class="readiness-meta" id="readinessLastWorkout">Last workout: —</div>
+            </div>
+
+            <!-- Detailed View -->
+            <div class="readiness-details" id="readinessDetails" style="display: none;">
+                <div class="details-header">📊 Detailed Breakdown</div>
+                <div class="details-factors" id="detailsFactors">
+                    <!-- populated by JavaScript -->
+                </div>
+                <div class="details-actions">
+                    <button class="btn btn-sm btn-outline" id="nerdModeTrigger">🧪 Advanced (Nerd Mode)</button>
+                </div>
+            </div>
+
+            <!-- Nerd Mode -->
+            <div class="readiness-nerd" id="readinessNerd" style="display: none;">
+                <div class="nerd-header">⚙️ Developer Console</div>
+                <div class="nerd-content" id="nerdContent">
+                    <!-- populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Workout Info (placeholder) -->
+        <div class="workout-info" id="dashboardWorkoutInfo"></div>
+
+        <!-- Level Badge -->
+        <div class="badge" id="welcomeLevel" style="margin-top:10px;display:inline-block;padding:4px 12px;border-radius:40px;font-size:0.75rem;font-weight:600;background:rgba(37,99,235,0.12);color:#2563eb;">Beginner</div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:16px;">
+        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statWorkouts" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Workouts</div></div>
+        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statStreak" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Streak</div></div>
+        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statVolume" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Volume (lbs)</div></div>
+        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statProgress" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Progress</div></div>
+        <div class="stat-card card" style="text-align:center;padding:14px 8px;cursor:pointer;" onclick="showLongevityReport()"><div class="stat-value" id="longevityScore" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Longevity</div><i class="fas fa-heartbeat" style="color:var(--gray-500);font-size:0.8rem;"></i></div>
+        <div class="stat-card card" id="eliteDateCard" style="text-align:center;padding:14px 8px;cursor:help;"><div class="stat-value" id="eliteDate" style="font-size:1.2rem;font-weight:900;color:#2563eb;line-height:1.2;">--</div><div class="stat-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;"><i class="fas fa-calendar-alt"></i> Projected Peak<br><span style="font-size:0.6rem;">(if you stay consistent!)</span></div><div style="margin-top:8px;border-top:1px solid var(--gray-200);padding-top:8px;"><div style="display:flex;justify-content:space-around;font-size:0.7rem;"><div><i class="fas fa-dumbbell"></i> Squat<br><strong id="forecastSquat">--</strong></div><div><i class="fas fa-dumbbell"></i> Bench<br><strong id="forecastBench">--</strong></div><div><i class="fas fa-dumbbell"></i> Deadlift<br><strong id="forecastDeadlift">--</strong></div></div><div style="font-size:0.6rem;color:var(--gray-500);margin-top:4px;"><i class="fas fa-chart-line"></i> Total: <strong id="forecastTotal">--</strong> lbs · Strength score: <strong id="forecastWilks">--</strong></div><div style="font-size:0.55rem;color:var(--gray-400);margin-top:4px;">⚡ Long‑term goals, not guarantees.</div></div></div>
+    </div>
+
+    <!-- Recommendation Card -->
+    <div class="recommendation-card card" style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;margin-top:16px;">
+        <div style="flex:1;"><p id="dashboardRecommendationText" style="margin:0;font-size:0.95rem;color:var(--gray-700);">Loading...</p></div>
+        <button class="btn btn-sm btn-outline" onclick="showSection('recovery')" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:4px 16px;cursor:pointer;font-weight:600;font-size:0.8rem;white-space:nowrap;">See all</button>
+    </div>
+
+    <!-- Sidebar: Chart + Next Workout -->
+    <div class="card" style="margin-top:16px;">
+        <h3 style="font-weight:700;color:#0f172a;margin-bottom:12px;font-size:1.1rem;"><i class="fas fa-chart-line"></i> Progress Overview</h3>
+        <div class="chart-container" style="height:200px;position:relative;margin-top:8px;">
+            <canvas id="dashboardChart"></canvas>
+        </div>
+        <div class="next-workout" style="margin-top:16px;padding:16px;background:rgba(37,99,235,0.04);border:1px solid rgba(37,99,235,0.1);border-radius:12px;">
+            <h4 style="font-weight:700;font-size:1rem;color:#0f172a;margin-bottom:4px;"><i class="fas fa-calendar-check"></i> Next Workout</h4>
+            <div id="dashboardNextWorkout" style="font-size:1.3rem;font-weight:800;color:#2563eb;text-align:center;padding:8px 0;">Calculating...</div>
+            <p style="color:#64748b;text-align:center;font-size:0.85rem;margin:0;">Based on your recovery status and workout rotation</p>
+        </div>
+    </div>
+</div>
+        
+<!-- WORKOUT SECTION -->
+<div id="workout-section" class="section">
+    <div class="card" style="margin-bottom:16px;">
+        <!-- Header -->
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <h2 style="font-size:1.4rem; font-weight:700; color:#0f172a; margin:0;"><i class="fas fa-dumbbell" style="color:#2563eb;"></i> Today's Workout</h2>
+                <button class="btn btn-sm btn-success" onclick="openAddExerciseModal()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:6px 16px;font-weight:600;color:#fff;cursor:pointer;font-size:0.8rem;font-family:'Inter',sans-serif;">
+                    <i class="fas fa-plus"></i> Add from library
                 </button>
             </div>
-
-            <div class="readiness-container">
-                <!-- SIMPLE VIEW (always visible) -->
-                <div class="readiness-simple">
-                    <div class="readiness-header">
-                        <span class="readiness-icon">🏋️</span>
-                        <span class="readiness-title">Workout Readiness</span>
-                        <button class="readiness-toggle" id="readinessToggle">What is this?</button>
-                    </div>
-                    <div class="readiness-bar-wrapper">
-                        <div class="readiness-bar" id="readinessBar">
-                            <div class="readiness-fill" id="readinessFill" style="width: 0%; background: var(--gray-300);"></div>
-                            <span class="readiness-percent" id="readinessPercent">--</span>
-                        </div>
-                    </div>
-                    <div class="readiness-message" id="readinessMessage">Loading…</div>
-                    <div class="readiness-meta" id="readinessLastWorkout">Last workout: —</div>
-                </div>
-
-                <!-- DETAILED VIEW (hidden initially) -->
-                <div class="readiness-details" id="readinessDetails" style="display: none;">
-                    <div class="details-header">📊 Detailed Breakdown</div>
-                    <div class="details-factors" id="detailsFactors">
-                        <!-- populated by JavaScript -->
-                    </div>
-                    <div class="details-actions">
-                        <button class="btn btn-sm btn-outline" id="nerdModeTrigger">🧪 Advanced (Nerd Mode)</button>
-                    </div>
-                </div>
-
-                <!-- NERD MODE (hidden initially) -->
-                <div class="readiness-nerd" id="readinessNerd" style="display: none;">
-                    <div class="nerd-header">⚙️ Developer Console</div>
-                    <div class="nerd-content" id="nerdContent">
-                        <!-- populated by JavaScript -->
-                    </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-sm btn-outline" onclick="toggleWorkoutDetails()" id="toggleDetailsBtn" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:6px 16px;font-weight:600;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">View details</button>
+                <button class="btn btn-sm btn-info" onclick="showWorkoutQR()" title="Share this workout" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:6px 16px;font-weight:600;color:#fff;cursor:pointer;font-size:0.8rem;font-family:'Inter',sans-serif;">
+                    <i class="fas fa-qrcode"></i> Share
+                </button>
+                <div class="replace-workout-container" id="replaceWorkoutContainer" style="position:relative;display:inline-block;">
+                    <span id="replaceTrigger" class="replace-trigger" style="font-size:1.5rem;font-weight:800;cursor:pointer;user-select:none;background:#e2e8f0;border-radius:50%;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;color:#475569;">.</span>
+                    <button id="replaceButton" class="replace-workout-btn" style="display:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:40px;padding:4px 14px;font-weight:700;font-size:0.75rem;cursor:pointer;">REPLACE</button>
                 </div>
             </div>
+        </div>
 
-            <div class="workout-info" id="dashboardWorkoutInfo">
+        <!-- Collapsible workout info -->
+        <div class="workout-info-collapsible collapsed" id="workoutDetails" style="overflow:hidden;transition:max-height 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:0;margin-bottom:0;">
+            <div class="workout-info" id="workoutMetaContainer" style="background:linear-gradient(135deg,rgba(37,99,235,0.04),rgba(124,58,237,0.04));padding:20px;border-radius:12px;margin-bottom:16px;border-left:4px solid #3b82f6;">
+                <!-- Populated by JavaScript -->
             </div>
-            <div class="badge badge-primary" id="welcomeLevel">Beginner</div>
-          </div>
-            
-<div class="stats-grid">
-    <div class="stat-card hover-lift">
-        <div class="stat-value" id="statWorkouts">-</div>
-        <div class="stat-label">Workouts</div>
-    </div>
-    <div class="stat-card hover-lift">
-        <div class="stat-value" id="statStreak">-</div>
-        <div class="stat-label">Streak</div>
-    </div>
-    <div class="stat-card hover-lift">
-        <div class="stat-value" id="statVolume">-</div>
-        <div class="stat-label">Volume (lbs)</div>
-    </div>
-    <div class="stat-card hover-lift">
-        <div class="stat-value" id="statProgress">-</div>
-        <div class="stat-label">Progress</div>
-    </div>
-    <div class="stat-card hover-lift" onclick="showLongevityReport()" style="cursor: pointer;">
-        <div class="stat-value" id="longevityScore">-</div>
-        <div class="stat-label">Longevity</div>
-        <i class="fas fa-heartbeat" style="color: var(--gray-500); font-size: 1rem;"></i>
-    </div>
-    <div class="stat-card hover-lift" id="eliteDateCard" style="cursor: help;">
-      <div class="stat-value" id="eliteDate">--</div>
-      <div class="stat-label" style="font-size:0.7rem;">
-        <i class="fas fa-calendar-alt"></i> Your projected peak strength date<br>
-        <span style="font-size:0.6rem;">(if you stay consistent – just for fun!)</span>
-      </div>
-      <div style="margin-top: 8px; border-top: 1px solid var(--gray-200); padding-top: 8px;">
-        <div style="display: flex; justify-content: space-around; font-size: 0.7rem;">
-          <div><i class="fas fa-dumbbell"></i> Squat<br><strong id="forecastSquat">--</strong></div>
-          <div><i class="fas fa-dumbbell"></i> Bench<br><strong id="forecastBench">--</strong></div>
-          <div><i class="fas fa-dumbbell"></i> Deadlift<br><strong id="forecastDeadlift">--</strong></div>
         </div>
-        <div style="font-size:0.6rem; color:var(--gray-500); margin-top: 4px;">
-          <i class="fas fa-chart-line"></i> Total: <strong id="forecastTotal">--</strong> lbs · Strength score: <strong id="forecastWilks">--</strong>
+
+        <!-- Exercise list -->
+        <div class="exercise-list" id="exerciseList">
+            <!-- Populated by JavaScript -->
         </div>
-        <div style="font-size:0.55rem; color:var(--gray-400); margin-top: 4px;">
-          ⚡ These are long‑term goals, not guarantees. Keep showing up!
+
+        <!-- No workout message -->
+        <div id="noWorkoutMessage" class="empty-state" style="display:none;text-align:center;padding:40px 20px;color:#94a3b8;">
+            <i class="fas fa-dumbbell" style="font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block;"></i>
+            <h3 style="color:#64748b;font-size:1.2rem;margin-bottom:8px;">No Workout Scheduled</h3>
+            <p style="color:#94a3b8;margin-bottom:20px;">Generate a workout to get started.</p>
+            <button class="btn btn-primary" onclick="generateNextWorkout()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;">
+                <i class="fas fa-dumbbell"></i> Generate Workout
+            </button>
         </div>
-      </div>
+
+        <!-- Complete Workout button -->
+        <div class="btn-group" id="workoutButtons" style="display:none;margin-top:20px;text-align:center;">
+            <button class="btn btn-success btn-block" onclick="completeWorkout()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:60px;padding:14px 36px;font-weight:700;color:#fff;cursor:pointer;width:100%;font-size:1.1rem;font-family:'Inter',sans-serif;box-shadow:0 8px 20px rgba(16,185,129,0.3);">
+                <i class="fas fa-check-circle"></i> Complete & Log Today's Workout
+            </button>
+        </div>
     </div>
 </div>
-          
-<!-- Recommendation Card -->
-<div class="recommendation-card" style="background: white; border-radius: var(--border-radius); padding: 15px; margin-top: 15px; box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: space-between;">
-    <div style="flex: 1;">
-        <p id="dashboardRecommendationText" style="margin: 0; font-size: 0.95rem; color: var(--gray-700);">Loading...</p>
-    </div>
-    <button class="btn btn-sm btn-outline" onclick="showSection('recovery')" style="margin-left: 15px; white-space: nowrap;">See all</button>
-</div>
-                
-                <div class="sidebar">
-                    <div class="progress-chart-container">
-                        <h3 class="section-title"><i class="fas fa-chart-line"></i> Progress Overview</h3>
-                        <div class="chart-container">
-                            <canvas id="dashboardChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="next-workout hover-lift">
-                        <h3><i class="fas fa-calendar-check"></i> Next Workout</h3>
-                        <div class="next-workout-date" id="dashboardNextWorkout">Calculating...</div>
-                        <p style="color: var(--gray-600); text-align: center;">Based on your recovery status and workout rotation</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- WORKOUT SECTION -->
-        <div id="workout-section" class="section">
-            <div class="todays-workout">
-                <!-- Header with toggle button -->
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-                    <h2 class="section-title" style="margin-bottom:0;"><i class="fas fa-dumbbell"></i> Today's Workout   </h2>
-                    <button class="btn btn-sm btn-success" onclick="openAddExerciseModal()">
-                        <i class="fas fa-plus"></i> Add new from library
-                    </button>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button class="btn btn-sm btn-outline" onclick="toggleWorkoutDetails()" id="toggleDetailsBtn">View details</button>
-                    <button class="btn btn-sm btn-info" onclick="showWorkoutQR()" title="Share this workout">
-                        <i class="fas fa-qrcode"></i> Share
-                    </button>
-                    <!-- Tiny "." dropdown trigger + hidden replace button -->
-                    <div class="replace-workout-container" id="replaceWorkoutContainer">
-                        <span id="replaceTrigger" class="replace-trigger">.</span>
-                        <button id="replaceButton" class="replace-workout-btn" style="display: none;">REPLACE my workout</button>
-                    </div>
-                </div>
-            </div>
-
-                <!-- Collapsible workout info (hidden by default) -->
-                <div class="workout-info-collapsible collapsed" id="workoutDetails">
-                    <div class="workout-info" id="workoutMetaContainer">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Exercise list – populated by JS -->
-                <div class="exercise-list" id="exerciseList"></div>
-
-                <!-- No workout message (hidden when workout exists) -->
-                <div id="noWorkoutMessage" class="empty-state" style="display: none;">
-                    <i class="fas fa-dumbbell" style="font-size: 3rem; color: var(--gray-400);"></i>
-                    <h3 style="color: var(--gray-600); margin: 10px 0;">No Workout Scheduled</h3>
-                    <p style="color: var(--gray-500); margin-bottom: 20px;">Generate a workout to get started.</p>
-                    <button class="btn btn-primary" onclick="generateNextWorkout()">
-                        <i class="fas fa-dumbbell"></i> Generate Workout
-                    </button>
-                </div>
-
-                <!-- Buttons (visible only when workout exists) -->
-                <div class="btn-group" id="workoutButtons" style="display: none;">
-                    <button class="btn btn-success btn-block" onclick="completeWorkout()">
-                        <i class="fas fa-check-circle"></i> Complete & Log Today's Workout
-                    </button>
-                </div>
-            </div>
-        </div>
         
         <!-- HISTORY SECTION -->
         <div id="history-section" class="section">
@@ -4208,232 +4801,266 @@ try {
     </div>
 </div>
         
-        <!-- RECOVERY SECTION -->
-        <div id="recovery-section" class="section">
-            <div class="todays-workout">
-                <h2 class="section-title"><i class="fas fa-heartbeat"></i> Muscle Recovery Status</h2>
-                <div class="muscle-category">
-                    <h4><i class="fas fa-dumbbell"></i> Major Muscle Groups</h4>
-                    <div class="muscle-recovery" id="majorMuscleRecovery"></div>
+<!-- RECOVERY SECTION -->
+<div id="recovery-section" class="section">
+    <div class="card" style="margin-bottom:16px;">
+        <h2 style="font-size:1.6rem;font-weight:700;color:#0f172a;margin-bottom:16px;"><i class="fas fa-heartbeat" style="color:#2563eb;"></i> Muscle Recovery Status</h2>
+
+        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
+            <h4 style="font-size:1.05rem;font-weight:700;color:#2563eb;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-dumbbell"></i> Major Muscle Groups</h4>
+            <div class="muscle-recovery" id="majorMuscleRecovery"></div>
+        </div>
+
+        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
+            <h4 style="font-size:1.05rem;font-weight:700;color:#7c3aed;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-user-md"></i> Longevity & Joint Health Muscles</h4>
+            <div class="muscle-recovery" id="longevityMuscleRecovery"></div>
+        </div>
+
+        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
+            <h4 style="font-size:1.05rem;font-weight:700;color:#f59e0b;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-hands"></i> Grip & Hand Muscles</h4>
+            <div class="muscle-recovery" id="handMuscleRecovery"></div>
+        </div>
+
+        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
+            <h4 style="font-size:1.05rem;font-weight:700;color:#06b6d4;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-shoe-prints"></i> Foot & Ankle Muscles</h4>
+            <div class="muscle-recovery" id="footMuscleRecovery"></div>
+        </div>
+
+        <!-- Recovery Recommendations -->
+        <div style="margin-top:8px;padding:20px;background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(59,130,246,0.06));border-radius:12px;border-left:4px solid #10b981;">
+            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-bottom:8px;"><i class="fas fa-lightbulb" style="color:#f59e0b;"></i> Recovery Recommendations</h3>
+            <div id="recoveryRecommendations">
+                <p style="color:#64748b;margin:0;">Based on your training history and muscle recovery status:</p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-group" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
+            <button class="btn" onclick="showSection('dashboard')" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <button class="btn btn-success" onclick="generateNextWorkout()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;">
+                <i class="fas fa-dumbbell"></i> Generate Next Workout
+            </button>
+            <button class="btn btn-info" onclick="generateLongevityWorkout()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;">
+                <i class="fas fa-user-md"></i> Longevity Workout
+            </button>
+        </div>
+    </div>
+</div>
+        
+<!-- SETTINGS SECTION -->
+<div id="settings-section" class="section">
+    <div style="margin-bottom:16px;">
+        <h2 style="font-size:1.6rem;font-weight:700;color:#0f172a;margin-bottom:16px;"><i class="fas fa-cog" style="color:#2563eb;"></i> Settings</h2>
+
+        <!-- Settings Grid -->
+        <div class="settings-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <!-- Personal Information -->
+            <div class="settings-card card" style="padding:20px;">
+                <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-user" style="color:#2563eb;"></i> Personal Information</h3>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Name:</label>
+                    <input type="text" id="settingsName" placeholder="Your name" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
                 </div>
-                <div class="muscle-category">
-                    <h4><i class="fas fa-user-md"></i> Longevity & Joint Health Muscles</h4>
-                    <div class="muscle-recovery" id="longevityMuscleRecovery"></div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Birth Date <span class="info-tooltip" style="position:relative;display:inline-block;cursor:help;color:#06b6d4;margin-left:4px;">ℹ️<span class="tooltip-text" style="visibility:hidden;width:250px;background:#0f172a;color:white;text-align:center;padding:8px 12px;border-radius:8px;position:absolute;z-index:1000;bottom:125%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.3s;font-size:0.8rem;font-weight:normal;box-shadow:0 10px 25px rgba(0,0,0,0.2);line-height:1.5;">Used to calculate age and adjust recommendations</span></span>:</label>
+                    <input type="date" id="settingsBirthDate" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
                 </div>
-                <div class="muscle-category">
-                    <h4><i class="fas fa-hands"></i> Grip & Hand Muscles</h4>
-                    <div class="muscle-recovery" id="handMuscleRecovery"></div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Gender:</label>
+                    <select id="settingsGender" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other / Prefer not to say</option>
+                    </select>
                 </div>
-                <div class="muscle-category">
-                    <h4><i class="fas fa-shoe-prints"></i> Foot & Ankle Muscles</h4>
-                    <div class="muscle-recovery" id="footMuscleRecovery"></div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Current Body Weight (lbs):</label>
+                    <input type="number" id="settingsWeight" placeholder="e.g., 180" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
                 </div>
-                <div style="margin-top: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.08)); padding: 25px; border-radius: 16px;">
-                    <h3 style="margin-bottom: 15px; color: var(--dark);"><i class="fas fa-lightbulb"></i> Recovery Recommendations</h3>
-                    <div id="recoveryRecommendations">
-                        <p style="color: var(--gray-600);">Based on your training history and muscle recovery status:</p>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Height (inches):</label>
+                    <input type="number" id="settingsHeight" placeholder="e.g., 70" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                </div>
+            </div>
+
+            <!-- Training Preferences -->
+            <div class="settings-card card" style="padding:20px;">
+                <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-dumbbell" style="color:#2563eb;"></i> Training Preferences</h3>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Training Experience:</label>
+                    <select id="settingsExperience" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                        <option value="beginner">Beginner (0-6 months)</option>
+                        <option value="intermediate">Intermediate (6-24 months)</option>
+                        <option value="advanced">Advanced (2+ years)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Primary Goal:</label>
+                    <select id="settingsGoal" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                        <option value="strength">Strength</option>
+                        <option value="hypertrophy">Muscle Building</option>
+                        <option value="endurance">Endurance</option>
+                        <option value="longevity">Longevity & Joint Health</option>
+                        <option value="balanced">Balanced</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Preferred Workout Days:</label>
+                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;">
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="monday"> Mon</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="tuesday"> Tue</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="wednesday"> Wed</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="thursday"> Thu</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="friday"> Fri</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="saturday"> Sat</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="sunday"> Sun</label>
                     </div>
                 </div>
-                <div class="btn-group" style="margin-top: 30px;">
-                    <button class="btn" onclick="showSection('dashboard')">
-                        <i class="fas fa-arrow-left"></i> Back to Dashboard
-                    </button>
-                    <button class="btn btn-success" onclick="generateNextWorkout()">
-                        <i class="fas fa-dumbbell"></i> Generate Next Workout
-                    </button>
-                    <button class="btn btn-info" onclick="generateLongevityWorkout()">
-                        <i class="fas fa-user-md"></i> Longevity Workout
-                    </button>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Default Rest Between Sets (seconds):</label>
+                    <input type="number" id="settingsRestTime" value="90" min="30" max="300" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Progression Rate (% per week):</label>
+                    <input type="number" id="settingsProgression" value="2" min="0.5" max="5" step="0.5" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
                 </div>
             </div>
         </div>
-        
-        <!-- SETTINGS SECTION -->
-        <div id="settings-section" class="section">
-            <div class="settings-section">
-                <h2 class="section-title"><i class="fas fa-cog"></i> Settings</h2>
-                <div class="settings-grid">
-                    <div>
-                        <h3 style="margin-bottom: 20px; color: var(--dark);">Personal Information</h3>
-                        <div class="form-group">
-                            <label>Name:</label>
-                            <input type="text" id="settingsName" placeholder="Your name">
-                        </div>
-                        <div class="form-group">
-                            <label>Birth Date <span class="info-tooltip">ℹ️<span class="tooltip-text">Used to calculate age and adjust recommendations</span></span>:</label>
-                            <input type="date" id="settingsBirthDate">
-                        </div>
-                        <div class="form-group">
-                            <label>Gender:</label>
-                            <select id="settingsGender">
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other / Prefer not to say</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Current Body Weight (lbs):</label>
-                            <input type="number" id="settingsWeight" placeholder="e.g., 180">
-                        </div>
-                        <div class="form-group">
-                            <label>Height (inches):</label>
-                            <input type="number" id="settingsHeight" placeholder="e.g., 70">
-                        </div>
-                    </div>
-                    <div>
-                        <h3 style="margin-bottom: 20px; color: var(--dark);">Training Preferences</h3>
-                        <div class="form-group">
-                            <label>Training Experience:</label>
-                            <select id="settingsExperience">
-                                <option value="beginner">Beginner (0-6 months)</option>
-                                <option value="intermediate">Intermediate (6-24 months)</option>
-                                <option value="advanced">Advanced (2+ years)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Primary Goal:</label>
-                            <select id="settingsGoal">
-                                <option value="strength">Strength</option>
-                                <option value="hypertrophy">Muscle Building</option>
-                                <option value="endurance">Endurance</option>
-                                <option value="longevity">Longevity & Joint Health</option>
-                                <option value="balanced">Balanced</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Preferred Workout Days:</label>
-                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="monday"> Mon</label>
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="tuesday"> Tue</label>
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="wednesday"> Wed</label>
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="thursday"> Thu</label>
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="friday"> Fri</label>
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="saturday"> Sat</label>
-                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="sunday"> Sun</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Default Rest Between Sets (seconds):</label>
-                            <input type="number" id="settingsRestTime" value="90" min="30" max="300">
-                        </div>
-                        <div class="form-group">
-                            <label>Progression Rate (% per week):</label>
-                            <input type="number" id="settingsProgression" value="2" min="0.5" max="5" step="0.5">
-                        </div>
-                    </div>
+
+        <!-- Appearance & Preferences -->
+        <div class="card" style="padding:20px;margin-top:20px;">
+            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-palette" style="color:#2563eb;"></i> Appearance & Preferences</h3>
+
+            <!-- Muscle Coupling -->
+            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+                <div>
+                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Muscle Coupling (Advanced)</div>
+                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Enable fatigue transfer between synergistic muscles for more accurate recovery modeling.</div>
                 </div>
-                
-                <div class="settings-group">
-                    <h3 style="margin-bottom: 20px; color: var(--dark);">Appearance</h3>
-                      <div class="setting-item">
-                          <div>
-                              <div class="setting-label">Muscle Coupling (Advanced)</div>
-                              <div class="setting-description">Enable fatigue transfer between synergistic muscles for more accurate recovery modeling. Recommended for experienced users.</div>
-                          </div>
-                          <label class="switch">
-                              <input type="checkbox" id="muscleCouplingToggle" onchange="toggleMuscleCoupling()">
-                              <span class="slider round"></span>
-                          </label>
-                      </div>
-                      <div class="setting-item">
-                          <div>
-                              <div class="setting-label">Keep screen awake during workout</div>
-                              <div class="setting-description">Prevents phone screen from dimming or locking while you are exercising.</div>
-                          </div>
-                          <label class="switch">
-                              <input type="checkbox" id="screenWakeLockToggle" onchange="toggleScreenWakeLockSetting()">
-                              <span class="slider round"></span>
-                          </label>
-                      </div>
-                    <div class="theme-controls">
-                        <button class="theme-btn theme-blue active" onclick="setTheme('blue')"><span class="theme-preview"></span> Blue</button>
-                        <button class="theme-btn theme-green" onclick="setTheme('green')"><span class="theme-preview"></span> Green</button>
-                        <button class="theme-btn theme-purple" onclick="setTheme('purple')"><span class="theme-preview"></span> Purple</button>
-                        <button class="theme-btn theme-orange" onclick="setTheme('orange')"><span class="theme-preview"></span> Orange</button>
-                    </div>
+                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
+                    <input type="checkbox" id="muscleCouplingToggle" onchange="toggleMuscleCoupling()" style="opacity:0;width:0;height:0;">
+                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
+                </label>
+            </div>
+
+            <!-- Screen Wake Lock -->
+            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+                <div>
+                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Keep screen awake during workout</div>
+                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Prevents phone screen from dimming or locking while exercising.</div>
                 </div>
-              
-                <div class="setting-item">
-                    <div>
-                        <div class="setting-label">Powerlifting Express Mode</div>
-                        <div class="setting-description">Faster transition to low‑rep strength training (more aggressive progression).</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="expressModeToggle" onchange="toggleExpressMode()">
-                        <span class="slider round"></span>
-                    </label>
+                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
+                    <input type="checkbox" id="screenWakeLockToggle" onchange="toggleScreenWakeLockSetting()" style="opacity:0;width:0;height:0;">
+                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
+                </label>
+            </div>
+
+            <!-- Express Mode -->
+            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+                <div>
+                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Powerlifting Express Mode</div>
+                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Faster transition to low‑rep strength training (more aggressive progression).</div>
                 </div>
-                <div class="setting-item">
-                    <div>
-                        <div class="setting-label">Aggression Factor</div>
-                        <div class="setting-description">How quickly reps drop with intensity (0.5 = slow, 2.0 = very fast).</div>
-                    </div>
-                    <input type="range" id="aggressionSlider" min="0.5" max="2.0" step="0.05" value="1.0" style="width:160px;">
-                    <span id="aggressionValue">1.0</span>
+                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
+                    <input type="checkbox" id="expressModeToggle" onchange="toggleExpressMode()" style="opacity:0;width:0;height:0;">
+                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
+                </label>
+            </div>
+
+            <!-- Auto-hide Bottom Nav -->
+            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+                <div>
+                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Auto‑hide bottom navigation</div>
+                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">On computers, automatically hide the bottom bar when not in use.</div>
                 </div>
-              
-                <!-- Bottom navigation behavior (computers only) -->
-                <div class="setting-item">
-                    <div>
-                        <div class="setting-label">Auto‑hide bottom navigation</div>
-                        <div class="setting-description">On computers, automatically hide the bottom bar when not in use (requires mouse near bottom to show).</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="bottomNavAutoHide" onchange="toggleBottomNavAutoHide()">
-                        <span class="slider round"></span>
-                    </label>
+                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
+                    <input type="checkbox" id="bottomNavAutoHide" onchange="toggleBottomNavAutoHide()" style="opacity:0;width:0;height:0;">
+                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
+                </label>
+            </div>
+
+            <!-- Aggression Factor -->
+            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
+                <div>
+                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Aggression Factor</div>
+                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">How quickly reps drop with intensity (0.5 = slow, 2.0 = very fast).</div>
                 </div>
-                
-                <div class="exercise-import-export">
-                    <h3 style="margin-bottom: 20px; color: var(--dark);">Exercise Library Management</h3>
-                    <p style="color: var(--gray-600); margin-bottom: 15px;">Import or export custom exercises in JSON format. This allows you to share exercises or create your own library.</p>
-                    <div class="exercise-io-buttons">
-                        <button class="btn btn-info" onclick="importExerciseData()"><i class="fas fa-file-import"></i> Import Exercises</button>
-                        <button class="btn" onclick="exportExerciseData()"><i class="fas fa-file-export"></i> Export Exercises</button>
-                        <button class="btn btn-success" onclick="resetExerciseLibrary()"><i class="fas fa-sync-alt"></i> Reset to Default</button>
-                    </div>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <input type="range" id="aggressionSlider" min="0.5" max="2.0" step="0.05" value="1.0" style="width:120px;" oninput="updateAggression()">
+                    <span id="aggressionValue" style="font-weight:700;color:#2563eb;min-width:36px;text-align:center;">1.0</span>
                 </div>
-                
-                <div class="btn-group" style="margin-top: 30px;">
-                    <button class="btn btn-success" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
-                    <button class="btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
-                    <button class="btn btn-danger" onclick="resetAllData()"><i class="fas fa-trash"></i> Reset All Data</button>
+            </div>
+
+            <!-- Theme Controls -->
+            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:none;">
+                <div>
+                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Theme</div>
+                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Choose your app colour scheme.</div>
                 </div>
-                
-                <div class="export-options" style="margin-top: 30px;">
-                    <div class="export-btn" onclick="exportWorkoutData()"><i class="fas fa-file-export"></i> Export All Data</div>
-                    <div class="export-btn" onclick="importWorkoutData()"><i class="fas fa-file-import"></i> Import Data</div>
+                <div class="theme-controls" style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="theme-btn theme-blue active" onclick="setTheme('blue')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);"></span> Blue</button>
+                    <button class="theme-btn theme-green" onclick="setTheme('green')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);"></span> Green</button>
+                    <button class="theme-btn theme-purple" onclick="setTheme('purple')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#8b5cf6);"></span> Purple</button>
+                    <button class="theme-btn theme-orange" onclick="setTheme('orange')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#ea580c,#f97316);"></span> Orange</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Exercise Library Management -->
+        <div class="card" style="padding:20px;margin-top:20px;">
+            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fas fa-book" style="color:#2563eb;"></i> Exercise Library Management</h3>
+            <p style="color:#64748b;font-size:0.9rem;margin-bottom:16px;">Import or export custom exercises in JSON format. This allows you to share exercises or create your own library.</p>
+            <div class="exercise-io-buttons" style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn btn-info" onclick="importExerciseData()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-import"></i> Import Exercises</button>
+                <button class="btn" onclick="exportExerciseData()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-export"></i> Export Exercises</button>
+                <button class="btn btn-success" onclick="resetExerciseLibrary()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-sync-alt"></i> Reset to Default</button>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="card" style="padding:20px;margin-top:20px;">
+            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fas fa-database" style="color:#2563eb;"></i> Data Management</h3>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+                <button class="btn btn-success" onclick="saveSettings()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-save"></i> Save Settings</button>
+                <button class="btn" onclick="showSection('dashboard')" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+                <button class="btn btn-danger" onclick="resetAllData()" style="background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-trash"></i> Reset All Data</button>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn btn-info" onclick="exportWorkoutData()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-export"></i> Export All Data</button>
+                <button class="btn btn-info" onclick="importWorkoutData()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-import"></i> Import Data</button>
             </div>
         </div>
     </div>
+</div>
   
 <!-- LIBRARY SECTION -->
 <div id="library-section" class="section">
-    <div class="library-header-bar">
+    <div class="library-header-bar card" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;margin-bottom:24px;">
         <div class="library-title-group">
-            <h2>Exercise Library</h2>
-            <p><span id="library-count">0</span> Movements Available</p>
+            <h2 style="font-size:1.4rem;font-weight:700;color:#0f172a;margin:0;">Exercise Library</h2>
+            <p style="color:#64748b;font-size:0.9rem;font-weight:600;margin:4px 0 0;"><span id="library-count">0</span> Movements Available</p>
         </div>
-        <div class="library-controls">
-            <select id="groupBySelect" onchange="changeGrouping()">
+        <div class="library-controls" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+            <select id="groupBySelect" onchange="changeGrouping()" style="padding:8px 14px;border-radius:30px;border:1px solid #cbd5e1;background:white;color:#334155;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;">
                 <option value="muscleGroup">Group by Muscle Group</option>
                 <option value="equipment">Group by Equipment</option>
                 <option value="difficulty">Group by Difficulty</option>
                 <option value="performed">Group by Performed Status</option>
                 <option value="muscleCategory">Group by Muscle Category (Major/Longevity/Hands/Feet)</option>
             </select>
-            <div class="library-expand-buttons">
-                <button class="btn btn-sm btn-outline" onclick="expandAllGroups()">Expand All</button>
-                <button class="btn btn-sm btn-outline" onclick="collapseAllGroups()">Collapse All</button>
+            <div class="library-expand-buttons" style="display:flex;gap:8px;">
+                <button class="btn btn-sm btn-outline" onclick="expandAllGroups()" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:4px 16px;cursor:pointer;font-weight:600;font-size:0.8rem;font-family:'Inter',sans-serif;">Expand All</button>
+                <button class="btn btn-sm btn-outline" onclick="collapseAllGroups()" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:4px 16px;cursor:pointer;font-weight:600;font-size:0.8rem;font-family:'Inter',sans-serif;">Collapse All</button>
             </div>
         </div>
-        <div class="library-search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="librarySearch" placeholder="Search exercises or muscles..." onkeyup="debouncedLibrarySearch()">
+        <div class="library-search-box" style="position:relative;flex:1;min-width:220px;">
+            <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
+            <input type="text" id="librarySearch" placeholder="Search exercises or muscles..." onkeyup="debouncedLibrarySearch()" style="width:100%;padding:10px 16px 10px 44px;border-radius:30px;border:1px solid #cbd5e1;background:#f8fafc;font-size:0.95rem;transition:all 0.3s;font-family:'Inter',sans-serif;">
         </div>
     </div>
-    <div id="libraryGrid" class="exercise-library-grid-container"></div>
+    <div id="libraryGrid" class="exercise-library-grid-container" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
 </div>
     
 <!-- MODALS -->
@@ -4622,43 +5249,42 @@ try {
     </div>
 </div>
   
-<!-- BOTTOM NAVIGATION (visible only on computers) -->
+<!-- BOTTOM NAV (Floating Pill) -->
 <div class="bottom-nav" id="bottomNav">
-    <div class="bottom-nav-menu">
-        <a href="#" class="bottom-nav-item" onclick="showSection('dashboard'); return false;">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="#" class="bottom-nav-item" onclick="showSection('workout'); return false;">
-            <i class="fas fa-dumbbell"></i>
-            <span>Workout</span>
-        </a>
-        <a href="#" class="bottom-nav-item" id="bottomResumeWorkoutBtn" style="display: none;" onclick="resumeSavedWorkout(); return false;">
-            <i class="fas fa-redo-alt"></i>
-            <span>Resume</span>
-        </a>
-        <a href="#" class="bottom-nav-item" onclick="showSection('history'); return false;">
-            <i class="fas fa-history"></i>
-            <span>History</span>
-        </a>
-        <a href="#" class="bottom-nav-item" onclick="showSection('library'); return false;">
-            <i class="fas fa-book"></i>
-            <span>Library</span>
-        </a>
-        <a href="#" class="bottom-nav-item" onclick="showSection('progress'); return false;">
-            <i class="fas fa-chart-line"></i>
-            <span>Progress</span>
-        </a>
-        <a href="#" class="bottom-nav-item" onclick="showSection('recovery'); return false;">
-            <i class="fas fa-heartbeat"></i>
-            <span>Recovery</span>
-        </a>
-        <a href="#" class="bottom-nav-item" onclick="showSection('settings'); return false;">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </a>
-    </div>
+    <button data-page="home" onclick="showSection('dashboard'); return false;">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+    </button>
+    <button data-page="workout" class="active" onclick="showSection('workout'); return false;">
+        <i class="fas fa-dumbbell"></i>
+        <span>Workout</span>
+    </button>
+    <button data-page="resume" id="bottomResumeWorkoutBtn" style="display: none;" onclick="resumeSavedWorkout(); return false;">
+        <i class="fas fa-redo-alt"></i>
+        <span>Resume</span>
+    </button>
+    <button data-page="history" onclick="showSection('history'); return false;">
+        <i class="fas fa-history"></i>
+        <span>History</span>
+    </button>
+    <button data-page="library" onclick="showSection('library'); return false;">
+        <i class="fas fa-book"></i>
+        <span>Library</span>
+    </button>
+    <button data-page="progress" onclick="showSection('progress'); return false;">
+        <i class="fas fa-chart-line"></i>
+        <span>Progress</span>
+    </button>
+    <button data-page="recovery" onclick="showSection('recovery'); return false;">
+        <i class="fas fa-heartbeat"></i>
+        <span>Recovery</span>
+    </button>
+    <button data-page="settings" onclick="showSection('settings'); return false;">
+        <i class="fas fa-cog"></i>
+        <span>Settings</span>
+    </button>
 </div>
+
 <!-- Modal for adding exercises from library -->
 <div class="modal" id="addExerciseModal">
     <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
@@ -10689,6 +11315,28 @@ function updateTodaysWorkout() {
     
     document.getElementById('noWorkoutMessage').style.display = 'none';
     document.getElementById('workoutButtons').style.display = 'flex';
+    // ---- Update the progress pill with current exercise statuses ----
+    if (currentWorkout && currentWorkout.exercises) {
+        const exerciseStatuses = currentWorkout.exercises.map(ex => {
+            let status = 'pending';
+            if (ex.skipped) status = 'skipped';
+            else if (ex.actual && !ex.skipped) status = 'done';
+            else if (ex.status === 'test') status = 'test';
+            else if (ex.actual === null && !ex.skipped) status = 'pending';
+            // If there's a 1RM test panel showing, mark as 'test'
+            if (document.getElementById(`test_success_${currentWorkout.exercises.indexOf(ex)}`)) {
+                status = 'test';
+            }
+            return {
+                name: ex.name,
+                status: status
+            };
+        });
+        // Initialize or update the progress pill
+        if (typeof initProgressPill === 'function') {
+            initProgressPill(exerciseStatuses);
+        }
+    }
 }
 
 function createExerciseElement(exercise, index) {
@@ -12288,6 +12936,10 @@ function skipExercise(index) {
             performSkipExercise(index);
         }
     });
+    // ---- Update progress pill after skipping ----
+    if (typeof updateTodaysWorkout === 'function') {
+        updateTodaysWorkout();
+    }
 }
 
 // Actual skip logic moved to a separate function
@@ -12531,6 +13183,11 @@ function saveExercisePerformance(index) {
         saveCurrentWorkoutToStorage();
     } else if (typeof saveWorkoutData === 'function') {
         saveWorkoutData();
+    }
+
+    // ---- Update progress pill after saving ----
+    if (typeof updateTodaysWorkout === 'function') {
+        updateTodaysWorkout(); // This will re-render and update the pill
     }
     
     // Also write an emergency backup to localStorage (disaster recovery)
@@ -19342,6 +19999,300 @@ function copyWorkoutLink() {
             }
         }
     });
+// ================================================================
+// 1. READINESS TOGGLE – Show/hide detailed breakdown
+// ================================================================
+function toggleReadinessDetails() {
+    const details = document.getElementById('readinessDetails');
+    if (!details) return;
+    const isOpen = details.style.display !== 'none';
+    details.style.display = isOpen ? 'none' : 'block';
+    const toggleBtn = document.querySelector('.readiness-toggle');
+    if (toggleBtn) {
+        toggleBtn.textContent = isOpen ? 'What is this?' : 'Hide details';
+    }
+}
+
+// ================================================================
+// 2. PROGRESS PILL – Core functionality
+// ================================================================
+let pillExercises = [];
+let viewportIndex = 0;
+let pillObserver = null;
+
+function initProgressPill(exercises) {
+    pillExercises = exercises;
+    renderPillSegments();
+    updatePillCount();
+    setupPillObserver();
+}
+
+function renderPillSegments() {
+    const container = document.getElementById('segments');
+    if (!container) return;
+    container.innerHTML = '';
+    pillExercises.forEach((ex, idx) => {
+        const seg = document.createElement('div');
+        let cls = `seg ${ex.status}`;
+        if (idx === viewportIndex) cls += ' in-view';
+        seg.className = cls;
+        seg.dataset.name = ex.name;
+        seg.title = `${ex.name}: ${getStatusLabel(ex.status)}`;
+        seg.addEventListener('click', function(e) {
+            e.stopPropagation();
+            scrollToExercise(idx);
+        });
+        container.appendChild(seg);
+    });
+}
+
+function updatePillCount() {
+    const done = pillExercises.filter(e => e.status === 'done').length;
+    const total = pillExercises.length;
+    const doneEl = document.getElementById('doneCount');
+    const totalEl = document.getElementById('totalCount');
+    if (doneEl) doneEl.textContent = done;
+    if (totalEl) totalEl.textContent = total;
+}
+
+function getStatusLabel(status) {
+    const labels = {
+        done: 'Done',
+        'in-progress': 'In Progress',
+        skipped: 'Skipped',
+        test: '1RM Test',
+        pending: 'Pending'
+    };
+    return labels[status] || status;
+}
+
+function scrollToExercise(idx) {
+    const cards = document.querySelectorAll('.exercise-item, .card[data-index]');
+    if (cards[idx]) {
+        cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        viewportIndex = idx;
+        renderPillSegments();
+        // Update in-view class on cards
+        cards.forEach((card, i) => {
+            card.classList.toggle('in-view', i === viewportIndex);
+        });
+    }
+}
+
+function setupPillObserver() {
+    if (pillObserver) {
+        pillObserver.disconnect();
+        pillObserver = null;
+    }
+    const cards = document.querySelectorAll('.exercise-item, .card[data-index]');
+    if (!cards.length) return;
+
+    const options = {
+        root: null,
+        rootMargin: '0px 0px -30px 0px',
+        threshold: [0.1, 0.3, 0.5, 0.7, 1.0]
+    };
+
+    pillObserver = new IntersectionObserver((entries) => {
+        const ratios = {};
+        const centers = {};
+        entries.forEach(entry => {
+            const idx = parseInt(entry.target.dataset.index) || 
+                        Array.from(cards).indexOf(entry.target);
+            ratios[idx] = entry.intersectionRatio;
+            const rect = entry.boundingClientRect;
+            centers[idx] = rect.top + rect.height / 2;
+        });
+
+        let bestIdx = 0;
+        let bestScore = -Infinity;
+        const viewportCenter = window.innerHeight / 2;
+
+        for (let i = 0; i < cards.length; i++) {
+            const ratio = ratios[i] || 0;
+            const center = centers[i] || (i * 100);
+            const distanceFactor = 1 - Math.abs(center - viewportCenter) / viewportCenter;
+            const score = ratio * 2 + distanceFactor * 0.5;
+            if (score > bestScore) {
+                bestScore = score;
+                bestIdx = i;
+            }
+        }
+
+        if (bestScore < 0.1) bestIdx = 0;
+
+        if (bestIdx !== viewportIndex) {
+            viewportIndex = bestIdx;
+            renderPillSegments();
+            cards.forEach((card, i) => {
+                card.classList.toggle('in-view', i === viewportIndex);
+            });
+        }
+    }, options);
+
+    cards.forEach(card => pillObserver.observe(card));
+}
+
+// ================================================================
+// 3. KEYBOARD NAVIGATION – Arrow keys for progress pill
+// ================================================================
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextIdx = (viewportIndex + 1) % pillExercises.length;
+        scrollToExercise(nextIdx);
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prevIdx = (viewportIndex - 1 + pillExercises.length) % pillExercises.length;
+        scrollToExercise(prevIdx);
+    }
+});
+
+// ================================================================
+// 4. SPRING TOGGLES – Physics-based switch animation
+// ================================================================
+class Spring {
+    constructor({ stiffness = 180, damping = 12, mass = 1 } = {}) {
+        this.stiffness = stiffness;
+        this.damping = damping;
+        this.mass = mass;
+        this.pos = 0;
+        this.vel = 0;
+        this.target = 0;
+    }
+    update(dt) {
+        const force = -this.stiffness * (this.pos - this.target);
+        const damp = -this.damping * this.vel;
+        const accel = (force + damp) / this.mass;
+        this.vel += accel * dt;
+        this.pos += this.vel * dt;
+        return this.pos;
+    }
+    isAtRest() {
+        return Math.abs(this.pos - this.target) < 0.001 && Math.abs(this.vel) < 0.001;
+    }
+}
+
+function springToggle(el) {
+    const isActive = el.classList.toggle('active');
+    const knob = el.querySelector('.knob');
+    if (!knob) {
+        // Legacy switch fallback
+        const slider = el.querySelector('.slider');
+        if (slider) {
+            slider.style.background = isActive ? '#2563eb' : '#cbd5e1';
+        }
+        return;
+    }
+    const targetPos = isActive ? 20 : 0;
+    if (!el._spring) {
+        el._spring = new Spring({ stiffness: 180, damping: 12 });
+        el._spring.target = targetPos;
+        el._spring.pos = targetPos;
+        knob.style.transform = `translateX(${targetPos}px)`;
+        return;
+    }
+    const spring = el._spring;
+    spring.target = targetPos;
+    if (el._raf) cancelAnimationFrame(el._raf);
+    let lastTime = performance.now();
+
+    function animate(time) {
+        const dt = Math.min((time - lastTime) / 1000, 0.05);
+        lastTime = time;
+        const pos = spring.update(dt);
+        knob.style.transform = `translateX(${pos}px)`;
+        if (!spring.isAtRest()) {
+            el._raf = requestAnimationFrame(animate);
+        } else {
+            knob.style.transform = `translateX(${spring.target}px)`;
+            el._raf = null;
+        }
+    }
+    el._raf = requestAnimationFrame(animate);
+    el.setAttribute('role', 'switch');
+    el.setAttribute('aria-checked', isActive);
+}
+
+// Initialize all spring toggles on load
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.toggle-spring').forEach(el => {
+        const knob = el.querySelector('.knob');
+        if (!knob) return;
+        const isActive = el.classList.contains('active');
+        const pos = isActive ? 20 : 0;
+        knob.style.transform = `translateX(${pos}px)`;
+        el._spring = new Spring({ stiffness: 180, damping: 12 });
+        el._spring.target = pos;
+        el._spring.pos = pos;
+        el.setAttribute('role', 'switch');
+        el.setAttribute('aria-checked', isActive);
+    });
+});
+
+// ================================================================
+// 5. THEME SWITCHING
+// ================================================================
+function setTheme(color) {
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.classList.contains(`theme-${color}`)) {
+            btn.classList.add('active');
+        }
+    });
+    document.documentElement.setAttribute('data-theme', color);
+    localStorage.setItem('workoutTheme', color);
+}
+
+// ================================================================
+// 6. LIBRARY GROUP TOGGLES
+// ================================================================
+function toggleGroup(header) {
+    header.classList.toggle('collapsed');
+}
+
+function expandAllGroups() {
+    document.querySelectorAll('.library-group-header').forEach(h => h.classList.remove('collapsed'));
+}
+
+function collapseAllGroups() {
+    document.querySelectorAll('.library-group-header').forEach(h => h.classList.add('collapsed'));
+}
+
+// ================================================================
+// 7. DROP ZONE (drag and drop for import)
+// ================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    if (dropZone) {
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+        dropZone.addEventListener('dragleave', function(e) {
+            this.classList.remove('dragover');
+        });
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                alert('File dropped: ' + files[0].name + '\n(Import would happen here)');
+            }
+        });
+    }
+
+    // ================================================================
+    // 8. PROGRESS PILL – Auto-initialize with exercise data
+    // ================================================================
+    // This will be called by your existing workout rendering functions.
+    // If you have a function that builds the exercise list, call initProgressPill() after it.
+    // Example: after rendering exercises, call:
+    // initProgressPill(exercisesArray);
+    // Where exercisesArray is an array of { name, status } objects.
+    // The status can be: 'done', 'in-progress', 'skipped', 'test', 'pending'
+    console.log('✅ Step 8 complete – all new JavaScript added.');
+});
 </script>
 </body>
 </html>
