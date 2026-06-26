@@ -3911,7 +3911,7 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.04);
     transition: all 0.3s;
 }
-.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); 
+.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
 .exercise-list { display: grid; gap: 16px; }
 .exercise-item {
     background: rgba(255,255,255,0.8);
@@ -6003,8 +6003,8 @@ function postWorkoutUpdate(workout) {
 	
 	updateMuscleDeloadStatus(workout);
   	// ----- Update Bayesian formula probabilities
-    updateFormulaProbabilitiesFromWorkout(workout);
-	saveToLocalStorage();
+  	updateFormulaProbabilitiesFromWorkout(workout);
+	await saveToLocalStorage();
 }
 /**
  * Updates Bayesian probabilities for 1RM formulas based on logged sets.
@@ -9870,8 +9870,8 @@ if (!replaceState) {
     // No double guard
 }
 // If in sandboxed iframe, replace showSection with a version that doesn't use history
-if (window.__INSANDBOX) {
-    const originalShowSection = showSection;
+if (typeof window !== 'undefined' && window.__INSANDBOX) {
+    const originalShowSection = window.showSection || showSection;
     window.showSection = function(sectionId, replaceState = false) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         const target = document.getElementById(`${sectionId}-section`);
@@ -9910,10 +9910,9 @@ if (window.__INSANDBOX) {
         }, 50);
     };
 }
-    function toggleMobileMenu() {
-        navMenu.classList.toggle('active');
-    }
-
+window.toggleMobileMenu = function() {
+    navMenu.classList.toggle('active');
+};
 function updateNavigation() {
     // Safely get user name
     const userName = (workoutData.user && workoutData.user.name) ? workoutData.user.name : 'User';
@@ -13582,10 +13581,10 @@ async function completeWorkout() {
     // --- Send to backend (fire and forget) ---
     const workoutPayload = {
         deviceId: getDeviceId(),
-        deviceName: getDeviceInfo(),
+        deviceName: await getDeviceInfo(),
         dataType: 'workout',
         timestamp: new Date().toISOString(),
-        name: workoutData.user.name || 'User',
+        name: workoutData.user?.name || 'User',
         data: completedWorkout
     };
     fetch('https://script.google.com/macros/s/AKfycbwK0Quaxseq_2gjNbueTePxh8PFX_fYVZ7ZYseMDfAyzHzJOOSpALzZYtGhNgi8MoXbMw/exec', {
@@ -14031,14 +14030,10 @@ function saveNotesInline(workoutId, notes) {
     // showNotification('Notes saved', 'success', 'notes_saved');
 }
       
-	function filterHistory(filter, event) {
-        // If event is provided (from onclick), update active tab
-        if (event && event.target) {
-          document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-          });
-          event.target.classList.add('active');
-        }
+function filterHistory(filter) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        const activeTab = document.querySelector(`.tab[onclick*="'${filter}'"]`);
+        if (activeTab) activeTab.classList.add('active');
 
         // Set current filter
         currentHistoryFilter = filter;
@@ -18442,10 +18437,13 @@ function changeGrouping() {
 function debouncedLibrarySearch() {
     clearTimeout(librarySearchTimeout);
     librarySearchTimeout = setTimeout(() => {
-        // Rebuild Fuse index when exercise library changes (e.g., after import)
         fuseIndex = null;
         renderLibrary();
-    }, 300);
+    }, 250);
+}
+
+function invalidateLibraryIndex() {
+    fuseIndex = null;
 }
       
 async function saveWorkoutData() {
