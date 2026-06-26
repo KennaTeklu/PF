@@ -6001,10 +6001,10 @@ function postWorkoutUpdate(workout) {
     // Store last update timestamp
     workoutData.user.lastEWMAUpdate = now.toISOString();
 	
-	updateMuscleDeloadStatus(workout);
   	// ----- Update Bayesian formula probabilities
+  	updateMuscleDeloadStatus(workout);
   	updateFormulaProbabilitiesFromWorkout(workout);
-	await saveToLocalStorage();
+	saveToLocalStorage().catch(e => console.error('Save failed:', e));
 }
 /**
  * Updates Bayesian probabilities for 1RM formulas based on logged sets.
