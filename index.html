@@ -1376,7 +1376,7 @@ input:checked + .slider:before {
 /* For very small screens, reduce further */
 @media (max-width: 480px) {
     .stats-grid {
-      	margin-top:10;
+      	margin-top:10
         gap: 5px;
     }
     .stat-card {
@@ -2834,6 +2834,44 @@ body.device-computer .main-app .user-welcome-compact {
         align-items: flex-start !important;
     }
 }
+/* Readiness Gauge */
+.readiness-gauge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px 0 25px 0;
+}
+.readiness-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--dark);
+    background: white; /* fallback */
+    transition: background 0.3s;
+}
+.readiness-circle span {
+    background: white;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.readiness-label {
+    margin-top: 5px;
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 .recommendation-card {
     background: white;
     border-radius: var(--border-radius);
@@ -3450,905 +3488,6 @@ body.loading * {
     background: var(--primary);
     color: white;
 }
-/* ---------- WORKOUT MODAL ---------- */
-#workoutModal .modal-content {
-    background: var(--gray-50);
-    padding: 0;
-    border-radius: 0;
-    max-width: 95vw;
-    height: 90vh;
-    overflow: hidden;
-}
-#workoutModal .deck-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-}
-/* cards inside the deck */
-.exercise-card {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    overflow: hidden;
-    transition: transform 0.2s;
-    position: relative;
-}
-.exercise-card .card-image {
-    height: 160px;
-    background: var(--gray-200);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-}
-.exercise-card .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.exercise-card .card-image .placeholder {
-    font-size: 2rem;
-    color: var(--gray-500);
-}
-.exercise-card .exercise-card-content {
-    padding: 16px;
-}
-.exercise-card h3 {
-    margin: 0 0 6px 0;
-    font-size: 1.1rem;
-}
-.card-prescription {
-    font-size: 0.95rem;
-    color: var(--gray-700);
-}
-.card-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-}
-.action-btn {
-    padding: 6px 14px;
-    border: none;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: var(--gray-200);
-    color: var(--gray-700);
-    transition: 0.2s;
-}
-.action-btn.web-btn { background: #4285F4; color: white; }
-.action-btn.images-btn { background: #DB4437; color: white; }
-.action-btn.log-btn { background: var(--primary); color: white; }
-.action-btn:hover { opacity: 0.8; transform: translateY(-2px); }
-
-/* Per‑card drawer */
-.card-drawer {
-    padding: 16px;
-    background: var(--gray-100);
-    border-top: 1px solid var(--gray-300);
-}
-.card-drawer .drawer-content {
-    max-width: 100%;
-}
-.card-drawer .form-group {
-    margin-bottom: 12px;
-}
-.card-drawer .form-group label {
-    display: block;
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 4px;
-}
-.card-drawer .form-group input,
-.card-drawer .form-group select,
-.card-drawer .form-group textarea {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid var(--gray-300);
-    border-radius: 8px;
-    font-size: 1rem;
-}
-.stepper-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-}
-.stepper-group label {
-    min-width: 80px;
-}
-.stepper-control {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.step-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid var(--gray-300);
-    background: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-.step-btn:hover { background: var(--gray-200); }
-.rep-input {
-    width: 60px;
-    text-align: center;
-}
-.drawer-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    flex-wrap: wrap;
-}
-.drawer-actions button {
-    padding: 8px 20px;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-}
-.btn-save-log { background: var(--success); color: white; }
-.btn-skip-log { background: var(--warning); color: white; }
-.btn-close-drawer { background: var(--gray-400); color: white; }
-
-/* Attribution tooltip (for images) */
-.attribution-anchor {
-    position: absolute;
-    bottom: 6px;
-    right: 8px;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    border-radius: 20px;
-    padding: 2px 10px;
-    font-size: 0.7rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.attribution-tooltip {
-    display: none;
-    position: absolute;
-    bottom: 30px;
-    right: 0;
-    background: white;
-    color: #222;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    width: 260px;
-    font-size: 0.75rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10;
-}
-.attribution-anchor:hover .attribution-tooltip {
-    display: block;
-}
-.attribution-tooltip a { color: var(--primary); }
-/* ---- New Readiness Gauge ---- */
-.readiness-container {
-    background: var(--gray-50);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--gray-200);
-}
-
-.readiness-simple {
-    /* default */
-}
-
-.readiness-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.readiness-icon {
-    font-size: 1.5rem;
-    margin-right: 8px;
-}
-
-.readiness-title {
-    font-weight: 700;
-    font-size: 1.2rem;
-    color: var(--gray-800);
-    flex: 1;
-}
-
-.readiness-toggle {
-    background: none;
-    border: 1px solid var(--gray-300);
-    border-radius: 30px;
-    padding: 4px 16px;
-    font-size: 0.8rem;
-    color: var(--gray-600);
-    cursor: pointer;
-    transition: 0.2s;
-}
-.readiness-toggle:hover {
-    background: var(--gray-200);
-}
-
-.readiness-bar-wrapper {
-    position: relative;
-    height: 34px;
-    background: var(--gray-200);
-    border-radius: 20px;
-    overflow: hidden;
-    margin: 8px 0;
-}
-
-.readiness-bar {
-    width: 100%;
-    height: 100%;
-    position: relative;
-}
-
-.readiness-fill {
-    height: 100%;
-    border-radius: 20px;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.readiness-percent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: white;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.35);
-    pointer-events: none;
-}
-
-.readiness-message {
-    font-weight: 600;
-    font-size: 1rem;
-    margin: 6px 0 2px;
-    color: var(--gray-800);
-}
-
-.readiness-meta {
-    font-size: 0.85rem;
-    color: var(--gray-500);
-}
-
-/* ---- Detailed View ---- */
-.readiness-details {
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid var(--gray-200);
-}
-
-.details-header {
-    font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 12px;
-    color: var(--gray-700);
-}
-
-.details-factors .factor {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 6px 0;
-    font-size: 0.9rem;
-    border-bottom: 1px solid var(--gray-100);
-}
-.details-factors .factor:last-child {
-    border-bottom: none;
-}
-.details-factors .factor .label {
-    min-width: 130px;
-    font-weight: 500;
-    color: var(--gray-700);
-}
-.details-factors .factor .mini-bar {
-    flex: 1;
-    height: 8px;
-    background: var(--gray-200);
-    border-radius: 6px;
-    overflow: hidden;
-}
-.details-factors .factor .mini-fill {
-    height: 100%;
-    border-radius: 6px;
-    transition: width 0.4s ease;
-}
-.details-factors .factor .value {
-    min-width: 48px;
-    text-align: right;
-    font-weight: 600;
-    color: var(--gray-800);
-}
-
-.details-actions {
-    margin-top: 16px;
-    text-align: right;
-}
-
-/* ---- Nerd Mode ---- */
-.readiness-nerd {
-    margin-top: 18px;
-    padding: 16px;
-    background: var(--gray-100);
-    border-radius: 12px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.8rem;
-    max-height: 400px;
-    overflow-y: auto;
-    border: 1px solid var(--gray-300);
-}
-
-.nerd-header {
-    font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 12px;
-    color: var(--gray-700);
-}
-
-.nerd-content {
-    color: var(--gray-800);
-}
-
-.nerd-content pre {
-    background: #1e1e1e;
-    color: #d4d4d4;
-    padding: 12px;
-    border-radius: 8px;
-    overflow: auto;
-    font-size: 0.7rem;
-    max-height: 250px;
-}
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
-    color: var(--gray-800);
-    min-height: 100vh;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-.app-container { max-width: 1100px; margin: 0 auto; }
-.page-content { max-width: 800px; margin: 0 auto; padding-top: 20px; }
-.page-content h1 { font-size: 1.8rem; color: #0f172a; margin-bottom: 12px; font-weight: 700; }
-.page-content .subtitle { color: #64748b; line-height: 1.7; margin-bottom: 16px; font-size: 0.95rem; }
-
-.glass-nav {
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 60px;
-    padding: 8px 16px;
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-    flex-wrap: wrap;
-}
-.glass-nav button {
-    background: transparent;
-    border: none;
-    padding: 8px 20px;
-    border-radius: 40px;
-    font-weight: 600;
-    color: #475569;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 0.9rem;
-    font-family: 'Inter', sans-serif;
-}
-.glass-nav button:hover { background: rgba(37,99,235,0.08); color: #2563eb; }
-.glass-nav button.active { background: rgba(37,99,235,0.12); color: #2563eb; }
-
-.bottom-nav {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 60px;
-    padding: 8px 16px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-    z-index: 1000;
-    gap: 4px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.bottom-nav button {
-    background: transparent;
-    border: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: 0.6rem;
-    color: #475569;
-    padding: 4px 10px;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: 0.2s;
-    font-family: 'Inter', sans-serif;
-}
-.bottom-nav button i { font-size: 1.2rem; margin-bottom: 2px; }
-.bottom-nav button:hover { background: rgba(37,99,235,0.08); color: #2563eb; }
-.bottom-nav button.active { color: #2563eb; background: rgba(37,99,235,0.08); }
-@media (max-width: 768px) {
-    .glass-nav { display: none; }
-    .bottom-nav { display: flex; }
-}
-
-.card {
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid rgba(255,255,255,0.4);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    transition: all 0.3s;
-}
-.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-.exercise-list { display: grid; gap: 16px; }
-.exercise-item {
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(4px);
-    border-radius: 16px;
-    padding: 24px 20px;
-    border: 2px solid transparent;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-    transition: all 0.3s;
-    scroll-margin-top: 20px;
-    position: relative;
-    min-height: 160px;
-}
-.exercise-item:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-.exercise-item.expanded {
-    border-color: #2563eb;
-    background: rgba(255,255,255,0.95);
-    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
-}
-.exercise-item.expanded::after {
-    content: '📍 You are here';
-    position: absolute;
-    top: -10px;
-    right: 16px;
-    background: #2563eb;
-    color: white;
-    font-size: 0.6rem;
-    font-weight: 700;
-    padding: 2px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.3px;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
-}
-.exercise-item.in-view { border-color: rgba(37,99,235,0.2); box-shadow: 0 4px 20px rgba(37,99,235,0.04); }
-.exercise-item.completed { border-color: #10b981; background: rgba(16,185,129,0.05); }
-
-.exercise-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    cursor: pointer;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.exercise-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
-.exercise-muscles { display: flex; gap: 6px; flex-wrap: wrap; margin: 4px 0; }
-.muscle-tag {
-    background: rgba(37,99,235,0.08);
-    padding: 2px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    color: #2563eb;
-    font-weight: 600;
-    cursor: default;
-}
-
-.exercise-prescription {
-    background: rgba(16,185,129,0.04);
-    padding: 16px;
-    border-radius: 12px;
-    margin: 12px 0;
-    border-left: 4px solid #10b981;
-}
-.exercise-prescription .prescription-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.prescription-sets { font-size: 0.95rem; color: #334155; font-weight: 600; }
-.prescription-weight { font-size: 1.1rem; font-weight: 800; color: #3b82f6; }
-.last-rpe-badge {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-.sets-reps-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.set-badge {
-    background: #e2e8f0;
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #334155;
-}
-
-.exercise-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-.exercise-btn {
-    padding: 6px 14px;
-    border-radius: 30px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-    font-size: 0.8rem;
-    font-family: 'Inter', sans-serif;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-.exercise-btn.show-instructions-btn { background: rgba(6,182,212,0.12); color: #0891b2; }
-.exercise-btn.show-instructions-btn:hover { background: rgba(6,182,212,0.2); }
-.exercise-btn.primary { background: #2563eb; color: white; }
-.exercise-btn.primary:hover { background: #1d4ed8; }
-.exercise-btn.gray { background: #e2e8f0; color: #475569; }
-.exercise-btn.gray:hover { background: #cbd5e1; }
-
-.exercise-instructions {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), padding 0.3s, opacity 0.3s;
-    opacity: 0;
-    padding: 0 16px;
-    background: rgba(6,182,212,0.04);
-    border-radius: 12px;
-    margin: 8px 0;
-    border-left: 4px solid #06b6d4;
-}
-.exercise-instructions.active {
-    max-height: 400px;
-    opacity: 1;
-    padding: 16px;
-}
-.exercise-instructions ul { padding-left: 20px; color: #334155; line-height: 1.7; }
-.exercise-instructions ul li { margin-bottom: 6px; }
-
-.record-icon {
-    cursor: pointer;
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-    border-radius: 40px;
-    min-width: 100px;
-    height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-    box-shadow: 0 2px 8px rgba(37,99,235,0.15);
-}
-.record-icon:hover { transform: scale(1.03); }
-.record-icon span { font-size: 0.8rem; font-weight: 600; color: white; padding: 0 16px; display: flex; align-items: center; gap: 6px; }
-.record-icon.danger { background: #ef4444; min-width: 40px; border-radius: 50%; }
-.record-icon.danger:hover { background: #dc2626; }
-
-.exercise-test-panel {
-    background: #f8fafc;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 12px 0 0 0;
-    border: 1px dashed #cbd5e1;
-}
-.exercise-test-panel h4 { color: #2563eb; margin-bottom: 8px; font-size: 1rem; }
-.exercise-test-panel .test-fields { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
-.exercise-test-panel .test-fields label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 4px; }
-.exercise-test-panel .test-fields input {
-    padding: 6px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    width: 120px;
-    font-family: 'Inter', sans-serif;
-}
-.exercise-test-panel .test-fields input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
-.btn-test { background: #7c3aed; color: white; border: none; border-radius: 30px; padding: 6px 18px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.btn-test:hover { background: #6d28d9; }
-
-.performance-logging {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s, padding 0.4s;
-    opacity: 0;
-    padding: 0;
-    margin-top: 0;
-}
-.performance-logging.active {
-    max-height: 800px;
-    opacity: 1;
-    padding-top: 16px;
-    margin-top: 12px;
-    border-top: 2px solid #e2e8f0;
-}
-.performance-logging .logger-row {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 4px 0;
-    font-size: 0.85rem;
-    color: #475569;
-}
-.performance-logging .logger-row label { font-weight: 600; min-width: 60px; }
-.performance-logging .logger-row input[type="number"] {
-    padding: 4px 10px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    width: 60px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-}
-.performance-logging .logger-row .rpe-slider { display: flex; gap: 3px; }
-.performance-logging .logger-row .rpe-slider button {
-    width: 28px; height: 28px; border-radius: 50%;
-    border: 1px solid #cbd5e1;
-    background: white;
-    font-weight: 600; font-size: 0.7rem;
-    cursor: pointer; transition: 0.2s;
-}
-.performance-logging .logger-row .rpe-slider button.active { background: #2563eb; color: white; border-color: #2563eb; }
-.performance-logging .logger-row .rir { font-weight: 700; color: #2563eb; min-width: 50px; }
-.performance-logging .logger-row .notes-input {
-    flex: 1;
-    padding: 4px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    min-width: 120px;
-}
-.performance-logging .logger-actions {
-    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
-}
-.performance-logging .logger-actions button {
-    padding: 6px 20px;
-    border-radius: 30px;
-    border: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: 0.2s;
-    font-family: 'Inter', sans-serif;
-}
-.performance-logging .logger-actions .save { background: #10b981; color: white; }
-.performance-logging .logger-actions .save:hover { background: #059669; }
-.performance-logging .logger-actions .skip { background: transparent; border: 1px solid #cbd5e1; color: #475569; }
-.performance-logging .logger-actions .skip:hover { background: #f1f5f9; }
-
-.library-header-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(4px);
-    padding: 20px 24px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.3);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
-.library-title-group h2 { font-size: 1.4rem; color: #0f172a; margin-bottom: 4px; font-weight: 700; }
-.library-title-group p { color: #64748b; font-size: 0.9rem; font-weight: 600; }
-.library-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-}
-.library-controls select {
-    padding: 8px 14px;
-    border-radius: 30px;
-    border: 1px solid #cbd5e1;
-    background: white;
-    color: #334155;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-}
-.library-search-box {
-    position: relative;
-    flex: 1;
-    min-width: 220px;
-}
-.library-search-box i {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94a3b8;
-}
-.library-search-box input {
-    width: 100%;
-    padding: 10px 16px 10px 44px;
-    border-radius: 30px;
-    border: 1px solid #cbd5e1;
-    background: #f8fafc;
-    font-size: 0.95rem;
-    transition: all 0.3s;
-    font-family: 'Inter', sans-serif;
-}
-.library-search-box input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,0.08); background: white; }
-
-.library-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-.library-group-header {
-    grid-column: 1 / -1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 16px 0 8px 0;
-    margin-top: 16px;
-    border-bottom: 2px solid #e2e8f0;
-    cursor: pointer;
-    user-select: none;
-}
-.library-group-header h3 { font-size: 1.2rem; color: #2563eb; margin: 0; font-weight: 700; }
-.library-group-header .group-toggle { font-size: 1.1rem; color: #94a3b8; transition: transform 0.3s; }
-.library-group-header.collapsed .group-toggle { transform: rotate(-90deg); }
-.library-group-content { display: contents; }
-.library-group-header.collapsed + .library-group-content { display: none; }
-
-.settings-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-.settings-card { padding: 20px; }
-.settings-card h3 { margin-top: 0; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; font-weight: 700; }
-.setting-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.04);
-}
-.setting-row:last-child { border-bottom: none; }
-.setting-row .label { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.9rem; }
-.setting-row .label i { width: 20px; color: #2563eb; }
-
-.toggle-spring {
-    width: 44px;
-    height: 26px;
-    background: #cbd5e1;
-    border-radius: 40px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.2s;
-    flex-shrink: 0;
-}
-.toggle-spring.active { background: #2563eb; }
-.toggle-spring .knob {
-    width: 20px;
-    height: 20px;
-    background: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.theme-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
-.theme-swatch {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 2px solid transparent;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.theme-swatch.active { border-color: #0f172a; transform: scale(1.1); }
-.theme-swatch.blue { background: #2563eb; }
-.theme-swatch.green { background: #10b981; }
-.theme-swatch.purple { background: #7c3aed; }
-.theme-swatch.orange { background: #f59e0b; }
-
-.drop-zone {
-    border: 2px dashed rgba(0,0,0,0.1);
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    transition: 0.2s;
-    margin-top: 12px;
-}
-.drop-zone.dragover { border-color: #2563eb; background: rgba(37,99,235,0.05); }
-
-.body-map-container {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
-    align-items: flex-start;
-}
-#muscleCanvas {
-    border-radius: 16px;
-    background: rgba(255,255,255,0.4);
-    width: 100%;
-    max-width: 340px;
-    height: auto;
-    aspect-ratio: 1 / 1.4;
-    cursor: pointer;
-}
-.recovery-side { flex: 1; min-width: 200px; }
-.recovery-side #muscleInfo {
-    background: rgba(0,0,0,0.02);
-    border-radius: 12px;
-    padding: 12px;
-    min-height: 70px;
-}
-.recovery-side .recommendations { margin-top: 16px; padding: 16px; }
-.recovery-side .recommendations ul { padding-left: 20px; color: #475569; font-size: 0.9rem; }
-
-@media (max-width: 768px) {
-    body { padding: 20px 20px 20px 60px; }
-    .progress-pill { left: 12px; width: 22px; }
-    .progress-pill .icon { font-size: 1.2rem; }
-    .progress-pill .segments { width: 16px; gap: 5px; min-height: 50px; }
-    .progress-pill .segments .seg { min-height: 8px; }
-    .seg.in-view { min-height: 18px !important; flex: 2.5 !important; }
-    .progress-pill .count { font-size: 0.6rem; }
-    .settings-grid { grid-template-columns: 1fr; }
-    .exercise-item .logger-row { flex-direction: column; align-items: stretch; }
-    .exercise-item .logger-row label { min-width: auto; }
-    .library-grid { grid-template-columns: 1fr; }
-    .exercise-header { flex-direction: column; align-items: stretch; }
-    .exercise-test-panel .test-fields { flex-direction: column; align-items: stretch; }
-    .exercise-test-panel .test-fields input { width: 100%; }
-}
-@media (max-width: 500px) {
-    body { padding: 16px 16px 16px 48px; }
-    .progress-pill { left: 8px; width: 18px; }
-    .progress-pill .icon { font-size: 1rem; }
-    .progress-pill .segments { width: 12px; gap: 4px; min-height: 40px; }
-    .progress-pill .segments .seg { min-height: 6px; border-radius: 3px; }
-    .seg.in-view { min-height: 12px !important; flex: 2 !important; }
-    .progress-pill .count { font-size: 0.5rem; }
-    .seg::after { display: none; }
-    .seg::before { font-size: 0.55rem; left: calc(100% + 8px); }
-    .exercise-item { padding: 16px; }
-}
-@media (prefers-reduced-motion: reduce) {
-    .seg.in-progress { animation: none; }
-    .seg.in-view { animation: none; }
-}
   </style>
 </head>
 <body class="loading">
@@ -4472,145 +3611,150 @@ try {
     
     <!-- MAIN APPLICATION -->
     <div class="container main-app" id="mainApp">
-<!-- DASHBOARD SECTION -->
-<div id="dashboard-section" class="section active">
-    <div class="card" style="margin-bottom:16px;">
-        <!-- Start Workout Button -->
-        <div style="display: flex; justify-content: center; margin: 10px 0 20px 0;">
-            <button class="btn-luxury-start" onclick="startOrGenerateWorkout()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:60px;padding:14px 36px;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 8px 20px rgba(37,99,235,0.3);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);">
-                <i class="fas fa-play"></i>
-                <span>Start Workout</span>
-            </button>
-        </div>
-
-        <!-- Readiness Gauge (with expandable details) -->
-        <div class="readiness-container">
-            <div class="readiness-simple">
-                <div class="readiness-header">
-                    <span class="readiness-icon">🏋️</span>
-                    <span class="readiness-title">Workout Readiness</span>
-                    <button class="readiness-toggle" id="readinessToggle">What is this?</button>
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard-section" class="section active">
+          <div class="todays-workout hover-lift">
+          <div class="readiness-gauge" id="readinessGaugeContainer">
+                <div class="readiness-circle" id="readinessGauge">
+                    <span>--</span>
                 </div>
-                <div class="readiness-bar-wrapper">
-                    <div class="readiness-bar" id="readinessBar">
-                        <div class="readiness-fill" id="readinessFill" style="width: 0%; background: var(--gray-300);"></div>
-                        <span class="readiness-percent" id="readinessPercent">--</span>
+                <div class="readiness-label">Readiness</div>
+            </div>
+            <div class="workout-info" id="dashboardWorkoutInfo">
+            </div>
+                <div class="badge badge-primary" id="welcomeLevel">Beginner</div>
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: center; margin: 20px 0 30px 0;">
+                  <button class="btn-luxury-start" onclick="startOrGenerateWorkout()">
+                      <i class="fas fa-play"></i>
+                      <span>Start Workout</span>
+                  </button>
+              </div>
+            </div>
+<!-- Readiness Gauge -->
+          </div>
+            
+<div class="stats-grid">
+    <div class="stat-card hover-lift">
+        <div class="stat-value" id="statWorkouts">-</div>
+        <div class="stat-label">Workouts</div>
+    </div>
+    <div class="stat-card hover-lift">
+        <div class="stat-value" id="statStreak">-</div>
+        <div class="stat-label">Streak</div>
+    </div>
+    <div class="stat-card hover-lift">
+        <div class="stat-value" id="statVolume">-</div>
+        <div class="stat-label">Volume (lbs)</div>
+    </div>
+    <div class="stat-card hover-lift">
+        <div class="stat-value" id="statProgress">-</div>
+        <div class="stat-label">Progress</div>
+    </div>
+    <div class="stat-card hover-lift" onclick="showLongevityReport()" style="cursor: pointer;">
+        <div class="stat-value" id="longevityScore">-</div>
+        <div class="stat-label">Longevity</div>
+        <i class="fas fa-heartbeat" style="color: var(--gray-500); font-size: 1rem;"></i>
+    </div>
+    <div class="stat-card hover-lift" id="eliteDateCard" style="cursor: help;">
+      <div class="stat-value" id="eliteDate">--</div>
+      <div class="stat-label" style="font-size:0.7rem;">
+        <i class="fas fa-calendar-alt"></i> Your projected peak strength date<br>
+        <span style="font-size:0.6rem;">(if you stay consistent – just for fun!)</span>
+      </div>
+      <div style="margin-top: 8px; border-top: 1px solid var(--gray-200); padding-top: 8px;">
+        <div style="display: flex; justify-content: space-around; font-size: 0.7rem;">
+          <div><i class="fas fa-dumbbell"></i> Squat<br><strong id="forecastSquat">--</strong></div>
+          <div><i class="fas fa-dumbbell"></i> Bench<br><strong id="forecastBench">--</strong></div>
+          <div><i class="fas fa-dumbbell"></i> Deadlift<br><strong id="forecastDeadlift">--</strong></div>
+        </div>
+        <div style="font-size:0.6rem; color:var(--gray-500); margin-top: 4px;">
+          <i class="fas fa-chart-line"></i> Total: <strong id="forecastTotal">--</strong> lbs · Strength score: <strong id="forecastWilks">--</strong>
+        </div>
+        <div style="font-size:0.55rem; color:var(--gray-400); margin-top: 4px;">
+          ⚡ These are long‑term goals, not guarantees. Keep showing up!
+        </div>
+      </div>
+    </div>
+</div>
+          
+<!-- Recommendation Card -->
+<div class="recommendation-card" style="background: white; border-radius: var(--border-radius); padding: 15px; margin-top: 15px; box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: space-between;">
+    <div style="flex: 1;">
+        <p id="dashboardRecommendationText" style="margin: 0; font-size: 0.95rem; color: var(--gray-700);">Loading...</p>
+    </div>
+    <button class="btn btn-sm btn-outline" onclick="showSection('recovery')" style="margin-left: 15px; white-space: nowrap;">See all</button>
+</div>
+                
+                <div class="sidebar">
+                    <div class="progress-chart-container">
+                        <h3 class="section-title"><i class="fas fa-chart-line"></i> Progress Overview</h3>
+                        <div class="chart-container">
+                            <canvas id="dashboardChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="next-workout hover-lift">
+                        <h3><i class="fas fa-calendar-check"></i> Next Workout</h3>
+                        <div class="next-workout-date" id="dashboardNextWorkout">Calculating...</div>
+                        <p style="color: var(--gray-600); text-align: center;">Based on your recovery status and workout rotation</p>
                     </div>
                 </div>
-                <div class="readiness-message" id="readinessMessage">Loading…</div>
-                <div class="readiness-meta" id="readinessLastWorkout">Last workout: —</div>
-            </div>
-
-            <!-- Detailed View -->
-            <div class="readiness-details" id="readinessDetails" style="display: none;">
-                <div class="details-header">📊 Detailed Breakdown</div>
-                <div class="details-factors" id="detailsFactors">
-                    <!-- populated by JavaScript -->
-                </div>
-                <div class="details-actions">
-                    <button class="btn btn-sm btn-outline" id="nerdModeTrigger">🧪 Advanced (Nerd Mode)</button>
-                </div>
-            </div>
-
-            <!-- Nerd Mode -->
-            <div class="readiness-nerd" id="readinessNerd" style="display: none;">
-                <div class="nerd-header">⚙️ Developer Console</div>
-                <div class="nerd-content" id="nerdContent">
-                    <!-- populated by JavaScript -->
-                </div>
             </div>
         </div>
-
-        <!-- Workout Info (placeholder) -->
-        <div class="workout-info" id="dashboardWorkoutInfo"></div>
-
-        <!-- Level Badge -->
-        <div class="badge" id="welcomeLevel" style="margin-top:10px;display:inline-block;padding:4px 12px;border-radius:40px;font-size:0.75rem;font-weight:600;background:rgba(37,99,235,0.12);color:#2563eb;">Beginner</div>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="stats-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:16px;">
-        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statWorkouts" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Workouts</div></div>
-        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statStreak" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Streak</div></div>
-        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statVolume" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Volume (lbs)</div></div>
-        <div class="stat-card card" style="text-align:center;padding:14px 8px;"><div class="stat-value" id="statProgress" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Progress</div></div>
-        <div class="stat-card card" style="text-align:center;padding:14px 8px;cursor:pointer;" onclick="showLongevityReport()"><div class="stat-value" id="longevityScore" style="font-size:2.4rem;font-weight:900;color:#2563eb;line-height:1.2;">-</div><div class="stat-label" style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;">Longevity</div><i class="fas fa-heartbeat" style="color:var(--gray-500);font-size:0.8rem;"></i></div>
-        <div class="stat-card card" id="eliteDateCard" style="text-align:center;padding:14px 8px;cursor:help;"><div class="stat-value" id="eliteDate" style="font-size:1.2rem;font-weight:900;color:#2563eb;line-height:1.2;">--</div><div class="stat-label" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:#475569;"><i class="fas fa-calendar-alt"></i> Projected Peak<br><span style="font-size:0.6rem;">(if you stay consistent!)</span></div><div style="margin-top:8px;border-top:1px solid var(--gray-200);padding-top:8px;"><div style="display:flex;justify-content:space-around;font-size:0.7rem;"><div><i class="fas fa-dumbbell"></i> Squat<br><strong id="forecastSquat">--</strong></div><div><i class="fas fa-dumbbell"></i> Bench<br><strong id="forecastBench">--</strong></div><div><i class="fas fa-dumbbell"></i> Deadlift<br><strong id="forecastDeadlift">--</strong></div></div><div style="font-size:0.6rem;color:var(--gray-500);margin-top:4px;"><i class="fas fa-chart-line"></i> Total: <strong id="forecastTotal">--</strong> lbs · Strength score: <strong id="forecastWilks">--</strong></div><div style="font-size:0.55rem;color:var(--gray-400);margin-top:4px;">⚡ Long‑term goals, not guarantees.</div></div></div>
-    </div>
-
-    <!-- Recommendation Card -->
-    <div class="recommendation-card card" style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;margin-top:16px;">
-        <div style="flex:1;"><p id="dashboardRecommendationText" style="margin:0;font-size:0.95rem;color:var(--gray-700);">Loading...</p></div>
-        <button class="btn btn-sm btn-outline" onclick="showSection('recovery')" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:4px 16px;cursor:pointer;font-weight:600;font-size:0.8rem;white-space:nowrap;">See all</button>
-    </div>
-
-    <!-- Sidebar: Chart + Next Workout -->
-    <div class="card" style="margin-top:16px;">
-        <h3 style="font-weight:700;color:#0f172a;margin-bottom:12px;font-size:1.1rem;"><i class="fas fa-chart-line"></i> Progress Overview</h3>
-        <div class="chart-container" style="height:200px;position:relative;margin-top:8px;">
-            <canvas id="dashboardChart"></canvas>
-        </div>
-        <div class="next-workout" style="margin-top:16px;padding:16px;background:rgba(37,99,235,0.04);border:1px solid rgba(37,99,235,0.1);border-radius:12px;">
-            <h4 style="font-weight:700;font-size:1rem;color:#0f172a;margin-bottom:4px;"><i class="fas fa-calendar-check"></i> Next Workout</h4>
-            <div id="dashboardNextWorkout" style="font-size:1.3rem;font-weight:800;color:#2563eb;text-align:center;padding:8px 0;">Calculating...</div>
-            <p style="color:#64748b;text-align:center;font-size:0.85rem;margin:0;">Based on your recovery status and workout rotation</p>
-        </div>
-    </div>
-</div>
         
-<!-- WORKOUT SECTION -->
-<div id="workout-section" class="section">
-    <div class="card" style="margin-bottom:16px;">
-        <!-- Header -->
-        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
-            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                <h2 style="font-size:1.4rem; font-weight:700; color:#0f172a; margin:0;"><i class="fas fa-dumbbell" style="color:#2563eb;"></i> Today's Workout</h2>
-                <button class="btn btn-sm btn-success" onclick="openAddExerciseModal()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:6px 16px;font-weight:600;color:#fff;cursor:pointer;font-size:0.8rem;font-family:'Inter',sans-serif;">
-                    <i class="fas fa-plus"></i> Add from library
-                </button>
+        <!-- WORKOUT SECTION -->
+        <div id="workout-section" class="section">
+            <div class="todays-workout">
+                <!-- Header with toggle button -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                    <h2 class="section-title" style="margin-bottom:0;"><i class="fas fa-dumbbell"></i> Today's Workout   </h2>
+                    <button class="btn btn-sm btn-success" onclick="openAddExerciseModal()">
+                        <i class="fas fa-plus"></i> Add new from library
+                    </button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn btn-sm btn-outline" onclick="toggleWorkoutDetails()" id="toggleDetailsBtn">View details</button>
+                    <button class="btn btn-sm btn-info" onclick="showWorkoutQR()" title="Share this workout">
+                        <i class="fas fa-qrcode"></i> Share
+                    </button>
+                    <!-- Tiny "." dropdown trigger + hidden replace button -->
+                    <div class="replace-workout-container" id="replaceWorkoutContainer">
+                        <span id="replaceTrigger" class="replace-trigger">.</span>
+                        <button id="replaceButton" class="replace-workout-btn" style="display: none;">REPLACE my workout</button>
+                    </div>
+                </div>
             </div>
-            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-sm btn-outline" onclick="toggleWorkoutDetails()" id="toggleDetailsBtn" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:6px 16px;font-weight:600;font-size:0.8rem;cursor:pointer;font-family:'Inter',sans-serif;">View details</button>
-                <button class="btn btn-sm btn-info" onclick="showWorkoutQR()" title="Share this workout" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:6px 16px;font-weight:600;color:#fff;cursor:pointer;font-size:0.8rem;font-family:'Inter',sans-serif;">
-                    <i class="fas fa-qrcode"></i> Share
-                </button>
-                <div class="replace-workout-container" id="replaceWorkoutContainer" style="position:relative;display:inline-block;">
-                    <span id="replaceTrigger" class="replace-trigger" style="font-size:1.5rem;font-weight:800;cursor:pointer;user-select:none;background:#e2e8f0;border-radius:50%;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;color:#475569;">.</span>
-                    <button id="replaceButton" class="replace-workout-btn" style="display:none;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;border-radius:40px;padding:4px 14px;font-weight:700;font-size:0.75rem;cursor:pointer;">REPLACE</button>
+
+                <!-- Collapsible workout info (hidden by default) -->
+                <div class="workout-info-collapsible collapsed" id="workoutDetails">
+                    <div class="workout-info" id="workoutMetaContainer">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Exercise list – populated by JS -->
+                <div class="exercise-list" id="exerciseList"></div>
+
+                <!-- No workout message (hidden when workout exists) -->
+                <div id="noWorkoutMessage" class="empty-state" style="display: none;">
+                    <i class="fas fa-dumbbell" style="font-size: 3rem; color: var(--gray-400);"></i>
+                    <h3 style="color: var(--gray-600); margin: 10px 0;">No Workout Scheduled</h3>
+                    <p style="color: var(--gray-500); margin-bottom: 20px;">Generate a workout to get started.</p>
+                    <button class="btn btn-primary" onclick="generateNextWorkout()">
+                        <i class="fas fa-dumbbell"></i> Generate Workout
+                    </button>
+                </div>
+
+                <!-- Buttons (visible only when workout exists) -->
+                <div class="btn-group" id="workoutButtons" style="display: none;">
+                    <button class="btn btn-success btn-block" onclick="completeWorkout()">
+                        <i class="fas fa-check-circle"></i> Complete & Log Today's Workout
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Collapsible workout info -->
-        <div class="workout-info-collapsible collapsed" id="workoutDetails" style="overflow:hidden;transition:max-height 0.4s cubic-bezier(0.34,1.56,0.64,1);max-height:0;margin-bottom:0;">
-            <div class="workout-info" id="workoutMetaContainer" style="background:linear-gradient(135deg,rgba(37,99,235,0.04),rgba(124,58,237,0.04));padding:20px;border-radius:12px;margin-bottom:16px;border-left:4px solid #3b82f6;">
-                <!-- Populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- Exercise list -->
-        <div class="exercise-list" id="exerciseList">
-            <!-- Populated by JavaScript -->
-        </div>
-
-        <!-- No workout message -->
-        <div id="noWorkoutMessage" class="empty-state" style="display:none;text-align:center;padding:40px 20px;color:#94a3b8;">
-            <i class="fas fa-dumbbell" style="font-size:3rem;color:#cbd5e1;margin-bottom:16px;display:block;"></i>
-            <h3 style="color:#64748b;font-size:1.2rem;margin-bottom:8px;">No Workout Scheduled</h3>
-            <p style="color:#94a3b8;margin-bottom:20px;">Generate a workout to get started.</p>
-            <button class="btn btn-primary" onclick="generateNextWorkout()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;">
-                <i class="fas fa-dumbbell"></i> Generate Workout
-            </button>
-        </div>
-
-        <!-- Complete Workout button -->
-        <div class="btn-group" id="workoutButtons" style="display:none;margin-top:20px;text-align:center;">
-            <button class="btn btn-success btn-block" onclick="completeWorkout()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:60px;padding:14px 36px;font-weight:700;color:#fff;cursor:pointer;width:100%;font-size:1.1rem;font-family:'Inter',sans-serif;box-shadow:0 8px 20px rgba(16,185,129,0.3);">
-                <i class="fas fa-check-circle"></i> Complete & Log Today's Workout
-            </button>
-        </div>
-    </div>
-</div>
         
         <!-- HISTORY SECTION -->
         <div id="history-section" class="section">
@@ -4705,266 +3849,232 @@ try {
     </div>
 </div>
         
-<!-- RECOVERY SECTION -->
-<div id="recovery-section" class="section">
-    <div class="card" style="margin-bottom:16px;">
-        <h2 style="font-size:1.6rem;font-weight:700;color:#0f172a;margin-bottom:16px;"><i class="fas fa-heartbeat" style="color:#2563eb;"></i> Muscle Recovery Status</h2>
-
-        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
-            <h4 style="font-size:1.05rem;font-weight:700;color:#2563eb;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-dumbbell"></i> Major Muscle Groups</h4>
-            <div class="muscle-recovery" id="majorMuscleRecovery"></div>
-        </div>
-
-        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
-            <h4 style="font-size:1.05rem;font-weight:700;color:#7c3aed;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-user-md"></i> Longevity & Joint Health Muscles</h4>
-            <div class="muscle-recovery" id="longevityMuscleRecovery"></div>
-        </div>
-
-        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
-            <h4 style="font-size:1.05rem;font-weight:700;color:#f59e0b;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-hands"></i> Grip & Hand Muscles</h4>
-            <div class="muscle-recovery" id="handMuscleRecovery"></div>
-        </div>
-
-        <div class="muscle-category" style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,0,0,0.06);">
-            <h4 style="font-size:1.05rem;font-weight:700;color:#06b6d4;margin-bottom:10px;display:flex;align-items:center;gap:8px;"><i class="fas fa-shoe-prints"></i> Foot & Ankle Muscles</h4>
-            <div class="muscle-recovery" id="footMuscleRecovery"></div>
-        </div>
-
-        <!-- Recovery Recommendations -->
-        <div style="margin-top:8px;padding:20px;background:linear-gradient(135deg,rgba(16,185,129,0.06),rgba(59,130,246,0.06));border-radius:12px;border-left:4px solid #10b981;">
-            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-bottom:8px;"><i class="fas fa-lightbulb" style="color:#f59e0b;"></i> Recovery Recommendations</h3>
-            <div id="recoveryRecommendations">
-                <p style="color:#64748b;margin:0;">Based on your training history and muscle recovery status:</p>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="btn-group" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;">
-            <button class="btn" onclick="showSection('dashboard')" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </button>
-            <button class="btn btn-success" onclick="generateNextWorkout()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;">
-                <i class="fas fa-dumbbell"></i> Generate Next Workout
-            </button>
-            <button class="btn btn-info" onclick="generateLongevityWorkout()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.2s;">
-                <i class="fas fa-user-md"></i> Longevity Workout
-            </button>
-        </div>
-    </div>
-</div>
-        
-<!-- SETTINGS SECTION -->
-<div id="settings-section" class="section">
-    <div style="margin-bottom:16px;">
-        <h2 style="font-size:1.6rem;font-weight:700;color:#0f172a;margin-bottom:16px;"><i class="fas fa-cog" style="color:#2563eb;"></i> Settings</h2>
-
-        <!-- Settings Grid -->
-        <div class="settings-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-            <!-- Personal Information -->
-            <div class="settings-card card" style="padding:20px;">
-                <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-user" style="color:#2563eb;"></i> Personal Information</h3>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Name:</label>
-                    <input type="text" id="settingsName" placeholder="Your name" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+        <!-- RECOVERY SECTION -->
+        <div id="recovery-section" class="section">
+            <div class="todays-workout">
+                <h2 class="section-title"><i class="fas fa-heartbeat"></i> Muscle Recovery Status</h2>
+                <div class="muscle-category">
+                    <h4><i class="fas fa-dumbbell"></i> Major Muscle Groups</h4>
+                    <div class="muscle-recovery" id="majorMuscleRecovery"></div>
                 </div>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Birth Date <span class="info-tooltip" style="position:relative;display:inline-block;cursor:help;color:#06b6d4;margin-left:4px;">ℹ️<span class="tooltip-text" style="visibility:hidden;width:250px;background:#0f172a;color:white;text-align:center;padding:8px 12px;border-radius:8px;position:absolute;z-index:1000;bottom:125%;left:50%;transform:translateX(-50%);opacity:0;transition:opacity 0.3s;font-size:0.8rem;font-weight:normal;box-shadow:0 10px 25px rgba(0,0,0,0.2);line-height:1.5;">Used to calculate age and adjust recommendations</span></span>:</label>
-                    <input type="date" id="settingsBirthDate" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                <div class="muscle-category">
+                    <h4><i class="fas fa-user-md"></i> Longevity & Joint Health Muscles</h4>
+                    <div class="muscle-recovery" id="longevityMuscleRecovery"></div>
                 </div>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Gender:</label>
-                    <select id="settingsGender" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other / Prefer not to say</option>
-                    </select>
+                <div class="muscle-category">
+                    <h4><i class="fas fa-hands"></i> Grip & Hand Muscles</h4>
+                    <div class="muscle-recovery" id="handMuscleRecovery"></div>
                 </div>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Current Body Weight (lbs):</label>
-                    <input type="number" id="settingsWeight" placeholder="e.g., 180" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
+                <div class="muscle-category">
+                    <h4><i class="fas fa-shoe-prints"></i> Foot & Ankle Muscles</h4>
+                    <div class="muscle-recovery" id="footMuscleRecovery"></div>
                 </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Height (inches):</label>
-                    <input type="number" id="settingsHeight" placeholder="e.g., 70" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
-                </div>
-            </div>
-
-            <!-- Training Preferences -->
-            <div class="settings-card card" style="padding:20px;">
-                <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-dumbbell" style="color:#2563eb;"></i> Training Preferences</h3>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Training Experience:</label>
-                    <select id="settingsExperience" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
-                        <option value="beginner">Beginner (0-6 months)</option>
-                        <option value="intermediate">Intermediate (6-24 months)</option>
-                        <option value="advanced">Advanced (2+ years)</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Primary Goal:</label>
-                    <select id="settingsGoal" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
-                        <option value="strength">Strength</option>
-                        <option value="hypertrophy">Muscle Building</option>
-                        <option value="endurance">Endurance</option>
-                        <option value="longevity">Longevity & Joint Health</option>
-                        <option value="balanced">Balanced</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Preferred Workout Days:</label>
-                    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:6px;">
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="monday"> Mon</label>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="tuesday"> Tue</label>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="wednesday"> Wed</label>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="thursday"> Thu</label>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="friday"> Fri</label>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="saturday"> Sat</label>
-                        <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;font-weight:500;color:#334155;"><input type="checkbox" class="workout-day" value="sunday"> Sun</label>
+                <div style="margin-top: 30px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.08)); padding: 25px; border-radius: 16px;">
+                    <h3 style="margin-bottom: 15px; color: var(--dark);"><i class="fas fa-lightbulb"></i> Recovery Recommendations</h3>
+                    <div id="recoveryRecommendations">
+                        <p style="color: var(--gray-600);">Based on your training history and muscle recovery status:</p>
                     </div>
                 </div>
-                <div class="form-group" style="margin-bottom:16px;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Default Rest Between Sets (seconds):</label>
-                    <input type="number" id="settingsRestTime" value="90" min="30" max="300" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
-                </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <label style="display:block;margin-bottom:6px;font-weight:600;color:#0f172a;font-size:0.9rem;">Progression Rate (% per week):</label>
-                    <input type="number" id="settingsProgression" value="2" min="0.5" max="5" step="0.5" style="width:100%;padding:10px 16px;border:2px solid #cbd5e1;border-radius:10px;font-size:1rem;transition:border-color 0.3s,box-shadow 0.3s;font-family:'Inter',sans-serif;">
-                </div>
-            </div>
-        </div>
-
-        <!-- Appearance & Preferences -->
-        <div class="card" style="padding:20px;margin-top:20px;">
-            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-palette" style="color:#2563eb;"></i> Appearance & Preferences</h3>
-
-            <!-- Muscle Coupling -->
-            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
-                <div>
-                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Muscle Coupling (Advanced)</div>
-                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Enable fatigue transfer between synergistic muscles for more accurate recovery modeling.</div>
-                </div>
-                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
-                    <input type="checkbox" id="muscleCouplingToggle" onchange="toggleMuscleCoupling()" style="opacity:0;width:0;height:0;">
-                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
-                </label>
-            </div>
-
-            <!-- Screen Wake Lock -->
-            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
-                <div>
-                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Keep screen awake during workout</div>
-                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Prevents phone screen from dimming or locking while exercising.</div>
-                </div>
-                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
-                    <input type="checkbox" id="screenWakeLockToggle" onchange="toggleScreenWakeLockSetting()" style="opacity:0;width:0;height:0;">
-                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
-                </label>
-            </div>
-
-            <!-- Express Mode -->
-            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
-                <div>
-                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Powerlifting Express Mode</div>
-                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Faster transition to low‑rep strength training (more aggressive progression).</div>
-                </div>
-                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
-                    <input type="checkbox" id="expressModeToggle" onchange="toggleExpressMode()" style="opacity:0;width:0;height:0;">
-                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
-                </label>
-            </div>
-
-            <!-- Auto-hide Bottom Nav -->
-            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
-                <div>
-                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Auto‑hide bottom navigation</div>
-                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">On computers, automatically hide the bottom bar when not in use.</div>
-                </div>
-                <label class="switch" style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0;">
-                    <input type="checkbox" id="bottomNavAutoHide" onchange="toggleBottomNavAutoHide()" style="opacity:0;width:0;height:0;">
-                    <span class="slider round" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#cbd5e1;transition:0.3s;border-radius:28px;"></span>
-                </label>
-            </div>
-
-            <!-- Aggression Factor -->
-            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.04);">
-                <div>
-                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Aggression Factor</div>
-                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">How quickly reps drop with intensity (0.5 = slow, 2.0 = very fast).</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <input type="range" id="aggressionSlider" min="0.5" max="2.0" step="0.05" value="1.0" style="width:120px;" oninput="updateAggression()">
-                    <span id="aggressionValue" style="font-weight:700;color:#2563eb;min-width:36px;text-align:center;">1.0</span>
-                </div>
-            </div>
-
-            <!-- Theme Controls -->
-            <div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:none;">
-                <div>
-                    <div class="setting-label" style="font-weight:600;color:#0f172a;">Theme</div>
-                    <div class="setting-description" style="font-size:0.85rem;color:#64748b;margin-top:4px;">Choose your app colour scheme.</div>
-                </div>
-                <div class="theme-controls" style="display:flex;gap:10px;flex-wrap:wrap;">
-                    <button class="theme-btn theme-blue active" onclick="setTheme('blue')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);"></span> Blue</button>
-                    <button class="theme-btn theme-green" onclick="setTheme('green')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);"></span> Green</button>
-                    <button class="theme-btn theme-purple" onclick="setTheme('purple')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#8b5cf6);"></span> Purple</button>
-                    <button class="theme-btn theme-orange" onclick="setTheme('orange')" style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;border:2px solid #cbd5e1;background:white;cursor:pointer;transition:0.2s;font-weight:600;font-size:0.85rem;font-family:'Inter',sans-serif;"><span class="theme-preview" style="display:inline-block;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#ea580c,#f97316);"></span> Orange</button>
+                <div class="btn-group" style="margin-top: 30px;">
+                    <button class="btn" onclick="showSection('dashboard')">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                    <button class="btn btn-success" onclick="generateNextWorkout()">
+                        <i class="fas fa-dumbbell"></i> Generate Next Workout
+                    </button>
+                    <button class="btn btn-info" onclick="generateLongevityWorkout()">
+                        <i class="fas fa-user-md"></i> Longevity Workout
+                    </button>
                 </div>
             </div>
         </div>
-
-        <!-- Exercise Library Management -->
-        <div class="card" style="padding:20px;margin-top:20px;">
-            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fas fa-book" style="color:#2563eb;"></i> Exercise Library Management</h3>
-            <p style="color:#64748b;font-size:0.9rem;margin-bottom:16px;">Import or export custom exercises in JSON format. This allows you to share exercises or create your own library.</p>
-            <div class="exercise-io-buttons" style="display:flex;gap:12px;flex-wrap:wrap;">
-                <button class="btn btn-info" onclick="importExerciseData()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-import"></i> Import Exercises</button>
-                <button class="btn" onclick="exportExerciseData()" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-export"></i> Export Exercises</button>
-                <button class="btn btn-success" onclick="resetExerciseLibrary()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:10px 20px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-sync-alt"></i> Reset to Default</button>
-            </div>
-        </div>
-
-        <!-- Data Management -->
-        <div class="card" style="padding:20px;margin-top:20px;">
-            <h3 style="font-size:1.1rem;font-weight:700;color:#0f172a;margin-top:0;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fas fa-database" style="color:#2563eb;"></i> Data Management</h3>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-                <button class="btn btn-success" onclick="saveSettings()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-save"></i> Save Settings</button>
-                <button class="btn" onclick="showSection('dashboard')" style="background:linear-gradient(135deg,#2563eb,#7c3aed);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
-                <button class="btn btn-danger" onclick="resetAllData()" style="background:linear-gradient(135deg,#ef4444,#dc2626);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-trash"></i> Reset All Data</button>
-            </div>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;">
-                <button class="btn btn-info" onclick="exportWorkoutData()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-export"></i> Export All Data</button>
-                <button class="btn btn-info" onclick="importWorkoutData()" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border:none;border-radius:40px;padding:10px 24px;font-weight:600;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;"><i class="fas fa-file-import"></i> Import Data</button>
+        
+        <!-- SETTINGS SECTION -->
+        <div id="settings-section" class="section">
+            <div class="settings-section">
+                <h2 class="section-title"><i class="fas fa-cog"></i> Settings</h2>
+                <div class="settings-grid">
+                    <div>
+                        <h3 style="margin-bottom: 20px; color: var(--dark);">Personal Information</h3>
+                        <div class="form-group">
+                            <label>Name:</label>
+                            <input type="text" id="settingsName" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Birth Date <span class="info-tooltip">ℹ️<span class="tooltip-text">Used to calculate age and adjust recommendations</span></span>:</label>
+                            <input type="date" id="settingsBirthDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Gender:</label>
+                            <select id="settingsGender">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other / Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Body Weight (lbs):</label>
+                            <input type="number" id="settingsWeight" placeholder="e.g., 180">
+                        </div>
+                        <div class="form-group">
+                            <label>Height (inches):</label>
+                            <input type="number" id="settingsHeight" placeholder="e.g., 70">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 20px; color: var(--dark);">Training Preferences</h3>
+                        <div class="form-group">
+                            <label>Training Experience:</label>
+                            <select id="settingsExperience">
+                                <option value="beginner">Beginner (0-6 months)</option>
+                                <option value="intermediate">Intermediate (6-24 months)</option>
+                                <option value="advanced">Advanced (2+ years)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Goal:</label>
+                            <select id="settingsGoal">
+                                <option value="strength">Strength</option>
+                                <option value="hypertrophy">Muscle Building</option>
+                                <option value="endurance">Endurance</option>
+                                <option value="longevity">Longevity & Joint Health</option>
+                                <option value="balanced">Balanced</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Preferred Workout Days:</label>
+                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="monday"> Mon</label>
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="tuesday"> Tue</label>
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="wednesday"> Wed</label>
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="thursday"> Thu</label>
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="friday"> Fri</label>
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="saturday"> Sat</label>
+                                <label style="display: flex; align-items: center; gap: 5px;"><input type="checkbox" class="workout-day" value="sunday"> Sun</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Default Rest Between Sets (seconds):</label>
+                            <input type="number" id="settingsRestTime" value="90" min="30" max="300">
+                        </div>
+                        <div class="form-group">
+                            <label>Progression Rate (% per week):</label>
+                            <input type="number" id="settingsProgression" value="2" min="0.5" max="5" step="0.5">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">Appearance</h3>
+                      <div class="setting-item">
+                          <div>
+                              <div class="setting-label">Muscle Coupling (Advanced)</div>
+                              <div class="setting-description">Enable fatigue transfer between synergistic muscles for more accurate recovery modeling. Recommended for experienced users.</div>
+                          </div>
+                          <label class="switch">
+                              <input type="checkbox" id="muscleCouplingToggle" onchange="toggleMuscleCoupling()">
+                              <span class="slider round"></span>
+                          </label>
+                      </div>
+                      <div class="setting-item">
+                          <div>
+                              <div class="setting-label">Keep screen awake during workout</div>
+                              <div class="setting-description">Prevents phone screen from dimming or locking while you are exercising.</div>
+                          </div>
+                          <label class="switch">
+                              <input type="checkbox" id="screenWakeLockToggle" onchange="toggleScreenWakeLockSetting()">
+                              <span class="slider round"></span>
+                          </label>
+                      </div>
+                    <div class="theme-controls">
+                        <button class="theme-btn theme-blue active" onclick="setTheme('blue')"><span class="theme-preview"></span> Blue</button>
+                        <button class="theme-btn theme-green" onclick="setTheme('green')"><span class="theme-preview"></span> Green</button>
+                        <button class="theme-btn theme-purple" onclick="setTheme('purple')"><span class="theme-preview"></span> Purple</button>
+                        <button class="theme-btn theme-orange" onclick="setTheme('orange')"><span class="theme-preview"></span> Orange</button>
+                    </div>
+                </div>
+              
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Powerlifting Express Mode</div>
+                        <div class="setting-description">Faster transition to low‑rep strength training (more aggressive progression).</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="expressModeToggle" onchange="toggleExpressMode()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Aggression Factor</div>
+                        <div class="setting-description">How quickly reps drop with intensity (0.5 = slow, 2.0 = very fast).</div>
+                    </div>
+                    <input type="range" id="aggressionSlider" min="0.5" max="2.0" step="0.05" value="1.0" style="width:160px;">
+                    <span id="aggressionValue">1.0</span>
+                </div>
+              
+                <!-- Bottom navigation behavior (computers only) -->
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Auto‑hide bottom navigation</div>
+                        <div class="setting-description">On computers, automatically hide the bottom bar when not in use (requires mouse near bottom to show).</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="bottomNavAutoHide" onchange="toggleBottomNavAutoHide()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                
+                <div class="exercise-import-export">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">Exercise Library Management</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 15px;">Import or export custom exercises in JSON format. This allows you to share exercises or create your own library.</p>
+                    <div class="exercise-io-buttons">
+                        <button class="btn btn-info" onclick="importExerciseData()"><i class="fas fa-file-import"></i> Import Exercises</button>
+                        <button class="btn" onclick="exportExerciseData()"><i class="fas fa-file-export"></i> Export Exercises</button>
+                        <button class="btn btn-success" onclick="resetExerciseLibrary()"><i class="fas fa-sync-alt"></i> Reset to Default</button>
+                    </div>
+                </div>
+                
+                <div class="btn-group" style="margin-top: 30px;">
+                    <button class="btn btn-success" onclick="saveSettings()"><i class="fas fa-save"></i> Save Settings</button>
+                    <button class="btn" onclick="showSection('dashboard')"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+                    <button class="btn btn-danger" onclick="resetAllData()"><i class="fas fa-trash"></i> Reset All Data</button>
+                </div>
+                
+                <div class="export-options" style="margin-top: 30px;">
+                    <div class="export-btn" onclick="exportWorkoutData()"><i class="fas fa-file-export"></i> Export All Data</div>
+                    <div class="export-btn" onclick="importWorkoutData()"><i class="fas fa-file-import"></i> Import Data</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
   
 <!-- LIBRARY SECTION -->
 <div id="library-section" class="section">
-    <div class="library-header-bar card" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;margin-bottom:24px;">
+    <div class="library-header-bar">
         <div class="library-title-group">
-            <h2 style="font-size:1.4rem;font-weight:700;color:#0f172a;margin:0;">Exercise Library</h2>
-            <p style="color:#64748b;font-size:0.9rem;font-weight:600;margin:4px 0 0;"><span id="library-count">0</span> Movements Available</p>
+            <h2>Exercise Library</h2>
+            <p><span id="library-count">0</span> Movements Available</p>
         </div>
-        <div class="library-controls" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
-            <select id="groupBySelect" onchange="changeGrouping()" style="padding:8px 14px;border-radius:30px;border:1px solid #cbd5e1;background:white;color:#334155;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;">
+        <div class="library-controls">
+            <select id="groupBySelect" onchange="changeGrouping()">
                 <option value="muscleGroup">Group by Muscle Group</option>
                 <option value="equipment">Group by Equipment</option>
                 <option value="difficulty">Group by Difficulty</option>
                 <option value="performed">Group by Performed Status</option>
                 <option value="muscleCategory">Group by Muscle Category (Major/Longevity/Hands/Feet)</option>
             </select>
-            <div class="library-expand-buttons" style="display:flex;gap:8px;">
-                <button class="btn btn-sm btn-outline" onclick="expandAllGroups()" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:4px 16px;cursor:pointer;font-weight:600;font-size:0.8rem;font-family:'Inter',sans-serif;">Expand All</button>
-                <button class="btn btn-sm btn-outline" onclick="collapseAllGroups()" style="background:transparent;border:1px solid rgba(0,0,0,0.1);border-radius:40px;padding:4px 16px;cursor:pointer;font-weight:600;font-size:0.8rem;font-family:'Inter',sans-serif;">Collapse All</button>
+            <div class="library-expand-buttons">
+                <button class="btn btn-sm btn-outline" onclick="expandAllGroups()">Expand All</button>
+                <button class="btn btn-sm btn-outline" onclick="collapseAllGroups()">Collapse All</button>
             </div>
         </div>
-        <div class="library-search-box" style="position:relative;flex:1;min-width:220px;">
-            <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;"></i>
-            <input type="text" id="librarySearch" placeholder="Search exercises or muscles..." onkeyup="debouncedLibrarySearch()" style="width:100%;padding:10px 16px 10px 44px;border-radius:30px;border:1px solid #cbd5e1;background:#f8fafc;font-size:0.95rem;transition:all 0.3s;font-family:'Inter',sans-serif;">
+        <div class="library-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="librarySearch" placeholder="Search exercises or muscles..." onkeyup="debouncedLibrarySearch()">
         </div>
     </div>
-    <div id="libraryGrid" class="exercise-library-grid-container" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
+    <div id="libraryGrid" class="exercise-library-grid-container"></div>
 </div>
     
 <!-- MODALS -->
@@ -5109,25 +4219,6 @@ try {
         </div>
     </div>
 </div>
-<!-- WORKOUT MODAL (full‑screen deck) -->
-<div class="modal" id="workoutModal">
-    <div class="modal-content" style="max-width: 95vw; height: 90vh; padding: 0; background: transparent; box-shadow: none; border: none; max-height: 100vh; display: flex; flex-direction: column; border-radius: 0; background: var(--gray-50);">
-        <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px 20px; border-bottom: 1px solid var(--gray-200); flex-shrink: 0;">
-            <div>
-                <h3 id="modalWorkoutType" style="margin:0; color: var(--dark);">Workout</h3>
-                <div style="font-size: 0.85rem; color: var(--gray-600);">
-                    <span id="modalWorkoutFocus">Focus</span> · 
-                    <span id="modalWorkoutTime">Time</span> · 
-                    <span id="modalWorkoutIntensity">Intensity</span>
-                </div>
-            </div>
-            <button class="btn btn-outline" onclick="closeWorkoutModal()" style="padding: 8px 16px;">✕ Close</button>
-        </div>
-        <div class="deck-container" id="exercise-deck-modal" style="flex:1; overflow-y: auto; padding: 20px; background: var(--gray-50);">
-            <!-- Cards will be inserted here by JS -->
-        </div>
-    </div>
-</div>
 <div class="loading" id="loading">
     <div class="spinner"></div>
     <div style="color: var(--primary); font-weight: 600; font-size: 1.1rem;">Processing your request...</div>
@@ -5153,7 +4244,7 @@ try {
     </div>
 </div>
   
-<!-- BOTTOM NAVIGATION FOR COMPUTERS (FIXED) -->
+<!-- BOTTOM NAVIGATION (visible only on computers) -->
 <div class="bottom-nav" id="bottomNav">
     <div class="bottom-nav-menu">
         <a href="#" class="bottom-nav-item" onclick="showSection('dashboard'); return false;">
@@ -5190,7 +4281,6 @@ try {
         </a>
     </div>
 </div>
-
 <!-- Modal for adding exercises from library -->
 <div class="modal" id="addExerciseModal">
     <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
@@ -5267,43 +4357,55 @@ const VERSION_STORAGE_KEY = 'workout_app_version';
  */
  
     // ==================== ORIGINAL DATA STRUCTURES (enhanced) ====================
-    const workoutData = {
-        user: {
-            name: "",
-            birthDate: null,
-            gender: "male",
-            weight: null,
-            height: null,
-            experience: "intermediate",
-            goal: "balanced",
-            created: new Date().toISOString(),
-            settings: {
-                workoutDays: ["monday", "wednesday", "friday"],
-                restTime: 90,
-                progressionRate: 0.02,
-                theme: "blue",
-                darkMode: false,
-              	muscleCoupling: false  
-            },
-            agingRisks: [],
-            menstrual: { lastPeriodStart: null, cycleLength: 28, symptoms: [] },
-            momentumBias: {
-                value: 0.0,
-                decayRate: 0.25,
-                lastUpdated: null,
-                lastTap: null   // stores 'bigger' or 'stronger' for last session
-            }
+  const workoutData = {
+    user: {
+        name: "",
+        birthDate: null,
+        gender: "male",
+        weight: null,
+        height: null,
+        experience: "intermediate",
+        goal: "balanced",
+        created: new Date().toISOString(),
+        settings: {
+            workoutDays: ["monday", "wednesday", "friday"],
+            restTime: 90,
+            progressionRate: 0.02,
+            theme: "blue",
+            darkMode: false,
+            muscleCoupling: false  
         },
-        workouts: [],
-        exercises: {},
-        history: [],
-      	muscleFatigue: {},
-    	lastFatigueDecay: null, 
-      	muscleRecentExercises: {},
-      	syncedToBackend: false,
-      	// Learned coupling matrix (will be updated over time)
-        couplingMatrix: {} // will be populated dynamically
-    };
+        agingRisks: [],
+        menstrual: { lastPeriodStart: null, cycleLength: 28, symptoms: [] },
+        momentumBias: {
+            value: 0.0,
+            decayRate: 0.25,
+            lastUpdated: null,
+            lastTap: null   // stores 'bigger' or 'stronger' for last session
+        },
+        // NEW: caching object for pre‑computed demographic multipliers
+        _cache: {
+            effectiveBodyWeight: null,   // user weight or fallback
+            ageFactor: null,             // 0.9 / 1.0 / 0.8
+            genderFactor: null,          // 0.9 / 1.0
+            experienceFactor: null,      // 0.8 / 1.0 / 1.2
+            expDeltaFactor: null,        // 1.3 / 1.0 / 0.7
+            phaseFactor: null,           // 0.8 / 1.0 / 1.05
+            priorBaseMultiplier: null,   // product of all prior factors
+            progBaseMultiplier: null     // product of all progression factors
+        }
+    },
+    workouts: [],
+    exercises: {},
+    history: [],
+    muscleFatigue: {},
+    lastFatigueDecay: null, 
+    muscleRecentExercises: {},
+    syncedToBackend: false,
+    // Learned coupling matrix (will be updated over time)
+    couplingMatrix: {} // will be populated dynamically
+};
+
 // ==================== DEXIE DATABASE SETUP ====================
 const db = new Dexie('WorkoutApp');
 db.version(1).stores({
@@ -6003,8 +5105,8 @@ function postWorkoutUpdate(workout) {
 	
 	updateMuscleDeloadStatus(workout);
   	// ----- Update Bayesian formula probabilities
-  	updateFormulaProbabilitiesFromWorkout(workout);
-	await saveToLocalStorage();
+    updateFormulaProbabilitiesFromWorkout(workout);
+	saveToLocalStorage();
 }
 /**
  * Updates Bayesian probabilities for 1RM formulas based on logged sets.
@@ -7837,6 +6939,48 @@ const ultimateExerciseLibrary = {
 // ----------------------------------------------------------------------------
       
 // ==================== LIBRARY HELPER FUNCTIONS ====================
+
+// ============================================================
+// NEW: Cache Update Functions (Phase 1.2)
+// ============================================================
+function updateUserCache() {
+    const u = workoutData.user;
+    // Ensure cache object exists
+    if (!u._cache) u._cache = {};
+    
+    const age = u.birthDate ? calculateAge(u.birthDate) : 30;
+    
+    u._cache.effectiveBodyWeight = u.weight || (u.gender === 'female' ? 130 : 150);
+    
+    u._cache.ageFactor = age < 30 ? 0.9 : (age <= 50 ? 1.0 : 0.8);
+    u._cache.genderFactor = u.gender === 'female' ? 0.9 : 1.0;
+    
+    const expMap = { beginner: 0.8, intermediate: 1.0, advanced: 1.2 };
+    u._cache.experienceFactor = expMap[u.experience] || 1.0;
+    
+    const expDeltaMap = { beginner: 1.3, intermediate: 1.0, advanced: 0.7 };
+    u._cache.expDeltaFactor = expDeltaMap[u.experience] || 1.0;
+    
+    const phase = getCurrentCyclePhase();
+    u._cache.phaseFactor = getPhaseMultiplier(phase) || 1.0;
+    
+    u._cache.priorBaseMultiplier = u._cache.experienceFactor * u._cache.ageFactor * u._cache.genderFactor * u._cache.phaseFactor;
+    
+    const ageDelta = age < 30 ? 1.0 : (age <= 50 ? 0.8 : 0.6);
+    const genderDelta = u.gender === 'female' ? (phase === 'luteal' || phase === 'menstrual' ? 0.7 : 1.0) : 1.0;
+    u._cache.progBaseMultiplier = u._cache.expDeltaFactor * ageDelta * genderDelta * u._cache.phaseFactor;
+}
+
+function updateWorkoutCache() {
+    if (!currentWorkout) return;
+    if (!currentWorkout._cache) currentWorkout._cache = {};
+    const recovery = calculateSystemicRecoveryFactor();
+    currentWorkout._cache.recoveryFactor = recovery;
+    currentWorkout._cache.sessionPriorBase = workoutData.user._cache.priorBaseMultiplier * recovery;
+    currentWorkout._cache.sessionDeltaBase = workoutData.user._cache.progBaseMultiplier * recovery;
+}
+// ============================================================
+
 function getEnhancedExerciseList() {
     const enhanced = [];
 
@@ -8112,28 +7256,78 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
 
     // ---- 3. If still no history (new muscle group) → start with high reps (17-20) and safe weight ----
     if (!lastSession) {
-        // Get user weight safely
-        const userWeight = user.weight || 150;
-        let strengthIndex = exercise.strengthIndex || 0.7;
-        if (user.birthDate) {
-            const age = calculateAge(user.birthDate);
-            if (age > 60) strengthIndex *= 0.7;
-            else if (age > 50) strengthIndex *= 0.8;
-            else if (age > 40) strengthIndex *= 0.9;
+        let estimated1RM;
+        // First check if we have a tested 1RM from the bracketing test
+        const exRecord = workoutData.exercises[exId];
+        if (exRecord && exRecord.tested1RM && exRecord.tested1RM > 0) {
+            estimated1RM = exRecord.tested1RM;
+        } else {
+            // Fallback to body weight and muscle‑group averaged strength index
+            const userWeight = user.weight || 150;
+            
+            // Compute average strength index for the exercise's primary muscle groups
+            const targetMuscles = exercise.muscleGroup || [];
+            let strengthIndex = 0;
+            if (targetMuscles.length > 0) {
+                let totalSI = 0;
+                let count = 0;
+                // Iterate over all exercises in the library
+                for (const group in ultimateExerciseLibrary) {
+                    for (const ex of ultimateExerciseLibrary[group]) {
+                        const exMuscles = ex.muscles || [];
+                        // Check if this exercise targets any of the target muscles
+                        if (exMuscles.some(m => targetMuscles.includes(m))) {
+                            totalSI += ex.strengthIndex || 0.7;
+                            count++;
+                        }
+                    }
+                }
+                strengthIndex = count > 0 ? totalSI / count : 0.7;
+            } else {
+                strengthIndex = exercise.strengthIndex || 0.7;
+            }
+            
+            if (user.birthDate) {
+                const age = calculateAge(user.birthDate);
+                if (age > 60) strengthIndex *= 0.7;
+                else if (age > 50) strengthIndex *= 0.8;
+                else if (age > 40) strengthIndex *= 0.9;
+            }
+            estimated1RM = userWeight * strengthIndex * phaseMultiplier;
+            if (isNaN(estimated1RM) || estimated1RM < 20) estimated1RM = 50;
         }
-        let estimated1RM = userWeight * strengthIndex * phaseMultiplier;
-        // Safety: ensure 1RM is at least 20 lbs
-        if (isNaN(estimated1RM) || estimated1RM < 20) estimated1RM = 50;
         
-        const intensity = 0.55;  // lower intensity → higher reps
-        let prescribedWeight = estimated1RM * intensity;
+        // ---- NEW: Muscle‑specific maturity factor ----
+        const targetMuscles = exercise.muscleGroup || [];
+        let muscleWorkouts = 0;
+        if (targetMuscles.length > 0) {
+            // Count workouts that trained any of these muscles
+            for (const w of workoutData.workouts) {
+                if (!w.exercises) continue;
+                const trained = w.exercises.some(ex => 
+                    ex.actual && !ex.skipped && ex.muscleGroup && 
+                    ex.muscleGroup.some(m => targetMuscles.includes(m))
+                );
+                if (trained) muscleWorkouts++;
+            }
+        }
+        const muscleMaturity = 1 + 0.1 * (1 - Math.exp(-muscleWorkouts / 20));
+        estimated1RM *= muscleMaturity;
+        // --------------------------------------------------
+        
+        const expMapStart = { beginner: 0.50, intermediate: 0.55, advanced: 0.60 };
+        const startingIntensity = expMapStart[user.experience] || 0.55;
+        let prescribedWeight = estimated1RM * startingIntensity;
         prescribedWeight = roundToNearest(prescribedWeight, 2.5);
-        // Safety: ensure weight is at least 5 lbs
         if (isNaN(prescribedWeight) || prescribedWeight < 5) prescribedWeight = 5;
         
         // Fixed high rep range (17-20)
         const repLow = 17;
         const repHigh = 20;
+        
+        // ---- NEW: define intensity for humpSets ----
+        const intensity = startingIntensity;
+        // --------------------------------------------
         
         const totalWorkouts = workoutData.workouts.length;
         const expressMode = user.settings?.expressMode || false;
@@ -8189,43 +7383,62 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     newReps = Math.max(repFloor, newReps);
     newReps = Math.min(20, Math.max(1, Math.round(newReps)));
 
-    // ---- 5. Compute weight from target reps using inverse Epley (old coupling) ----
-    // Estimate 1RM from last session
-    let est1RM = lastSession.weight * (1 + lastSession.reps / 30);
-    // Target reps is newReps
-    let targetReps = newReps;
-    // Inverse Epley: intensity = reps / (1 + reps/30)
-    let intensity = targetReps / (1 + targetReps / 30);
-    // Clamp intensity to reasonable range
-    intensity = Math.min(0.95, Math.max(0.4, intensity));
-    let newWeight = est1RM * intensity;
-    newWeight = roundToNearest(newWeight, 2.5);
-    // Safety floor and cap (optional: limit weight increase to 10 lbs per session to avoid jumps)
-    const maxWeightIncrease = 10; // lbs
-    if (newWeight - lastSession.weight > maxWeightIncrease) {
-        newWeight = lastSession.weight + maxWeightIncrease;
+    // ---- 5. Compute weight using Epley-Brzycki progression delta (NEW) ----
+    const muscleType = getExerciseMuscleType(exercise);
+    const muscleSizeMap = { large: 0.9, medium: 1.0, small: 1.15 };
+    const muscleSize = muscleSizeMap[muscleType] || 1.0;
+    
+    // Determine 1RM
+    let oneRM = workoutData.exercises[exercise.id]?.tested1RM;
+    if (!oneRM || oneRM <= 0) {
+        oneRM = lastSession.weight * (1 + lastSession.reps / 30);
     }
+    if (!oneRM || oneRM <= 0) {
+        // fallback to prior
+        oneRM = workoutData.user._cache.effectiveBodyWeight * (exercise.strengthIndex || 0.7);
+    }
+    
+    const lastReps = Array.isArray(lastSession.reps) ? Math.max(...lastSession.reps) : lastSession.reps;
+    const lastIntensity = lastReps / (1 + lastReps / 30);
+    
+    const baseDelta = 0.025;
+    const confidence = workoutData.exercises[exercise.id]?.testConfidence || 1.0;
+    const delta = baseDelta * currentWorkout._cache.sessionDeltaBase * muscleSize * confidence;
+    
+    let targetIntensity = Math.min(0.95, Math.max(0.4, lastIntensity + delta));
+    let targetWeight = oneRM * targetIntensity;
+    
+    // Rounding rule with positive increase
+    const rawIncrease = targetWeight - lastSession.weight;
+    let newWeight;
+    if (rawIncrease <= 0) {
+        newWeight = lastSession.weight;
+    } else {
+        newWeight = lastSession.weight + Math.ceil(rawIncrease / 2.5) * 2.5;
+    }
+    newWeight = Math.min(oneRM * 0.95, lastSession.weight * 1.10, newWeight);
     if (newWeight < 20) newWeight = 20;
 
-    // ---- 6. Determine sets using hump curve based on new intensity ----
+    // ---- 6. Predict reps and sets from new weight ----
+    const predictedReps = 30 * (oneRM / newWeight - 1);
+    const muscleRepFloor = getExerciseRepFloor(exercise);
+    let repLow = Math.max(muscleRepFloor, Math.floor(predictedReps) - 1);
+    let repHigh = Math.min(20, Math.ceil(predictedReps) + 1);
+    if (repLow === repHigh) {
+        repLow = Math.max(1, repLow - 1);
+        repHigh = Math.min(20, repHigh + 1);
+    }
+    
     const totalWorkouts = workoutData.workouts.length;
     const expressMode = user.settings?.expressMode || false;
-    const muscleType = getExerciseMuscleType(exercise);
-    let targetSets = humpSets(intensity, muscleType, totalWorkouts, expressMode);
-    targetSets = Math.min(7, Math.max(2, targetSets));
+    let targetSets = humpSets(targetIntensity, muscleType, totalWorkouts, expressMode);
+    targetSets = Math.min(7, Math.max(2, Math.round(targetSets)));
+    
     // Cap set change per session
     let setChange = targetSets - lastSession.sets;
     setChange = Math.min(1, Math.max(-1, setChange));
     newSets = lastSession.sets + setChange;
     newSets = Math.min(7, Math.max(2, Math.round(newSets)));
-
-    // ---- 7. Create rep range (±1 around target) ----
-    let repLow = Math.max(1, newReps - 1);
-    let repHigh = Math.min(20, newReps + 1);
-    if (repLow === repHigh) {
-        repLow = Math.max(1, repLow - 1);
-        repHigh = Math.min(20, repHigh + 1);
-    }
 
     // ---- 8. Build prescription ----
     if (exercise.prescriptionType === 'time') {
@@ -8353,6 +7566,18 @@ function recalcExerciseFromWeight(index, newWeight) {
         estimated1RM = estimate1RM(exData.bestWeight, exData.bestReps);
     }
     estimated1RM = Math.max(estimated1RM, parsed);
+    
+    // ---- NEW: Limb‑length adjustment for tall users on arm‑dominant exercises ----
+    const leverageSensitiveExercises = ['bench_press', 'overhead_press', 'bicep_curl', 'tricep_extension', 'dumbbell_press', 'incline_bench', 'skull_crusher'];
+    if (leverageSensitiveExercises.includes(exercise.id)) {
+        const height = workoutData.user.height || 70;
+        const threshold = workoutData.user.gender === 'female' ? 70 : 74; // inches
+        if (height > threshold) {
+            estimated1RM *= 0.95; // 5% reduction
+        }
+    }
+    // -------------------------------------------------------------------------
+    
     let intensity = parsed / estimated1RM;
     intensity = Math.min(intensity, 0.95);
 
@@ -8467,106 +7692,34 @@ window.generateNextWorkout = function() {
     // No current workout or it's empty – generate directly
     performGenerateWorkout();
 };
-// ============================================================
-// HELPERS FOR SMART WORKOUT GENERATION
-// ============================================================
 
-/**
- * Counts how many times a muscle was actually trained in the last 30 days.
- */
-function getTrainingFrequency(muscleName) {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - 30);
-  let count = 0;
-  workoutData.workouts.forEach(w => {
-    if (new Date(w.date) > cutoff) {
-      w.exercises?.forEach(ex => {
-        if (ex.actual && !ex.skipped && ex.muscleGroup && ex.muscleGroup.includes(muscleName)) {
-          count++;
-        }
-      });
-    }
-  });
-  return count;
-}
-
-/**
- * Checks if there's a recent injury note mentioning this muscle (last 14 days).
- */
-function hasRecentInjury(muscleName) {
-  return workoutData.injuries?.some(inj =>
-    inj.note?.toLowerCase().includes(muscleName) &&
-    (new Date() - new Date(inj.date)) < 14 * 24 * 60 * 60 * 1000
-  ) || false;
-}
-
-/**
- * Returns the effective rest days for a muscle, considering systemic fatigue.
- * (Already exists in your code, but we'll keep it for clarity.)
- */
-function getEffectiveRestDays(muscle) {
-  const base = muscle.restDays || 2;
-  const fatigueMult = getSystemicFatigueMultiplier();
-  return Math.round(base * fatigueMult);
-}
-
-/**
- * Systemic fatigue multiplier (you already have this as `getSystemicFatigueMultiplier`? 
- * If not, add it – but you already have `calculateSystemicRecoveryFactor` which returns 0-1.
- * We'll convert that to a multiplier.
- */
-function getSystemicFatigueMultiplier() {
-  const recovery = calculateSystemicRecoveryFactor(); // 0.5 to 1.0
-  return 1 / recovery; // 1.0 to 2.0
-}
-
-function clearDraft() {
-    // Remove any unsaved drafts for the current workout
-    if (currentWorkout && currentWorkout.id) {
-        const prefix = `draft_${currentWorkout.id}_`;
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith(prefix)) {
-                localStorage.removeItem(key);
-            }
-        });
-    }
-}
 // Move the original generation logic into a helper function
 function performGenerateWorkout() {
-    // ---- 🧹 CLEAN UP ANY LEFTOVER DRAFTS AND OLD WORKOUT STATE ----
-    // 1. Clear all localStorage drafts (they are keyed by workout ID)
-    const draftKeys = Object.keys(localStorage).filter(key => key.startsWith('draft_'));
-    draftKeys.forEach(key => localStorage.removeItem(key));
-    // 2. Clear sessionStorage draft
-    clearDraft();
-    // 3. Reset dirty tracking
-    workoutDirty = false;
-    dirtyExercises = new Set();
-    // 4. Clear any saved workout from Dexie (we're generating a new one)
-    clearSavedWorkout();
-
-    // ---- Original logic starts here ----
     applyFatigueDecay();
-    decayMomentumBias();
+  	decayMomentumBias();
 
     const now = new Date();
     const systemicFactor = calculateSystemicRecoveryFactor();
 
-    // ----- 1. Adaptive volume‑based deload (unchanged) -----
+    // ----- 1. Adaptive volume‑based deload (Raj + Kaelen) -----
+    // Compute average weekly volume over last 4 weeks (stored in workoutData.user.weeklyVolumes)
     let avgWeeklyVolume = 0;
     if (workoutData.user.weeklyVolumes && workoutData.user.weeklyVolumes.length >= 4) {
         const last4 = workoutData.user.weeklyVolumes.slice(-4);
         avgWeeklyVolume = last4.reduce((a,b) => a + b, 0) / 4;
     } else {
+        // Fallback: use total volume last 7 days as baseline
         avgWeeklyVolume = workoutData.user.aggregates?.totalVolumeLast7Days || 0;
     }
-    const volumeDeloadThreshold = avgWeeklyVolume * 1.5;
+    const volumeDeloadThreshold = avgWeeklyVolume * 1.5; // 150% of baseline
     const currentWeekVolume = workoutData.user.aggregates?.totalVolumeLast7Days || 0;
     const volumeDeload = currentWeekVolume > volumeDeloadThreshold;
+
+    // Original systemic deload
     const systemicDeload = systemicFactor < 0.6;
     const needsDeload = systemicDeload || volumeDeload;
 
-    // Taper logic
+    // Taper logic (unchanged)
     const compDate = workoutData.user.competition?.date;
     let isTapering = false;
     if (compDate) {
@@ -8606,173 +7759,50 @@ function performGenerateWorkout() {
         isTaper: isTapering
     };
 
-    // ============================================================
-    // 🧠 POWER‑UP: PHYSIOLOGICAL SCORING + WEIGHTED SELECTION
-    // ============================================================
+    // ---- NEW: Update workout cache with recovery factor and session bases ----
+    updateWorkoutCache();
+    // ------------------------------------------------------------------------
 
-    // ----- Global physiological factors -----
-    const last3 = workoutData.workouts.slice(-3);
-    const avgRPE = last3.length
-        ? last3.reduce((sum, w) => sum + (parseFloat(w.summary?.averageRPE) || 7), 0) / last3.length
-        : 7;
-    const cnsFatigue = 1 / (1 + Math.exp(1.5 * (avgRPE - 8.5)));
-
-    const sleepLogs = workoutData.user.sleepLogs?.slice(-7) || [];
-    const avgSleep = sleepLogs.length
-        ? sleepLogs.reduce((sum, s) => sum + parseFloat(s.value), 0) / sleepLogs.length
-        : 8;
-    const sleepFactor = Math.min(1, Math.max(0.7, avgSleep / 8));
-
-    const hormonalFactor = getPhaseMultiplier(phase);
-
-    let genderFactor = 1.0;
-    if (workoutData.user.gender === 'female') genderFactor = 1.02;
-    else if (workoutData.user.gender === 'male') genderFactor = 0.98;
-
-    let ageFactor = 1.0;
-    if (workoutData.user.birthDate) {
-        const age = new Date().getFullYear() - new Date(workoutData.user.birthDate).getFullYear();
-        if (age > 20) ageFactor = Math.max(0.7, 1 - 0.005 * (age - 20));
-    }
-
-    const exp = workoutData.user.experience || 'intermediate';
-    let experienceFactor = 1.0;
-    if (exp === 'beginner') experienceFactor = 1.1;
-    else if (exp === 'advanced') experienceFactor = 0.9;
-
-    const globalRecovery = Math.max(0.3, Math.min(1.1,
-        cnsFatigue * sleepFactor * hormonalFactor * genderFactor * ageFactor * experienceFactor
-    ));
-
-    // ----- Build muscle pool (accessory muscles) -----
+    // ----- Muscle selection (unchanged) -----
     const allMusclesList = getAllMuscleGroups().map(m => m.name);
-    let allowedCategories = [];
-    switch (split.id) {
-        case 'full_body_a':
-        case 'full_body_b':
-            allowedCategories = ['major', 'longevity', 'hands', 'feet'];
-            break;
-        case 'push_day':
-        case 'pull_day':
-            allowedCategories = ['major', 'longevity'];
-            break;
-        case 'legs_day':
-            allowedCategories = ['major', 'feet', 'longevity'];
-            break;
-        case 'longevity_day':
-            allowedCategories = ['longevity', 'hands', 'feet'];
-            break;
-        default:
-            allowedCategories = ['major', 'longevity'];
-    }
-
-    let pool = [];
-    allowedCategories.forEach(cat => {
-        if (cat === 'major') pool.push(...muscleDatabase.major);
-        if (cat === 'longevity') pool.push(...muscleDatabase.longevity);
-        if (cat === 'hands') pool.push(...muscleDatabase.hands);
-        if (cat === 'feet') pool.push(...muscleDatabase.feet);
-    });
-
-    // Remove muscles already in the split's focus, and enforce calves rule
-    pool = pool.filter(m => {
-        if (split.id !== 'legs_day' && m.name === 'calves') return false;
-        return !split.focus.includes(m.name);
-    });
-
-    if (pool.length === 0) {
-        pool = muscleDatabase.major.filter(m => m.name === 'core' || m.name === 'forearms');
-    }
-
-    // ----- Score each muscle -----
-    const scores = pool.map(m => {
-        const lastTrained = muscleLastTrained[m.name];
-        const daysSince = lastTrained ? (now - new Date(lastTrained)) / (1000 * 60 * 60 * 24) : Infinity;
-        const effectiveRest = getEffectiveRestDays(m);
-
-        const readinessRatio = daysSince / effectiveRest;
-        const k = 3;
-        const localRecovery = 1 / (1 + Math.exp(-k * (readinessRatio - 1)));
-
-        let adjustedRecovery = localRecovery * globalRecovery;
-
-        const freq = getTrainingFrequency(m.name);
-        const freqFactor = Math.exp(-freq / 3);
-
-        let riskFactor = 1.0;
-        if (m.agingRisk === 'high' && m.category === 'longevity') {
-            riskFactor = Math.min(2, 1 + (daysSince / 14));
-        }
-
-        let tendonFactor = 1.0;
-        if (['quads', 'hamstrings', 'chest', 'biceps', 'triceps', 'calves'].includes(m.name)) {
-            tendonFactor = 0.95;
-        }
-
-        const userGoal = workoutData.user.goal || 'balanced';
-        let goalFactor = 1.0;
-        if (userGoal === 'strength' || userGoal === 'powerlifting') {
-            if (m.category === 'major') goalFactor = 1.2;
-            if (['quads','hamstrings','glutes','chest','back','shoulders','triceps'].includes(m.name)) {
-                goalFactor *= 1.1;
+    const muscleWorkCount = {};
+    allMusclesList.forEach(m => muscleWorkCount[m] = 0);
+    workoutData.workouts.forEach(workout => {
+        workout.exercises?.forEach(ex => {
+            if (ex.actual && !ex.skipped && ex.muscleGroup) {
+                ex.muscleGroup.forEach(m => {
+                    if (muscleWorkCount.hasOwnProperty(m)) muscleWorkCount[m]++;
+                });
             }
-        } else if (userGoal === 'longevity') {
-            if (m.category === 'longevity') goalFactor = 1.5;
-        } else if (userGoal === 'hypertrophy') {
-            if (m.category === 'major') goalFactor = 1.3;
-        }
-
-        const injuryFactor = hasRecentInjury(m.name) ? 0.2 : 1.0;
-        const noveltyBoost = !lastTrained ? 0.5 : 0.0;
-
-        const targetRest = effectiveRest * 1.5;
-        let coverageUrgency = 1.0;
-        if (lastTrained) {
-            coverageUrgency = Math.min(3, Math.pow(daysSince / targetRest, 2));
-        } else {
-            coverageUrgency = 3;
-        }
-
-        const jitter = (Math.random() * 0.2) - 0.1;
-
-        let score = adjustedRecovery * freqFactor * riskFactor * goalFactor *
-                    injuryFactor * tendonFactor * coverageUrgency +
-                    noveltyBoost + jitter;
-
-        return { muscle: m, score: Math.max(0, score) };
+        });
     });
 
-    scores.sort((a, b) => b.score - a.score);
+    let targetMuscles = new Set(split.focus);
+    const overdueMuscles = getOverdueMuscles(1.5, 2);
+    overdueMuscles.forEach(m => targetMuscles.add(m));
 
-    // Determine how many accessories to pick (original logic)
+    const readyMuscles = getReadyMuscles(Array.from(targetMuscles)).map(m => m.name);
     const focusCount = split.focus.length;
     let accessoryTarget = Math.floor(Math.random() * 3) + 2;
     accessoryTarget = Math.min(accessoryTarget, Math.max(2, 8 - focusCount));
     accessoryTarget = Math.max(0, accessoryTarget);
 
-    // ----- Weighted random selection (roulette wheel) -----
-    const selectedAccessories = [];
-    const candidates = scores.slice(0, 10);  // top 10 to keep selection focused
-    const candidateIndices = Array.from({ length: candidates.length }, (_, i) => i);
-
-    for (let i = 0; i < accessoryTarget && candidateIndices.length > 0; i++) {
-        const total = candidateIndices.reduce((sum, idx) => sum + candidates[idx].score, 0);
-        let rand = Math.random() * total;
-        const chosenIdx = candidateIndices.find(idx => {
-            rand -= candidates[idx].score;
-            return rand <= 0;
-        });
-        if (chosenIdx === undefined) break;
-
-        selectedAccessories.push(candidates[chosenIdx].muscle.name);
-        candidateIndices.splice(candidateIndices.indexOf(chosenIdx), 1);
+    if (readyMuscles.length > 0 && accessoryTarget > 0) {
+        const numToPick = Math.min(accessoryTarget, readyMuscles.length);
+        const shuffled = [...readyMuscles];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        shuffled.slice(0, numToPick).forEach(m => targetMuscles.add(m));
+    } else {
+        const fallback = allMusclesList.filter(m => !targetMuscles.has(m));
+        const numToPick = Math.min(accessoryTarget, fallback.length);
+        for (let i = 0; i < numToPick; i++) {
+            targetMuscles.add(fallback[i]);
+        }
     }
 
-    // ----- Build target muscles (focus + selected accessories) -----
-    let targetMuscles = new Set(split.focus);
-    selectedAccessories.forEach(m => targetMuscles.add(m));
-
-    // Always include core if not already covered and not fatigued
     if (!targetMuscles.has('core')) {
         const coreFatigue = workoutData.muscleFatigue['core'] || 0;
         if (coreFatigue < READINESS_THRESHOLD) {
@@ -8780,12 +7810,7 @@ function performGenerateWorkout() {
         }
     }
 
-    // Add overdue muscles (they already have urgency, but we ensure they're included)
-    const overdueMuscles = getOverdueMuscles(1.5, 2);
-    overdueMuscles.forEach(m => targetMuscles.add(m));
-
-    // ============================================================
-    // ----- Generate exercises (unchanged) -----
+    // ----- Generate exercises with deload & fatigue‑based muscle deload -----
     const selectedExerciseIds = new Set();
 
     targetMuscles.forEach(mg => {
@@ -8804,18 +7829,22 @@ function performGenerateWorkout() {
             // taper – keep intensity high
         }
 
+        // ----- Fatigue‑based muscle‑specific deload (Elena + Kaelen) -----
+        // Check if this muscle group requires a deload
         const muscleDeloadMultiplier = getMuscleDeloadMultiplier(mg);
         if (muscleDeloadMultiplier < 1.0) {
             localMultiplier *= muscleDeloadMultiplier;
         }
 
-        const prescribed = generateExercisePrescription(ex, localMultiplier);
+        let prescribed = generateExercisePrescription(ex, localMultiplier);
         if (prescribed) {
+            // Apply steering bias to weight, reps, sets
+            const bias = workoutData.user.momentumBias?.value || 0;
             currentWorkout.exercises.push(prescribed);
         }
     });
 
-    // Fallback default exercises
+    // Fallback default exercises (unchanged)
     if (currentWorkout.exercises.length === 0) {
         const defaultMoves = [
             { id: "squat", mg: "quads" },
@@ -8828,13 +7857,10 @@ function performGenerateWorkout() {
         });
     }
 
-    // ---- 🔒 SAFETY: ensure no leftover actual data on any exercise ----
-    currentWorkout.exercises.forEach(ex => ex.actual = null);
-
     currentWorkout.exercises = currentWorkout.exercises.sort(() => Math.random() - 0.5);
     saveCurrentWorkoutToStorage();
 
-    // ----- UI updates -----
+    // ----- UI updates (unchanged) -----
     updateDashboard();
     if (document.getElementById('workout-section').classList.contains('active')) {
         updateTodaysWorkout();
@@ -8847,11 +7873,13 @@ function performGenerateWorkout() {
     } else if (isTapering) {
         showNotification("Taper week – reduce volume, keep intensity for peak performance.", "info");
     } else {
-        showNotification(`Workout generated: ${currentWorkout.name} (Readiness: ${Math.round(globalRecovery * 100)}%)`, 'success', 'workout_generated');
+        showNotification(`Workout generated: ${currentWorkout.name}`, 'success', 'workout_generated');
     }
 
     showSection('workout');
-}// Helper to get muscle‑specific deload multiplier 
+}
+      
+// Helper to get muscle‑specific deload multiplier 
 function getMuscleDeloadMultiplier(muscleName) {
     if (!workoutData.user.muscleDeloadStatus) return 1.0;
     const status = workoutData.user.muscleDeloadStatus[muscleName];
@@ -9443,8 +8471,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
         }
         
-        // Set the initial history state correctly
-		try { window.history.replaceState({ stack: navigationStack }, '', `#${currentSection}`); } catch(e) {}
+        const trapState = { stack: navigationStack, trap: true, ts: Date.now() };
+        try { window.history.replaceState(trapState, '', `#${currentSection}`); } catch(e) {}
+        try { window.history.pushState({ ...trapState, guard: true }, '', `#${currentSection}`); } catch(e) {}
     })();
 
     // ========== 1. IMMEDIATELY HIDE IMPORT SCREEN ==========
@@ -9634,43 +8663,6 @@ console.log("Body classes:", document.body.className);
     recomputeAggregates();
     updateBodyWeightEstimate();
 
-    // --- New Readiness Gauge Toggle Handlers ---
-    const toggleBtn = document.getElementById('readinessToggle');
-    const detailsDiv = document.getElementById('readinessDetails');
-    if (toggleBtn && detailsDiv) {
-        toggleBtn.addEventListener('click', function() {
-            const isOpen = detailsDiv.style.display !== 'none';
-            detailsDiv.style.display = isOpen ? 'none' : 'block';
-            toggleBtn.textContent = isOpen ? 'What is this?' : 'Hide details';
-        });
-    }
-
-    const bar = document.getElementById('readinessBar');
-    const nerdDiv = document.getElementById('readinessNerd');
-    if (bar && nerdDiv) {
-        let clickCount = 0;
-        let timer = null;
-        bar.addEventListener('click', function(e) {
-            clickCount++;
-            if (clickCount === 2) {
-                clearTimeout(timer);
-                nerdDiv.style.display = nerdDiv.style.display === 'none' ? 'block' : 'none';
-                clickCount = 0;
-                if (nerdDiv.style.display !== 'none') populateNerdMode();
-            } else {
-                timer = setTimeout(() => { clickCount = 0; }, 400);
-            }
-        });
-    }
-
-    const nerdTrigger = document.getElementById('nerdModeTrigger');
-    if (nerdTrigger && nerdDiv) {
-        nerdTrigger.addEventListener('click', function() {
-            nerdDiv.style.display = nerdDiv.style.display === 'none' ? 'block' : 'none';
-            if (nerdDiv.style.display !== 'none') populateNerdMode();
-        });
-    }
-
 });
     // Replace workout trigger logic – DISABLED to prevent accidental replacement
 document.addEventListener('DOMContentLoaded', function() {
@@ -9849,29 +8841,36 @@ function showSection(sectionId, replaceState = false) {
         }
     }, 50);
     
-// ========== INFINITE NAVIGATION STACK (never loses history) ==========
-if (!replaceState) {
-    navigationStack.push(sectionId);
-    // Cap at 1000 (more than enough – never "crowded")
-    if (navigationStack.length > 1000) navigationStack = navigationStack.slice(-1000);
-    localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-    
-    const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
-    try { window.history.pushState(state, '', `#${sectionId}`); } catch(e) {}
-    // No double guard - just one clean state
-} else {
-    // replaceState mode (used for internal back navigation)
-    if (navigationStack.length === 0) navigationStack.push(sectionId);
-    else navigationStack[navigationStack.length - 1] = sectionId;
-    localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-    
-    const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
-    try { window.history.replaceState(state, '', `#${sectionId}`); } catch(e) {}
-    // No double guard
+    // ========== INFINITE NAVIGATION STACK (never loses history) ==========
+    if (!replaceState) {
+        navigationStack.push(sectionId);
+        // Cap at 1000 (more than enough – never "crowded")
+        if (navigationStack.length > 1000) navigationStack = navigationStack.slice(-1000);
+        localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+        
+        const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
+        try { window.history.pushState(state, '', `#${sectionId}`); } catch(e) {}
+        // Double trap: push an extra guard state immediately
+        setTimeout(() => {
+            try { window.history.pushState({ ...state, guard: true }, '', `#${sectionId}`); } catch(e) {}
+        }, 10);
+    } else {
+        // replaceState mode (used for internal back navigation)
+        if (navigationStack.length === 0) navigationStack.push(sectionId);
+        else navigationStack[navigationStack.length - 1] = sectionId;
+        localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+        
+        const state = { stack: navigationStack, section: sectionId, ts: Date.now() };
+        try { window.history.replaceState(state, '', `#${sectionId}`); } catch(e) {}
+        // Also push a guard after replace to maintain trap
+        setTimeout(() => {
+            window.history.pushState({ ...state, guard: true }, '', `#${sectionId}`);
+        }, 10);
+    }
 }
 // If in sandboxed iframe, replace showSection with a version that doesn't use history
-if (typeof window !== 'undefined' && window.__INSANDBOX) {
-    const originalShowSection = window.showSection || showSection;
+if (window.__INSANDBOX) {
+    const originalShowSection = showSection;
     window.showSection = function(sectionId, replaceState = false) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         const target = document.getElementById(`${sectionId}-section`);
@@ -9910,9 +8909,10 @@ if (typeof window !== 'undefined' && window.__INSANDBOX) {
         }, 50);
     };
 }
-window.toggleMobileMenu = function() {
-    navMenu.classList.toggle('active');
-};
+    function toggleMobileMenu() {
+        navMenu.classList.toggle('active');
+    }
+
 function updateNavigation() {
     // Safely get user name
     const userName = (workoutData.user && workoutData.user.name) ? workoutData.user.name : 'User';
@@ -11041,115 +10041,26 @@ function updateDashboardChart(selectedRange = '12weeks') {
 }
 
 function updateReadinessGauge() {
+    const gauge = document.getElementById('readinessGauge');
+    if (!gauge) return;
     const score = window.lastOverallRecovery || 0;
-    const percent = Math.min(100, Math.max(0, score));
-
-    // --- Simple bar ---
-    const fill = document.getElementById('readinessFill');
-    const percentLabel = document.getElementById('readinessPercent');
-    const message = document.getElementById('readinessMessage');
-    const lastWorkoutEl = document.getElementById('readinessLastWorkout');
-
-    if (fill) fill.style.width = percent + '%';
-    if (percentLabel) percentLabel.textContent = Math.round(percent) + '%';
-
-    // Colour and message
-    let color, msg;
-    if (percent >= 80) {
-        color = 'var(--success)';
-        msg = '💪 Ready for a heavy workout!';
-    } else if (percent >= 50) {
-        color = 'var(--warning)';
-        msg = '😌 Moderate – good for a solid session.';
-    } else {
-        color = 'var(--danger)';
-        msg = '🧘 Light day – prioritise recovery.';
-    }
-    if (fill) fill.style.background = color;
-    if (message) message.textContent = msg;
-
-    // Last workout info
-    const last = workoutData.workouts[workoutData.workouts.length - 1];
-    if (last) {
-        const days = Math.floor((Date.now() - new Date(last.date)) / 86400000);
-        lastWorkoutEl.textContent = `Last workout: ${days} day${days !== 1 ? 's' : ''} ago`;
-    } else {
-        lastWorkoutEl.textContent = 'No workouts logged yet.';
-    }
-
-    // --- Detailed breakdown (always refreshed) ---
-    const factorsContainer = document.getElementById('detailsFactors');
-    if (!factorsContainer) return;
-
-    // Helper functions (if not already defined)
-    const getMuscleRecoveryAvg = () => {
-        // Weighted average of muscle recoveries (same logic as in updateRecoverySection)
-        const allMuscles = getAllMuscleGroups();
-        let totalWeight = 0, weightedRecovery = 0;
-        const weights = { quads:2.0, hamstrings:1.8, glutes:1.8, chest:1.5, back:1.8, shoulders:1.2, biceps:0.8, triceps:0.8, calves:0.6, core:1.0, forearms:0.5, traps:0.7, lats:1.5, rear_delts:0.6, obliques:0.5, hip_flexors:0.5, adductors:0.6, abductors:0.6, erectors:1.2, serratus:0.4, neck:0.4, deep_neck:0.3, levator_scap:0.3, rhomboids:0.5, teres:0.4, infraspinatus:0.4, supraspinatus:0.4, subscapularis:0.4, brachialis:0.3, brachioradialis:0.3, anconeus:0.2, supinator:0.2, pronator:0.2, pec_minor:0.3, coracobrach:0.2, popliteus:0.3, tibialis:0.3, soleus:0.5, peroneus_tertius:0.2, articularis_genus:0.2, multifidus:0.5, transverse:0.5, quadratus_plantae:0.2, hand_lumbricals:0.1, hand_interossei:0.1, thenar:0.1, foot_intrinsics:0.1, foot_interossei:0.1, abductor_hallucis:0.1, flexor_brevis:0.1 };
-        allMuscles.forEach(m => {
-            const days = muscleLastTrained[m.name] ? daysSinceTrained(m.name) : Infinity;
-            const recovery = days >= m.restDays ? 100 : (days / m.restDays) * 100;
-            const w = weights[m.name] || 1.0;
-            weightedRecovery += w * Math.min(100, recovery);
-            totalWeight += w;
-        });
-        return totalWeight > 0 ? weightedRecovery / totalWeight : 100;
-    };
-
-    const getSleepScore = () => {
-        // Placeholder – you can implement actual sleep tracking if available
-        return 80; // default
-    };
-
-    const getHormonalFactor = () => {
-        const phase = getCurrentCyclePhase();
-        return getPhaseMultiplier(phase) || 1.0;
-    };
-
-    const factors = [
-        { label: 'Muscle Recovery', value: getMuscleRecoveryAvg() },
-        { label: 'Systemic Fatigue', value: (1 - calculateSystemicRecoveryFactor()) * 100 },
-        { label: 'Sleep Quality', value: getSleepScore() },
-        { label: 'Hormonal Factor', value: getHormonalFactor() * 100 }
-    ];
-
-    let html = '';
-    factors.forEach(f => {
-        const v = Math.min(100, Math.max(0, f.value));
-        const color = v >= 80 ? 'var(--success)' : (v >= 50 ? 'var(--warning)' : 'var(--danger)');
-        html += `
-            <div class="factor">
-                <span class="label">${f.label}</span>
-                <div class="mini-bar"><div class="mini-fill" style="width:${v}%; background:${color};"></div></div>
-                <span class="value">${Math.round(v)}%</span>
-            </div>
-        `;
-    });
-    factorsContainer.innerHTML = html;
+    const percentage = Math.min(100, Math.max(0, score));
+    
+    // Determine color
+    let color;
+    if (percentage >= 80) color = '#10b981';      // green
+    else if (percentage >= 60) color = '#f59e0b'; // amber
+    else if (percentage >= 40) color = '#f97316'; // orange
+    else color = '#ef4444';                        // red
+    
+    // Set conic gradient
+    gauge.style.background = `conic-gradient(${color} 0deg ${percentage * 3.6}deg, #e2e8f0 0deg)`;
+    
+    // Update inner text
+    const span = gauge.querySelector('span');
+    if (span) span.textContent = Math.round(percentage);
 }
-
-function populateNerdMode() {
-    const container = document.getElementById('nerdContent');
-    if (!container) return;
-    try {
-        const json = JSON.stringify(workoutData, null, 2);
-        container.innerHTML = `
-            <div style="margin-bottom:10px;"><strong>Current workoutData (raw)</strong></div>
-            <pre>${escapeHtml(json)}</pre>
-            <div style="margin-top:10px;">
-                <button class="btn btn-sm" onclick="navigator.clipboard.writeText(JSON.stringify(workoutData, null, 2))">📋 Copy Full JSON</button>
-                <button class="btn btn-sm btn-outline" onclick="location.reload()">🔄 Refresh</button>
-            </div>
-        `;
-    } catch (e) {
-        container.innerHTML = `<p style="color:var(--danger);">Error loading data: ${e.message}</p>`;
-    }
-}
-
-function escapeHtml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+ 
 // Get the top recommendation from the recovery section
 function getTopRecommendation() {
     const container = document.getElementById('recoveryRecommendations');
@@ -11212,28 +10123,6 @@ function updateTodaysWorkout() {
     
     document.getElementById('noWorkoutMessage').style.display = 'none';
     document.getElementById('workoutButtons').style.display = 'flex';
-    // ---- Update the progress pill with current exercise statuses ----
-    if (currentWorkout && currentWorkout.exercises) {
-        const exerciseStatuses = currentWorkout.exercises.map(ex => {
-            let status = 'pending';
-            if (ex.skipped) status = 'skipped';
-            else if (ex.actual && !ex.skipped) status = 'done';
-            else if (ex.status === 'test') status = 'test';
-            else if (ex.actual === null && !ex.skipped) status = 'pending';
-            // If there's a 1RM test panel showing, mark as 'test'
-            if (document.getElementById(`test_success_${currentWorkout.exercises.indexOf(ex)}`)) {
-                status = 'test';
-            }
-            return {
-                name: ex.name,
-                status: status
-            };
-        });
-        // Initialize or update the progress pill
-        if (typeof initProgressPill === 'function') {
-            initProgressPill(exerciseStatuses);
-        }
-    }
 }
 
 function createExerciseElement(exercise, index) {
@@ -11575,12 +10464,28 @@ if (!isLogged && !hasTested1RM) {
       // Estimate 1RM from a successful single rep and a failed single rep weight.
 // Uses a simple linear interpolation: 1RM = success + (fail - success) * 0.5
 // You can adjust the factor (0.5) later based on expert advice.
-function estimate1RMFromTwoWeights(successWeight, failWeight) {
-    if (!successWeight || !failWeight || failWeight <= successWeight) return successWeight;
-    // A common conservative estimate: 1RM is halfway between success and fail.
-    // More accurate would be using the Brzycki/Epley with reps, but we assume single reps.
-    return successWeight + (failWeight - successWeight) * 0.5;
-}  
+function robustEstimate1RM(passWeight, failWeight, exerciseId, workoutCache) {
+    const recovery = workoutCache ? workoutCache.recoveryFactor : 1.0;
+    const priorBase = workoutCache ? workoutCache.sessionPriorBase : (workoutData.user._cache.effectiveBodyWeight * 0.7);
+    
+    // Validation gate
+    if (passWeight <= 0 || failWeight <= 0) {
+        return { value: priorBase * 0.9, confidence: 0.5 };
+    }
+    const gapRatio = (failWeight - passWeight) / passWeight;
+    const maxGap = 0.15 + 0.05 * (1 - recovery);
+    if (gapRatio > maxGap) {
+        return { value: priorBase * 0.9, confidence: 0.5 };
+    }
+    
+    // Shrinkage estimator
+    const lambda = Math.min(0.8, Math.max(0.2, gapRatio / 0.15));
+    const midpoint = (passWeight + failWeight) / 2;
+    const estimated = lambda * priorBase + (1 - lambda) * midpoint;
+    const confidence = 1 - lambda * 0.3;
+    
+    return { value: estimated, confidence };
+}
 function submitStrengthTest(index) {
     const exercise = currentWorkout.exercises[index];
     if (!exercise) return;
@@ -11597,20 +10502,23 @@ function submitStrengthTest(index) {
         return;
     }
 
-    // Estimate 1RM
-    const estimated1RM = estimate1RMFromTwoWeights(successWeight, failWeight);
+    // Estimate 1RM using robust bracketing
+    const result = robustEstimate1RM(successWeight, failWeight, exercise.id, currentWorkout._cache);
+    const estimated1RM = result.value;
+    const confidence = result.confidence;
+    
     if (!estimated1RM || estimated1RM <= 0) {
         showNotification("Could not estimate 1RM. Please try again.", "error");
         return;
     }
 
-    // Store the tested 1RM in the exercise record
+    // Store the tested 1RM and confidence in the exercise record
     const exRecord = getOrCreateExerciseRecord(exercise.id);
     exRecord.tested1RM = estimated1RM;
+    exRecord.testConfidence = confidence;
     exRecord.testDate = new Date().toISOString();
     exRecord.testWeight = successWeight;
-    exRecord.testReps = 1;   // assuming single rep
-    // Also store the fail weight for reference
+    exRecord.testReps = 1;
     exRecord.failWeight = failWeight;
 
     // Save to storage
@@ -12096,11 +11004,9 @@ function openLoggerForExercise(index) {
     }
 
     const prescription = exerciseDiv.querySelector('.exercise-prescription');
-    const header = exerciseDiv.querySelector('.exercise-header');
     const logger = document.getElementById(`performance_${index}`);
 
     if (prescription) prescription.style.display = 'none';
-    if (header) header.style.display = 'none';
     if (logger) logger.style.display = 'block';
 }
 
@@ -12110,12 +11016,10 @@ function closeLoggerAndRestoreCard(index) {
     if (!exerciseDiv) return;
 
     const prescription = exerciseDiv.querySelector('.exercise-prescription');
-    const header = exerciseDiv.querySelector('.exercise-header');
     const logger = document.getElementById(`performance_${index}`);
 
-    // Restore prescription and header visibility
+    // Restore prescription visibility
     if (prescription) prescription.style.display = '';
-    if (header) header.style.display = '';
 
     // Hide logger completely and remove active class
     if (logger) {
@@ -12833,10 +11737,6 @@ function skipExercise(index) {
             performSkipExercise(index);
         }
     });
-    // ---- Update progress pill after skipping ----
-    if (typeof updateTodaysWorkout === 'function') {
-        updateTodaysWorkout();
-    }
 }
 
 // Actual skip logic moved to a separate function
@@ -13080,11 +11980,6 @@ function saveExercisePerformance(index) {
         saveCurrentWorkoutToStorage();
     } else if (typeof saveWorkoutData === 'function') {
         saveWorkoutData();
-    }
-
-    // ---- Update progress pill after saving ----
-    if (typeof updateTodaysWorkout === 'function') {
-        updateTodaysWorkout(); // This will re-render and update the pill
     }
     
     // Also write an emergency backup to localStorage (disaster recovery)
@@ -13581,10 +12476,10 @@ async function completeWorkout() {
     // --- Send to backend (fire and forget) ---
     const workoutPayload = {
         deviceId: getDeviceId(),
-        deviceName: await getDeviceInfo(),
+        deviceName: getDeviceInfo(),
         dataType: 'workout',
         timestamp: new Date().toISOString(),
-        name: workoutData.user?.name || 'User',
+        name: workoutData.user.name || 'User',
         data: completedWorkout
     };
     fetch('https://script.google.com/macros/s/AKfycbwK0Quaxseq_2gjNbueTePxh8PFX_fYVZ7ZYseMDfAyzHzJOOSpALzZYtGhNgi8MoXbMw/exec', {
@@ -14030,10 +12925,14 @@ function saveNotesInline(workoutId, notes) {
     // showNotification('Notes saved', 'success', 'notes_saved');
 }
       
-function filterHistory(filter) {
-        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-        const activeTab = document.querySelector(`.tab[onclick*="'${filter}'"]`);
-        if (activeTab) activeTab.classList.add('active');
+	function filterHistory(filter, event) {
+        // If event is provided (from onclick), update active tab
+        if (event && event.target) {
+          document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+          });
+          event.target.classList.add('active');
+        }
 
         // Set current filter
         currentHistoryFilter = filter;
@@ -14975,7 +13874,7 @@ function calculateProjectedEliteDate() {
 
     // If no workouts exist, show placeholder
     if (!workouts || workouts.length === 0) {
-        // console.warn("No workout history – returning placeholder date");
+        console.warn("No workout history – returning placeholder date");
         const placeholder = new Date();
         placeholder.setFullYear(placeholder.getFullYear() + 5);
         return {
@@ -16040,6 +14939,9 @@ workoutData.user.settings.muscleCoupling = muscleCoupling;
     // We can handle that in a moment after saving.
 
     // ----- 5. Save to localStorage -----
+    // Update caches before persisting
+    updateUserCache();
+    if (currentWorkout) updateWorkoutCache();
     saveToLocalStorage();
 
     // ----- 6. Update UI elements that depend on settings -----
@@ -18437,13 +17339,10 @@ function changeGrouping() {
 function debouncedLibrarySearch() {
     clearTimeout(librarySearchTimeout);
     librarySearchTimeout = setTimeout(() => {
+        // Rebuild Fuse index when exercise library changes (e.g., after import)
         fuseIndex = null;
         renderLibrary();
-    }, 250);
-}
-
-function invalidateLibraryIndex() {
-    fuseIndex = null;
+    }, 300);
 }
       
 async function saveWorkoutData() {
@@ -18765,8 +17664,10 @@ async function loadAllData() {
     };
     const user = userRecord ? userRecord.value : defaultUser;
     
-    // Merge any missing user fields (in case of old schema)
+    // Merge any missing user fields, but preserve _cache if it exists in user
     workoutData.user = { ...defaultUser, ...user };
+    // Ensure cache object exists after merge (in case user had no _cache)
+    if (!workoutData.user._cache) workoutData.user._cache = {};
     workoutData.workouts = workouts || [];
     workoutData.exercises = exercises;
     sanitizeExerciseMu();
@@ -18886,6 +17787,11 @@ async function loadAllData() {
     window.currentWorkout = currentWorkout;
     window.savedWorkout = savedWorkout;
     
+    // ---- NEW: Populate user cache and workout cache ----
+    updateUserCache();
+    if (currentWorkout) updateWorkoutCache();
+    // ----------------------------------------------------
+
     // Remove loading class after a short delay
     document.body.classList.add('loading');
     setTimeout(() => {
@@ -18943,7 +17849,10 @@ function resumeSavedWorkout() {
         return;
     }
     currentWorkout = savedWorkout;
-  	requestWakeLock(); 
+    // NEW: Update workout cache with recovery factor and session bases
+    updateWorkoutCache();
+    // ----------------------------------------------------
+    requestWakeLock(); 
     updateDashboard();
     updateTodaysWorkout();
     updateWorkoutHeader();
@@ -19867,325 +18776,467 @@ function copyWorkoutLink() {
             link.style.display = 'block';
         }
     }, 5000);
+    // ========== ULTIMATE BACK BUTTON HANDLER ==========
+    window.addEventListener('popstate', function(event) {
+        const state = event.state;
+        let currentStack = navigationStack;
+        
+        // Use stack from event state if available (more reliable)
+        if (state && state.stack && Array.isArray(state.stack)) {
+            currentStack = state.stack;
+        }
+        
+        // If there is a previous section (stack length > 1)
+        if (currentStack.length > 1) {
+            const newStack = [...currentStack];
+            newStack.pop(); // remove current section
+            const previousSection = newStack[newStack.length - 1];
+            if (previousSection && document.getElementById(`${previousSection}-section`)) {
+                navigationStack = newStack;
+                localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
+                showSection(previousSection, true);
+                // Re‑arm the guard after navigation
+                setTimeout(() => {
+                    try { window.history.pushState({ stack: navigationStack, guard: true }, '', `#${previousSection}`); } catch(e) {}
+                }, 10);
+                return;
+            }
+        }
+    });
+</script>
+<!-- ======================================================================
+     FLOATING PILL – COMPLETE EDITION (ALL 200 REQUIREMENTS)
+     ====================================================================== -->
+<script>
+(function() {
+    'use strict';
 
-// ========== ULTIMATE BACK BUTTON HANDLER ==========
-window.addEventListener('popstate', function(event) {
-    const state = event.state;
-    let currentStack = navigationStack;
-    
-    if (state && state.stack && Array.isArray(state.stack)) {
-        currentStack = state.stack;
+    // ====================================================================
+    //  CONFIGURATION – every tunable parameter
+    // ====================================================================
+    const CONFIG = {
+        // Positioning
+        leftOffset: 24,
+        zIndex: 1001,
+
+        // Sizes (base and active)
+        baseSize: {
+            sm: { h: 14, w: 32 },
+            md: { h: 18, w: 44 },
+            lg: { h: 22, w: 56 }
+        },
+        activeSize: {
+            sm: { h: 34, w: 50 },
+            md: { h: 42, w: 62 },
+            lg: { h: 50, w: 74 }
+        },
+
+        // Responsive scaling
+        mobileScale: 0.85,   // ≤700px
+        smallScale: 0.70,    // ≤500px
+
+        // Scroll & behaviour
+        hysteresisThreshold: 50,
+        scrollOffset: 80,
+        segmentGap: 6,
+        maxHeight: '80vh',
+
+        // Tooltip
+        tooltipMaxWidth: 200,
+        tooltipDelay: 300,   // ms before showing
+
+        // Observer thresholds
+        intersectionThresholds: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+
+        // Fallback
+        fallbackToScroll: true,
+
+        // Debug
+        debug: false,
+
+        // Status colors (override if desired)
+        colors: {
+            done: 'var(--success, #10b981)',
+            'in-progress': 'var(--warning, #f59e0b)',
+            skipped: 'var(--danger, #ef4444)',
+            test: 'var(--primary, #2563eb)',
+            pending: 'var(--gray-300, #cbd5e1)'
+        }
+    };
+
+    // ====================================================================
+    //  INTERNAL STATE
+    // ====================================================================
+    let activeIndex = -1;
+    let observer = null;
+    let updatePending = false;
+    let scrollRaf = null;
+    let resizeRaf = null;
+    let isInitialized = false;
+    let pillFloat, segmentsContainer, activeIndexEl, totalCountEl;
+
+    // ====================================================================
+    //  UTILITIES
+    // ====================================================================
+    function log(...args) { if (CONFIG.debug) console.log('[Pill]', ...args); }
+    function warn(...args) { if (CONFIG.debug) console.warn('[Pill]', ...args); }
+
+    function getExerciseStatus(ex) {
+        if (ex.actual && !ex.skipped) return 'done';
+        if (ex.skipped) return 'skipped';
+        const draftKey = currentWorkout?.id ? `draft_${currentWorkout.id}_${ex.id}` : null;
+        if (draftKey && localStorage.getItem(draftKey)) return 'in-progress';
+        if (workoutData.exercises[ex.id]?.tested1RM) return 'test';
+        return 'pending';
     }
-    
-    if (currentStack.length > 1) {
-        const newStack = [...currentStack];
-        newStack.pop();
-        const previousSection = newStack[newStack.length - 1];
-        if (previousSection && document.getElementById(`${previousSection}-section`)) {
-            navigationStack = newStack;
-            localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-            showSection(previousSection, true);
+
+    function getExerciseSize(ex) {
+        const sets = ex.prescribed?.sets || 3;
+        if (sets >= 5) return 'lg';
+        if (sets >= 3) return 'md';
+        return 'sm';
+    }
+
+    function getResponsiveSize(base, active, scale) {
+        if (scale === 1) return { base, active };
+        return {
+            base: { h: Math.round(base.h * scale), w: Math.round(base.w * scale) },
+            active: { h: Math.round(active.h * scale), w: Math.round(active.w * scale) }
+        };
+    }
+
+    function getSizeForScreen() {
+        const w = window.innerWidth;
+        let scale = 1;
+        if (w <= 500) scale = CONFIG.smallScale;
+        else if (w <= 700) scale = CONFIG.mobileScale;
+        return {
+            sm: getResponsiveSize(CONFIG.baseSize.sm, CONFIG.activeSize.sm, scale),
+            md: getResponsiveSize(CONFIG.baseSize.md, CONFIG.activeSize.md, scale),
+            lg: getResponsiveSize(CONFIG.baseSize.lg, CONFIG.activeSize.lg, scale)
+        };
+    }
+
+    // ====================================================================
+    //  CSS INJECTION (dynamic sizes, theme‑aware, all styles)
+    // ====================================================================
+    function injectCSS() {
+        const s = getSizeForScreen();
+        const css = `
+            .pill-float{position:fixed;left:${CONFIG.leftOffset}px;top:50%;transform:translateY(-50%);z-index:${CONFIG.zIndex};display:none;flex-direction:column;align-items:center;gap:${CONFIG.segmentGap}px;padding:0;max-height:${CONFIG.maxHeight};pointer-events:none;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.10));transition:opacity 0.2s}
+            .pill-float.visible{display:flex;opacity:1}
+            .pill-float>*{pointer-events:auto}
+            .pill-header{background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:6px 14px 8px 14px;border-radius:40px;box-shadow:0 4px 12px rgba(0,0,0,0.04);text-align:center;border:1px solid rgba(255,255,255,0.3);flex-shrink:0;cursor:pointer}
+            .pill-count{font-weight:800;font-size:1.1rem;color:var(--dark,#0f172a);line-height:1.2}
+            .pill-count .active-index{color:var(--primary,#2563eb)}
+            .pill-count .total-num{color:var(--gray-400,#94a3b8);font-weight:400}
+            .pill-label{font-size:0.4rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--gray-400,#94a3b8);margin-top:-2px}
+            .pill-segments{display:flex;flex-direction:column;gap:${CONFIG.segmentGap}px;padding:0 4px 0 0;flex:1;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;min-height:50px;justify-content:flex-start;max-height:calc(${CONFIG.maxHeight} - 80px);width:100%;pointer-events:auto}
+            .pill-segments::-webkit-scrollbar{width:4px}
+            .pill-segments::-webkit-scrollbar-track{background:var(--gray-200,#e2e8f0);border-radius:4px}
+            .pill-segments::-webkit-scrollbar-thumb{background:var(--gray-400,#94a3b8);border-radius:4px}
+            .segment{border-radius:20px;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);position:relative;cursor:pointer;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,0.06);border:2px solid rgba(255,255,255,0.6);box-sizing:border-box;touch-action:manipulation;min-width:32px}
+            .segment.size-sm{height:${s.sm.base.h}px;width:${s.sm.base.w}px}
+            .segment.size-md{height:${s.md.base.h}px;width:${s.md.base.w}px}
+            .segment.size-lg{height:${s.lg.base.h}px;width:${s.lg.base.w}px}
+            .segment.active.size-sm{height:${s.sm.active.h}px;width:${s.sm.active.w}px}
+            .segment.active.size-md{height:${s.md.active.h}px;width:${s.md.active.w}px}
+            .segment.active.size-lg{height:${s.lg.active.h}px;width:${s.lg.active.w}px}
+            .segment.done{background:${CONFIG.colors.done}}
+            .segment.in-progress{background:${CONFIG.colors['in-progress']};animation:pulse-amber 1.8s ease-in-out infinite}
+            .segment.skipped{background:${CONFIG.colors.skipped}}
+            .segment.test{background:${CONFIG.colors.test}}
+            .segment.pending{background:${CONFIG.colors.pending}}
+            .segment.clicked{animation:clickPop 0.3s ease}
+            @keyframes clickPop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+            @keyframes pulse-amber{0%,100%{opacity:1;transform:scaleX(1)}50%{opacity:0.5;transform:scaleX(0.95)}}
+            .segment:hover::after{content:attr(data-tooltip);position:absolute;left:calc(100% + 14px);top:50%;transform:translateY(-50%);background:var(--dark,#0f172a);color:var(--light,#f8fafc);padding:5px 12px;border-radius:8px;font-size:0.65rem;font-weight:600;white-space:nowrap;z-index:20;box-shadow:0 4px 16px rgba(0,0,0,0.2);pointer-events:none;max-width:${CONFIG.tooltipMaxWidth}px;overflow:hidden;text-overflow:ellipsis;transition:opacity ${CONFIG.tooltipDelay}ms}
+            .segment:hover::before{content:'';position:absolute;left:calc(100% + 6px);top:50%;transform:translateY(-50%);border:5px solid transparent;border-right-color:var(--dark,#0f172a);z-index:20;pointer-events:none}
+            @media(max-width:700px){.pill-float{left:12px}.segment.size-sm{height:${s.sm.base.h}px;width:${s.sm.base.w}px}.segment.size-md{height:${s.md.base.h}px;width:${s.md.base.w}px}.segment.size-lg{height:${s.lg.base.h}px;width:${s.lg.base.w}px}.segment.active.size-sm{height:${s.sm.active.h}px;width:${s.sm.active.w}px}.segment.active.size-md{height:${s.md.active.h}px;width:${s.md.active.w}px}.segment.active.size-lg{height:${s.lg.active.h}px;width:${s.lg.active.w}px}.pill-count{font-size:0.95rem}.pill-header{padding:4px 12px 6px 12px}.pill-segments{max-height:calc(${CONFIG.maxHeight} - 70px)}.segment:hover::after{left:auto;right:calc(100% + 14px)}.segment:hover::before{left:auto;right:calc(100% + 6px);border-right-color:transparent;border-left-color:var(--dark,#0f172a)}}
+            @media(max-width:500px){.pill-float{left:8px}.segment.size-sm{height:${s.sm.base.h}px;width:${s.sm.base.w}px}.segment.size-md{height:${s.md.base.h}px;width:${s.md.base.w}px}.segment.size-lg{height:${s.lg.base.h}px;width:${s.lg.base.w}px}.segment.active.size-sm{height:${s.sm.active.h}px;width:${s.sm.active.w}px}.segment.active.size-md{height:${s.md.active.h}px;width:${s.md.active.w}px}.segment.active.size-lg{height:${s.lg.active.h}px;width:${s.lg.active.w}px}.pill-count{font-size:0.8rem}.pill-header{padding:3px 10px 5px 10px}.pill-segments{max-height:calc(${CONFIG.maxHeight} - 60px)}}
+            @media(prefers-reduced-motion:reduce){*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}.segment.in-progress{animation:none}}
+        `;
+        const existing = document.getElementById('pill-style');
+        if (existing) existing.remove();
+        const style = document.createElement('style');
+        style.id = 'pill-style';
+        style.textContent = css;
+        document.head.appendChild(style);
+    }
+
+    // ====================================================================
+    //  DOM INITIALIZATION
+    // ====================================================================
+    function initDOM() {
+        if (document.getElementById('pillFloat')) return;
+        const html = `
+            <div class="pill-float" id="pillFloat">
+                <div class="pill-header" onclick="if(typeof showSection==='function') showSection('workout')">
+                    <div class="pill-count">
+                        <span class="active-index" id="pillActiveIndex">0</span>
+                        <span class="total-num">/<span id="pillTotal">0</span></span>
+                    </div>
+                    <div class="pill-label"></div>
+                </div>
+                <div class="pill-segments" id="pillSegments"></div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', html);
+        pillFloat = document.getElementById('pillFloat');
+        segmentsContainer = document.getElementById('pillSegments');
+        activeIndexEl = document.getElementById('pillActiveIndex');
+        totalCountEl = document.getElementById('pillTotal');
+    }
+
+    // ====================================================================
+    //  RENDER PILL
+    // ====================================================================
+    function renderPill() {
+        const workoutSection = document.getElementById('workout-section');
+        const isWorkoutPage = workoutSection && workoutSection.classList.contains('active');
+        if (!isWorkoutPage || !currentWorkout || !currentWorkout.exercises || !currentWorkout.exercises.length) {
+            if (pillFloat) pillFloat.classList.remove('visible');
             return;
         }
-    } else {
-        navigationStack = ['dashboard'];
-        localStorage.setItem('workout_navigation_stack', JSON.stringify(navigationStack));
-        showSection('dashboard', true);
-    }
-});
-
-// ================================================================
-// 1. READINESS TOGGLE – Show/hide detailed breakdown
-// ================================================================
-function toggleReadinessDetails() {
-    const details = document.getElementById('readinessDetails');
-    if (!details) return;
-    const isOpen = details.style.display !== 'none';
-    details.style.display = isOpen ? 'none' : 'block';
-    const toggleBtn = document.querySelector('.readiness-toggle');
-    if (toggleBtn) {
-        toggleBtn.textContent = isOpen ? 'What is this?' : 'Hide details';
-    }
-}
-
-// ================================================================
-// 2. PROGRESS PILL – Core functionality
-// ================================================================
-let pillExercises = [];
-let viewportIndex = 0;
-let pillObserver = null;
-
-function initProgressPill(exercises) {
-    pillExercises = exercises;
-    renderPillSegments();
-    updatePillCount();
-    setupPillObserver();
-}
-
-function renderPillSegments() {
-    const container = document.getElementById('segments');
-    if (!container) return;
-    container.innerHTML = '';
-    pillExercises.forEach((ex, idx) => {
-        const seg = document.createElement('div');
-        let cls = `seg ${ex.status}`;
-        if (idx === viewportIndex) cls += ' in-view';
-        seg.className = cls;
-        seg.dataset.name = ex.name;
-        seg.title = `${ex.name}: ${getStatusLabel(ex.status)}`;
-        seg.addEventListener('click', function(e) {
-            e.stopPropagation();
-            scrollToExercise(idx);
-        });
-        container.appendChild(seg);
-    });
-}
-
-function updatePillCount() {
-    const done = pillExercises.filter(e => e.status === 'done').length;
-    const total = pillExercises.length;
-    const doneEl = document.getElementById('doneCount');
-    const totalEl = document.getElementById('totalCount');
-    if (doneEl) doneEl.textContent = done;
-    if (totalEl) totalEl.textContent = total;
-}
-
-function getStatusLabel(status) {
-    const labels = {
-        done: 'Done',
-        'in-progress': 'In Progress',
-        skipped: 'Skipped',
-        test: '1RM Test',
-        pending: 'Pending'
-    };
-    return labels[status] || status;
-}
-
-function scrollToExercise(idx) {
-    const cards = document.querySelectorAll('.exercise-item, .card[data-index]');
-    if (cards[idx]) {
-        cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        viewportIndex = idx;
-        renderPillSegments();
-        cards.forEach((card, i) => {
-            card.classList.toggle('in-view', i === viewportIndex);
-        });
-    }
-}
-
-function setupPillObserver() {
-    if (pillObserver) {
-        pillObserver.disconnect();
-        pillObserver = null;
-    }
-    const cards = document.querySelectorAll('.exercise-item, .card[data-index]');
-    if (!cards.length) return;
-
-    const options = {
-        root: null,
-        rootMargin: '0px 0px -30px 0px',
-        threshold: [0.1, 0.3, 0.5, 0.7, 1.0]
-    };
-
-    pillObserver = new IntersectionObserver((entries) => {
-        const ratios = {};
-        const centers = {};
-        entries.forEach(entry => {
-            const idx = parseInt(entry.target.dataset.index) || 
-                        Array.from(cards).indexOf(entry.target);
-            ratios[idx] = entry.intersectionRatio;
-            const rect = entry.boundingClientRect;
-            centers[idx] = rect.top + rect.height / 2;
-        });
-
-        let bestIdx = 0;
-        let bestScore = -Infinity;
-        const viewportCenter = window.innerHeight / 2;
-
-        for (let i = 0; i < cards.length; i++) {
-            const ratio = ratios[i] || 0;
-            const center = centers[i] || (i * 100);
-            const distanceFactor = 1 - Math.abs(center - viewportCenter) / viewportCenter;
-            const score = ratio * 2 + distanceFactor * 0.5;
-            if (score > bestScore) {
-                bestScore = score;
-                bestIdx = i;
-            }
-        }
-
-        if (bestScore < 0.1) bestIdx = 0;
-
-        if (bestIdx !== viewportIndex) {
-            viewportIndex = bestIdx;
-            renderPillSegments();
-            cards.forEach((card, i) => {
-                card.classList.toggle('in-view', i === viewportIndex);
+        if (!pillFloat) initDOM();
+        pillFloat.classList.add('visible');
+        const exercises = currentWorkout.exercises;
+        totalCountEl.textContent = exercises.length;
+        let scrollTop = segmentsContainer.scrollTop;
+        segmentsContainer.innerHTML = '';
+        exercises.forEach((ex, index) => {
+            const status = getExerciseStatus(ex);
+            const size = getExerciseSize(ex);
+            const seg = document.createElement('div');
+            seg.className = `segment ${status} size-${size}`;
+            seg.dataset.index = index;
+            const statusLabel = status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ');
+            seg.dataset.tooltip = `${ex.name}: ${statusLabel}`;
+            seg.setAttribute('role', 'button');
+            seg.setAttribute('tabindex', '0');
+            seg.setAttribute('aria-label', `Navigate to ${ex.name}`);
+            seg.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const idx = parseInt(this.dataset.index);
+                const target = document.getElementById(`exercise_${idx}`);
+                if (target) {
+                    const topOffset = CONFIG.scrollOffset;
+                    const elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+                    window.scrollTo({ top: elementPosition - topOffset, behavior: 'smooth' });
+                    // Open logger if available
+                    if (typeof openLoggerForExercise === 'function') {
+                        setTimeout(() => openLoggerForExercise(idx), 100);
+                    }
+                    this.classList.add('clicked');
+                    setTimeout(() => this.classList.remove('clicked'), 300);
+                }
             });
-        }
-    }, options);
-
-    cards.forEach(card => pillObserver.observe(card));
-}
-
-// ================================================================
-// 3. KEYBOARD NAVIGATION – Arrow keys for progress pill
-// ================================================================
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        const nextIdx = (viewportIndex + 1) % pillExercises.length;
-        scrollToExercise(nextIdx);
-    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        const prevIdx = (viewportIndex - 1 + pillExercises.length) % pillExercises.length;
-        scrollToExercise(prevIdx);
-    }
-});
-
-// ================================================================
-// 4. SPRING TOGGLES – Physics-based switch animation
-// ================================================================
-class Spring {
-    constructor({ stiffness = 180, damping = 12, mass = 1 } = {}) {
-        this.stiffness = stiffness;
-        this.damping = damping;
-        this.mass = mass;
-        this.pos = 0;
-        this.vel = 0;
-        this.target = 0;
-    }
-    update(dt) {
-        const force = -this.stiffness * (this.pos - this.target);
-        const damp = -this.damping * this.vel;
-        const accel = (force + damp) / this.mass;
-        this.vel += accel * dt;
-        this.pos += this.vel * dt;
-        return this.pos;
-    }
-    isAtRest() {
-        return Math.abs(this.pos - this.target) < 0.001 && Math.abs(this.vel) < 0.001;
-    }
-}
-
-function springToggle(el) {
-    const isActive = el.classList.toggle('active');
-    const knob = el.querySelector('.knob');
-    if (!knob) {
-        const slider = el.querySelector('.slider');
-        if (slider) {
-            slider.style.background = isActive ? '#2563eb' : '#cbd5e1';
-        }
-        return;
-    }
-    const targetPos = isActive ? 20 : 0;
-    if (!el._spring) {
-        el._spring = new Spring({ stiffness: 180, damping: 12 });
-        el._spring.target = targetPos;
-        el._spring.pos = targetPos;
-        knob.style.transform = `translateX(${targetPos}px)`;
-        return;
-    }
-    const spring = el._spring;
-    spring.target = targetPos;
-    if (el._raf) cancelAnimationFrame(el._raf);
-    let lastTime = performance.now();
-
-    function animate(time) {
-        const dt = Math.min((time - lastTime) / 1000, 0.05);
-        lastTime = time;
-        const pos = spring.update(dt);
-        knob.style.transform = `translateX(${pos}px)`;
-        if (!spring.isAtRest()) {
-            el._raf = requestAnimationFrame(animate);
-        } else {
-            knob.style.transform = `translateX(${spring.target}px)`;
-            el._raf = null;
-        }
-    }
-    el._raf = requestAnimationFrame(animate);
-    el.setAttribute('role', 'switch');
-    el.setAttribute('aria-checked', isActive);
-}
-
-// Initialize all spring toggles on load
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.toggle-spring').forEach(el => {
-        const knob = el.querySelector('.knob');
-        if (!knob) return;
-        const isActive = el.classList.contains('active');
-        const pos = isActive ? 20 : 0;
-        knob.style.transform = `translateX(${pos}px)`;
-        el._spring = new Spring({ stiffness: 180, damping: 12 });
-        el._spring.target = pos;
-        el._spring.pos = pos;
-        el.setAttribute('role', 'switch');
-        el.setAttribute('aria-checked', isActive);
-    });
-});
-
-// ================================================================
-// 5. THEME SWITCHING
-// ================================================================
-function setTheme(color) {
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.classList.contains(`theme-${color}`)) {
-            btn.classList.add('active');
-        }
-    });
-    document.documentElement.setAttribute('data-theme', color);
-    localStorage.setItem('workoutTheme', color);
-}
-
-// ================================================================
-// 6. LIBRARY GROUP TOGGLES
-// ================================================================
-function toggleGroup(header) {
-    header.classList.toggle('collapsed');
-}
-
-function expandAllGroups() {
-    document.querySelectorAll('.library-group-header').forEach(h => h.classList.remove('collapsed'));
-}
-
-function collapseAllGroups() {
-    document.querySelectorAll('.library-group-header').forEach(h => h.classList.add('collapsed'));
-}
-
-// ================================================================
-// 7. DROP ZONE (drag and drop for import)
-// ================================================================
-document.addEventListener('DOMContentLoaded', function() {
-    const dropZone = document.getElementById('dropZone');
-    if (dropZone) {
-        dropZone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('dragover');
+            seg.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const segs = segmentsContainer.querySelectorAll('.segment');
+                    const currentIdx = Array.from(segs).indexOf(this);
+                    let newIdx = currentIdx + (e.key === 'ArrowDown' ? 1 : -1);
+                    if (newIdx < 0) newIdx = segs.length - 1;
+                    if (newIdx >= segs.length) newIdx = 0;
+                    const targetSeg = segs[newIdx];
+                    if (targetSeg) targetSeg.click();
+                }
+            });
+            segmentsContainer.appendChild(seg);
         });
-        dropZone.addEventListener('dragleave', function(e) {
-            this.classList.remove('dragover');
-        });
-        dropZone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length) {
-                alert('File dropped: ' + files[0].name + '\n(Import would happen here)');
+        if (scrollTop > 0) segmentsContainer.scrollTop = scrollTop;
+        updateActiveSegment();
+    }
+
+    // ====================================================================
+    //  ACTIVE SEGMENT DETECTION (hysteresis + throttle)
+    // ====================================================================
+    function updateActiveSegment() {
+        if (updatePending) return;
+        updatePending = true;
+        requestAnimationFrame(() => {
+            updatePending = false;
+            const segs = segmentsContainer.querySelectorAll('.segment');
+            if (!segs.length) return;
+            const viewportCenter = window.innerHeight / 2;
+            let bestIndex = -1, bestDistance = Infinity;
+            const cards = document.querySelectorAll('.exercise-item');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+                const cardCenter = rect.top + rect.height / 2;
+                const distance = Math.abs(cardCenter - viewportCenter);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    bestIndex = parseInt(card.dataset.index);
+                }
+            });
+            if (bestIndex === -1) return;
+            if (bestIndex !== activeIndex) {
+                const currentDist = activeIndex !== -1 ? (() => {
+                    const card = document.querySelector(`.exercise-item[data-index="${activeIndex}"]`);
+                    if (card) {
+                        const rect = card.getBoundingClientRect();
+                        if (rect.bottom >= 0 && rect.top <= window.innerHeight) {
+                            return Math.abs((rect.top + rect.height/2) - viewportCenter);
+                        }
+                    }
+                    return Infinity;
+                })() : Infinity;
+                if (bestDistance < currentDist - CONFIG.hysteresisThreshold || activeIndex === -1) {
+                    activeIndex = bestIndex;
+                    segs.forEach((seg, idx) => seg.classList.toggle('active', idx === activeIndex));
+                    activeIndexEl.textContent = activeIndex + 1;
+                    log('Active index changed to', activeIndex);
+                }
             }
         });
     }
 
-    // ================================================================
-    // 8. PROGRESS PILL – Auto-initialize with exercise data
-    // ================================================================
-    // This will be called by your existing workout rendering functions.
-    // If you have a function that builds the exercise list, call initProgressPill() after it.
-    // Example: after rendering exercises, call:
-    // initProgressPill(exercisesArray);
-    // Where exercisesArray is an array of { name, status } objects.
-    // The status can be: 'done', 'in-progress', 'skipped', 'test', 'pending'
-    console.log('✅ Step 8 complete – all new JavaScript added.');
-});
+    // ====================================================================
+    //  OBSERVER SETUP (IntersectionObserver + fallback)
+    // ====================================================================
+    function setupObserver() {
+        if (observer) observer.disconnect();
+        const cards = document.querySelectorAll('.exercise-item');
+        if (!cards.length) return;
+        if ('IntersectionObserver' in window) {
+            observer = new IntersectionObserver(() => {
+                updateActiveSegment();
+            }, { threshold: CONFIG.intersectionThresholds });
+            cards.forEach(card => observer.observe(card));
+            log('IntersectionObserver active');
+        } else if (CONFIG.fallbackToScroll) {
+            const onScroll = () => {
+                if (scrollRaf) cancelAnimationFrame(scrollRaf);
+                scrollRaf = requestAnimationFrame(() => {
+                    updateActiveSegment();
+                    scrollRaf = null;
+                });
+            };
+            window.addEventListener('scroll', onScroll, { passive: true });
+            log('Fallback scroll listener active');
+        }
+    }
+
+    function reobserve() {
+        setTimeout(() => { setupObserver(); }, 100);
+    }
+
+    // ====================================================================
+    //  RESIZE HANDLER (dynamic CSS re‑injection)
+    // ====================================================================
+    function onResize() {
+        if (resizeRaf) cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(() => {
+            injectCSS();
+            resizeRaf = null;
+        });
+    }
+
+    // ====================================================================
+    //  HOOKS INTO ALL APP FUNCTIONS
+    // ====================================================================
+    const functionNames = [
+        'showSection',
+        'updateTodaysWorkout',
+        'saveExercisePerformance',
+        'skipExercise',
+        'generateNextWorkout',
+        'completeWorkout',
+        'removeExerciseFromWorkout',
+        'addExerciseToCurrentWorkout'
+    ];
+    functionNames.forEach(name => {
+        const orig = window[name];
+        if (typeof orig === 'function') {
+            window[name] = function(...args) {
+                const result = orig.apply(this, args);
+                setTimeout(() => {
+                    renderPill();
+                    reobserve();
+                }, 100);
+                return result;
+            };
+        }
+    });
+
+    // ====================================================================
+    //  MUTATION OBSERVER (fallback for DOM changes)
+    // ====================================================================
+    const workoutContainer = document.getElementById('exerciseList');
+    if (workoutContainer) {
+        const mutObserver = new MutationObserver(() => {
+            if (window._pillMutTimer) clearTimeout(window._pillMutTimer);
+            window._pillMutTimer = setTimeout(() => {
+                renderPill();
+                reobserve();
+                injectCSS();
+            }, 200);
+        });
+        mutObserver.observe(workoutContainer, { childList: true, subtree: true, attributes: true });
+    }
+
+    // ====================================================================
+    //  WINDOW EVENTS
+    // ====================================================================
+    window.addEventListener('resize', onResize, { passive: true });
+
+    // ====================================================================
+    //  INITIALIZATION
+    // ====================================================================
+    function init() {
+        if (isInitialized) return;
+        isInitialized = true;
+        injectCSS();
+        initDOM();
+        setTimeout(() => {
+            renderPill();
+            reobserve();
+        }, 300);
+        log('Pill initialized');
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    // ====================================================================
+    //  PUBLIC API
+    // ====================================================================
+    window.refreshPill = function() {
+        renderPill();
+        reobserve();
+        injectCSS();
+    };
+
+    window.setActiveSegment = function(index) {
+        if (index < 0 || index >= segmentsContainer.querySelectorAll('.segment').length) return;
+        activeIndex = index;
+        const segs = segmentsContainer.querySelectorAll('.segment');
+        segs.forEach((seg, idx) => seg.classList.toggle('active', idx === activeIndex));
+        activeIndexEl.textContent = activeIndex + 1;
+    };
+
+    window.getPillConfig = function() { return CONFIG; };
+
+    // ====================================================================
+    //  CLEANUP ON PAGE UNLOAD
+    // ====================================================================
+    window.addEventListener('beforeunload', function() {
+        if (observer) observer.disconnect();
+        if (scrollRaf) cancelAnimationFrame(scrollRaf);
+        if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    });
+
+})();
 </script>
 </body>
 </html>
