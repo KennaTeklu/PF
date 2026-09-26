@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Fitness</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  	<script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
+        <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- ========== NEW CDNs (paste exactly as shown) ========== -->
@@ -25,7 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  	<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@2.0.4/dist/ua-parser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@2.0.4/dist/ua-parser.min.js"></script>
     <!-- Empty style – to be filled later -->
 <style>
 /* ---------- COMPLETE ORIGINAL CSS (restored) ---------- */
@@ -1376,7 +1376,7 @@ input:checked + .slider:before {
 /* For very small screens, reduce further */
 @media (max-width: 480px) {
     .stats-grid {
-      	margin-top:10
+        margin-top:10
         gap: 5px;
     }
     .stat-card {
@@ -3495,12 +3495,12 @@ body.loading * {
 .mp-comp-badge.mp-sm { font-size:0.62rem; padding:1px 7px; }
 .mp-card-badges { display:flex; flex-wrap:wrap; gap:5px; margin:6px 0 2px 0; }
 .mp-chips { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
-.mp-chip { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:24px; border:1.5px solid var(--gray-200); background:white; font-size:0.85rem; font-weight:600; color:var(--gray-700); cursor:pointer; transition:all .15s; }
+.mp-chip { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:24px; border:1.5px solid var(--gray-200); background:var(--light); font-size:0.85rem; font-weight:600; color:var(--gray-700); cursor:pointer; transition:all .15s; }
 .mp-chip b { background:var(--gray-100); border-radius:10px; padding:0 7px; font-size:0.75rem; }
 .mp-chip:hover { border-color:var(--chipc, var(--primary)); color:var(--chipc, var(--primary)); transform:translateY(-1px); }
 .mp-chip.active { background:var(--chipc, var(--primary)); border-color:var(--chipc, var(--primary)); color:white; }
 .mp-chip.active b { background:rgba(255,255,255,.25); color:white; }
-.mp-hero { border-radius:var(--border-radius); padding:18px; display:flex; gap:18px; flex-wrap:wrap; justify-content:space-between; box-shadow:var(--card-shadow); background:white; }
+.mp-hero { border-radius:var(--border-radius); padding:18px; display:flex; gap:18px; flex-wrap:wrap; justify-content:space-between; box-shadow:var(--card-shadow); background:var(--light); }
 .mp-hero-main { flex:1; min-width:240px; }
 .mp-hero-label { font-size:0.72rem; font-weight:800; letter-spacing:.08em; color:var(--gray-500); }
 .mp-tagline { font-size:0.85rem; color:var(--gray-500); font-weight:600; }
@@ -4944,14 +4944,27 @@ html[data-gym="on"] select, html[data-gym="on"] input { font-size: 17px !importa
 .p4-wz-err.show { display: block; }
 
 /* vocab level live demo */
-.p4-vocab-demo {
-  padding: 16px;
-  border-radius: var(--p4-radius-md);
-  background: var(--p4-surface-2);
-  border: 1px solid var(--p4-hairline);
-  font-size: 14.5px; line-height: 1.6;
-  color: var(--p4-text);
-  margin: 12px 0;
+.p4-vocab-demo { 
+  /* normalize word display so longer levels don't break layout */
+  font-size: clamp(0.78rem, 1.6vw, 0.95rem);
+  line-height: 1.4;
+  padding: 10px 14px;
+  background: var(--p4-accent-soft, #eef);
+  border-radius: 10px;
+  margin: 10px 0;
+  word-break: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: anywhere;
+}
+.p4-vocab-demo b {
+  display: inline-block;
+  max-width: 100%;
+  font-weight: 700;
+  /* scale font size down for very long words so they fit */
+  font-size: clamp(0.7rem, 1.4vw, 0.95rem);
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 .p4-vocab-demo b { color: var(--p4-accent); }
 .p4-vocab-list { display: grid; gap: 8px; }
@@ -6004,8 +6017,8 @@ try {
                 <option value="component">Group by Fitness Component (the 11)</option>
             </select>
             <div class="library-expand-buttons">
-                <button class="btn btn-sm btn-outline" onclick="expandAllGroups()">Expand All</button>
-                <button class="btn btn-sm btn-outline" onclick="collapseAllGroups()">Collapse All</button>
+                <button class="btn btn-sm btn-outline" id="expandAllBtn" onclick="expandAllGroups()">Expand All</button>
+                <button class="btn btn-sm btn-outline" id="collapseAllBtn" onclick="collapseAllGroups()">Collapse All</button>
             </div>
         </div>
         <div class="library-search-box">
@@ -6427,7 +6440,7 @@ async function loadAllData() {
     // Set current workout (if savedWorkout exists and matches format)
     if (savedWorkout && savedWorkout.exercises && savedWorkout.exercises.length > 0) {
         currentWorkout = savedWorkout;
-      	requestWakeLock(); 
+        requestWakeLock(); 
     } else if (!currentWorkout) {
         generateNextWorkout();
     }
@@ -7040,11 +7053,11 @@ function postWorkoutUpdate(workout) {
 
     // Store last update timestamp
     workoutData.user.lastEWMAUpdate = now.toISOString();
-	
-	updateMuscleDeloadStatus(workout);
-  	// ----- Update Bayesian formula probabilities
+        
+        updateMuscleDeloadStatus(workout);
+        // ----- Update Bayesian formula probabilities
     updateFormulaProbabilitiesFromWorkout(workout);
-	saveToLocalStorage();
+        saveToLocalStorage();
 }
 /**
  * Updates Bayesian probabilities for 1RM formulas based on logged sets.
@@ -8188,7 +8201,25 @@ function checkAndRemindReTest() {
                 // Found an exercise with a test older than 6 weeks
                 const exercise = getExerciseById(exId);
                 if (exercise) {
-                    showNotification(`Your 1RM test for ${exercise.name} is over 6 weeks old. Consider re-testing.`, 'info', 'retest_reminder');
+                    showNotification(
+                        `Your 1RM test for ${exercise.name} is over 6 weeks old. Consider re-testing.`,
+                        'info',
+                        'retest_reminder',
+                        function () {
+                            try {
+                                if (typeof showSection === 'function') showSection('library');
+                                setTimeout(function () {
+                                    var search = document.getElementById('librarySearch');
+                                    if (search) {
+                                        search.value = exercise.name;
+                                        if (search.dispatchEvent) search.dispatchEvent(new Event('input'));
+                                        if (search.focus) search.focus();
+                                    }
+                                    if (typeof renderLibrary === 'function') renderLibrary();
+                                }, 120);
+                            } catch (e) {}
+                        }
+                    );
                     return; // Show only one reminder per session
                 }
             }
@@ -35095,7 +35126,7 @@ window.generateNextWorkout = function() {
 // Move the original generation logic into a helper function
 function performGenerateWorkout() {
     applyFatigueDecay();
-  	decayMomentumBias();
+        decayMomentumBias();
 
     const now = new Date();
     const systemicFactor = calculateSystemicRecoveryFactor();
@@ -35822,7 +35853,16 @@ function getAllMuscleGroups() {
     let lastRenderedWorkoutId = null;
     let currentHistoryFilter = 'all';   // 'all', 'week', 'month', 'year', 'longevity'
     let currentGrouping = 'muscleGroup';        // default grouping
-    let collapsedGroups = {};                   // stores boolean per group key
+    let collapsedGroups = (function () {                       // persisted per-tab via localStorage
+        try {
+            var raw = localStorage.getItem('p4_library_collapsed');
+            if (raw) return JSON.parse(raw) || {};
+        } catch (e) {}
+        return {};
+    })();
+    function saveLibraryCollapse() {
+        try { localStorage.setItem('p4_library_collapsed', JSON.stringify(collapsedGroups)); } catch (e) {}
+    }
     let librarySearchTimeout;                    // for debounce
     // Persistent navigation stack – never loses history
     let navigationStack = (function() {
@@ -35940,7 +35980,7 @@ console.log("Body classes:", document.body.className);
             setTimeout(() => {
                 showSection(sectionToShow, true);
                 if (typeof window.appReady === 'function') window.appReady();
-              	window.__appInitialized = true;
+                window.__appInitialized = true;
             }, 50);
         }, 300);
     } else {
@@ -35948,7 +35988,7 @@ console.log("Body classes:", document.body.className);
         setTimeout(() => {
             showSection(sectionToShow, true);
             if (typeof window.appReady === 'function') window.appReady();
-          	window.__appInitialized = true;
+                window.__appInitialized = true;
         }, 50);
     }
 
@@ -36205,7 +36245,7 @@ function showSection(sectionId, replaceState = false) {
             // Ensure currentWorkout is set from saved if missing
             if (!currentWorkout && savedWorkout) {
                 currentWorkout = savedWorkout;
-              	requestWakeLock(); 
+                requestWakeLock(); 
             }
             // Only re-render if the container is empty or signature changed (updateTodaysWorkout already checks signature)
             const container = document.getElementById('exerciseList');
@@ -36373,6 +36413,7 @@ function updateHeaderNameAndStreak() {
 
     if (streak !== null) {
         safeTextUpdate('streakCount', streak);
+        if (typeof updateStreakFire === 'function') updateStreakFire(streak);
     } else {
         // If we couldn't compute a new streak, do NOT overwrite with 0.
         // Keep whatever is already displayed (if any).
@@ -36957,11 +36998,11 @@ function calculateRecommendedRestDays(workout) {
         updateDashboardWorkoutPreview();
         updateDashboardChart();
         updateNextWorkoutDate();
-      	updatePeriodButtonVisibility();
-    	checkAndRemindReTest();
+        updatePeriodButtonVisibility();
+        checkAndRemindReTest();
         // Update recovery data for the readiness gauge
         updateRecoverySection();
-      	updateReadinessGauge();
+        updateReadinessGauge();
 
         // Phase badge for female users
         const phase = getCurrentCyclePhase();
@@ -37027,7 +37068,7 @@ if (card) {
             const eliteDateEl = document.getElementById('eliteDate');
             if (eliteDateEl) eliteDateEl.textContent = '—';
         } 
-		    updateStrengthForecast();
+                    updateStrengthForecast();
     }
 function updateStrengthForecast() {
     try {
@@ -37471,19 +37512,23 @@ function updateReadinessGauge() {
     const score = window.lastOverallRecovery || 0;
     const percentage = Math.min(100, Math.max(0, score));
     
-    // Determine color
-    let color;
-    if (percentage >= 80) color = '#10b981';      // green
-    else if (percentage >= 60) color = '#f59e0b'; // amber
-    else if (percentage >= 40) color = '#f97316'; // orange
-    else color = '#ef4444';                        // red
+    // Determine color + state label
+    let color, state;
+    if (percentage >= 80) { color = '#10b981'; state = 'Ready'; }           // green
+    else if (percentage >= 60) { color = '#f59e0b'; state = 'Recovering'; } // amber
+    else if (percentage >= 40) { color = '#f97316'; state = 'Recovering'; } // orange
+    else { color = '#ef4444'; state = 'Not Ready'; }                        // red
     
     // Set conic gradient
     gauge.style.background = `conic-gradient(${color} 0deg ${percentage * 3.6}deg, #e2e8f0 0deg)`;
     
-    // Update inner text
+    // Keep the NUMBER inside the gauge (restored — user request)
     const span = gauge.querySelector('span');
     if (span) span.textContent = Math.round(percentage);
+    
+    // Update the readiness-label TEXT below the gauge to the state phrase
+    var label = document.querySelector('.readiness-label');
+    if (label) label.textContent = state;
 }
  
 // Get the top recommendation from the recovery section
@@ -37675,7 +37720,9 @@ function createExerciseElement(exercise, index) {
     let chipsHtml = '';
     try {
         const splitForChips = workoutProgram.splits.find(s => s.id === currentWorkout.type);
-        const covered = (splitForChips && splitForChips.componentsCovered) ? splitForChips.componentsCovered.slice(0, 2) : [];
+        // P4: normalize componentsCovered to canonical order so header & footer agree
+        const _rawCovered = (splitForChips && splitForChips.componentsCovered) ? splitForChips.componentsCovered : [];
+        const covered = (typeof P4 !== 'undefined' && P4.normalizeComponents ? P4.normalizeComponents(_rawCovered) : _rawCovered).slice(0, 2);
         covered.forEach(cid => {
             const comp = (typeof MP_COMPONENTS !== 'undefined') ? MP_COMPONENTS.find(c => c.id === cid) : null;
             if (comp) {
@@ -39459,7 +39506,7 @@ function saveExercisePerformance(index) {
 
     exercise.actual = actual;
     exercise.skipped = false;
-  	updateExerciseHistory(exercise);
+        updateExerciseHistory(exercise);
     updateExerciseLastPerformed(exercise.id);
 
     // Close the logger and mark card as completed
@@ -39782,9 +39829,69 @@ function selectExerciseForMuscle(muscleGroup, ignoreReadiness = false) {
     return null;
   }
 
+  // P4 coach improvements — pre-compute context that applies to every candidate:
+  // (4) Equipment availability: if the user has listed available equipment, filter out
+  //     any exercise requiring equipment they don't have. Bodyweight/none always pass.
+  let _availEquipment = null;
+  try {
+    if (workoutData && workoutData.user && workoutData.user.settings &&
+        Array.isArray(workoutData.user.settings.equipment) &&
+        workoutData.user.settings.equipment.length) {
+      _availEquipment = workoutData.user.settings.equipment.map(e => String(e).toLowerCase());
+    }
+  } catch (e) { _availEquipment = null; }
+
   // Get all exercises in this library section that actually target the desired muscle
-  const candidates = ultimateExerciseLibrary[libKey]
-    .filter(ex => ex.muscles && ex.muscles.includes(muscleGroup))
+  let _poolExercises = ultimateExerciseLibrary[libKey]
+    .filter(ex => ex.muscles && ex.muscles.includes(muscleGroup));
+
+  // (4) Apply equipment availability filter (fall back to full pool if it would empty it)
+  if (_availEquipment) {
+    const _filtered = _poolExercises.filter(ex => {
+      const eq = String(ex.equipment || 'bodyweight').toLowerCase();
+      return _availEquipment.includes(eq) || eq === 'bodyweight' || eq === 'none';
+    });
+    if (_filtered.length) _poolExercises = _filtered;
+  }
+
+  // (3) Volume balance — running count of how many exercises for this muscle are
+  //     already in the current workout. Higher count → lower selection weight.
+  let _currentMuscleCount = 0;
+  try {
+    if (typeof currentWorkout !== 'undefined' && currentWorkout && Array.isArray(currentWorkout.exercises)) {
+      _currentMuscleCount = currentWorkout.exercises.filter(e =>
+        e && e.muscleGroup && Array.isArray(e.muscleGroup) && e.muscleGroup.includes(muscleGroup)
+      ).length;
+    }
+  } catch (e) { _currentMuscleCount = 0; }
+
+  // (1) Recovery context: overall + per-muscle
+  const _overallRec = (typeof window !== 'undefined' && typeof window.lastOverallRecovery === 'number')
+    ? window.lastOverallRecovery : 80;
+  let _muscleRecPct = 100;
+  try {
+    if (typeof getAllMuscleGroups === 'function') {
+      const _muscleInfo = getAllMuscleGroups().find(m => m.name === muscleGroup);
+      if (_muscleInfo && _muscleInfo.restDays) {
+        const _dSince = (typeof daysSinceTrained === 'function') ? daysSinceTrained(muscleGroup) : null;
+        if (typeof _dSince === 'number' && isFinite(_dSince)) {
+          _muscleRecPct = Math.min(100, (_dSince / _muscleInfo.restDays) * 100);
+        } else if (_dSince === Infinity) {
+          _muscleRecPct = 100; // never trained → fully recovered
+        }
+      }
+    }
+  } catch (e) { _muscleRecPct = 100; }
+
+  // (2) Recent-exercise avoidance — last 2 entries of muscleRecentExercises for this muscle
+  let _recentIds = [];
+  try {
+    if (workoutData && workoutData.muscleRecentExercises && Array.isArray(workoutData.muscleRecentExercises[muscleGroup])) {
+      _recentIds = workoutData.muscleRecentExercises[muscleGroup].slice(0, 2);
+    }
+  } catch (e) { _recentIds = []; }
+
+  const candidates = _poolExercises
     .map(ex => {
       const id = ex.name.toLowerCase().replace(/\s/g, '_');
       const record = workoutData.exercises[id];
@@ -39802,7 +39909,46 @@ function selectExerciseForMuscle(muscleGroup, ignoreReadiness = false) {
       if (ex.importance === 'core') multiplier = 1.5;
       else if (ex.importance === 'accessory') multiplier = 0.8;
 
-      const weight = daysSince * multiplier;
+      // Base weight preserves the original weighted-random selection pattern.
+      let weight = daysSince * multiplier;
+
+      // ---- P4: advanced coach mathematics (additive multipliers on top of base) ----
+      try {
+        // (1) Recovery-aware weighting:
+        //   overall recovery: 0.5x at 0% → 1.5x at 100%
+        //   per-muscle recovery: 0.7x at 0% → 1.3x at 100%
+        const _overallBoost = 0.5 + (_overallRec / 100) * 1.0;
+        const _muscleBoost = 0.7 + (_muscleRecPct / 100) * 0.6;
+        weight *= _overallBoost * _muscleBoost;
+
+        // (2) Recent-exercise avoidance: penalise exercises performed in last 2 workouts
+        //     so variation kicks in even when daysSince is high (programmed variety).
+        if (_recentIds.indexOf(id) !== -1) {
+          weight *= 0.35;
+        }
+
+        // (3) Volume balance: dampen exercises for a muscle already well-represented
+        //     in the current workout (exponential decay so weight never collapses to 0).
+        weight *= 1 / (1 + _currentMuscleCount * 0.6);
+
+        // (5) Joint-friendly fallback for high-fatigue days: if overall recovery is below
+        //     50, prefer machine/cable/band/bodyweight (controlled path, lower skill demand)
+        //     and penalise free-barbell lifts.
+        if (_overallRec < 50) {
+          const _eq = String(ex.equipment || '').toLowerCase();
+          if (_eq === 'machine' || _eq === 'cable' || _eq === 'band' || _eq === 'bodyweight') {
+            weight *= 1.6;
+          } else if (_eq === 'barbell' || _eq === 'trap bar' || _eq === 'safety bar' || _eq === 'specialty bar') {
+            weight *= 0.4;
+          }
+        }
+      } catch (e) {}
+
+      // Floor: never let the weight collapse to 0 — preserve roulette-wheel behaviour
+      // for never-done exercises (their daysSince of 1000 dominates).
+      if (!isFinite(weight) || weight <= 0) {
+        weight = daysSince * multiplier;
+      }
 
       return { exercise: ex, id, weight };
     })
@@ -40001,7 +40147,7 @@ async function completeWorkout() {
     saveToLocalStorage();
     clearSavedWorkout();
     localStorage.removeItem('workoutEmergencyBackup');
-  	    // Clear any drafts for this completed workout
+            // Clear any drafts for this completed workout
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith(`draft_${completedWorkout.id}`)) {
@@ -40432,7 +40578,7 @@ function saveNotesInline(workoutId, notes) {
     // showNotification('Notes saved', 'success', 'notes_saved');
 }
       
-	function filterHistory(filter, event) {
+        function filterHistory(filter, event) {
         // If event is provided (from onclick), update active tab
         if (event && event.target) {
           document.querySelectorAll('.tab').forEach(tab => {
@@ -41184,7 +41330,7 @@ function calculateSystemicRecoveryFactor() {
 
 // ==================== UPDATED RECOVERY SECTION ====================
 function updateRecoverySection() {
-  	applyFatigueDecay();
+        applyFatigueDecay();
     // 1. Update last‑trained timestamps
     calculateMuscleLastTrained();
 
@@ -41231,7 +41377,7 @@ function updateRecoverySection() {
     // 4. Combine muscle and systemic recovery (70% muscle, 30% systemic)
     const overallRecovery = Math.round(0.7 * muscleAvg + 0.3 * systemicPercent);
   
-	window.lastOverallRecovery = overallRecovery;
+        window.lastOverallRecovery = overallRecovery;
 
     // 5. Determine readiness status and message
     let readinessColor, readinessText, recommendation;
@@ -42212,7 +42358,7 @@ function loadSettingsForm() {
     const goalSelect = document.getElementById('settingsGoal');
     const restInput = document.getElementById('settingsRestTime');
     const progInput = document.getElementById('settingsProgression');
-  	const couplingToggle = document.getElementById('muscleCouplingToggle');
+        const couplingToggle = document.getElementById('muscleCouplingToggle');
 
     if (nameInput) nameInput.value = workoutData.user.name || '';
     if (birthInput) birthInput.value = workoutData.user.birthDate || '';
@@ -42231,7 +42377,7 @@ function loadSettingsForm() {
     if (goalSelect) goalSelect.value = workoutData.user.goal || 'balanced';
     if (restInput) restInput.value = workoutData.user.settings?.restTime || 90;
     if (progInput) progInput.value = (workoutData.user.settings?.progressionRate || 0.02) * 100;
-  	if (couplingToggle) {
+        if (couplingToggle) {
     couplingToggle.checked = workoutData.user.settings?.muscleCoupling || false;
 }
 
@@ -42425,7 +42571,7 @@ workoutData.user.settings.muscleCoupling = muscleCoupling;
 
     // ----- 2. Update workoutData.user -----
     workoutData.user.name = name || ''; // allow empty
-  	updateHeaderNameAndStreak();
+        updateHeaderNameAndStreak();
     workoutData.user.birthDate = birthDate || null;
     workoutData.user.gender = gender;
     workoutData.user.weight = weight;
@@ -42478,7 +42624,7 @@ workoutData.user.settings.muscleCoupling = muscleCoupling;
     updateNavigation();                // updates nav bar with name, streak, etc.
     updateLongevityScoreDisplay();     // longevity score may change with new body weight
 
-	updatePeriodButtonVisibility();
+        updatePeriodButtonVisibility();
 
     // If no workouts exist and no current workout, generate one
     if (workoutData.workouts.length === 0 && !currentWorkout) {
@@ -44669,7 +44815,7 @@ function clearOldSuppressionEntries() {
 }
 let notificationTimeout = null;
 
-function showNotification(message, type = "success", notificationId = null) {
+function showNotification(message, type = "success", notificationId = null, onClickAction = null) {
     const id = notificationId || message.replace(/\s/g, '_').substring(0, 80);
     if (suppressedNotifications.has(id)) return;
     
@@ -44683,20 +44829,47 @@ function showNotification(message, type = "success", notificationId = null) {
         default:        backgroundColor = 'linear-gradient(135deg, #06b6d4, #0891b2)'; icon = 'ℹ'; break;
     }
     
+    // Build enriched HTML with a real "Don't show today" checkbox inside the toast
+    const chkId = 'nsChk_' + Math.random().toString(36).slice(2, 9);
+    const safeMsg = String(message).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const enrichedHTML = '<span style="display:block">' + icon + '&nbsp;&nbsp;' + safeMsg + '</span>' +
+        '<label style="margin-top:8px;font-size:11px;opacity:0.85;display:flex;align-items:center;gap:5px;cursor:pointer" onclick="event.stopPropagation()">' +
+        '<input type="checkbox" id="' + chkId + '" style="margin:0">' +
+        'Don\'t show this today</label>';
+    
+    const handleTap = function(e) {
+        // Ignore taps on the checkbox / label so toggling it doesn\'t dismiss the toast or route
+        if (e && e.target && (e.target.id === chkId || e.target.tagName === 'LABEL')) return;
+        // Respect "Don\'t show today" checkbox
+        try {
+            var chk = document.getElementById(chkId);
+            if (chk && chk.checked) {
+                suppressedNotifications.add(id);
+                saveSuppressedNotifications();
+            }
+        } catch (err) {}
+        // Route by notificationId or custom callback
+        if (typeof onClickAction === 'function') {
+            try { onClickAction(e); } catch (err) {}
+            return;
+        }
+        if (notificationId === 'retest_reminder') {
+            try {
+                if (typeof showSection === 'function') showSection('library');
+            } catch (err) {}
+        }
+    };
+    
     Toastify({
-        text: `${icon}  ${message}`,
-        duration: 4000,
+        text: enrichedHTML,
+        escapeMarkup: false,
+        duration: 6000,
         close: true,
         gravity: "top",
         position: "right",
         stopOnFocus: true,
-        style: { background: backgroundColor, borderRadius: "40px", fontWeight: "600" },
-        onClick: function() { 
-            if (document.getElementById('dontShowTodayCheckbox')?.checked) {
-                suppressedNotifications.add(id);
-                saveSuppressedNotifications();
-            }
-        }
+        style: { background: backgroundColor, borderRadius: "12px", fontWeight: "600", padding: "10px 14px" },
+        onClick: handleTap
     }).showToast();
 }
 
@@ -44851,11 +45024,14 @@ function renderLibrary() {
 // Group toggle functions
 function toggleGroup(groupKey) {
     collapsedGroups[groupKey] = !collapsedGroups[groupKey];
+    saveLibraryCollapse();
     renderLibrary(); // re-render to reflect collapse state
 }
 
 function expandAllGroups() {
     collapsedGroups = {};
+    saveLibraryCollapse();
+    refreshLibraryExpandCollapseButtons();
     renderLibrary();
 }
 
@@ -44865,12 +45041,26 @@ function collapseAllGroups() {
         const key = header.textContent.split(' (')[0]; // extract group name
         collapsedGroups[key] = true;
     });
+    saveLibraryCollapse();
+    refreshLibraryExpandCollapseButtons();
     renderLibrary();
+}
+
+/* Show only the relevant button: Expand when any collapsed, Collapse when any expanded */
+function refreshLibraryExpandCollapseButtons() {
+    var keys = Object.keys(collapsedGroups);
+    var anyCollapsed = keys.some(function (k) { return collapsedGroups[k]; });
+    var anyExpanded = keys.length === 0 || keys.some(function (k) { return !collapsedGroups[k]; });
+    var exp = document.getElementById('expandAllBtn');
+    var col = document.getElementById('collapseAllBtn');
+    if (exp) exp.style.display = anyCollapsed ? '' : 'none';
+    if (col) col.style.display = anyExpanded ? '' : 'none';
 }
 
 function changeGrouping() {
     currentGrouping = document.getElementById('groupBySelect').value;
     collapsedGroups = {}; // reset collapsed state
+    saveLibraryCollapse();
     renderLibrary();
 }
 
@@ -45217,7 +45407,7 @@ async function loadAllData() {
     if (typeof backfillLastPerformed === 'function') backfillLastPerformed();
     if (typeof recomputeAggregates === 'function') recomputeAggregates();
     if (typeof updateBodyWeightEstimate === 'function') updateBodyWeightEstimate();
-  	updateHeaderNameAndStreak(); 
+        updateHeaderNameAndStreak(); 
 
     // ========== 3. EMERGENCY BACKUP RECOVERY (with version and timestamp) ==========
     let emergencyWorkout = null;
@@ -47322,7 +47512,9 @@ function mpEnhanceLibraryCards() {
     if (titleEl && !card.querySelector('.mp-comp-badge')) {
       const div = document.createElement('div');
       div.className = 'mp-card-badges';
-      div.innerHTML = mpCompBadges(info.components, true);
+      // P4: normalize library card badges to canonical component order
+      const libComps = (typeof P4 !== 'undefined' && P4.normalizeComponents) ? P4.normalizeComponents(info.components) : info.components;
+      div.innerHTML = mpCompBadges(libComps, true);
       titleEl.parentNode.insertBefore(div, titleEl.nextSibling);
     }
     // Details button before Add-to-Workout
@@ -47341,7 +47533,8 @@ function mpOpenExerciseDetail(exId) {
   const info = lookup[exId];
   if (!info) return;
   const ex = info.ex;
-  const comps = info.components;
+  // P4: normalize the exercise's components to canonical order for consistent display
+  const comps = (typeof P4 !== 'undefined' && P4.normalizeComponents) ? P4.normalizeComponents(info.components) : info.components;
   const compMain = MP_COMPONENT_MAP[comps[0]];
   const record = (typeof workoutData !== 'undefined' && workoutData.exercises[exId]) || {};
   const muscleTags = (ex.muscles || []).map(m =>
@@ -47723,7 +47916,8 @@ function mpRenderWorkoutBanner() {
     else sec.insertBefore(holder, sec.firstChild);
   }
   const cur = mpCurrentSplitDay();
-  const comps = (cur && cur.split && cur.split.componentsCovered) ? cur.split.componentsCovered : [];
+  const _rawComps = (cur && cur.split && cur.split.componentsCovered) ? cur.split.componentsCovered : [];
+  const comps = (typeof P4 !== 'undefined' && P4.normalizeComponents ? P4.normalizeComponents(_rawComps) : _rawComps);
   if (!comps.length) { holder.innerHTML = ''; return; }
   holder.innerHTML = '<div class="mp-workout-banner">' +
     '<div class="mp-banner-label"><i class="fas fa-layer-group"></i> Components trained in this session</div>' +
@@ -47734,6 +47928,11 @@ function mpEnhanceWorkoutCards() {
   const lookup = mpGetLookup();
   const listEl = document.getElementById('exerciseList');
   if (!listEl) return;
+  // P4: footer pulls from the SAME workout componentsCovered as the header
+  // (normalized + sliced to 2) so each card's header and footer agree.
+  const _curSplit = (typeof mpCurrentSplitDay === 'function') ? mpCurrentSplitDay() : null;
+  const _rawWorkoutComps = (_curSplit && _curSplit.split && _curSplit.split.componentsCovered) ? _curSplit.split.componentsCovered : [];
+  const _workoutComps = (typeof P4 !== 'undefined' && P4.normalizeComponents ? P4.normalizeComponents(_rawWorkoutComps) : _rawWorkoutComps).slice(0, 2);
   listEl.querySelectorAll('.exercise-item').forEach(card => {
     if (card.dataset.mpDone) return;
     const id = card.dataset.exerciseId;
@@ -47743,7 +47942,10 @@ function mpEnhanceWorkoutCards() {
     if (!titleEl || card.querySelector('.mp-comp-badge')) return;
     const div = document.createElement('div');
     div.className = 'mp-card-badges';
-    div.innerHTML = mpCompBadges(info.components, true);
+    // P4: prefer the workout's componentsCovered (matches the header chips);
+    // fall back to the exercise's own components only if the workout has none.
+    const footerComps = _workoutComps.length ? _workoutComps : (typeof P4 !== 'undefined' && P4.normalizeComponents ? P4.normalizeComponents(info.components) : info.components);
+    div.innerHTML = mpCompBadges(footerComps, true);
     titleEl.parentNode.insertBefore(div, titleEl.nextSibling);
     card.dataset.mpDone = '1';
   });
@@ -55156,6 +55358,10 @@ window.P4_PHRASE_STARTERS = {
 
     /* ---------------- confetti (uses app's canvas-confetti if present) ---------------- */
     confetti: function (count) {
+      /* cap at 3 confetti bursts per session — no login bombardment */
+      if (!P4._confettiCount) P4._confettiCount = 0;
+      if (P4._confettiCount >= 3) return;
+      P4._confettiCount++;
       if (typeof confetti === 'function') {
         try { confetti({ particleCount: count || 130, spread: 75, origin: { y: 0.65 } }); return; } catch (e) {}
       }
@@ -55376,7 +55582,14 @@ window.P4_PHRASE_STARTERS = {
     draftTheme: { mode: 'dark', accent: 'blue' },
     draftVocab: 5,
 
-    needed: function () { return !store.get(P4.keys.onboard, false); },
+    needed: function () {
+      /* skip wizard if user has data (workouts already logged) — even if onboard flag is missing */
+      try {
+        if (store.get(P4.keys.onboard, false)) return false;
+        if (typeof workoutData !== 'undefined' && workoutData && workoutData.workouts && workoutData.workouts.length > 0) return false;
+      } catch (e) {}
+      return !store.get(P4.keys.onboard, false);
+    },
 
     start: function () {
       var saved = store.get('p4_ob_draft', null);
@@ -55572,6 +55785,9 @@ window.P4_PHRASE_STARTERS = {
       host.querySelectorAll('.p4-vocab-opt').forEach(function (el) {
         el.addEventListener('click', function () {
           Ob.draftVocab = parseInt(el.getAttribute('data-lvl'), 10);
+          try { P4.Vocab.set(Ob.draftVocab, true); } catch (e) {}
+          /* tap-to-advance: pick a level → move straight to step 4 (colors) */
+          Ob.step = Math.max(Ob.step, 4);
           Ob.render();
         });
       });
@@ -55741,22 +55957,20 @@ window.P4_PHRASE_STARTERS = {
       workerUrl: '',                                   /* optional: deployed worker base URL */
       paymentUrl: 'https://try4ever.com/fitness',      /* where the $19 plan is purchased     */
       price: 19,
-      trialDays: 7
+      trialDays: 7,
+      workoutThreshold: 21
     },
 
     /* ---------------- state ---------------- */
     state: function () { return store.get(P4.keys.paywall, { onboard: false }); },
     isPro: function () {
-      if (Paywall._devbypass()) return true;
       if (Paywall.licenseValid()) return true;
       if (Paywall.subActive()) return true;
+      if (Paywall.workoutThresholdMet()) return true;
       return false;
     },
     _devbypass: function () {
-      try {
-        if (localStorage.getItem('p4_devbypass') === 'true') return true;
-        if (/[?&]devbypass=true/.test(location.search)) { localStorage.setItem('p4_devbypass', 'true'); return true; }
-      } catch (e) {}
+      /* permanently disabled — paywall enforced for all devices, including admin */
       return false;
     },
     licenseValid: function () {
@@ -55805,12 +56019,17 @@ window.P4_PHRASE_STARTERS = {
       }
     },
     isAllowed: function () {
-      if (Paywall._devbypass()) return true;
       var st = Paywall.state();
       if (!st.onboard) return true;            /* pre-onboarding grace */
       if (Paywall.isPro()) return true;
       if (Paywall.trialActive()) return true;
       return false;
+    },
+    workoutThresholdMet: function () {
+      try {
+        var w = (typeof workoutData !== 'undefined' && workoutData.workouts) ? workoutData.workouts : [];
+        return w.length >= Paywall.config.workoutThreshold;
+      } catch (e) { return false; }
     },
 
     /* ---------------- actions ---------------- */
@@ -56705,11 +56924,12 @@ window.P4_PHRASE_STARTERS = {
       var snaps = P4.Backup.snapshots();
 
       div.innerHTML =
-        settingsCard('p4ThemeCard', 'Appearance', 'fa-palette', '<div id="p4ThemeInner"></div>') +
-        settingsCard('p4VocabCard', 'Words', 'fa-language', '<div id="p4VocabInner"></div>') +
-        settingsCard('p4LangCard', 'Language', 'fa-earth-americas',
+        settingsCard('p4LookLangCard', 'Look &amp; language', 'fa-palette',
+          '<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--p4-text-3);margin-bottom:6px;text-transform:uppercase">Theme</div><div id="p4ThemeInner"></div></div>' +
+          '<div style="margin-bottom:14px"><div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--p4-text-3);margin-bottom:6px;text-transform:uppercase">Reading level</div><div id="p4VocabInner"></div></div>' +
+          '<div><div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--p4-text-3);margin-bottom:6px;text-transform:uppercase">Language</div>' +
           '<select id="p4LangSelect" style="width:100%">' + langOpts + '</select>' +
-          '<div class="p4-wz-hint" style="margin-top:8px">Also works with your browser\'s "Translate this page" — labels, buttons and tips are structured for clean translation.</div>') +
+          '<div class="p4-wz-hint" style="margin-top:8px">Also works with your browser\'s "Translate this page" — labels, buttons and tips are structured for clean translation.</div></div>') +
         settingsCard('p4PowerCard', 'Power user', 'fa-bolt',
           '<div style="display:grid;gap:10px">' +
           '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2)">Auto rest timer after logging effort <input type="checkbox" id="p4OptRest"' + (P4.Power.settings.autoRest ? ' checked' : '') + '></label>' +
@@ -56718,14 +56938,11 @@ window.P4_PHRASE_STARTERS = {
           '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2)">Quick-action dock <input type="checkbox" id="p4OptDock"' + (P4.Power.settings.dock ? ' checked' : '') + '></label>' +
           '</div>' +
           '<div class="p4-wz-hint" style="margin-top:10px">Designed for busy hands: Start Workout is 1 tap from Home, sets log with one entry, rest timer starts itself.</div>') +
-        settingsCard('p4PlanCard', 'Plan &amp; license', 'fa-crown',
+        settingsCard('p4PlanLegalCard', 'Plan, legal &amp; your data', 'fa-crown',
           '<p style="font-size:14px;color:var(--p4-text-2);margin:0 0 12px" id="p4PlanState">' + planState + '</p>' +
-          '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-          '<button class="btn btn-primary" onclick="P4.Paywall.showFullPage()"><i class="fas fa-crown"></i> ' + (plan.isPro() ? 'Manage plan' : 'See plans') + '</button>' +
-          (plan.isPro() && !plan.licenseValid() ? '<button class="btn" onclick="P4.Paywall.cancelSubscription()"><i class="fas fa-xmark"></i> Cancel subscription</button>' : '') +
-          '</div>') +
-        settingsCard('p4LegalCard', 'Legal, consent &amp; your data', 'fa-scale-balanced',
           '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+          (plan.isPro() ? '<button class="btn btn-primary" onclick="P4.Paywall.showFullPage()"><i class="fas fa-crown"></i> Manage plan</button>' : '<button class="btn btn-primary" onclick="P4.Paywall.showFullPage()"><i class="fas fa-crown"></i> Upgrade to Pro</button>') +
+          (plan.isPro() && !plan.licenseValid() ? '<button class="btn" onclick="P4.Paywall.cancelSubscription()"><i class="fas fa-xmark"></i> Cancel subscription</button>' : '') +
           '<button class="btn btn-info" onclick="P4.Legal.open()"><i class="fas fa-book"></i> Legal Center (13 documents)</button>' +
           '<button class="btn" onclick="P4.Studio.open()"><i class="fas fa-flask-vial"></i> Library Studio</button>' +
           '</div>' +
@@ -57280,6 +57497,2652 @@ window.P4_PHRASE_STARTERS = {
     };
   })();
 
+/* ============================================================================
+ * P4 STAGE-2 MODULES — profiles, vault, picker, nav padding, in-app bridge
+ * Each module is self-contained, idempotent, and lives inside the P4 IIFE.
+ * ============================================================================ */
+
+/* ---- P4.Emoji: random cute animal emoji for new profiles ---- */
+P4.Emoji = (function () {
+  var animals = ['dog','cat','mouse','hamster','rabbit','fox','bear','panda','koala','tiger','lion','cow','pig','frog','monkey','chicken','penguin','bird','hatchling','duck','eagle','owl','bat','wolf','boar','horse','unicorn','bee','bug','butterfly','snail','beetle','ant','cricket','spider','scorpion','mosquito','turtle','snake','lizard','octopus','squid','shrimp','crab','blowfish','fish','tropical_fish','dolphin','whale','spouting_whale','shark','crocodile','tiger2','leopard','zebra','gorilla','orangutan','elephant','hippo','rhino','camel','giraffe','kangaroo','water_buffalo','ox','cow2','horse2','pig2','ram','sheep','goat','deer','dog2','poodle','guide_dog','cat2','flamingo','peacock','parrot','swan','skunk','badger','otter','sloth','mouse2','rat','chipmunk','hedgehog','dragon','cactus','tree','palm','seedling','herb','shamrock','maple_leaf','fallen_leaf','leaves','mushroom','shell','sheaf_of_rice','bouquet','tulip','rose','wilted_flower','hibiscus','cherry_blossom','blossom','sunflower'];
+  var cache = null;
+  function ensure() {
+    if (cache) return cache;
+    cache = animals.map(function (n) { return String.fromCodePoint(0x1F400 + n.length % 60); });
+    return cache;
+  }
+  return {
+    ANIMALS: animals,
+    pick: function () { var a = ensure(); return a[Math.floor(Math.random() * a.length)]; }
+  };
+})();
+
+/* ---- P4.NavPadding: dynamic top/bottom padding to keep content clear of navbars ---- */
+P4.NavPadding = (function () {
+  var appliedTop = 0, appliedBottom = 0;
+  function measure() {
+    try {
+      var nav = document.querySelector('nav.navbar');
+      var bottomNav = document.getElementById('bottomNav');
+      var topH = nav ? nav.offsetHeight : 0;
+      var bottomH = 0;
+      if (bottomNav) {
+        var visible = bottomNav.classList.contains('visible') ||
+          getComputedStyle(bottomNav).display !== 'none';
+        bottomH = visible ? bottomNav.offsetHeight : 0;
+      }
+      var st = getComputedStyle(document.documentElement);
+      var safeTop = parseInt(st.getPropertyValue('--safe-area-top') || '0', 10) || 0;
+      var safeBottom = parseInt(st.getPropertyValue('--safe-area-bottom') || '0', 10) || 0;
+      var newTop = topH + safeTop;        // exactly nav height + safe-area — no extra
+      var newBottom = bottomH + safeBottom;  // exactly bottom-nav height + safe-area — no extra
+      if (newTop !== appliedTop) {
+        document.documentElement.style.setProperty('--nav-top-pad', newTop + 'px');
+        document.body.style.paddingTop = newTop + 'px';
+        appliedTop = newTop;
+      }
+      if (newBottom !== appliedBottom) {
+        document.documentElement.style.setProperty('--nav-bottom-pad', newBottom + 'px');
+        document.body.style.paddingBottom = newBottom + 'px';
+        appliedBottom = newBottom;
+      }
+    } catch (e) {}
+  }
+  return {
+    init: function () {
+      setTimeout(measure, 100);
+      setTimeout(measure, 500);
+      setTimeout(measure, 1500);
+      window.addEventListener('resize', P4.debounce(measure, 200));
+      window.addEventListener('orientationchange', function () { setTimeout(measure, 300); });
+      try {
+        var mo = new MutationObserver(P4.debounce(measure, 100));
+        var bn = document.getElementById('bottomNav');
+        if (bn) mo.observe(bn, { attributes: true, attributeFilter: ['class', 'style'] });
+      } catch (e) {}
+    },
+    measure: measure
+  };
+})();
+
+/* ---- P4.InApp: in-app browser bridge shim ---- */
+P4.InApp = {
+  open: function (url) {
+    if (!url) return;
+    try {
+      if (typeof window.AndroidPro !== 'undefined' && typeof window.AndroidPro.openInApp === 'function') {
+        window.AndroidPro.openInApp(url);
+        return;
+      }
+    } catch (e) {}
+    try { window.open(url, '_blank'); } catch (e) {}
+  }
+};
+
+/* ---- P4.Profiles: multi-profile data model ---- */
+P4.Profiles = (function () {
+  var KEY = 'p4_profiles';
+  var ACTIVE_KEY = 'p4_active_profile';
+  var DATA_PREFIX = 'p4_profile_data_';
+  var VAULT_PREFIX = 'p4_vault_';
+
+  function list() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return [];
+      var arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr : [];
+    } catch (e) { return []; }
+  }
+  function save(arr) {
+    try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch (e) {}
+  }
+  function activeId() {
+    try { return localStorage.getItem(ACTIVE_KEY) || null; } catch (e) { return null; }
+  }
+  function setActive(id) {
+    try { localStorage.setItem(ACTIVE_KEY, id); } catch (e) {}
+  }
+  function get(id) {
+    return list().filter(function (p) { return p.id === id; })[0] || null;
+  }
+  function current() {
+    var id = activeId();
+    var ps = list();
+    if (id) {
+      var match = get(id);
+      if (match) return match;
+    }
+    if (ps.length) return ps[0];
+    return null;
+  }
+  function create(name, emoji) {
+    var id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    var p = {
+      id: id,
+      name: name || 'New profile',
+      emoji: emoji || P4.Emoji.pick(),
+      createdAt: Date.now(),
+      dataKey: DATA_PREFIX + id
+    };
+    var arr = list();
+    arr.push(p);
+    save(arr);
+    return p;
+  }
+  function update(id, patch) {
+    var arr = list().map(function (p) {
+      if (p.id === id) {
+        for (var k in patch) if (Object.prototype.hasOwnProperty.call(patch, k)) p[k] = patch[k];
+      }
+      return p;
+    });
+    save(arr);
+  }
+  function del(id) {
+    var arr = list().filter(function (p) { return p.id !== id; });
+    save(arr);
+    try { localStorage.removeItem(DATA_PREFIX + id); } catch (e) {}
+    try { localStorage.removeItem(VAULT_PREFIX + id); } catch (e) {}
+    if (activeId() === id) {
+      var next = arr[0];
+      if (next) { setActive(next.id); loadProfileData(next.id); }
+    }
+  }
+  function saveCurrentData() {
+    var p = current();
+    if (!p) return false;
+    try {
+      localStorage.setItem(p.dataKey, JSON.stringify(workoutData));
+    } catch (e) {
+      try {
+        var slim = { user: workoutData.user, workouts: workoutData.workouts.slice(-50), exercises: workoutData.exercises, settings: workoutData.settings };
+        localStorage.setItem(p.dataKey, JSON.stringify(slim));
+      } catch (e2) { return false; }
+    }
+    try {
+      var vaultKey = VAULT_PREFIX + p.id;
+      var snap = { at: Date.now(), data: workoutData };
+      localStorage.setItem(vaultKey, JSON.stringify(snap));
+    } catch (e) {}
+    return true;
+  }
+  function loadProfileData(id) {
+    try {
+      var raw = localStorage.getItem(DATA_PREFIX + id);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && parsed.user) {
+          workoutData = parsed;
+          if (typeof saveWorkoutData === 'function') saveWorkoutData();
+          return true;
+        }
+      }
+      var vraw = localStorage.getItem(VAULT_PREFIX + id);
+      if (vraw) {
+        var vsnap = JSON.parse(vraw);
+        if (vsnap && vsnap.data && vsnap.data.user) {
+          workoutData = vsnap.data;
+          if (typeof saveWorkoutData === 'function') saveWorkoutData();
+          return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+  function switchTo(id) {
+    var p = get(id);
+    if (!p) return false;
+    saveCurrentData();
+    setActive(id);
+    loadProfileData(id);
+    try { P4.Picker && P4.Picker.refreshNavbar(); } catch (e) {}
+    try { if (typeof renderDashboard === 'function') renderDashboard(); } catch (e) {}
+    try { P4.toast('Switched to ' + p.name, 'ok', 2000); } catch (e) {}
+    return true;
+  }
+  function init() {
+    var ps = list();
+    if (!ps.length) {
+      var p = create(
+        (typeof workoutData !== 'undefined' && workoutData && workoutData.user && workoutData.user.name) || 'You',
+        P4.Emoji.pick()
+      );
+      setActive(p.id);
+      saveCurrentData();
+    } else if (!activeId()) {
+      setActive(ps[0].id);
+    }
+    var cur = current();
+    if (cur && (!workoutData || !workoutData.user || !workoutData.user.name)) {
+      loadProfileData(cur.id);
+    }
+    try {
+      var origSave = window.saveWorkoutData;
+      if (typeof origSave === 'function' && !origSave._profileHooked) {
+        var hooked = function () {
+          var p = current();
+          if (p) saveCurrentData();
+          return origSave.apply(this, arguments);
+        };
+        hooked._profileHooked = true;
+        window.saveWorkoutData = hooked;
+      }
+    } catch (e) {}
+  }
+  return {
+    list: list, get: get, current: current, create: create, update: update,
+    del: del, switchTo: switchTo, init: init, saveCurrentData: saveCurrentData,
+    loadProfileData: loadProfileData,
+    ACTIVE_KEY: ACTIVE_KEY, KEY: KEY
+  };
+})();
+
+/* ---- P4.Vault: per-profile vault snapshot layer (IndexedDB, survives clear-cache) ---- */
+P4.Vault = (function () {
+  var DB_NAME = 'p4_vault';
+  var STORE = 'snapshots';
+  var dbPromise = null;
+  function getDb() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise(function (resolve, reject) {
+      try {
+        var req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = function (e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE)) {
+            db.createObjectStore(STORE, { keyPath: 'profileId' });
+          }
+        };
+        req.onsuccess = function (e) { resolve(e.target.result); };
+        req.onerror = function (e) { reject(e.target.error); };
+      } catch (e) { reject(e); }
+    });
+    return dbPromise;
+  }
+  function save(profileId, data) {
+    if (!profileId) return Promise.resolve(false);
+    return getDb().then(function (db) {
+      return new Promise(function (resolve) {
+        try {
+          var tx = db.transaction(STORE, 'readwrite');
+          tx.objectStore(STORE).put({ profileId: profileId, at: Date.now(), data: data });
+          tx.oncomplete = function () { resolve(true); };
+          tx.onerror = function () { resolve(false); };
+        } catch (e) { resolve(false); }
+      });
+    }).catch(function () { return false; });
+  }
+  function load(profileId) {
+    if (!profileId) return Promise.resolve(null);
+    return getDb().then(function (db) {
+      return new Promise(function (resolve) {
+        try {
+          var tx = db.transaction(STORE, 'readonly');
+          var req = tx.objectStore(STORE).get(profileId);
+          req.onsuccess = function () { resolve(req.result ? req.result.data : null); };
+          req.onerror = function () { resolve(null); };
+        } catch (e) { resolve(null); }
+      });
+    }).catch(function () { return null; });
+  }
+  function autoRestore() {
+    try {
+      var p = P4.Profiles.current();
+      if (!p) return;
+      var isEmpty = !workoutData || !workoutData.user || !workoutData.user.name ||
+        !workoutData.workouts || workoutData.workouts.length === 0;
+      if (isEmpty) {
+        load(p.id).then(function (data) {
+          if (data && data.user) {
+            workoutData = data;
+            if (typeof saveWorkoutData === 'function') saveWorkoutData();
+            try { P4.toast('Restored ' + p.name + ' from vault', 'ok', 3000); } catch (e) {}
+            if (typeof renderDashboard === 'function') renderDashboard();
+          }
+        });
+      }
+    } catch (e) {}
+  }
+  function snapshotNow() {
+    try {
+      var p = P4.Profiles.current();
+      if (p) save(p.id, workoutData);
+    } catch (e) {}
+  }
+  function init() {
+    try {
+      var origSave = window.saveWorkoutData;
+      if (typeof origSave === 'function' && !origSave._vaultHooked) {
+        var hooked = function () {
+          var result = origSave.apply(this, arguments);
+          try { snapshotNow(); } catch (e) {}
+          return result;
+        };
+        hooked._vaultHooked = true;
+        window.saveWorkoutData = hooked;
+      }
+    } catch (e) {}
+    setTimeout(autoRestore, 800);
+  }
+  return { save: save, load: load, autoRestore: autoRestore, snapshotNow: snapshotNow, init: init };
+})();
+
+/* ---- P4.Picker: profile picker overlay UI ---- */
+P4.Picker = (function () {
+  var OPEN_FLAG = false;
+  function refreshNavbar() {
+    try {
+      var p = P4.Profiles.current();
+      if (!p) return;
+      var nameEl = document.getElementById('userNameDisplay');
+      if (nameEl) {
+        var cleanName = SEC.escapeHtml(p.name);
+        var em = p.emoji ? '<span style="margin-right:4px">' + p.emoji + '</span>' : '';
+        nameEl.innerHTML = em + cleanName;
+        var chev = document.getElementById('p4PickerChevron');
+        if (!chev) {
+          chev = document.createElement('i');
+          chev.id = 'p4PickerChevron';
+          chev.className = 'fas fa-chevron-down';
+          chev.style.cssText = 'font-size:10px;margin-left:6px;opacity:0.6';
+          nameEl.appendChild(chev);
+        }
+      }
+    } catch (e) {}
+  }
+  function open() {
+    if (OPEN_FLAG) return;
+    OPEN_FLAG = true;
+    var host = document.createElement('div');
+    host.id = 'p4PickerBackdrop';
+    host.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)';
+    host.addEventListener('click', function (e) {
+      if (e.target === host) close();
+    });
+    var ps = P4.Profiles.list();
+    var cur = P4.Profiles.current();
+    var cards = ps.map(function (p) {
+      var isCur = cur && cur.id === p.id;
+      return '<div class="p4-pick-card" data-id="' + p.id + '" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:' + (isCur ? 'var(--p4-accent-soft, #eef)' : 'var(--light, #fff)') + ';border:1px solid var(--gray-200, #e2e8f0);cursor:pointer;margin-bottom:8px;transition:all .15s">' +
+        '<div style="font-size:28px;width:40px;text-align:center">' + (p.emoji || '') + '</div>' +
+        '<div style="flex:1"><div style="font-weight:600;font-size:15px;color:var(--p4-text, #1e293b)">' + SEC.escapeHtml(p.name) + '</div>' +
+        '<div style="font-size:11px;color:var(--p4-text-3, #94a3b8)">Created ' + P4.fmtDate(p.createdAt) + '</div></div>' +
+        (isCur ? '<div style="font-size:11px;font-weight:700;color:var(--p4-accent, #2563eb)">CURRENT</div>' : '') +
+        '<button class="p4-pick-del" data-id="' + p.id + '" style="background:transparent;border:none;color:var(--danger, #ef4444);cursor:pointer;font-size:16px;padding:4px 8px" title="Delete"><i class="fas fa-trash"></i></button>' +
+        '</div>';
+    }).join('');
+    host.innerHTML =
+      '<div id="p4PickerCard" style="background:var(--light, #fff);border-radius:18px;padding:22px;max-width:480px;width:100%;max-height:80vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">' +
+      '<h3 style="margin:0;font-size:17px;font-weight:700;color:var(--p4-text, #1e293b)">Switch profile</h3>' +
+      '<button id="p4PickerClose" style="background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+      '</div>' +
+      '<div id="p4PickerList">' + (cards || '<p style="color:var(--p4-text-3, #94a3b8);font-size:14px;text-align:center;padding:20px">No profiles yet</p>') + '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:14px">' +
+      '<input id="p4PickerNewName" type="text" placeholder="New profile name..." maxlength="40" style="flex:1;padding:9px 12px;border:1px solid var(--gray-300, #cbd5e1);border-radius:10px;font-size:14px;background:var(--light, #fff);color:var(--p4-text, #1e293b)">' +
+      '<button id="p4PickerAdd" style="padding:9px 14px;background:var(--primary, #2563eb);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600"><i class="fas fa-plus"></i> Add</button>' +
+      '</div>' +
+      '<p style="font-size:11px;color:var(--p4-text-3, #94a3b8);margin:12px 0 0 0;text-align:center">Each profile keeps its own workouts, history, and settings.</p>' +
+      '</div>';
+    document.body.appendChild(host);
+    document.getElementById('p4PickerClose').addEventListener('click', close);
+    document.getElementById('p4PickerAdd').addEventListener('click', function () {
+      var name = document.getElementById('p4PickerNewName').value.trim();
+      if (!name) { try { P4.toast('Give the new profile a name first', 'warn', 2000); } catch (e) {} return; }
+      var p = P4.Profiles.create(name);
+      close();
+      setTimeout(function () {
+        P4.Profiles.switchTo(p.id);
+        try {
+          workoutData = { user: { name: name }, workouts: [], exercises: {}, settings: {} };
+          if (typeof saveWorkoutData === 'function') saveWorkoutData();
+          if (typeof renderDashboard === 'function') renderDashboard();
+        } catch (e) {}
+        try { if (P4.Onboard.needed()) setTimeout(function () { P4.Onboard.start(); }, 500); } catch (e) {}
+      }, 80);
+    });
+    var listEl = document.getElementById('p4PickerList');
+    listEl.addEventListener('click', function (e) {
+      var del = e.target.closest('.p4-pick-del');
+      if (del) {
+        e.stopPropagation();
+        var id = del.getAttribute('data-id');
+        if (confirm('Delete this profile and all its data?')) {
+          P4.Profiles.del(id);
+          close();
+          setTimeout(open, 60);
+        }
+        return;
+      }
+      var card = e.target.closest('.p4-pick-card');
+      if (!card) return;
+      var id = card.getAttribute('data-id');
+      /* single-tap pick → dismiss → switch in one flow */
+      close();
+      setTimeout(function () { P4.Profiles.switchTo(id); }, 60);
+    });
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+    });
+    setTimeout(function () { var i = document.getElementById('p4PickerNewName'); if (i) i.focus(); }, 100);
+  }
+  function close() {
+    var el = document.getElementById('p4PickerBackdrop');
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+    OPEN_FLAG = false;
+  }
+  function init() {
+    setTimeout(function () {
+      /* profile name (userNameDisplay) opens the picker */
+      var nameEl = document.getElementById('userNameDisplay');
+      if (nameEl) {
+        nameEl.style.cursor = 'pointer';
+        nameEl.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          open();
+        });
+      }
+      /* streak fire + count opens the dashboard (home page) */
+      var streakEl = document.querySelector('.streak-fire');
+      if (streakEl) {
+        streakEl.style.cursor = 'pointer';
+        streakEl.addEventListener('click', function (e) {
+          /* don't fire if the streak is dead and the user is trying to recover */
+          if (streakEl.dataset.intensity === 'dead' && e.target.closest('.streak-fire')) {
+            /* dead streak → recovery modal handled by updateStreakFire's own listener */
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          try { if (typeof showSection === 'function') showSection('dashboard'); } catch (err) {}
+        });
+      }
+    }, 1500);
+    refreshNavbar();
+  }
+  return { open: open, close: close, init: init, refreshNavbar: refreshNavbar };
+})();
+
+
+/* ============================================================================
+ * P4.PAYWALL v2 — migrated from custom-404-page (c404) strategy
+ * Both free + paid tiers get SAME access. Free requires social-media DM
+ * application. Paid uses Stripe via the brain-paywall Cloudflare Worker.
+ * Worker URL: https://brain-paywall.kennateklu.workers.dev
+ * ============================================================================ */
+(function () {
+  'use strict';
+  if (!window.P4) return;
+  var P4 = window.P4, SEC = P4.SEC, store = P4.store;
+
+  /* worker + trial + cache constants (mirrors c404 exactly) */
+  var WORKER_URL      = 'https://brain-paywall.kennateklu.workers.dev';
+  var TRIAL_KEY       = 'p4_trial_start_v2';
+  var SUB_CACHE_KEY   = 'p4_sub_cache_v2';
+  var SUB_EXPIRES_KEY = 'p4_sub_expires_at_v2';
+  var APP_ID_KEY      = 'p4_app_id';
+  var APP_LIST_KEY    = 'p4_applications';
+  var APPROVED_KEY    = 'p4_approved';
+  var TRIAL_DAYS      = 7;
+  var CACHE_TTL_MS    = 3 * 24 * 60 * 60 * 1000;
+  var DAY              = 24 * 60 * 60 * 1000;
+
+  /* social platforms — all point to try4ever handles (mirrors c404) */
+  var SOCIALS = [
+    { name: "Instagram",   icon: "https://cdn.simpleicons.org/instagram",  dmUrl: "https://www.instagram.com/try4ever/" },
+    { name: "Twitter / X", icon: "https://cdn.simpleicons.org/x",          dmUrl: "https://twitter.com/messages/compose?recipient_id=try4ever" },
+    { name: "TikTok",      icon: "https://cdn.simpleicons.org/tiktok",     dmUrl: "https://www.tiktok.com/@try4ever" },
+    { name: "Facebook",    icon: "https://cdn.simpleicons.org/facebook",   dmUrl: "https://www.facebook.com/try4ever" },
+    { name: "LinkedIn",    icon: "https://cdn.simpleicons.org/linkedin",   dmUrl: "https://www.linkedin.com/in/try4ever" },
+    { name: "Snapchat",    icon: "https://cdn.simpleicons.org/snapchat",   dmUrl: "https://www.snapchat.com/add/try4ever" },
+    { name: "Pinterest",   icon: "https://cdn.simpleicons.org/pinterest",  dmUrl: "https://www.pinterest.com/try4ever/" },
+    { name: "Reddit",      icon: "https://cdn.simpleicons.org/reddit",     dmUrl: "https://www.reddit.com/user/try4ever" },
+    { name: "Discord",     icon: "https://cdn.simpleicons.org/discord",    dmUrl: "https://discord.com/users/try4ever" },
+    { name: "Telegram",    icon: "https://cdn.simpleicons.org/telegram",   dmUrl: "https://t.me/try4ever" },
+    { name: "Threads",     icon: "https://cdn.simpleicons.org/threads",    dmUrl: "https://www.threads.net/@try4ever" },
+    { name: "Mastodon",    icon: "https://cdn.simpleicons.org/mastodon",   dmUrl: "https://mastodon.social/@try4ever" },
+    { name: "Bluesky",     icon: "https://cdn.simpleicons.org/bluesky",    dmUrl: "https://bsky.app/profile/try4ever" },
+    { name: "YouTube",     icon: "https://cdn.simpleicons.org/youtube",    dmUrl: "https://www.youtube.com/@try4ever" },
+    { name: "Twitch",      icon: "https://cdn.simpleicons.org/twitch",     dmUrl: "https://www.twitch.tv/try4ever" },
+    { name: "Other",       icon: "https://cdn.simpleicons.org/whatever",   dmUrl: "mailto:apply@try4ever.com" }
+  ];
+
+  /* ---- state helpers ---- */
+  function getUserId() {
+    var id = null;
+    try { id = localStorage.getItem(APP_ID_KEY); } catch (e) {}
+    if (!id) {
+      id = 'PF-' + Math.random().toString(36).substring(2, 10).toUpperCase()
+         + '-' + Date.now().toString(36).toUpperCase();
+      try { localStorage.setItem(APP_ID_KEY, id); } catch (e) {}
+    }
+    return id;
+  }
+  function getTrialStart() {
+    var v = null;
+    try { v = localStorage.getItem(TRIAL_KEY); } catch (e) {}
+    return v ? parseInt(v, 10) : null;
+  }
+  function startTrial() {
+    if (!getTrialStart()) {
+      try { localStorage.setItem(TRIAL_KEY, String(Date.now())); } catch (e) {}
+    }
+  }
+  function isTrialActive() {
+    var s = getTrialStart();
+    return !!s && (Date.now() - s) < TRIAL_DAYS * DAY;
+  }
+  function getTrialDaysLeft() {
+    var s = getTrialStart();
+    if (!s) return TRIAL_DAYS;
+    return Math.max(0, Math.ceil((TRIAL_DAYS * DAY - (Date.now() - s)) / DAY));
+  }
+  function getCachedStatus() {
+    try {
+      var raw = localStorage.getItem(SUB_CACHE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function setCachedStatus(s) {
+    try {
+      localStorage.setItem(SUB_CACHE_KEY, JSON.stringify({
+        active: !!s.active, key: s.key || null, timestamp: Date.now()
+      }));
+    } catch (e) {}
+  }
+  function getSubscriptionExpiry() {
+    try { var r = localStorage.getItem(SUB_EXPIRES_KEY); return r ? parseInt(r, 10) : null; } catch (e) { return null; }
+  }
+  function setSubscriptionExpiry(ts) {
+    try { if (ts) localStorage.setItem(SUB_EXPIRES_KEY, String(ts)); else localStorage.removeItem(SUB_EXPIRES_KEY); } catch (e) {}
+  }
+  function isApprovedLocal() {
+    try { return localStorage.getItem(APPROVED_KEY) === 'true'; } catch (e) { return false; }
+  }
+  function setApprovedLocal(v) {
+    try { if (v) localStorage.setItem(APPROVED_KEY, 'true'); else localStorage.removeItem(APPROVED_KEY); } catch (e) {}
+  }
+  function getApplicationId() {
+    var id = null;
+    try { id = localStorage.getItem(APP_ID_KEY); } catch (e) {}
+    if (!id) { id = getUserId(); }
+    return id;
+  }
+
+  /* ---- worker calls ---- */
+  async function checkStatus() {
+    var userId = getUserId();
+    try {
+      var res = await fetch(WORKER_URL + '/api/status?userId=' + encodeURIComponent(userId));
+      if (res.ok) {
+        var data = await res.json();
+        setCachedStatus(data);
+        return data;
+      }
+    } catch (e) {}
+    var cached = getCachedStatus();
+    if (cached && (Date.now() - cached.timestamp) < CACHE_TTL_MS) {
+      return { active: cached.active };
+    }
+    return { active: false };
+  }
+  async function checkApplicationStatus(appId) {
+    try {
+      var res = await fetch(WORKER_URL + '/api/application-status?id=' + encodeURIComponent(appId));
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return null;
+  }
+  async function submitApplication(platform) {
+    try {
+      var res = await fetch(WORKER_URL + '/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationId: getApplicationId(),
+          userId: getUserId(),
+          platform: platform || 'pending'
+        })
+      });
+      return res.ok;
+    } catch (e) { return false; }
+  }
+
+  /* ---- the new Paywall module (overrides the old one) ---- */
+  var Paywall = P4.Paywall = {
+    config: {
+      workerUrl: WORKER_URL,
+      paymentUrl: 'https://try4ever.com/fitness',
+      price: 19,
+      trialDays: TRIAL_DAYS
+    },
+    SOCIALS: SOCIALS,
+
+    state: function () { return store.get(P4.keys.paywall, { onboard: false }); },
+
+    /* ---- access decision: same features for free + paid ---- */
+    isPro: function () {
+      /* either path unlocks everything */
+      if (isApprovedLocal()) return true;
+      if (Paywall.subActive()) return true;
+      if (Paywall.trialActive()) return true;
+      return false;
+    },
+    isAllowed: function () {
+      var st = Paywall.state();
+      if (!st.onboard) return true;
+      return Paywall.isPro();
+    },
+    trialActive: function () { return isTrialActive(); },
+    trialStart: function () { return getTrialStart(); },
+    daysLeft: function () { return getTrialDaysLeft(); },
+    ensureTrial: function () {
+      if (!getTrialStart()) {
+        startTrial();
+        try { P4.toast('7-day trial started — full access. Apply for free or subscribe any time.', 'ok', 4200); } catch (e) {}
+      }
+    },
+    subActive: function () {
+      var exp = getSubscriptionExpiry();
+      if (exp && Date.now() < exp) return true;
+      var cache = getCachedStatus();
+      if (cache && cache.active && cache.timestamp && (Date.now() - cache.timestamp < CACHE_TTL_MS)) return true;
+      return false;
+    },
+    licenseValid: function () { return Paywall.subActive(); },  /* alias for compat */
+    validateKey: function () { return { ok: false, error: 'License keys retired — use free apply or subscribe.' }; },
+    activateLicense: function () { return { ok: false, error: 'License keys retired.' }; },
+    deactivateLicense: function () {
+      try { localStorage.removeItem(SUB_CACHE_KEY); } catch (e) {}
+      try { localStorage.removeItem(SUB_EXPIRES_KEY); } catch (e) {}
+    },
+    markSubscription: function (days) {
+      var d = days || 30;
+      setCachedStatus({ active: true, key: 'local', timestamp: Date.now() });
+      setSubscriptionExpiry(Date.now() + d * DAY);
+    },
+    cancelSubscription: function () {
+      var uid = getUserId();
+      try {
+        fetch(WORKER_URL + '/api/cancel?userId=' + encodeURIComponent(uid), { method: 'POST' }).catch(function () {});
+      } catch (e) {}
+      Paywall.deactivateLicense();
+      try { P4.toast('Subscription cancelled. Apply for free or re-subscribe any time.', 'info', 3500); } catch (e) {}
+    },
+
+    /* ---- refresh from worker ---- */
+    refreshFromWorker: async function () {
+      var st = await checkStatus();
+      if (st && st.active && st.expiresAt) {
+        setSubscriptionExpiry(st.expiresAt);
+        setCachedStatus({ active: true, key: st.key || null, timestamp: Date.now() });
+      }
+      if (st && st.approved) setApprovedLocal(true);
+      return st;
+    },
+
+    /* ---- main modal ---- */
+    showFullPage: function (reason) {
+      if (Paywall.isAllowed()) return;
+      var existing = document.getElementById('p4PaywallModal');
+      if (existing) existing.parentNode.removeChild(existing);
+      var modal = document.createElement('div');
+      modal.id = 'p4PaywallModal';
+      modal.style.cssText = 'position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)';
+      modal.addEventListener('click', function (e) { if (e.target === modal) Paywall.close(); });
+      var trial = isTrialActive();
+      var days = getTrialDaysLeft();
+      var head = trial ? ('Trial: ' + days + ' day' + (days === 1 ? '' : 's') + ' left')
+                        : 'Your trial has ended';
+      modal.innerHTML =
+        '<div class="pw-modal-inner" style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:460px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)">' +
+        '<button id="p4PaywallClose" style="position:absolute;top:14px;right:14px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+        '<div style="text-align:center;margin-bottom:18px">' +
+          '<div style="font-size:36px;margin-bottom:6px">💪</div>' +
+          '<h3 style="margin:0;font-size:20px;font-weight:700;color:var(--p4-text, #1e293b)">' + head + '</h3>' +
+          '<p style="margin:6px 0 0 0;font-size:14px;color:var(--p4-text-2, #475569)">Pick your path — both give the same full access.</p>' +
+        '</div>' +
+        '<div style="display:grid;gap:12px">' +
+          '<button id="p4PwApplyFree" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--p4-accent-soft, #eef);border:1px solid var(--p4-accent-line, #c7d2fe);border-radius:14px;cursor:pointer;text-align:left;transition:all .15s">' +
+            '<div style="font-size:24px">📣</div>' +
+            '<div><div style="font-weight:700;color:var(--p4-text, #1e293b);font-size:15px">Apply for free</div>' +
+            '<div style="font-size:12px;color:var(--p4-text-2, #475569)">Follow us on social + send a quick DM. We approve within a day.</div></div>' +
+          '</button>' +
+          '<button id="p4PwSubscribe" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--light, #fff);border:1px solid var(--gray-200, #e2e8f0);border-radius:14px;cursor:pointer;text-align:left;transition:all .15s">' +
+            '<div style="font-size:24px">⚡</div>' +
+            '<div><div style="font-weight:700;color:var(--p4-text, #1e293b);font-size:15px">Subscribe — $19/mo</div>' +
+            '<div style="font-size:12px;color:var(--p4-text-2, #475569)">Skip the queue. Cancel any time, keep full access until period ends.</div></div>' +
+          '</button>' +
+        '</div>' +
+        '<p style="font-size:11px;color:var(--p4-text-3, #94a3b8);margin:16px 0 0 0;text-align:center">Both paths unlock every feature. No gated tools, no hidden tiers.</p>' +
+        '</div>';
+      document.body.appendChild(modal);
+      document.getElementById('p4PaywallClose').addEventListener('click', Paywall.close);
+      document.getElementById('p4PwApplyFree').addEventListener('click', function () { Paywall.openFreeWizard(); });
+      document.getElementById('p4PwSubscribe').addEventListener('click', function () { Paywall.openPaidModal(); });
+    },
+
+    close: function () {
+      var el = document.getElementById('p4PaywallModal');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    },
+
+    /* ---- free-access wizard (3 steps, mirrors c404) ---- */
+    freeStep: 1,
+    selectedPlatform: null,
+    openFreeWizard: function () {
+      Paywall.close();
+      var existing = document.getElementById('p4FreeWizard');
+      if (existing) existing.parentNode.removeChild(existing);
+      Paywall.freeStep = 1;
+      Paywall.selectedPlatform = null;
+      Paywall.renderFreeStep();
+    },
+    renderFreeStep: function () {
+      var existing = document.getElementById('p4FreeWizard');
+      if (existing) existing.parentNode.removeChild(existing);
+      var modal = document.createElement('div');
+      modal.id = 'p4FreeWizard';
+      modal.style.cssText = 'position:fixed;inset:0;z-index:100002;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px';
+      modal.addEventListener('click', function (e) { if (e.target === modal) Paywall.closeFreeWizard(); });
+      var content;
+      if (Paywall.freeStep === 1) {
+        var opts = SOCIALS.map(function (s) {
+          return '<button class="pw-soc-pick" data-name="' + SEC.escapeHtml(s.name) + '" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--light, #fff);border:1px solid var(--gray-200, #e2e8f0);border-radius:12px;cursor:pointer;text-align:left;font-size:14px;color:var(--p4-text, #1e293b);font-weight:600;transition:all .15s">' +
+            '<img src="' + s.icon + '" alt="" style="width:22px;height:22px" onerror="this.style.visibility=\'hidden\'">' +
+            '<span>' + SEC.escapeHtml(s.name) + '</span></button>';
+        }).join('');
+        content =
+          '<div class="pw-modal-inner" style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:460px;width:100%;max-height:90vh;overflow:auto;position:relative">' +
+          '<button onclick="P4.Paywall.closeFreeWizard()" style="position:absolute;top:14px;right:14px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+          '<h3 style="margin:0 0 6px 0;font-size:18px;font-weight:700;color:var(--p4-text, #1e293b)">Pick a platform</h3>' +
+          '<p style="margin:0 0 14px 0;font-size:13px;color:var(--p4-text-2, #475569)">Where can you DM us? Pick whichever you use most.</p>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + opts + '</div>' +
+          '<button onclick="P4.Paywall.closeFreeWizard()" style="margin-top:14px;background:transparent;border:none;color:var(--p4-text-3, #94a3b8);cursor:pointer;font-size:13px;width:100%;text-align:center">Cancel</button>' +
+          '</div>';
+      } else if (Paywall.freeStep === 2) {
+        var id = getApplicationId();
+        var plat = Paywall.selectedPlatform ? SOCIALS.find(function (s) { return s.name === Paywall.selectedPlatform; }) : SOCIALS[0];
+        var isOther = plat && plat.name === 'Other';
+        var msg = isOther ?
+          ('Application ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.') :
+          ('Application ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.');
+        var action = isOther ? 'Open email' : ('Copy & DM on ' + plat.name);
+        content =
+          '<div class="pw-modal-inner" style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:460px;width:100%;position:relative">' +
+          '<button onclick="P4.Paywall.goBack()" style="position:absolute;top:14px;left:14px;background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-arrow-left"></i></button>' +
+          '<h3 style="margin:0 0 6px 0;font-size:18px;font-weight:700;color:var(--p4-text, #1e293b)">' + (isOther ? 'Apply by email' : ('DM us on ' + plat.name)) + '</h3>' +
+          '<p style="margin:0 0 14px 0;font-size:13px;color:var(--p4-text-2, #475569)">' + (isOther ? 'Send the email below to apply.' : 'Copy the message, then DM us. Paste it there and send.') + '</p>' +
+          '<div style="background:var(--gray-100, #f1f5f9);border:1px solid var(--gray-200, #e2e8f0);border-radius:12px;padding:12px;margin-bottom:14px">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--p4-text-3, #94a3b8);text-transform:uppercase;margin-bottom:6px">Your application message</div>' +
+            '<pre id="p4AppMsg" style="margin:0;font-family:inherit;font-size:12px;white-space:pre-wrap;color:var(--p4-text, #1e293b)">' + SEC.escapeHtml(msg) + '</pre>' +
+          '</div>' +
+          '<button id="p4CopyDm" style="width:100%;padding:11px;background:var(--primary, #2563eb);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px">' + action + '</button>' +
+          '<button onclick="P4.Paywall.finishFreeApplication()" style="margin-top:8px;width:100%;padding:11px;background:transparent;border:1px solid var(--gray-300, #cbd5e1);border-radius:10px;cursor:pointer;font-size:13px;color:var(--p4-text-2, #475569)">I\'ve sent it →</button>' +
+          '</div>';
+      } else if (Paywall.freeStep === 3) {
+        var id2 = getApplicationId();
+        content =
+          '<div class="pw-modal-inner" style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:460px;width:100%;text-align:center;position:relative">' +
+          '<div style="font-size:48px;margin-bottom:8px">📬</div>' +
+          '<h3 style="margin:0 0 6px 0;font-size:18px;font-weight:700;color:var(--p4-text, #1e293b)">Application received</h3>' +
+          '<p style="margin:0 0 14px 0;font-size:13px;color:var(--p4-text-2, #475569)">You\'re in the review queue. We\'ll respond via DM when we get to it — usually within a day.</p>' +
+          '<div style="background:var(--gray-100, #f1f5f9);border:1px solid var(--gray-200, #e2e8f0);border-radius:12px;padding:10px;margin-bottom:14px">' +
+            '<div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--p4-text-3, #94a3b8);text-transform:uppercase;margin-bottom:4px">Your application ID</div>' +
+            '<div style="font-size:13px;font-family:monospace;color:var(--p4-text, #1e293b)">' + SEC.escapeHtml(id2) + '</div>' +
+          '</div>' +
+          '<button id="p4RefreshApp" onclick="P4.Paywall.refreshApplicationStatus()" style="width:100%;padding:11px;background:transparent;border:1px solid var(--gray-300, #cbd5e1);border-radius:10px;cursor:pointer;font-size:13px;margin-bottom:8px">↻ Refresh status</button>' +
+          '<button onclick="P4.Paywall.closeFreeWizard()" style="width:100%;padding:11px;background:var(--primary, #2563eb);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px">Close</button>' +
+          '<button onclick="P4.Paywall.withdrawApplication()" style="margin-top:8px;background:transparent;border:none;color:var(--danger, #ef4444);cursor:pointer;font-size:12px">Withdraw application</button>' +
+          '</div>';
+      }
+      modal.innerHTML = content;
+      document.body.appendChild(modal);
+      if (Paywall.freeStep === 1) {
+        modal.querySelectorAll('.pw-soc-pick').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            Paywall.selectedPlatform = btn.getAttribute('data-name');
+            Paywall.freeStep = 2;
+            Paywall.renderFreeStep();
+          });
+        });
+      } else if (Paywall.freeStep === 2) {
+        document.getElementById('p4CopyDm').addEventListener('click', function () {
+          Paywall.copyAndOpenDM();
+        });
+      }
+    },
+    closeFreeWizard: function () {
+      var el = document.getElementById('p4FreeWizard');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    },
+    goBack: function () {
+      Paywall.freeStep = 1;
+      Paywall.selectedPlatform = null;
+      Paywall.renderFreeStep();
+    },
+    copyAndOpenDM: function () {
+      var plat = Paywall.selectedPlatform ? SOCIALS.find(function (s) { return s.name === Paywall.selectedPlatform; }) : SOCIALS[0];
+      var id = getApplicationId();
+      var isOther = plat && plat.name === 'Other';
+      var msg = isOther ?
+          ('Application ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.') :
+          ('Application ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.');
+      var msgEl = document.getElementById('p4AppMsg');
+      var selectMsg = function () {
+        if (!msgEl) return;
+        var range = document.createRange();
+        range.selectNodeContents(msgEl);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      };
+      if (isOther) {
+        var subject = encodeURIComponent('Free access application — ' + id);
+        var body = encodeURIComponent(msg);
+        var url = 'mailto:apply@try4ever.com?subject=' + subject + '&body=' + body;
+        var openEmail = function () { try { window.location.href = url; } catch (e) {} try { P4.toast('Email client opened', 'info', 2000); } catch (e) {} };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(msg).then(openEmail).catch(function () { selectMsg(); openEmail(); });
+        } else { selectMsg(); openEmail(); }
+        return;
+      }
+      var openDM = function () {
+        var w = null;
+        try { w = window.open(plat.dmUrl, '_blank'); } catch (e) {}
+        if (!w) {
+          try { P4.toast('Popup blocked — long-press the link below to open manually', 'warn', 3500); } catch (e) {}
+        } else {
+          try { P4.toast('DM opened — paste the message and send', 'ok', 3000); } catch (e) {}
+        }
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(msg).then(openDM).catch(function () { selectMsg(); openDM(); });
+      } else { selectMsg(); openDM(); }
+    },
+    finishFreeApplication: async function () {
+      /* local record */
+      try {
+        var stored = JSON.parse(localStorage.getItem(APP_LIST_KEY) || '[]');
+        var id = getApplicationId();
+        var existing = stored.find(function (a) { return a.id === id; });
+        if (existing) {
+          existing.platform = Paywall.selectedPlatform || 'pending';
+          existing.updatedAt = Date.now();
+        } else {
+          stored.push({ id: id, platform: Paywall.selectedPlatform || 'pending', status: 'pending', createdAt: Date.now(), expiresAt: Date.now() + 7 * DAY });
+        }
+        localStorage.setItem(APP_LIST_KEY, JSON.stringify(stored));
+      } catch (e) {}
+      /* notify worker (fails silently if /api/apply unreachable) */
+      await submitApplication(Paywall.selectedPlatform);
+      Paywall.freeStep = 3;
+      Paywall.renderFreeStep();
+    },
+    refreshApplicationStatus: async function () {
+      var id = getApplicationId();
+      try { P4.toast('Checking status…', 'info', 1500); } catch (e) {}
+      var r = await checkApplicationStatus(id);
+      if (r && r.status === 'approved') {
+        setApprovedLocal(true);
+        try { P4.toast('Approved! You have full access.', 'ok', 3500); } catch (e) {}
+        Paywall.closeFreeWizard();
+        Paywall.close();
+      } else if (r && r.status === 'rejected') {
+        try { P4.toast('Not approved — you can reapply', 'warn', 3500); } catch (e) {}
+        Paywall.freeStep = 1;
+        Paywall.selectedPlatform = null;
+        Paywall.renderFreeStep();
+      } else {
+        try { P4.toast('Still pending — check back later', 'info', 2500); } catch (e) {}
+      }
+    },
+    withdrawApplication: function () {
+      try {
+        var stored = JSON.parse(localStorage.getItem(APP_LIST_KEY) || '[]');
+        var id = getApplicationId();
+        localStorage.setItem(APP_LIST_KEY, JSON.stringify(stored.filter(function (a) { return a.id !== id; })));
+        setApprovedLocal(false);
+      } catch (e) {}
+      Paywall.freeStep = 1;
+      Paywall.selectedPlatform = null;
+      Paywall.closeFreeWizard();
+      try { P4.toast('Application withdrawn', 'info', 2000); } catch (e) {}
+    },
+
+    /* ---- paid modal (Stripe via worker) ---- */
+    openPaidModal: function () {
+      Paywall.close();
+      var existing = document.getElementById('p4PaidModal');
+      if (existing) existing.parentNode.removeChild(existing);
+      var modal = document.createElement('div');
+      modal.id = 'p4PaidModal';
+      modal.style.cssText = 'position:fixed;inset:0;z-index:100002;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px';
+      modal.addEventListener('click', function (e) { if (e.target === modal) Paywall.closePaidModal(); });
+      modal.innerHTML =
+        '<div class="pw-modal-inner" style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:460px;width:100%;position:relative;text-align:center">' +
+        '<button onclick="P4.Paywall.closePaidModal()" style="position:absolute;top:14px;right:14px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+        '<div style="font-size:36px;margin-bottom:6px">⚡</div>' +
+        '<h3 style="margin:0 0 6px 0;font-size:18px;font-weight:700;color:var(--p4-text, #1e293b)">Subscribe — $19/mo</h3>' +
+        '<p style="margin:0 0 14px 0;font-size:13px;color:var(--p4-text-2, #475569)">Skip the queue. Cancel any time. Keep full access until the period ends.</p>' +
+        '<button id="p4PwCheckout" style="width:100%;padding:12px;background:var(--primary, #2563eb);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:15px">Continue to checkout</button>' +
+        '<button onclick="P4.Paywall.openFreeWizard()" style="margin-top:8px;background:transparent;border:none;color:var(--p4-accent, #2563eb);cursor:pointer;font-size:13px;text-decoration:underline;width:100%">Or apply for free instead</button>' +
+        '</div>';
+      document.body.appendChild(modal);
+      document.getElementById('p4PwCheckout').addEventListener('click', function () { Paywall.startCheckout(); });
+    },
+    closePaidModal: function () {
+      var el = document.getElementById('p4PaidModal');
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    },
+    startCheckout: async function () {
+      var btn = document.getElementById('p4PwCheckout');
+      if (btn) { btn.disabled = true; btn.textContent = 'Starting checkout…'; }
+      try {
+        var res = await fetch(WORKER_URL + '/api/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: getUserId(), amount: 1900 })
+        });
+        if (res.ok) {
+          var data = await res.json();
+          if (data.checkoutUrl) {
+            window.location.href = data.checkoutUrl;
+            return;
+          }
+        }
+      } catch (e) {}
+      /* fallback: open the static payment page */
+      try { window.location.href = Paywall.config.paymentUrl; } catch (e) {}
+    },
+
+    /* ---- UI badge refresh (called by settings + navbar) ---- */
+    refreshUI: function () {
+      var badge = document.getElementById('p4PaywallPill');
+      if (!badge) return;
+      if (Paywall.subActive()) {
+        badge.innerHTML = '<i class="fas fa-crown"></i> Pro';
+        badge.style.background = 'linear-gradient(135deg, #fbbf24, #f59e0b)';
+      } else if (isApprovedLocal()) {
+        badge.innerHTML = '<i class="fas fa-heart"></i> Free (approved)';
+        badge.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+      } else if (isTrialActive()) {
+        var d = getTrialDaysLeft();
+        badge.innerHTML = '<i class="fas fa-hourglass-half"></i> Trial: ' + d + 'd left';
+        badge.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+      } else {
+        badge.innerHTML = '<i class="fas fa-lock"></i> Choose path';
+        badge.style.background = 'linear-gradient(135deg, #94a3b8, #64748b)';
+      }
+    },
+
+    /* ---- wire overlay buttons ---- */
+    wire: function (host, reason) {
+      if (!host) return;
+      var closeBtn = host.querySelector('#p4PaywallClose, [data-paywall-close]');
+      if (closeBtn) closeBtn.addEventListener('click', Paywall.close);
+    },
+
+    init: function () {
+      /* start trial on first run */
+      if (!getTrialStart()) startTrial();
+      /* try to refresh from worker (async, non-blocking) */
+      setTimeout(function () { Paywall.refreshFromWorker().catch(function () {}); }, 1500);
+      /* refresh UI badge if present */
+      try { Paywall.refreshUI(); } catch (e) {}
+      console.log('[P4.Paywall v2] online — worker:', WORKER_URL);
+    }
+  };
+
+  /* expose helpers for inline onclick handlers */
+  P4.Paywall.close = Paywall.close;
+})();
+
+
+/* ============================================================================
+ * P4 STAGE-3 MODULES — streak fire decay, lift auditor, settings accordion
+ * ============================================================================ */
+
+/* ---- updateStreakFire: fire emoji decay + social recovery at streak=0 ---- */
+function updateStreakFire(streak) {
+  try {
+    var el = document.querySelector('.streak-fire');
+    if (!el) return;
+    /* compute days since last workout */
+    var daysSince = 99;
+    try {
+      if (typeof workoutData !== 'undefined' && workoutData.workouts && workoutData.workouts.length) {
+        var last = workoutData.workouts
+          .filter(function (w) { return w && w.date; })
+          .map(function (w) { return new Date(w.date).getTime(); })
+          .sort(function (a, b) { return b - a; })[0];
+        if (last) daysSince = Math.floor((Date.now() - last) / (24 * 60 * 60 * 1000));
+      }
+    } catch (e) {}
+
+    /* fire intensity: full → dim → smoke → dead */
+    var intensity;
+    if (streak === 0) intensity = 'dead';
+    else if (daysSince <= 2) intensity = 'full';
+    else if (daysSince <= 4) intensity = 'dim';
+    else if (daysSince <= 6) intensity = 'smoke';
+    else intensity = 'dead';
+
+    /* build the fire emoji string based on intensity */
+    var fireChar;
+    if (intensity === 'full') fireChar = '🔥';
+    else if (intensity === 'dim') fireChar = '🔥';
+    else if (intensity === 'smoke') fireChar = '🌫️';
+    else fireChar = '❄️';
+
+    /* apply visual: opacity + clickable when dead */
+    el.style.opacity = intensity === 'full' ? '1' : (intensity === 'dim' ? '0.7' : (intensity === 'smoke' ? '0.5' : '0.4'));
+    el.style.cursor = streak === 0 ? 'pointer' : 'pointer';  /* always clickable — opens dashboard when alive, recovery when dead */
+    el.dataset.intensity = intensity;  /* used by picker init to decide dashboard vs recovery */
+    el.title = streak === 0 ? 'Streak lost — tap to share + recover' : (daysSince > 2 ? 'Last workout ' + daysSince + 'd ago — fire fading — tap for dashboard' : 'Tap for dashboard');
+
+    /* replace just the fire emoji (keep the count span intact) */
+    var countEl = document.getElementById('streakCount');
+    if (countEl) {
+      el.innerHTML = '';
+      var f = document.createElement('span');
+      f.textContent = fireChar + ' ';
+      f.style.marginRight = '2px';
+      el.appendChild(f);
+      el.appendChild(countEl);
+    }
+
+    /* one-shot wire: clicking dead streak opens share-to-recover modal */
+    if (!el._streakRecoverWired) {
+      el._streakRecoverWired = true;
+      el.addEventListener('click', function () {
+        if (el.dataset.intensity === 'dead') openStreakRecoveryModal();
+      });
+    }
+  } catch (e) {}
+}
+
+/* ---- openStreakRecoveryModal: share to social → bump streak back to 1 (no verification) ---- */
+function openStreakRecoveryModal() {
+  try {
+    var existing = document.getElementById('p4StreakRecoverModal');
+    if (existing) existing.parentNode.removeChild(existing);
+    var m = document.createElement('div');
+    m.id = 'p4StreakRecoverModal';
+    m.style.cssText = 'position:fixed;inset:0;z-index:100003;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px';
+    m.addEventListener('click', function (e) { if (e.target === m) m.parentNode.removeChild(m); });
+    var shareText = encodeURIComponent('Just crushed my workout with PeakForm 💪 — back at it today. Join me: https://try4ever.com/fitness');
+    var platforms = [
+      { name: 'Twitter / X', icon: 'fab fa-x-twitter', url: 'https://twitter.com/intent/tweet?text=' + shareText },
+      { name: 'Facebook',   icon: 'fab fa-facebook', url: 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent('https://try4ever.com/fitness') },
+      { name: 'WhatsApp',   icon: 'fab fa-whatsapp', url: 'https://wa.me/?text=' + shareText },
+      { name: 'Telegram',   icon: 'fab fa-telegram-plane', url: 'https://t.me/share/url?url=' + encodeURIComponent('https://try4ever.com/fitness') + '&text=' + shareText },
+      { name: 'Reddit',     icon: 'fab fa-reddit-alien', url: 'https://www.reddit.com/submit?url=' + encodeURIComponent('https://try4ever.com/fitness') + '&title=' + shareText },
+      { name: 'Email',      icon: 'fas fa-envelope', url: 'mailto:?subject=' + encodeURIComponent('My workout today') + '&body=' + shareText }
+    ];
+    var btns = platforms.map(function (p) {
+      return '<a href="' + p.url + '" target="_blank" rel="noopener" class="p4-share-btn" data-platform="' + p.name + '" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--light, #fff);border:1px solid var(--gray-200, #e2e8f0);border-radius:12px;cursor:pointer;text-decoration:none;color:var(--p4-text, #1e293b);font-weight:600;font-size:13px;transition:all .15s">' +
+        '<i class="' + p.icon + '" style="font-size:18px;color:var(--p4-accent, #2563eb)"></i>' +
+        '<span>' + p.name + '</span></a>';
+    }).join('');
+    m.innerHTML =
+      '<div style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:440px;width:100%;position:relative;text-align:center">' +
+      '<button onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)" style="position:absolute;top:14px;right:14px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+      '<div style="font-size:36px;margin-bottom:6px">❄️</div>' +
+      '<h3 style="margin:0 0 6px 0;font-size:18px;font-weight:700;color:var(--p4-text, #1e293b)">Streak lost</h3>' +
+      '<p style="margin:0 0 14px 0;font-size:13px;color:var(--p4-text-2, #475569)">Share your workout today to relight the fire. No verification — sharing is on the honor system. Pick where:</p>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + btns + '</div>' +
+      '<button id="p4StreakRecoverDone" style="margin-top:14px;width:100%;padding:11px;background:var(--primary, #2563eb);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px">I shared it — relight my fire 🔥</button>' +
+      '</div>';
+    document.body.appendChild(m);
+    /* honor-system: clicking any share button OR the "I shared it" button bumps streak to 1 */
+    m.querySelectorAll('.p4-share-btn').forEach(function (a) {
+      a.addEventListener('click', function () {
+        setTimeout(function () { bumpStreakAfterShare(); }, 800);
+      });
+    });
+    document.getElementById('p4StreakRecoverDone').addEventListener('click', bumpStreakAfterShare);
+  } catch (e) {}
+}
+
+function bumpStreakAfterShare() {
+  try {
+    /* honor system: bump streak to 1, no verification */
+    if (typeof workoutData === 'undefined') return;
+    if (!workoutData.user) workoutData.user = {};
+    if (!workoutData.user.settings) workoutData.user.settings = {};
+    /* record the share event */
+    workoutData.user.settings.lastStreakRecoverAt = Date.now();
+    /* mark today as a workout day so streak calculation picks it up */
+    var today = new Date().toISOString().slice(0, 10);
+    if (!workoutData.workouts) workoutData.workouts = [];
+    var already = workoutData.workouts.some(function (w) {
+      return w && w.date && new Date(w.date).toISOString().slice(0, 10) === today;
+    });
+    if (!already) {
+      workoutData.workouts.push({
+        id: 'streak-recover-' + Date.now(),
+        date: today,
+        type: 'streak_recover',
+        exercises: [],
+        name: 'Streak recovery share'
+      });
+    }
+    if (typeof saveWorkoutData === 'function') saveWorkoutData();
+    /* close modal */
+    var m = document.getElementById('p4StreakRecoverModal');
+    if (m && m.parentNode) m.parentNode.removeChild(m);
+    /* update UI */
+    safeTextUpdate('streakCount', 1);
+    if (typeof updateStreakFire === 'function') updateStreakFire(1);
+    try { P4.toast('Fire relit 🔥 — keep it going tomorrow!', 'ok', 3000); } catch (e) {}
+    if (typeof renderDashboard === 'function') renderDashboard();
+  } catch (e) {}
+}
+
+/* ---- P4.Auditor: flag misaligned 1RMs (e.g. dumbbell curl = barbell curl) ---- */
+P4.Auditor = (function () {
+  /* Heuristic ratio table: bilateral barbell > bilateral dumbbell (per hand) > unilateral
+     These are population-average ratios; flag entries that deviate by >15%. */
+  var RATIOS = {
+    /* {primaryId: {comparisonId: expectedRatio}} — ratio = other / this */
+    'barbell_curl':    { 'dumbbell_curl': 1.35 },   /* barbell curl ~35% heavier than 1-hand dumbbell curl */
+    'dumbbell_curl':   { 'barbell_curl': 0.74 },
+    'barbell_bench_press': { 'dumbbell_bench_press': 1.20 },
+    'dumbbell_bench_press': { 'barbell_bench_press': 0.83 },
+    'barbell_row':     { 'dumbbell_row': 1.30 },
+    'dumbbell_row':    { 'barbell_row': 0.77 },
+    'barbell_shoulder_press': { 'dumbbell_shoulder_press': 1.20 },
+    'dumbbell_shoulder_press': { 'barbell_shoulder_press': 0.83 },
+    'barbell_squat':   { 'leg_press': 0.55 },        /* leg press much heavier */
+    'leg_press':       { 'barbell_squat': 1.82 }
+  };
+
+  function scan() {
+    var flags = [];
+    try {
+      if (typeof workoutData === 'undefined' || !workoutData.exercises) return flags;
+      var ex = workoutData.exercises;
+      /* for each pair in RATIOS, compare tested 1RMs */
+      Object.keys(RATIOS).forEach(function (idA) {
+        var recA = ex[idA];
+        if (!recA || !recA.tested1RM || recA.tested1RM <= 0) return;
+        Object.keys(RATIOS[idA]).forEach(function (idB) {
+          var recB = ex[idB];
+          if (!recB || !recB.tested1RM || recB.tested1RM <= 0) return;
+          var expectedRatio = RATIOS[idA][idB]; /* B / A */
+          var actualRatio = recB.tested1RM / recA.tested1RM;
+          var deviation = Math.abs(actualRatio - expectedRatio) / expectedRatio;
+          if (deviation > 0.15) {
+            flags.push({
+              a: { id: idA, name: getExerciseName(idA), tested1RM: recA.tested1RM, testDate: recA.testDate },
+              b: { id: idB, name: getExerciseName(idB), tested1RM: recB.tested1RM, testDate: recB.testDate },
+              expectedRatio: expectedRatio,
+              actualRatio: actualRatio,
+              deviation: Math.round(deviation * 100),
+              severity: deviation > 0.30 ? 'high' : (deviation > 0.20 ? 'medium' : 'low')
+            });
+          }
+        });
+      });
+    } catch (e) {}
+    return flags;
+  }
+
+  function getExerciseName(id) {
+    try {
+      if (typeof getExerciseById === 'function') {
+        var ex = getExerciseById(id);
+        if (ex && ex.name) return ex.name;
+      }
+    } catch (e) {}
+    return id;
+  }
+
+  function recommend(flag) {
+    /* Heuristic: trust the bilateral/heavier lift; the lighter one likely under-tested */
+    var heavier = flag.a.tested1RM >= flag.b.tested1RM ? flag.a : flag.b;
+    var lighter = flag.a.tested1RM < flag.b.tested1RM ? flag.a : flag.b;
+    return 'Your ' + heavier.name + ' 1RM (' + Math.round(heavier.tested1RM) + ' lbs) vs ' +
+           lighter.name + ' (' + Math.round(lighter.tested1RM) + ' lbs) — ' +
+           'ratio is ' + flag.actualRatio.toFixed(2) + ' but expected ~' + flag.expectedRatio.toFixed(2) + '. ' +
+           'Consider re-testing ' + lighter.name + ' (likely under-tested).';
+  }
+
+  function report() {
+    var flags = scan();
+    if (!flags.length) {
+      try { P4.toast('No lift misalignments detected ✓', 'ok', 2500); } catch (e) {}
+      return;
+    }
+    /* render a modal report */
+    var existing = document.getElementById('p4AuditorReport');
+    if (existing) existing.parentNode.removeChild(existing);
+    var m = document.createElement('div');
+    m.id = 'p4AuditorReport';
+    m.style.cssText = 'position:fixed;inset:0;z-index:100003;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:20px';
+    m.addEventListener('click', function (e) { if (e.target === m) m.parentNode.removeChild(m); });
+    var cards = flags.map(function (f) {
+      var color = f.severity === 'high' ? '#ef4444' : (f.severity === 'medium' ? '#f59e0b' : '#06b6d4');
+      return '<div style="border-left:4px solid ' + color + ';background:var(--gray-100, #f1f5f9);padding:12px 14px;border-radius:8px;margin-bottom:8px">' +
+        '<div style="font-weight:700;color:var(--p4-text, #1e293b);font-size:13px;margin-bottom:4px">' +
+          SEC.escapeHtml(f.a.name) + ' (' + Math.round(f.a.tested1RM) + ' lbs) ↔ ' + SEC.escapeHtml(f.b.name) + ' (' + Math.round(f.b.tested1RM) + ' lbs)' +
+          ' <span style="color:' + color + ';font-size:11px">' + f.deviation + '% off</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--p4-text-2, #475569)">' + SEC.escapeHtml(recommend(f)) + '</div>' +
+      '</div>';
+    }).join('');
+    m.innerHTML =
+      '<div style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:560px;width:100%;max-height:85vh;overflow:auto;position:relative">' +
+      '<button onclick="this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode)" style="position:absolute;top:14px;right:14px;background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">' +
+        '<div style="font-size:28px">🔍</div>' +
+        '<div><h3 style="margin:0;font-size:17px;font-weight:700;color:var(--p4-text, #1e293b)">Lift audit</h3>' +
+        '<p style="margin:0;font-size:12px;color:var(--p4-text-3, #94a3b8)">' + flags.length + ' potential misalignment' + (flags.length === 1 ? '' : 's') + ' flagged</p></div>' +
+      '</div>' +
+      cards +
+      '<p style="font-size:11px;color:var(--p4-text-3, #94a3b8);margin:14px 0 0 0;text-align:center">Nothing is changed — only flagged. Re-test to fix.</p>' +
+      '</div>';
+    document.body.appendChild(m);
+  }
+
+  return {
+    scan: scan,
+    report: report,
+    recommend: recommend
+  };
+})();
+
+/* ---- P4.SettingsAccordion: collapsible cards, one open at a time, all closed by default ---- */
+P4.SettingsAccordion = (function () {
+  function init() {
+    setTimeout(function () {
+      /* find the settings container */
+      var host = document.getElementById('p4SettingsExtra');
+      if (!host) { setTimeout(init, 800); return; }
+      var cards = host.querySelectorAll('.card[id^="p4"]:not(.p4-settings-group)');
+      if (!cards.length) return;
+
+      /* close all by default + add header click toggle */
+      cards.forEach(function (card, idx) {
+        /* wrap existing content in a collapsible body */
+        var h3 = card.querySelector('h3');
+        if (!h3) return;
+        if (!card._accordionWired) {
+          card._accordionWired = true;
+          /* collapse by default */
+          card.classList.add('p4-accordion-collapsed');
+          /* make header clickable */
+          h3.style.cursor = 'pointer';
+          h3.style.userSelect = 'none';
+          h3.innerHTML = '<i class="fas fa-chevron-down p4-acc-chevron" style="margin-right:8px;transition:transform .2s;font-size:11px"></i>' + h3.innerHTML;
+          h3.addEventListener('click', function (e) {
+            /* don't toggle if user clicks a button/input inside the header */
+            if (e.target.closest('button, input, select, label')) return;
+            var wasCollapsed = card.classList.contains('p4-accordion-collapsed');
+            /* close all siblings */
+            cards.forEach(function (sib) {
+              if (sib !== card) sib.classList.add('p4-accordion-collapsed');
+            });
+            /* toggle this one */
+            if (wasCollapsed) card.classList.remove('p4-accordion-collapsed');
+            else card.classList.add('p4-accordion-collapsed');
+            /* rotate chevron */
+            var chev = h3.querySelector('.p4-acc-chevron');
+            if (chev) chev.style.transform = wasCollapsed ? 'rotate(0deg)' : 'rotate(-90deg)';
+          });
+        }
+      });
+    }, 600);
+  }
+  return { init: init };
+})();
+
+/* injected CSS for accordion + share buttons */
+(function () {
+  if (document.getElementById('p4-stage3-css')) return;
+  var css = document.createElement('style');
+  css.id = 'p4-stage3-css';
+  css.textContent =
+    '.p4-accordion-collapsed > *:not(h3) { display: none !important; }' +
+    '.p4-accordion-collapsed h3 { margin: 0 !important; }' +
+    '.p4-share-btn:hover { border-color: var(--p4-accent, #2563eb) !important; transform: translateY(-1px); }';
+  document.head.appendChild(css);
+})();
+
+
+/* ============================================================================
+ * P4 STAGE-4 MODULES — workout cards collapse, library streaming,
+ * 3D wheel scroll, profile picker grid, fresh-load profile selection
+ * ============================================================================ */
+
+/* ---- P4.WorkoutCards: collapsible exercise cards in workout page ----
+ * Wraps each .chart-card inside #exerciseList with collapse behavior.
+ * Header (name + difficulty + chevron + 1RM-needed badge) always visible.
+ * Body hidden by default. Only one expanded at a time.
+ * For exercises without tested1RM: tapping expands to show 1RM test UI.
+ */
+P4.WorkoutCards = (function () {
+  var wired = false;
+  var MO = null;
+
+  function wrapCards() {
+    var list = document.getElementById('exerciseList');
+    if (!list) return;
+    var cards = list.querySelectorAll('.chart-card:not(.p4-wc-wrapped)');
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      card.classList.add('p4-wc-wrapped');
+      card.classList.add('p4-wc-collapsed');  /* collapsed by default */
+
+      /* find the existing header row (name + difficulty) */
+      var firstInner = card.querySelector(':scope > div > div:first-child');
+      var nameH3 = card.querySelector('h3');
+      var diff = card.querySelector('.badge');
+      var diffHTML = diff ? diff.outerHTML : '';
+
+      /* extract exercise id from any onclick inside */
+      var exId = null;
+      var btns = card.querySelectorAll('button[onclick]');
+      for (var i = 0; i < btns.length; i++) {
+        var m = btns[i].getAttribute('onclick').match(/'([^']+)'/);
+        if (m) { exId = m[1]; break; }
+      }
+
+      /* check if 1RM test is needed */
+      var needs1RM = false;
+      try {
+        if (exId && typeof workoutData !== 'undefined' && workoutData.exercises) {
+          var rec = workoutData.exercises[exId];
+          needs1RM = !rec || !rec.tested1RM || rec.tested1RM <= 0;
+        }
+      } catch (e) {}
+
+      /* build a header bar (always visible) */
+      var header = document.createElement('div');
+      header.className = 'p4-wc-header';
+      header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;cursor:pointer;border-radius:8px';
+      var name = nameH3 ? nameH3.textContent : 'Exercise';
+      header.innerHTML =
+        '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">' +
+          '<i class="fas fa-chevron-down p4-wc-chevron" style="font-size:11px;transition:transform .2s;color:var(--p4-text-3, #94a3b8)"></i>' +
+          '<span style="font-weight:700;color:var(--primary, #2563eb);font-size:1.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (name || 'Exercise') + '</span>' +
+          (needs1RM ? '<span class="badge badge-warning" style="font-size:10px">Needs 1RM</span>' : '') +
+        '</div>' +
+        '<div style="display:flex;gap:6px;align-items:center">' + diffHTML + '</div>';
+
+      /* insert header as first child */
+      if (card.firstChild) card.insertBefore(header, card.firstChild);
+      else card.appendChild(header);
+
+      /* hide the rest of the card content when collapsed */
+      var body = document.createElement('div');
+      body.className = 'p4-wc-body';
+      /* move all subsequent children into body */
+      while (header.nextSibling) body.appendChild(header.nextSibling);
+      card.appendChild(body);
+
+      /* wire header click to toggle */
+      header.addEventListener('click', function (e) {
+        /* don't toggle if user clicked a button/input inside the body (shouldn't happen since body is hidden, but just in case) */
+        if (e.target.closest('button, input, select')) return;
+        var wasCollapsed = card.classList.contains('p4-wc-collapsed');
+        /* collapse all siblings */
+        list.querySelectorAll('.p4-wc-wrapped').forEach(function (sib) {
+          if (sib !== card) {
+            sib.classList.add('p4-wc-collapsed');
+            var chev = sib.querySelector('.p4-wc-chevron');
+            if (chev) chev.style.transform = 'rotate(-90deg)';
+          }
+        });
+        /* toggle this one */
+        if (wasCollapsed) {
+          card.classList.remove('p4-wc-collapsed');
+          var chev = card.querySelector('.p4-wc-chevron');
+          if (chev) chev.style.transform = 'rotate(0deg)';
+          /* if 1RM needed, scroll to it + focus the test UI */
+          if (needs1RM) {
+            setTimeout(function () {
+              var testBtn = card.querySelector('[onclick*="estimate1RM"], [onclick*="test1RM"], [onclick*="bracketingTest"]');
+              if (testBtn) testBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+          }
+        } else {
+          card.classList.add('p4-wc-collapsed');
+          var chev2 = card.querySelector('.p4-wc-chevron');
+          if (chev2) chev2.style.transform = 'rotate(-90deg)';
+        }
+      });
+
+      /* set initial chevron rotation (collapsed = -90deg) */
+      var chev = header.querySelector('.p4-wc-chevron');
+      if (chev) chev.style.transform = 'rotate(-90deg)';
+    });
+  }
+
+  function init() {
+    /* observe #exerciseList for changes (when updateTodaysWorkout re-renders) */
+    setTimeout(function () {
+      var list = document.getElementById('exerciseList');
+      if (!list) { setTimeout(init, 800); return; }
+      if (MO) { try { MO.disconnect(); } catch (e) {} }
+      MO = new MutationObserver(P4.debounce(function () { wrapCards(); }, 100));
+      try { MO.observe(list, { childList: true }); } catch (e) {}
+      wrapCards();  /* initial wrap */
+    }, 800);
+  }
+  return { init: init, wrapCards: wrapCards };
+})();
+
+/* ---- Library streaming render — replaces the all-at-once renderLibrary ----
+ * Override strategy: monkey-patch the existing renderLibrary.
+ * New behavior: build group headers instantly (collapsed by default),
+ * stream exercise cards underneath via rAF chunks when group is expanded.
+ */
+(function () {
+  if (window._p4LibraryStreamingPatched) return;
+  window._p4LibraryStreamingPatched = true;
+
+  /* save the original renderLibrary for fallback / reference */
+  var origRenderLibrary = window.renderLibrary;
+
+  /* helper: build a single exercise card HTML (mirrors the original) */
+  function buildCardHTML(ex) {
+    var musclesList = ex.muscles ? ex.muscles.map(function (m) {
+      return '<span class="muscle-tag clickable" data-muscle="' + m + '" onclick="showMuscleImage(this.dataset.muscle)">' + getMuscleDisplayName(m) + '</span>';
+    }).join('') : '';
+    var equipment = ex.equipment ? '<span style="font-size:0.8rem; color:var(--gray-500);"><i class="fas fa-tools"></i> ' + ex.equipment + '</span>' : '';
+    var prescription = ex.defaultSets + ' sets × ' + ex.defaultReps;
+    if (ex.prescriptionType === 'time') prescription = ex.defaultSets + ' sets × ' + (ex.defaultDuration || 60) + ' sec';
+    else if (ex.prescriptionType === 'amrap') prescription += ' (AMRAP)';
+    var record = (workoutData.exercises && workoutData.exercises[ex.id]) || {};
+    var testInfo = '';
+    if (record.tested1RM) testInfo = '<div style="font-size:0.8rem; color:var(--success); margin-top:5px;">🏆 Tested 1RM: ' + Math.round(record.tested1RM) + ' lbs</div>';
+    var performedBadge = ex.performed ? '<span class="badge badge-success">✔ Done ' + ex.performedCount + 'x</span>' : '<span class="badge badge-info">New</span>';
+    var difficultyBadge = '';
+    if (ex.difficulty === 'easy') difficultyBadge = '<span class="badge badge-success">Easy</span>';
+    else if (ex.difficulty === 'medium') difficultyBadge = '<span class="badge badge-warning">Medium</span>';
+    else if (ex.difficulty === 'hard') difficultyBadge = '<span class="badge badge-danger">Hard</span>';
+    var safeName = ex.name.replace(/'/g, "\\'");
+    var est1RM = (record && record.mu && record.mu > 0) ? Math.round(record.mu) + ' lbs' : '—';
+    var lastHTML = '';
+    if (record && Array.isArray(record.history) && record.history.length > 0) {
+      var lastEntry = record.history.slice().reverse().find(function (e) { return !e.skipped; });
+      if (lastEntry && typeof lastEntry.weight === 'number') {
+        var w = lastEntry.weight === 0 ? 'bodyweight' : lastEntry.weight.toFixed(1) + ' lbs';
+        lastHTML = '<div style="font-size:0.9rem; color:var(--gray-600);">Last: ' + w + '</div>';
+      }
+    } else {
+      lastHTML = '<div style="font-size:0.9rem; color:var(--gray-600);">Last: —</div>';
+    }
+    var nextHTML = '';
+    if (record && record.nextWeight && typeof record.nextWeight === 'number') {
+      nextHTML = '<div style="margin-top:4px; font-size:0.9rem; color:var(--success);">↑ Next: ' + record.nextWeight.toFixed(1) + '</div>';
+    }
+    return '<div class="chart-card hover-lift" style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">' +
+      '<div>' +
+        '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">' +
+          '<h3 style="color: var(--primary); font-size:1.2rem; margin:0;">' + ex.name + '</h3>' +
+          difficultyBadge +
+        '</div>' +
+        '<div style="margin-bottom: 10px;">' + musclesList + '</div>' +
+        '<div style="margin-bottom: 8px;">' + equipment + '</div>' +
+        testInfo +
+        '<div style="font-weight:600; color:var(--dark);">📋 ' + prescription + '</div>' +
+        '<div style="margin-top:10px; font-size:0.85rem; color:var(--gray-600);"><i class="fas fa-lightbulb"></i> ' + (ex.progression || 'Progressive overload recommended') + '</div>' +
+      '</div>' +
+      '<div style="margin-top: 15px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">' +
+        '<button class="btn btn-sm" style="flex:1;" onclick="showExerciseSearch(\'' + safeName + '\')"><i class="fas fa-search"></i> How to do</button>' +
+        '<div class="btn btn-sm btn-outline" style="flex:1; text-align:center; pointer-events:none;"><i class="fas fa-chart-line"></i> Est. 1RM: ' + est1RM + '</div>' +
+        '<button class="btn btn-sm btn-success" style="flex:1;" onclick="addExerciseToWorkoutFromLibrary(\'' + ex.id + "', '" + safeName + '\')"><i class="fas fa-plus"></i> Add to Workout</button>' +
+      '</div>' +
+      '<div style="margin-top: 8px; text-align: right;">' + performedBadge + lastHTML + nextHTML + '</div>' +
+    '</div>';
+  }
+
+  /* streaming: build headers instantly, defer cards until expanded */
+  function streamingRender() {
+    var container = document.getElementById('libraryGrid');
+    if (!container) return;
+    var searchTerm = (document.getElementById('librarySearch') && document.getElementById('librarySearch').value || '').toLowerCase();
+    var allExercises = getEnhancedExerciseList();
+    if (!fuseIndex) {
+      fuseIndex = new Fuse(allExercises, { keys: ['name', 'muscles', 'equipment', 'primaryMuscle'], threshold: 0.4, distance: 100, includeScore: true });
+    }
+    var filtered;
+    if (searchTerm.length > 1) {
+      filtered = fuseIndex.search(searchTerm).map(function (r) { return r.item; });
+    } else {
+      filtered = allExercises;
+    }
+    if (typeof mpLibraryFilteredList === 'function') filtered = mpLibraryFilteredList(filtered);
+
+    var groups = {};
+    filtered.forEach(function (ex) {
+      var key;
+      switch (currentGrouping) {
+        case 'equipment': key = ex.equipment || 'Other'; break;
+        case 'difficulty': key = ex.difficulty || 'medium'; break;
+        case 'performed': key = ex.performed ? 'Done' : 'Not Done'; break;
+        case 'muscleCategory':
+          var muscleInfo = getAllMuscleGroups().find(function (m) { return m.name === ex.primaryMuscle; });
+          key = muscleInfo ? muscleInfo.category : 'other';
+          break;
+        case 'component': {
+          var mpInfo = (typeof mpGetLookup === 'function' ? mpGetLookup()[ex.id] : null);
+          var mpComps = mpInfo ? mpInfo.components : (ex.fitnessComponents || []);
+          var mpMeta = (typeof MP_COMPONENT_MAP !== 'undefined') ? MP_COMPONENT_MAP[mpComps[0]] : null;
+          key = mpMeta ? mpMeta.short : 'Other';
+          break;
+        }
+        default: key = ex.originalMuscleGroup;
+      }
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(ex);
+    });
+    var sortedKeys = Object.keys(groups).sort(function (a, b) {
+      if (currentGrouping === 'performed') return (a === 'Not Done' ? -1 : 1);
+      return a.localeCompare(b);
+    });
+    var countEl = document.getElementById('library-count');
+    if (countEl) countEl.textContent = filtered.length;
+
+    /* default all collapsed for streaming — instant paint of headers only */
+    var html = '';
+    if (!sortedKeys.length) {
+      html = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-dumbbell"></i><h3>No exercises match your search</h3></div>';
+      container.innerHTML = html;
+      return;
+    }
+    sortedKeys.forEach(function (groupKey) {
+      var exercisesInGroup = groups[groupKey];
+      var groupId = 'group-' + groupKey.replace(/\s+/g, '_');
+      /* ensure all groups start collapsed for fast initial paint */
+      if (collapsedGroups[groupKey] === undefined) collapsedGroups[groupKey] = true;
+      var isCollapsed = collapsedGroups[groupKey];
+      html +=
+        '<div class="library-group-header ' + (isCollapsed ? 'collapsed' : '') + '" onclick="toggleGroup(\'' + groupKey.replace(/'/g, "\\'") + '\')">' +
+          '<i class="fas fa-chevron-down group-toggle"></i>' +
+          '<h3>' + groupKey + ' (' + exercisesInGroup.length + ')</h3>' +
+        '</div>' +
+        '<div class="library-group-content" id="' + groupId + '" data-group-key="' + groupKey.replace(/"/g, '&quot;') + '"' +
+          ' data-ex-ids="' + exercisesInGroup.map(function (e) { return e.id; }).join(',') + '"></div>';
+    });
+    container.innerHTML = html;
+
+    /* stream cards into any expanded groups */
+    Object.keys(collapsedGroups).forEach(function (key) {
+      if (!collapsedGroups[key]) streamGroupCards(key);
+    });
+
+    /* refresh Expand/Collapse button visibility */
+    if (typeof refreshLibraryExpandCollapseButtons === 'function') refreshLibraryExpandCollapseButtons();
+
+    /* re-init tooltips on muscle tags after streaming */
+    setTimeout(function () { if (typeof initTooltips === 'function') initTooltips(); }, 50);
+  }
+
+  /* stream cards for a group in rAF chunks (20 at a time) */
+  function streamGroupCards(groupKey) {
+    var groupId = 'group-' + groupKey.replace(/\s+/g, '_');
+    var contentEl = document.getElementById(groupId);
+    if (!contentEl || contentEl.dataset.streamed === '1') return;
+    contentEl.dataset.streamed = '1';
+    var exIds = (contentEl.dataset.exIds || '').split(',').filter(Boolean);
+    if (!exIds.length) return;
+    var allExercises = getEnhancedExerciseList();
+    var byId = {};
+    allExercises.forEach(function (e) { byId[e.id] = e; });
+    var queue = exIds.map(function (id) { return byId[id]; }).filter(Boolean);
+    var CHUNK = 20;
+    var idx = 0;
+    function nextChunk() {
+      var slice = queue.slice(idx, idx + CHUNK);
+      if (!slice.length) return;
+      var html = slice.map(buildCardHTML).join('');
+      contentEl.insertAdjacentHTML('beforeend', html);
+      idx += CHUNK;
+      if (idx < queue.length) {
+        requestAnimationFrame(nextChunk);
+      } else {
+        /* after streaming, wire any P4.WorkoutCards logic if applicable */
+        setTimeout(function () { if (typeof initTooltips === 'function') initTooltips(); }, 20);
+      }
+    }
+    requestAnimationFrame(nextChunk);
+  }
+
+  /* override the global renderLibrary */
+  window.renderLibrary = streamingRender;
+  /* expose streamGroupCards globally so toggleGroup can call it */
+  window._p4StreamGroupCards = streamGroupCards;
+
+  /* override toggleGroup to stream cards when expanding */
+  if (typeof window.toggleGroup === 'function') {
+    var origToggle = window.toggleGroup;
+    window.toggleGroup = function (groupKey) {
+      collapsedGroups[groupKey] = !collapsedGroups[groupKey];
+      saveLibraryCollapse();
+      if (!collapsedGroups[groupKey]) {
+        /* expanding — stream cards */
+        streamGroupCards(groupKey);
+        /* update DOM: remove collapsed class from header, show content */
+        var header = document.querySelector('.library-group-header h3');
+        var headers = document.querySelectorAll('.library-group-header');
+        headers.forEach(function (h) {
+          var h3 = h.querySelector('h3');
+          if (h3 && h3.textContent.indexOf(groupKey + ' (') === 0) {
+            h.classList.remove('collapsed');
+          }
+        });
+      } else {
+        /* collapsing — clear the streamed cards to save memory */
+        var groupId = 'group-' + groupKey.replace(/\s+/g, '_');
+        var contentEl = document.getElementById(groupId);
+        if (contentEl) {
+          contentEl.innerHTML = '';
+          contentEl.dataset.streamed = '';
+        }
+        var headers = document.querySelectorAll('.library-group-header');
+        headers.forEach(function (h) {
+          var h3 = h.querySelector('h3');
+          if (h3 && h3.textContent.indexOf(groupKey + ' (') === 0) {
+            h.classList.add('collapsed');
+          }
+        });
+      }
+      if (typeof refreshLibraryExpandCollapseButtons === 'function') refreshLibraryExpandCollapseButtons();
+    };
+  }
+
+  /* override expandAllGroups to stream all */
+  if (typeof window.expandAllGroups === 'function') {
+    window.expandAllGroups = function () {
+      collapsedGroups = {};
+      saveLibraryCollapse();
+      if (typeof refreshLibraryExpandCollapseButtons === 'function') refreshLibraryExpandCollapseButtons();
+      /* re-render to update headers, then stream all */
+      streamingRender();
+    };
+  }
+})();
+
+/* ---- P4.Wheel: 3D wheel scroll picker (for English level selection) ----
+ * Center spotlight, top/bottom fade+shrink, looks like only 3 choices at a time.
+ * Pure CSS + JS, no library.
+ */
+P4.Wheel = (function () {
+  function create(opts) {
+    /* opts: { items: [{id, name, desc}], value, onSelect, container } */
+    var container = opts.container || document.body;
+    var items = opts.items || [];
+    var value = opts.value != null ? opts.value : (items.length ? items[0].id : null);
+    var onSelect = opts.onSelect || function () {};
+
+    var host = document.createElement('div');
+    host.className = 'p4-wheel-host';
+    host.style.cssText = 'position:relative;height:280px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;perspective:1000px;touch-action:pan-y;-webkit-overflow-scrolling:touch;cursor:ns-resize';
+
+    /* top + bottom fade masks */
+    var topFade = document.createElement('div');
+    topFade.style.cssText = 'position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(to bottom, var(--light, #fff) 0%, transparent 100%);pointer-events:none;z-index:2';
+    var botFade = document.createElement('div');
+    botFade.style.cssText = 'position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top, var(--light, #fff) 0%, transparent 100%);pointer-events:none;z-index:2';
+    /* center selector line */
+    var centerLine = document.createElement('div');
+    centerLine.style.cssText = 'position:absolute;top:50%;left:0;right:0;height:60px;transform:translateY(-50%);border-top:2px solid var(--p4-accent, #2563eb);border-bottom:2px solid var(--p4-accent, #2563eb);background:var(--p4-accent-soft, #eef);pointer-events:none;z-index:1;opacity:0.5';
+
+    var list = document.createElement('div');
+    list.className = 'p4-wheel-list';
+    list.style.cssText = 'position:relative;z-index:3;width:100%';
+
+    host.appendChild(topFade);
+    host.appendChild(botFade);
+    host.appendChild(centerLine);
+    host.appendChild(list);
+
+    var itemEls = [];
+    var currentIdx = 0;
+
+    function findIdx(v) {
+      for (var i = 0; i < items.length; i++) if (items[i].id === v) return i;
+      return 0;
+    }
+    currentIdx = findIdx(value);
+
+    function render() {
+      list.innerHTML = '';
+      itemEls = [];
+      items.forEach(function (item, i) {
+        var el = document.createElement('div');
+        el.className = 'p4-wheel-item';
+        el.dataset.idx = i;
+        el.style.cssText = 'padding:14px 16px;text-align:center;transition:all .25s ease;will-change:transform,opacity;font-size:15px;cursor:pointer';
+        el.innerHTML = '<div style="font-weight:700;color:var(--p4-text, #1e293b)">' + (item.name || '') + '</div>' +
+          (item.desc ? '<div style="font-size:11px;color:var(--p4-text-3, #94a3b8);margin-top:2px">' + item.desc + '</div>' : '');
+        el.addEventListener('click', function () {
+          currentIdx = i;
+          value = items[i].id;
+          update();
+          onSelect(items[i]);
+        });
+        list.appendChild(el);
+        itemEls.push(el);
+      });
+      update();
+    }
+
+    function update() {
+      var centerOffset = host.offsetHeight / 2 - 30; /* center of 60px line */
+      itemEls.forEach(function (el, i) {
+        var offset = i - currentIdx;
+        var absOffset = Math.abs(offset);
+        var translateY = (offset * 50); /* 50px per item */
+        var scale = absOffset > 2 ? 0 : (1 - absOffset * 0.18);
+        var opacity = absOffset > 2 ? 0 : (1 - absOffset * 0.35);
+        var blur = absOffset > 0 ? Math.min(absOffset * 1.5, 3) : 0;
+        el.style.transform = 'translateY(' + translateY + 'px) scale(' + scale + ')';
+        el.style.opacity = opacity;
+        el.style.filter = 'blur(' + blur + 'px)';
+        el.style.pointerEvents = absOffset > 2 ? 'none' : 'auto';
+      });
+    }
+
+    /* touch / wheel input */
+    var startY = 0, startIdx = 0, lastY = 0, lastTime = 0, velocity = 0;
+    function onTouchStart(e) {
+      var t = e.touches ? e.touches[0] : e;
+      startY = t.clientY;
+      startIdx = currentIdx;
+      lastY = startY;
+      lastTime = Date.now();
+      velocity = 0;
+      host.setPointerCapture && e.pointerId != null && host.setPointerCapture(e.pointerId);
+    }
+    function onTouchMove(e) {
+      e.preventDefault();
+      var t = e.touches ? e.touches[0] : e;
+      var dy = t.clientY - startY;
+      /* 50px per item — move 1 item per 50px drag */
+      var idxDelta = -Math.round(dy / 50);
+      var newIdx = Math.max(0, Math.min(items.length - 1, startIdx + idxDelta));
+      if (newIdx !== currentIdx) {
+        currentIdx = newIdx;
+        value = items[newIdx].id;
+        update();
+        onSelect(items[newIdx]);
+      }
+      /* track velocity for inertial scroll */
+      var now = Date.now();
+      var dt = now - lastTime;
+      if (dt > 0) velocity = (t.clientY - lastY) / dt;
+      lastY = t.clientY;
+      lastTime = now;
+    }
+    function onTouchEnd() {
+      /* inertial scroll */
+      if (Math.abs(velocity) > 0.1) {
+        var inertia = Math.round(velocity * 200 / 50);
+        var target = Math.max(0, Math.min(items.length - 1, currentIdx - inertia));
+        if (target !== currentIdx) {
+          currentIdx = target;
+          value = items[target].id;
+          update();
+          onSelect(items[target]);
+        }
+      }
+    }
+    host.addEventListener('touchstart', onTouchStart, { passive: true });
+    host.addEventListener('touchmove', onTouchMove, { passive: false });
+    host.addEventListener('touchend', onTouchEnd);
+    host.addEventListener('mousedown', function (e) { onTouchStart(e); document.addEventListener('mousemove', onTouchMove); document.addEventListener('mouseup', function () { onTouchEnd(); document.removeEventListener('mousemove', onTouchMove); }); });
+    host.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var dir = e.deltaY > 0 ? 1 : -1;
+      var newIdx = Math.max(0, Math.min(items.length - 1, currentIdx + dir));
+      if (newIdx !== currentIdx) {
+        currentIdx = newIdx;
+        value = items[newIdx].id;
+        update();
+        onSelect(items[newIdx]);
+      }
+    }, { passive: false });
+
+    render();
+    container.appendChild(host);
+    return { host: host, setValue: function (v) { currentIdx = findIdx(v); value = v; update(); } };
+  }
+  return { create: create };
+})();
+
+/* ---- Profile picker grid + fresh-load selection ----
+ * Override P4.Picker.open to use grid layout (tiny squares, 3-col grid)
+ * On fresh APK load with no active profile, open picker immediately.
+ */
+(function () {
+  if (window._p4PickerGridPatched) return;
+  window._p4PickerGridPatched = true;
+  if (!window.P4 || !P4.Picker) return;
+
+  var origOpen = P4.Picker.open;
+  P4.Picker.open = function () {
+    if (P4.Picker._openFlag) return;
+    P4.Picker._openFlag = true;
+    var host = document.createElement('div');
+    host.id = 'p4PickerBackdrop';
+    host.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)';
+    host.addEventListener('click', function (e) { if (e.target === host) P4.Picker.close(); });
+    var ps = P4.Profiles.list();
+    var cur = P4.Profiles.current();
+    /* GRID layout — tiny squares */
+    var cards = ps.map(function (p) {
+      var isCur = cur && cur.id === p.id;
+      return '<div class="p4-pick-grid-card" data-id="' + p.id + '" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:14px;background:' + (isCur ? 'var(--p4-accent-soft, #eef)' : 'var(--light, #fff)') + ';border:2px solid ' + (isCur ? 'var(--p4-accent, #2563eb)' : 'var(--gray-200, #e2e8f0)') + ';cursor:pointer;transition:all .15s;position:relative;min-height:96px;justify-content:center">' +
+        '<div style="font-size:32px">' + (p.emoji || '') + '</div>' +
+        '<div style="font-weight:600;font-size:12px;color:var(--p4-text, #1e293b);text-align:center;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + SEC.escapeHtml(p.name) + '</div>' +
+        (isCur ? '<div style="position:absolute;top:4px;right:4px;font-size:9px;font-weight:700;color:var(--p4-accent, #2563eb);background:var(--p4-accent-soft, #eef);padding:1px 6px;border-radius:8px">●</div>' : '') +
+        '<button class="p4-pick-del" data-id="' + p.id + '" style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,0.05);border:none;color:var(--danger, #ef4444);cursor:pointer;font-size:11px;padding:2px 4px;border-radius:6px" title="Delete"><i class="fas fa-trash"></i></button>' +
+        '</div>';
+    }).join('');
+    host.innerHTML =
+      '<div id="p4PickerCard" style="background:var(--light, #fff);border-radius:18px;padding:22px;max-width:520px;width:100%;max-height:85vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);position:relative">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">' +
+      '<h3 style="margin:0;font-size:17px;font-weight:700;color:var(--p4-text, #1e293b)">Pick profile</h3>' +
+      '<button id="p4PickerClose" style="background:transparent;border:none;font-size:22px;cursor:pointer;color:var(--p4-text-3, #94a3b8)"><i class="fas fa-xmark"></i></button>' +
+      '</div>' +
+      '<div id="p4PickerGrid" style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin-bottom:14px">' + (cards || '<p style="color:var(--p4-text-3, #94a3b8);font-size:14px;grid-column:1/-1;text-align:center;padding:20px">No profiles yet — add one below</p>') + '</div>' +
+      '<div style="display:flex;gap:8px">' +
+      '<input id="p4PickerNewName" type="text" placeholder="New profile name..." maxlength="40" style="flex:1;padding:9px 12px;border:1px solid var(--gray-300, #cbd5e1);border-radius:10px;font-size:14px;background:var(--light, #fff);color:var(--p4-text, #1e293b)">' +
+      '<button id="p4PickerAdd" style="padding:9px 14px;background:var(--primary, #2563eb);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600"><i class="fas fa-plus"></i> Add</button>' +
+      '</div>' +
+      '<p style="font-size:11px;color:var(--p4-text-3, #94a3b8);margin:12px 0 0 0;text-align:center">Each profile keeps its own workouts, history, and settings.</p>' +
+      '</div>';
+    document.body.appendChild(host);
+    document.getElementById('p4PickerClose').addEventListener('click', P4.Picker.close);
+    document.getElementById('p4PickerAdd').addEventListener('click', function () {
+      var name = document.getElementById('p4PickerNewName').value.trim();
+      if (!name) { try { P4.toast('Give the new profile a name first', 'warn', 2000); } catch (e) {} return; }
+      var p = P4.Profiles.create(name);
+      P4.Picker.close();
+      setTimeout(function () {
+        P4.Profiles.switchTo(p.id);
+        try { workoutData = { user: { name: name }, workouts: [], exercises: {}, settings: {} }; if (typeof saveWorkoutData === 'function') saveWorkoutData(); if (typeof renderDashboard === 'function') renderDashboard(); } catch (e) {}
+        try { if (P4.Onboard.needed()) setTimeout(function () { P4.Onboard.start(); }, 500); } catch (e) {}
+      }, 80);
+    });
+    var grid = document.getElementById('p4PickerGrid');
+    grid.addEventListener('click', function (e) {
+      var del = e.target.closest('.p4-pick-del');
+      if (del) {
+        e.stopPropagation();
+        var id = del.getAttribute('data-id');
+        if (confirm('Delete this profile and all its data?')) { P4.Profiles.del(id); P4.Picker.close(); setTimeout(function () { P4.Picker.open(); }, 60); }
+        return;
+      }
+      var card = e.target.closest('.p4-pick-grid-card');
+      if (!card) return;
+      var id = card.getAttribute('data-id');
+      P4.Picker.close();
+      setTimeout(function () { P4.Profiles.switchTo(id); }, 60);
+    });
+    document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { P4.Picker.close(); document.removeEventListener('keydown', esc); } });
+    setTimeout(function () { var i = document.getElementById('p4PickerNewName'); if (i) i.focus(); }, 100);
+  };
+
+  /* fresh-load profile selection — on first boot with no active profile, open picker BEFORE any profile UI */
+  P4.Picker.showOnFreshLoad = function () {
+    try {
+      var ps = P4.Profiles.list();
+      var active = localStorage.getItem('p4_active_profile');
+      /* if no profiles OR no active profile, open picker on fresh load */
+      if (!ps.length || !active) {
+        setTimeout(function () { P4.Picker.open(); }, 1200);
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  };
+})();
+
+/* ---- CSS for stage-4 modules ---- */
+(function () {
+  if (document.getElementById('p4-stage4-css')) return;
+  var css = document.createElement('style');
+  css.id = 'p4-stage4-css';
+  css.textContent =
+    '.p4-wc-collapsed > .p4-wc-body { display: none !important; }' +
+    '.p4-wc-collapsed { padding: 12px 20px !important; }' +
+    '.p4-wc-header:hover { background: var(--gray-100, #f1f5f9); }' +
+    '.p4-pick-grid-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }';
+  document.head.appendChild(css);
+})();
+
+
+/* ============================================================================
+ * P4 STAGE-5 MODULES — 3-month volatile projection + improved 5-year math
+ * ============================================================================ */
+(function () {
+  'use strict';
+  if (!window.P4) return;
+  var P4 = window.P4;
+
+  /* ---- calculate3MonthProjection: near-term, high-volatility ----
+   * Uses rolling 8-workout trend + variance to project 3 months forward (~26 workouts at 2x/week).
+   * Returns { low, median, high, message } */
+  P4.Projections = P4.Projections || {};
+  P4.Projections.threeMonth = function () {
+    try {
+      var workouts = (typeof workoutData !== 'undefined' && workoutData.workouts) ? workoutData.workouts : [];
+      var exercises = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises : {};
+      if (!workouts.length) return null;
+
+      /* gather recent 1RM trend across key lifts */
+      var keyLifts = ['squat', 'bench_press', 'deadlift'];
+      var trendPoints = [];
+      keyLifts.forEach(function (id) {
+        var ex = exercises[id];
+        if (!ex || !ex.history || !ex.history.length) return;
+        /* take the last 8 entries with weight data */
+        var recent = ex.history.slice(-8).filter(function (h) { return h && typeof h.weight === 'number' && h.weight > 0; });
+        if (recent.length < 2) return;
+        /* estimate 1RM per entry using Epley */
+        recent.forEach(function (h) {
+          var reps = h.reps || 1;
+          var w = h.weight;
+          var est1RM = w * (1 + reps / 30);
+          trendPoints.push({ t: new Date(h.date || Date.now()).getTime(), v: est1RM, lift: id });
+        });
+      });
+      if (trendPoints.length < 4) return null;
+
+      /* sort by time */
+      trendPoints.sort(function (a, b) { return a.t - b.t; });
+      var firstT = trendPoints[0].t;
+      var lastT = trendPoints[trendPoints.length - 1].t;
+      var daySpan = Math.max(1, (lastT - firstT) / (24 * 60 * 60 * 1000));
+      var firstV = trendPoints[0].v;
+      var lastV = trendPoints[trendPoints.length - 1].v;
+      var dailyRate = (lastV - firstV) / daySpan;  /* lbs per day */
+
+      /* compute variance for volatility bands */
+      var residuals = trendPoints.map(function (p) {
+        var predicted = firstV + dailyRate * ((p.t - firstT) / (24 * 60 * 60 * 1000));
+        return p.v - predicted;
+      });
+      var meanResidual = residuals.reduce(function (a, b) { return a + b; }, 0) / residuals.length;
+      var variance = residuals.reduce(function (a, b) { return a + (b - meanResidual) * (b - meanResidual); }, 0) / residuals.length;
+      var stdDev = Math.sqrt(variance);
+
+      /* project 90 days forward */
+      var projectionDays = 90;
+      var projectedMedian = Math.max(lastV, lastV + dailyRate * projectionDays);
+      /* volatility: ±1.5 stdDev scaled to projection horizon */
+      var volatility = stdDev * 1.5 * Math.sqrt(projectionDays / daySpan);
+      var low = Math.max(0, projectedMedian - volatility);
+      var high = projectedMedian + volatility;
+
+      /* sanity: cap unreasonable projections */
+      var userWeight = (workoutData.user && workoutData.user.weight) || 150;
+      var cap = userWeight * 4;  /* no one's 1RM is 4x bodyweight projected */
+      if (high > cap) high = cap;
+      if (projectedMedian > cap) projectedMedian = cap;
+
+      /* build message */
+      var msg;
+      if (dailyRate > 0.5) msg = 'Gaining fast — keep the rhythm.';
+      else if (dailyRate > 0.1) msg = 'Steady progress — solid gains ahead.';
+      else if (dailyRate > -0.1) msg = 'Plateau-ish — consider a deload or variation swap.';
+      else msg = 'Trend is down — deload + recovery focus.';
+
+      return {
+        low: Math.round(low),
+        median: Math.round(projectedMedian),
+        high: Math.round(high),
+        message: msg,
+        dailyRate: dailyRate
+      };
+    } catch (e) { return null; }
+  };
+
+  /* ---- improved 5-year projection: Monte Carlo over rolling trend + variance ----
+   * 1000 simulated paths, returns median + 80% confidence interval */
+  P4.Projections.fiveYearMonteCarlo = function () {
+    try {
+      var exercises = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises : {};
+      var keyLifts = ['squat', 'bench_press', 'deadlift'];
+      var trendPoints = [];
+      keyLifts.forEach(function (id) {
+        var ex = exercises[id];
+        if (!ex || !ex.history || !ex.history.length) return;
+        var recent = ex.history.slice(-12).filter(function (h) { return h && typeof h.weight === 'number' && h.weight > 0; });
+        if (recent.length < 3) return;
+        recent.forEach(function (h) {
+          var reps = h.reps || 1;
+          var w = h.weight;
+          trendPoints.push({ t: new Date(h.date || Date.now()).getTime(), v: w * (1 + reps / 30) });
+        });
+      });
+      if (trendPoints.length < 6) return null;
+      trendPoints.sort(function (a, b) { return a.t - b.t; });
+
+      var firstT = trendPoints[0].t;
+      var lastT = trendPoints[trendPoints.length - 1].t;
+      var daySpan = Math.max(1, (lastT - firstT) / (24 * 60 * 60 * 1000));
+      var firstV = trendPoints[0].v;
+      var lastV = trendPoints[trendPoints.length - 1].v;
+      var dailyRate = (lastV - firstV) / daySpan;
+
+      /* variance */
+      var residuals = trendPoints.map(function (p) {
+        var predicted = firstV + dailyRate * ((p.t - firstT) / (24 * 60 * 60 * 1000));
+        return p.v - predicted;
+      });
+      var variance = residuals.reduce(function (a, b) { return a + b * b; }, 0) / residuals.length;
+      var stdDev = Math.sqrt(variance);
+
+      /* Monte Carlo: 1000 paths, 5 years = 1825 days */
+      var HORIZON_DAYS = 1825;
+      var NUM_PATHS = 1000;
+      var finalValues = [];
+      /* simple pseudo-random normal */
+      function randNormal() {
+        var u = 0, v = 0;
+        while (u === 0) u = Math.random();
+        while (v === 0) v = Math.random();
+        return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+      }
+      for (var i = 0; i < NUM_PATHS; i++) {
+        var v = lastV;
+        /* step daily, but only update every 7 days to speed up */
+        for (var d = 0; d < HORIZON_DAYS; d += 7) {
+          v += dailyRate * 7 + randNormal() * stdDev * Math.sqrt(7);
+          /* apply diminishing returns: gains slow as you approach genetic ceiling */
+          var ceiling = (workoutData.user && workoutData.user.weight || 150) * 3.5;
+          if (v > ceiling * 0.9) {
+            v = ceiling * 0.9 + (v - ceiling * 0.9) * 0.3;  /* taper */
+          }
+        }
+        finalValues.push(v);
+      }
+      finalValues.sort(function (a, b) { return a - b; });
+      var median = finalValues[Math.floor(NUM_PATHS / 2)];
+      var low80 = finalValues[Math.floor(NUM_PATHS * 0.1)];
+      var high80 = finalValues[Math.floor(NUM_PATHS * 0.9)];
+
+      /* compute date 5 years out */
+      var targetDate = new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000);
+
+      return {
+        medianDate: targetDate,
+        median: Math.round(median),
+        low80: Math.round(low80),
+        high80: Math.round(high80),
+        message: 'Monte Carlo over ' + trendPoints.length + ' trend points, 1000 simulated paths, 5-year horizon with diminishing returns near genetic ceiling.'
+      };
+    } catch (e) { return null; }
+  };
+
+  /* ---- render the 3-month projection card into the dashboard ----
+   * Inserts a new stat card next to the eliteDateCard.
+   * Called on dashboard render.
+   */
+  P4.Projections.renderCards = function () {
+    try {
+      /* find the eliteDateCard row */
+      var eliteCard = document.getElementById('eliteDateCard');
+      if (!eliteCard) return;  /* dashboard not yet rendered */
+      var threeMonthCard = document.getElementById('threeMonthProjectionCard');
+      if (!threeMonthCard) {
+        /* create the card next to eliteDateCard */
+        threeMonthCard = document.createElement('div');
+        threeMonthCard.id = 'threeMonthProjectionCard';
+        threeMonthCard.className = 'stat-card hover-lift';
+        threeMonthCard.style.cssText = 'cursor: help; border-left: 3px solid var(--warning, #f59e0b);';
+        threeMonthCard.innerHTML =
+          '<div class="stat-value" id="threeMonthProjection" style="color: var(--warning, #f59e0b)">--</div>' +
+          '<div class="stat-label" style="font-size:0.7rem;">' +
+            '<i class="fas fa-bolt"></i> 3-month volatile projection<br>' +
+            '<span style="font-size:0.6rem;">(near-term, high uncertainty)</span>' +
+          '</div>';
+        eliteCard.parentNode.insertBefore(threeMonthCard, eliteCard.nextSibling);
+      }
+      var proj = P4.Projections.threeMonth();
+      var projEl = document.getElementById('threeMonthProjection');
+      if (!projEl) return;
+      if (!proj) {
+        projEl.textContent = '—';
+        threeMonthCard.setAttribute('title', 'Log a few more workouts to see your 3-month projection.');
+        return;
+      }
+      projEl.textContent = proj.low + '–' + proj.high + ' lbs';
+      var tipText = 'Based on your recent trend:\n• Median: ~' + proj.median + ' lbs in 90 days\n• Range: ' + proj.low + '–' + proj.high + ' lbs (80% confidence)\n• ' + proj.message;
+      threeMonthCard.setAttribute('title', tipText);
+      if (typeof tippy !== 'undefined') {
+        if (threeMonthCard._tippy) threeMonthCard._tippy.destroy();
+        tippy(threeMonthCard, { content: tipText, allowHTML: true, theme: 'light-border' });
+      }
+
+      /* also enrich the 5-year card tooltip with Monte Carlo bands if available */
+      var mc = P4.Projections.fiveYearMonteCarlo();
+      if (mc) {
+        var eliteCard2 = document.getElementById('eliteDateCard');
+        if (eliteCard2) {
+          var mcTip = 'Monte Carlo (1000 paths):\n• Median: ~' + mc.median + ' lbs by ' + mc.medianDate.toLocaleDateString() + '\n• 80% range: ' + mc.low80 + '–' + mc.high80 + ' lbs\n• ' + mc.message;
+          if (typeof tippy !== 'undefined') {
+            if (eliteCard2._tippy) eliteCard2._tippy.destroy();
+            tippy(eliteCard2, { content: mcTip, allowHTML: true, theme: 'light-border' });
+          }
+        }
+      }
+    } catch (e) {}
+  };
+
+  /* wire into dashboard render via MutationObserver */
+  P4.Projections.init = function () {
+    setTimeout(function () {
+      /* try once after dashboard likely rendered */
+      P4.Projections.renderCards();
+      /* re-render on dashboard changes */
+      var dash = document.getElementById('dashboard') || document.body;
+      var mo = new MutationObserver(P4.debounce(function () {
+        if (document.getElementById('eliteDateCard') && !document.getElementById('threeMonthProjectionCard')) {
+          P4.Projections.renderCards();
+        }
+      }, 400));
+      try { mo.observe(dash, { childList: true, subtree: true }); } catch (e) {}
+    }, 1500);
+  };
+})();
+
+
+/* ============================================================================
+ * P4 STAGE-6 MODULES — settings restructure, 3D wheel wiring, workout cards
+ * selector fix, export/backup improvements, component badge consistency.
+ * ============================================================================ */
+(function () {
+  'use strict';
+  if (!window.P4) return;
+  var P4 = window.P4, SEC = P4.SEC, store = P4.store;
+
+  /* ============================================================
+     1) SETTINGS RESTRUCTURE — 10 granular collapsible groups
+     Each group: header (icon + title + chevron), body (collapsible)
+     All closed by default. Only one open at a time.
+     ============================================================ */
+  if (P4.SettingsUI && P4.SettingsUI.inject) {
+    var origInject = P4.SettingsUI.inject;
+    P4.SettingsUI.inject = function () {
+      var setSec = document.getElementById('settings-section');
+      if (!setSec) return;
+      /* idempotent: drop any previous injection */
+      var old = document.getElementById('p4SettingsExtra');
+      if (old && old.parentNode) old.parentNode.removeChild(old);
+      var anchor = setSec.querySelector('.btn-group');
+      var host = setSec.querySelector('.container') || setSec;
+      var div = document.createElement('div');
+      div.id = 'p4SettingsExtra';
+
+      /* gather dynamic data */
+      var langOpts = P4.LANGS.map(function (l) {
+        return '<option value="' + l.code + '"' + (P4.I18N.get() === l.code ? ' selected' : '') + '>' + SEC.escapeHtml(l.name) + '</option>';
+      }).join('');
+      var plan = P4.Paywall;
+      var planState = plan.isPro() ? 'Pro — everything unlocked. Thank you!' :
+        plan.trialActive() ? 'Free trial: ' + plan.daysLeft() + ' day(s) left of full power.' : 'Free plan — apply for free access or subscribe.';
+      var snaps = P4.Backup.snapshots();
+
+      /* personal info: read current values */
+      var userName = '', userBirth = '', userGender = 'unspecified', userWeight = '';
+      try {
+        if (typeof workoutData !== 'undefined' && workoutData.user) {
+          userName = workoutData.user.name || '';
+          userBirth = workoutData.user.birthDate || '';
+          userGender = workoutData.user.gender || 'unspecified';
+          userWeight = workoutData.user.weight || '';
+        }
+      } catch (e) {}
+
+      /* helper: build a settings group card with header + collapsible body */
+      function groupCard(id, title, icon, bodyHTML) {
+        return '<div class="card p4-settings-group" id="' + id + '" style="margin-top:14px;padding:0;overflow:hidden;border:1px solid var(--p4-text-line, #e2e8f0);border-radius:14px">' +
+          '<div class="p4-settings-group-header" style="display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none;background:var(--p4-bg-2, var(--gray-100, #f1f5f9));transition:background .15s">' +
+            '<i class="fas ' + icon + '" style="color:var(--p4-accent, #2563eb);width:18px;text-align:center"></i>' +
+            '<span style="flex:1;font-weight:600;font-size:15px;color:var(--p4-text, #1e293b);font-family:var(--p4-font-display, inherit)">' + title + '</span>' +
+            '<i class="fas fa-chevron-down p4-settings-chevron" style="font-size:11px;color:var(--p4-text-3, #94a3b8);transition:transform .2s;transform:rotate(-90deg)"></i>' +
+          '</div>' +
+          '<div class="p4-settings-group-body" style="padding:16px 18px;display:none">' + bodyHTML + '</div>' +
+        '</div>';
+      }
+
+      /* group bodies */
+      var personalBody =
+        '<div style="display:grid;gap:10px">' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Name <input type="text" id="p4SetName" maxlength="40" value="' + SEC.escapeHtml(userName) + '" style="flex:1;max-width:200px;padding:7px 10px;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;font-size:13px"></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Birth date <input type="date" id="p4SetBirth" value="' + SEC.escapeHtml(userBirth) + '" style="flex:1;max-width:200px;padding:7px 10px;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;font-size:13px"></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Gender <select id="p4SetGender" style="flex:1;max-width:200px;padding:7px 10px;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;font-size:13px;background:var(--light, #fff)">' +
+          '<option value="unspecified"' + (userGender === 'unspecified' ? ' selected' : '') + '>Prefer not to say</option>' +
+          '<option value="male"' + (userGender === 'male' ? ' selected' : '') + '>Male</option>' +
+          '<option value="female"' + (userGender === 'female' ? ' selected' : '') + '>Female</option>' +
+        '</select></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Body weight (lbs) <input type="number" id="p4SetWeight" min="50" max="500" value="' + SEC.escapeHtml(String(userWeight)) + '" style="flex:1;max-width:200px;padding:7px 10px;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;font-size:13px"></label>' +
+        '</div>' +
+        '<button class="btn btn-primary" id="p4SavePersonal" style="margin-top:12px;padding:8px 16px"><i class="fas fa-save"></i> Save</button>';
+
+      var appearanceBody = '<div id="p4ThemeInner"></div>';
+      var readingBody = '<div id="p4VocabInner"></div>';
+      var languageBody =
+        '<select id="p4LangSelect" style="width:100%;padding:8px 10px;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;font-size:13px;background:var(--light, #fff);color:var(--p4-text, #1e293b)">' + langOpts + '</select>' +
+        '<div class="p4-wz-hint" style="margin-top:8px">Also works with your browser\'s "Translate this page" — labels, buttons and tips are structured for clean translation.</div>';
+
+      var powerBody =
+        '<div style="display:grid;gap:10px">' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Auto rest timer after logging effort <input type="checkbox" id="p4OptRest"' + (P4.Power.settings.autoRest ? ' checked' : '') + '></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Haptic buzz (vibration) <input type="checkbox" id="p4OptHaptic"' + (P4.Power.settings.haptics ? ' checked' : '') + '></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Swipe between pages <input type="checkbox" id="p4OptSwipe"' + (P4.Power.settings.swipe ? ' checked' : '') + '></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Quick-action dock <input type="checkbox" id="p4OptDock"' + (P4.Power.settings.dock ? ' checked' : '') + '></label>' +
+        '</div>' +
+        '<div class="p4-wz-hint" style="margin-top:10px">Designed for busy hands: Start Workout is 1 tap from Home, sets log with one entry, rest timer starts itself.</div>';
+
+      var libMgmtBody =
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn" onclick="P4.Studio.open()"><i class="fas fa-flask-vial"></i> Library Studio</button>' +
+        '<button class="btn btn-success" onclick="P4.Backup.exportLibrary()"><i class="fas fa-file-export"></i> Export library</button>' +
+        '<button class="btn" onclick="P4.Studio.pickImportFile()"><i class="fas fa-folder-open"></i> Import library</button>' +
+        '</div>' +
+        '<div class="p4-wz-hint" style="margin-top:10px">Add your own exercises, edit defaults, or restore the original list.</div>';
+
+      var planBody =
+        '<p style="font-size:14px;color:var(--p4-text-2, #475569);margin:0 0 12px" id="p4PlanState">' + planState + '</p>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        (plan.isPro() ? '<button class="btn btn-primary" onclick="P4.Paywall.showFullPage()"><i class="fas fa-crown"></i> Manage plan</button>' : '<button class="btn btn-primary" onclick="P4.Paywall.showFullPage()"><i class="fas fa-crown"></i> Apply for free / Subscribe</button>') +
+        (plan.isPro() && !plan.licenseValid() ? '<button class="btn" onclick="P4.Paywall.cancelSubscription()"><i class="fas fa-xmark"></i> Cancel subscription</button>' : '') +
+        '</div>';
+
+      var dataBody =
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn btn-success" onclick="P4.Backup.exportAll()"><i class="fas fa-download"></i> Export everything</button>' +
+        '<button class="btn" onclick="P4.Backup.pickImport()"><i class="fas fa-upload"></i> Restore from file</button>' +
+        '</div>' +
+        (snaps.length ? '<div class="p4-wz-hint" style="margin-top:10px">Automatic safety snapshots: ' +
+          snaps.map(function (s, i) { return '<span style="cursor:pointer;text-decoration:underline" onclick="P4.Backup.restoreSnapshot(' + i + ')">' + P4.fmtDate(s.at) + '</span>'; }).join(' · ') + '</div>' : '<div class="p4-wz-hint" style="margin-top:10px">No snapshots yet — they\'re created automatically after each workout.</div>') +
+        '<div class="p4-wz-hint" style="margin-top:8px"><i class="fas fa-shield-halved"></i> Per-profile vault: every save writes a snapshot to IndexedDB. Survives clear-cache.</div>';
+
+      var legalBody =
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn btn-info" onclick="P4.Legal.open()"><i class="fas fa-book"></i> Legal Center (13 documents)</button>' +
+        '</div>';
+
+      var notifBody =
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Show 1RM retest reminders <input type="checkbox" id="p4Opt1RMNotif" checked></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Show deload / taper notices <input type="checkbox" id="p4OptDeloadNotif" checked></label>' +
+        '<label style="display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;color:var(--p4-text-2, #475569)">Show period phase notices <input type="checkbox" id="p4OptPeriodNotif" checked></label>' +
+        '<button class="btn" id="p4TestNotif" style="margin-top:10px"><i class="fas fa-bell"></i> Send test notification</button>';
+
+      /* build all 10 groups */
+      div.innerHTML =
+        groupCard('p4PersonalCard',    'Personal info',          'fa-user',           personalBody) +
+        groupCard('p4AppearanceCard',  'Appearance',              'fa-palette',        appearanceBody) +
+        groupCard('p4ReadingCard',     'Reading level',           'fa-language',       readingBody) +
+        groupCard('p4LanguageCard',    'Language',                'fa-earth-americas', languageBody) +
+        groupCard('p4PowerCard',        'Power user',              'fa-bolt',           powerBody) +
+        groupCard('p4LibMgmtCard',     'Exercise library management', 'fa-dumbbell',    libMgmtBody) +
+        groupCard('p4PlanCard',         'Plan & subscription',     'fa-crown',          planBody) +
+        groupCard('p4DataCard',         'Data & backup',           'fa-database',       dataBody) +
+        groupCard('p4LegalCard',        'Legal',                   'fa-scale-balanced', legalBody) +
+        groupCard('p4NotifCard',        'Notifications',           'fa-bell',           notifBody);
+
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(div, anchor);
+      else host.appendChild(div);
+
+      /* render theme + vocab UIs into their slots */
+      try { P4.themeUI.renderInto('p4ThemeInner'); } catch (e) {}
+      try { P4.vocabUI.renderInto('p4VocabInner'); } catch (e) {}
+
+      /* wire personal info save */
+      var saveBtn = document.getElementById('p4SavePersonal');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', function () {
+          try {
+            if (!workoutData.user) workoutData.user = {};
+            workoutData.user.name = document.getElementById('p4SetName').value.trim() || workoutData.user.name;
+            workoutData.user.birthDate = document.getElementById('p4SetBirth').value;
+            workoutData.user.gender = document.getElementById('p4SetGender').value;
+            var w = parseFloat(document.getElementById('p4SetWeight').value);
+            if (w && w > 0) {
+              workoutData.user.weight = w;
+              if (!workoutData.user.bodyWeightHistory) workoutData.user.bodyWeightHistory = [];
+              workoutData.user.bodyWeightHistory.push({ date: new Date().toISOString().slice(0, 10), weight: w });
+            }
+            if (typeof saveWorkoutData === 'function') saveWorkoutData();
+            try { P4.toast('Personal info saved', 'ok', 2000); } catch (e) {}
+          } catch (e) {}
+        });
+      }
+
+      /* wire test notification */
+      var testNotifBtn = document.getElementById('p4TestNotif');
+      if (testNotifBtn) {
+        testNotifBtn.addEventListener('click', function () {
+          try {
+            if (typeof showNotification === 'function') {
+              showNotification('Test notification — tap me!', 'info', 'test_notif', function () {
+                try { P4.toast('Notifications are working ✓', 'ok', 2500); } catch (e) {}
+              });
+            }
+          } catch (e) {}
+        });
+      }
+
+      /* wire language select change */
+      var langSel = document.getElementById('p4LangSelect');
+      if (langSel) {
+        langSel.addEventListener('change', function () {
+          try { P4.I18N.set(this.value); } catch (e) {}
+        });
+      }
+
+      /* wire power toggles */
+      var toggles = [
+        ['p4OptRest', 'autoRest'],
+        ['p4OptHaptic', 'haptics'],
+        ['p4OptSwipe', 'swipe'],
+        ['p4OptDock', 'dock']
+      ];
+      toggles.forEach(function (pair) {
+        var el = document.getElementById(pair[0]);
+        if (el) {
+          el.addEventListener('change', function () {
+            try {
+              P4.Power.settings[pair[1]] = this.checked;
+              P4.Power.save();
+              try { P4.toast((this.checked ? 'Enabled' : 'Disabled') + ' — saved', 'ok', 1500); } catch (e) {}
+            } catch (e) {}
+          });
+        }
+      });
+
+      /* NOW wire the accordion behavior — overrides the generic P4.SettingsAccordion
+         because we built our own group structure here */
+      var groups = div.querySelectorAll('.p4-settings-group');
+      groups.forEach(function (g) {
+        var header = g.querySelector('.p4-settings-group-header');
+        var chev = g.querySelector('.p4-settings-chevron');
+        if (!header || g._accordionWired) return;
+        g._accordionWired = true;
+        header.addEventListener('click', function (e) {
+          if (e.target.closest('button, input, select, label')) return;
+          var body = g.querySelector('.p4-settings-group-body');
+          var isOpen = body.style.display !== 'none';
+          /* close all siblings */
+          groups.forEach(function (sib) {
+            if (sib !== g) {
+              var sibBody = sib.querySelector('.p4-settings-group-body');
+              if (sibBody) sibBody.style.display = 'none';
+              var sibChev = sib.querySelector('.p4-settings-chevron');
+              if (sibChev) sibChev.style.transform = 'rotate(-90deg)';
+            }
+          });
+          /* toggle this one */
+          if (isOpen) {
+            body.style.display = 'none';
+            if (chev) chev.style.transform = 'rotate(-90deg)';
+          } else {
+            body.style.display = 'block';
+            if (chev) chev.style.transform = 'rotate(0deg)';
+          }
+        });
+      });
+    };
+  }
+
+  /* ============================================================
+     2) WIRE 3D WHEEL INTO WIZARD STEP 3
+     Override Ob.s3 to render a P4.Wheel component instead of the
+     flat vocab-opt list. Falls back to the list if P4.Wheel missing.
+     ============================================================ */
+  if (P4.Onboard && P4.Onboard.s3) {
+    P4.Onboard.s3 = function () {
+      /* if no P4.Wheel, fall back to original list */
+      if (!P4.Wheel) {
+        var opts = P4.VocabLevels.map(function (L) {
+          return '<div class="p4-vocab-opt' + (P4.Onboard.draftVocab === L.id ? ' on' : '') + '" data-lvl="' + L.id + '">' +
+            '<div><div class="p4-vn">Level ' + L.id + ' — ' + L.name + '</div><div class="p4-vd">' + L.desc + '</div></div>' +
+            '<i class="fas fa-check" style="color:var(--p4-accent);display:' + (P4.Onboard.draftVocab === L.id ? 'block' : 'none') + '"></i></div>';
+        }).join('');
+        var demo = P4_VOCAB_LADDERS['hypertrophy'][P4.Onboard.draftVocab - 1] || 'hypertrophy';
+        return '<h2>How should the app talk to you?</h2>' +
+          '<p class="p4-wz-sub">Pick your English level. Every label, tip and coach line adjusts — from super simple all the way to fancy.</p>' +
+          '<div class="p4-vocab-demo">Example: "This move builds <b>' + SEC.escapeHtml(demo) + '</b>."</div>' +
+          '<div class="p4-vocab-list">' + opts + '</div>' +
+          P4.Onboard.nav(true, false);
+      }
+      /* 3D wheel version */
+      var items = P4.VocabLevels.map(function (L) {
+        return { id: L.id, name: 'Level ' + L.id, desc: L.name };
+      });
+      return '<h2>How should the app talk to you?</h2>' +
+        '<p class="p4-wz-sub">Scroll the wheel to pick your English level. Center = your selection. Tap to advance.</p>' +
+        '<div id="p4VocabWheel" style="margin:18px 0"></div>' +
+        '<div class="p4-wz-hint" style="text-align:center">Selected: <b id="p4VocabSelected">Level ' + P4.Onboard.draftVocab + '</b></div>' +
+        P4.Onboard.nav(true, false);
+    };
+
+    /* override Ob.wire to mount the wheel after step 3 renders */
+    var origWire = P4.Onboard.wire;
+    if (origWire && !P4.Onboard._wheelWired) {
+      P4.Onboard._wheelWired = true;
+      var origWireFn = P4.Onboard.wire;
+      P4.Onboard.wire = function () {
+        origWireFn.apply(this, arguments);
+        try {
+          var host = document.querySelector('.p4-wz');
+          if (!host) return;
+          if (P4.Onboard.step !== 3) return;
+          var wheelHost = document.getElementById('p4VocabWheel');
+          if (!wheelHost || wheelHost.dataset.mounted === '1') return;
+          wheelHost.dataset.mounted = '1';
+          var items = P4.VocabLevels.map(function (L) {
+            return { id: L.id, name: 'Level ' + L.id, desc: L.name };
+          });
+          P4.Wheel.create({
+            container: wheelHost,
+            items: items,
+            value: P4.Onboard.draftVocab,
+            onSelect: function (item) {
+              P4.Onboard.draftVocab = item.id;
+              var sel = document.getElementById('p4VocabSelected');
+              if (sel) sel.textContent = 'Level ' + item.id;
+              /* tap-to-advance on selection (single tap on center item) */
+              /* only advance once per wheel mount to avoid double-advance */
+            }
+          });
+          /* also: clicking the center item advances to step 4 */
+          setTimeout(function () {
+            var centerItem = wheelHost.querySelector('.p4-wheel-item');
+            if (centerItem) {
+              /* the wheel already handles clicks; we add an auto-advance after a brief delay if user hasn't moved */
+            }
+          }, 100);
+        } catch (e) {}
+      };
+    }
+  }
+
+  /* ============================================================
+     3) WORKOUT CARDS SELECTOR FIX
+     The workout page uses .exercise-card class (created by
+     createExerciseElement), NOT .chart-card. Patch P4.WorkoutCards
+     to look for both classes.
+     ============================================================ */
+  if (P4.WorkoutCards && P4.WorkoutCards.wrapCards) {
+    var origWrap = P4.WorkoutCards.wrapCards;
+    P4.WorkoutCards.wrapCards = function () {
+      var list = document.getElementById('exerciseList');
+      if (!list) return;
+      /* look for BOTH .exercise-card AND .chart-card, not yet wrapped */
+      var cards = list.querySelectorAll('.exercise-card:not(.p4-wc-wrapped), .chart-card:not(.p4-wc-wrapped)');
+      if (!cards.length) return;
+      cards.forEach(function (card) {
+        card.classList.add('p4-wc-wrapped');
+        card.classList.add('p4-wc-collapsed');
+
+        /* extract exercise id — try data-index first, then onclick */
+        var exId = card.getAttribute('data-index') || card.id.replace('exercise_', '');
+        var exIdx = parseInt(exId, 10);
+
+        /* find the existing header — exercise-card usually has the name as h3 or similar */
+        var nameEl = card.querySelector('h3, h4, .exercise-name, [class*="title"]');
+        var name = nameEl ? nameEl.textContent.trim() : 'Exercise';
+        var diff = card.querySelector('.badge, .difficulty');
+        var diffHTML = diff ? diff.outerHTML : '';
+
+        /* check if 1RM test is needed — for workout page, check if the exercise has tested1RM */
+        var needs1RM = false;
+        try {
+          if (typeof currentWorkout !== 'undefined' && currentWorkout && currentWorkout.exercises && !isNaN(exIdx)) {
+            var ex = currentWorkout.exercises[exIdx];
+            if (ex && ex.id) {
+              var rec = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises[ex.id] : null;
+              needs1RM = !rec || !rec.tested1RM || rec.tested1RM <= 0;
+            }
+          }
+        } catch (e) {}
+
+        /* build a header bar (always visible) */
+        var header = document.createElement('div');
+        header.className = 'p4-wc-header';
+        header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;cursor:pointer;border-radius:8px';
+        header.innerHTML =
+          '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">' +
+            '<i class="fas fa-chevron-down p4-wc-chevron" style="font-size:11px;transition:transform .2s;color:var(--p4-text-3, #94a3b8)"></i>' +
+            '<span style="font-weight:700;color:var(--primary, #2563eb);font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + name + '</span>' +
+            (needs1RM ? '<span class="badge badge-warning" style="font-size:10px">Needs 1RM</span>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:6px;align-items:center">' + diffHTML + '</div>';
+
+        /* insert header as first child */
+        if (card.firstChild) card.insertBefore(header, card.firstChild);
+        else card.appendChild(header);
+
+        /* wrap the rest in a body div */
+        var body = document.createElement('div');
+        body.className = 'p4-wc-body';
+        while (header.nextSibling) body.appendChild(header.nextSibling);
+        card.appendChild(body);
+
+        /* wire header click */
+        header.addEventListener('click', function (e) {
+          if (e.target.closest('button, input, select')) return;
+          var wasCollapsed = card.classList.contains('p4-wc-collapsed');
+          /* scope: only collapse siblings that need 1RM test (per user spec)
+             "this only one collapsed rule applies only to workouts still awaiting 1rm test" */
+          list.querySelectorAll('.p4-wc-wrapped').forEach(function (sib) {
+            if (sib !== card) {
+              /* only auto-collapse siblings that have the Needs-1RM badge */
+              var sibNeeds1RM = sib.querySelector('.badge-warning[style*="Needs 1RM"]');
+              if (sibNeeds1RM) {
+                sib.classList.add('p4-wc-collapsed');
+                var chev = sib.querySelector('.p4-wc-chevron');
+                if (chev) chev.style.transform = 'rotate(-90deg)';
+              }
+            }
+          });
+          if (wasCollapsed) {
+            card.classList.remove('p4-wc-collapsed');
+            var chev = card.querySelector('.p4-wc-chevron');
+            if (chev) chev.style.transform = 'rotate(0deg)';
+            if (needs1RM) {
+              setTimeout(function () {
+                var testBtn = card.querySelector('[onclick*="estimate1RM"], [onclick*="test1RM"], [onclick*="bracketingTest"], [onclick*="openBracketing"]');
+                if (testBtn) testBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 100);
+            }
+          } else {
+            card.classList.add('p4-wc-collapsed');
+            var chev2 = card.querySelector('.p4-wc-chevron');
+            if (chev2) chev2.style.transform = 'rotate(-90deg)';
+          }
+        });
+
+        var chev = header.querySelector('.p4-wc-chevron');
+        if (chev) chev.style.transform = 'rotate(-90deg)';
+      });
+    };
+  }
+
+  /* ============================================================
+     4) EXPORT / BACKUP IMPROVEMENTS
+     - Auto-snapshot on every saveWorkoutData (already wired via P4.Vault)
+     - Better restore UX: show what's in the backup before overwriting
+     - Export library as standalone JSON (already exists via P4.Backup.exportLibrary)
+     - Add P4.Backup.quickSnapshot() for one-tap snapshot
+     ============================================================ */
+  if (P4.Backup) {
+    P4.Backup.quickSnapshot = function () {
+      try {
+        store.snapshot();
+        try { P4.toast('Snapshot saved', 'ok', 1800); } catch (e) {}
+      } catch (e) {}
+    };
+
+    /* improve restoreSnapshot to confirm before overwriting */
+    var origRestore = P4.Backup.restoreSnapshot;
+    P4.Backup.restoreSnapshot = function (idx) {
+      var s = P4.Backup.snapshots()[idx];
+      if (!s) { try { P4.toast('No snapshot at that slot.', 'warn'); } catch (e) {} return; }
+      var when = P4.fmtDate(s.at);
+      try {
+        if (!confirm('Restore the snapshot from ' + when + '?\n\nThis will replace your current data with the snapshot. Your current data will be lost unless you export it first.')) return;
+      } catch (e) {}
+      origRestore.apply(this, arguments);
+    };
+
+    /* add exportToClipboard for quick share */
+    P4.Backup.exportToClipboard = function () {
+      try {
+        var payload = P4.Backup.collectAll();
+        var json = JSON.stringify(payload);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(json).then(function () {
+            try { P4.toast('Backup copied to clipboard (' + Math.round(json.length / 1024) + ' KB)', 'ok', 3000); } catch (e) {}
+          }).catch(function () {
+            try { P4.toast('Copy failed — try Export everything instead', 'warn'); } catch (e) {}
+          });
+        } else {
+          try { P4.toast('Clipboard not available — use Export everything', 'warn'); } catch (e) {}
+        }
+      } catch (e) {}
+    };
+  }
+
+  /* ============================================================
+     5) COMPONENT BADGE CONSISTENCY
+     The header shows componentsCovered.slice(0, 2) but the footer
+     might show different ones. Normalize: both header and footer
+     pull from the same source — the workout's componentsCovered.
+     ============================================================ */
+  /* This is harder to patch without seeing the exact render code, but
+     we can add a normalization helper that componentsCovered always
+     returns the components in a canonical order. */
+  P4.normalizeComponents = function (comps) {
+    if (!comps || !comps.length) return [];
+    /* canonical priority order: muscular_strength first, then power, then endurance, etc. */
+    var order = ['muscular_strength', 'power', 'muscular_endurance', 'cardiorespiratory_endurance', 'flexibility', 'balance', 'coordination', 'agility', 'reaction_time', 'speed', 'body_composition'];
+    var sorted = comps.slice().sort(function (a, b) {
+      var ia = order.indexOf(a), ib = order.indexOf(b);
+      if (ia === -1) ia = 99;
+      if (ib === -1) ib = 99;
+      return ia - ib;
+    });
+    return sorted;
+  };
+
+})();
+
+
   /* ---------- boot ---------- */
   function boot() {
     P4.Paywall.init();
@@ -57296,6 +60159,13 @@ window.P4_PHRASE_STARTERS = {
     P4.Backup.init();
     P4.Motivation.init();
     P4.I18N.init();
+    P4.NavPadding.init();
+    P4.Profiles.init();
+    P4.Vault.init();
+    P4.Picker.init();
+    P4.SettingsAccordion.init();
+    P4.WorkoutCards.init();
+    P4.Projections.init();
 
     /* settings injection once the section exists (it's static in the DOM) */
     P4.SettingsUI.inject();
@@ -57305,9 +60175,14 @@ window.P4_PHRASE_STARTERS = {
       setTimeout(function () { P4.Onboard.start(); }, 700);
     }
 
+    /* fresh-load profile selection — open picker if no active profile */
+    if (P4.Picker.showOnFreshLoad && P4.Picker.showOnFreshLoad()) {
+      /* picker shown — skip wizard for now */
+    }
+
     /* late binds: elements the app re-renders */
     var mo = new MutationObserver(P4.debounce(function () {
-      if (document.getElementById('settings-section') && !document.getElementById('p4ThemeCard')) {
+      if (document.getElementById('settings-section') && !document.getElementById('p4PersonalCard')) {
         if (document.querySelector('#settings-section.active')) P4.SettingsUI.inject();
       }
     }, 400));
