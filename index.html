@@ -5915,67 +5915,6 @@ try {
                     </div>
                 </div>
                 
-                <div class="settings-group">
-                    <h3 style="margin-bottom: 20px; color: var(--dark);">Appearance</h3>
-                      <div class="setting-item">
-                          <div>
-                              <div class="setting-label">Muscle Coupling (Advanced)</div>
-                              <div class="setting-description">Enable fatigue transfer between synergistic muscles for more accurate recovery modeling. Recommended for experienced users.</div>
-                          </div>
-                          <label class="switch">
-                              <input type="checkbox" id="muscleCouplingToggle" onchange="toggleMuscleCoupling()">
-                              <span class="slider round"></span>
-                          </label>
-                      </div>
-                      <div class="setting-item">
-                          <div>
-                              <div class="setting-label">Keep screen awake during workout</div>
-                              <div class="setting-description">Prevents phone screen from dimming or locking while you are exercising.</div>
-                          </div>
-                          <label class="switch">
-                              <input type="checkbox" id="screenWakeLockToggle" onchange="toggleScreenWakeLockSetting()">
-                              <span class="slider round"></span>
-                          </label>
-                      </div>
-                    <div class="theme-controls">
-                        <button class="theme-btn theme-blue active" onclick="setTheme('blue')"><span class="theme-preview"></span> Blue</button>
-                        <button class="theme-btn theme-green" onclick="setTheme('green')"><span class="theme-preview"></span> Green</button>
-                        <button class="theme-btn theme-purple" onclick="setTheme('purple')"><span class="theme-preview"></span> Purple</button>
-                        <button class="theme-btn theme-orange" onclick="setTheme('orange')"><span class="theme-preview"></span> Orange</button>
-                    </div>
-                </div>
-              
-                <div class="setting-item">
-                    <div>
-                        <div class="setting-label">Powerlifting Express Mode</div>
-                        <div class="setting-description">Faster transition to low‑rep strength training (more aggressive progression).</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="expressModeToggle" onchange="toggleExpressMode()">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <div class="setting-item">
-                    <div>
-                        <div class="setting-label">Aggression Factor</div>
-                        <div class="setting-description">How quickly reps drop with intensity (0.5 = slow, 2.0 = very fast).</div>
-                    </div>
-                    <input type="range" id="aggressionSlider" min="0.5" max="2.0" step="0.05" value="1.0" style="width:160px;">
-                    <span id="aggressionValue">1.0</span>
-                </div>
-              
-                <!-- Bottom navigation behavior (computers only) -->
-                <div class="setting-item">
-                    <div>
-                        <div class="setting-label">Auto‑hide bottom navigation</div>
-                        <div class="setting-description">On computers, automatically hide the bottom bar when not in use (requires mouse near bottom to show).</div>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="bottomNavAutoHide" onchange="toggleBottomNavAutoHide()">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                
                 <div class="exercise-import-export">
                     <h3 style="margin-bottom: 20px; color: var(--dark);">Exercise Library Management</h3>
                     <p style="color: var(--gray-600); margin-bottom: 15px;">Import or export custom exercises in JSON format. This allows you to share exercises or create your own library.</p>
@@ -56807,11 +56746,71 @@ window.P4_PHRASE_STARTERS = {
         return '<button class="p4-swatch' + (t.accent === a.id ? ' on' : '') + '" data-a="' + a.id +
           '" style="background:' + a.hex + '" title="' + SEC.escapeHtml(a.name) + '" aria-label="' + SEC.escapeHtml(a.name) + '"></button>';
       }).join('');
-      host.innerHTML =
+host.innerHTML =
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
         '<h3 style="margin:0;color:var(--p4-text);font-family:var(--p4-font-display)">Appearance</h3>' +
         '<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--p4-text-2);cursor:pointer">' +
         '<input type="checkbox" id="p4GymToggle"' + (gym ? ' checked' : '') + '> Gym Mode (giant buttons)</label></div>' +
+        
+        '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          '<div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;margin:0;">' +
+              '<div>' +
+                  '<div class="setting-label">Muscle Coupling (Advanced)</div>' +
+                  '<div class="setting-description">Enable fatigue transfer between synergistic muscles for more accurate recovery modeling. Recommended for experienced users.</div>' +
+              '</div>' +
+              '<label class="switch">' +
+                  '<input type="checkbox" id="muscleCouplingToggle" onchange="toggleMuscleCoupling()">' +
+                  '<span class="slider round"></span>' +
+              '</label>' +
+          '</div>' +
+          '<div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;margin:0;">' +
+              '<div>' +
+                  '<div class="setting-label">Keep screen awake during workout</div>' +
+                  '<div class="setting-description">Prevents phone screen from dimming or locking while you are exercising.</div>' +
+              '</div>' +
+              '<label class="switch">' +
+                  '<input type="checkbox" id="screenWakeLockToggle" onchange="toggleScreenWakeLockSetting()">' +
+                  '<span class="slider round"></span>' +
+              '</label>' +
+          '</div>' +
+          '<div class="theme-controls">' +
+              '<button class="theme-btn theme-blue active" onclick="setTheme(\'blue\')"><span class="theme-preview"></span> Blue</button>' +
+              '<button class="theme-btn theme-green" onclick="setTheme(\'green\')"><span class="theme-preview"></span> Green</button>' +
+              '<button class="theme-btn theme-purple" onclick="setTheme(\'purple\')"><span class="theme-preview"></span> Purple</button>' +
+              '<button class="theme-btn theme-orange" onclick="setTheme(\'orange\')"><span class="theme-preview"></span> Orange</button>' +
+          '</div>' +
+          '<div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;margin:0;">' +
+              '<div>' +
+                  '<div class="setting-label">Powerlifting Express Mode</div>' +
+                  '<div class="setting-description">Faster transition to low‑rep strength training (more aggressive progression).</div>' +
+              '</div>' +
+              '<label class="switch">' +
+                  '<input type="checkbox" id="expressModeToggle" onchange="toggleExpressMode()">' +
+                  '<span class="slider round"></span>' +
+              '</label>' +
+          '</div>' +
+          '<div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;margin:0;">' +
+              '<div>' +
+                  '<div class="setting-label">Aggression Factor</div>' +
+                  '<div class="setting-description">How quickly reps drop with intensity (0.5 = slow, 2.0 = very fast).</div>' +
+              '</div>' +
+              '<div style="display:flex;align-items:center;gap:8px;">' +
+                  '<input type="range" id="aggressionSlider" min="0.5" max="2.0" step="0.05" value="1.0" style="width:160px;">' +
+                  '<span id="aggressionValue">1.0</span>' +
+              '</div>' +
+          '</div>' +
+          '<div class="setting-item" style="display:flex;justify-content:space-between;align-items:center;margin:0;">' +
+              '<div>' +
+                  '<div class="setting-label">Auto‑hide bottom navigation</div>' +
+                  '<div class="setting-description">On computers, automatically hide the bottom bar when not in use (requires mouse near bottom to show).</div>' +
+              '</div>' +
+              '<label class="switch">' +
+                  '<input type="checkbox" id="bottomNavAutoHide" onchange="toggleBottomNavAutoHide()">' +
+                  '<span class="slider round"></span>' +
+              '</label>' +
+          '</div>' +
+        '</div>' +
+        
         modes + '<div class="p4-swatches">' + sw + '</div>' +
         '<div class="p4-wz-hint" style="margin-top:10px">16 colors × dark &amp; light. Pro unlocks all 16; Free keeps 4 classics.</div>';
       host.querySelectorAll('.p4-mode-btn').forEach(function (b) {
@@ -60140,6 +60139,938 @@ P4.Wheel = (function () {
     return sorted;
   };
 
+})();
+
+
+/* ============================================================================
+ * P4 STAGE-7 — FIXES for audit findings (5 P0 + 9 P1)
+ * Addresses: settings dual-UI, workout card selector, P4.Power.save,
+ * Paywall.showPanel, bumpStreakAfterShare, wheel auto-advance, expandAll,
+ * picker close flag, streamed cards badges, dock reload, plan state refresh,
+ * cancel button logic, notification toggles, sibling-collapse selector.
+ * ============================================================================ */
+(function () {
+  'use strict';
+  if (!window.P4) return;
+  var P4 = window.P4, SEC = P4.SEC, store = P4.store;
+
+  /* ============================================================
+     P0 #1 — SETTINGS: tear down original HTML when new inject runs
+     The original settings-grid / theme-controls / exercise-import-export
+     / btn-group / export-options blocks stay in the DOM after the new
+     10-group version is injected. Hide them via CSS so the user sees
+     only the new granular groups.
+     ============================================================ */
+  P4.SettingsUI._hideOriginalSettings = function () {
+    try {
+      var setSec = document.getElementById('settings-section');
+      if (!setSec) return;
+      /* hide the original blocks — they're replaced by the 10-group version */
+      var selectors = [
+        '.settings-grid',
+        '.theme-controls',
+        '.exercise-import-export',
+        '.export-options'
+      ];
+      selectors.forEach(function (sel) {
+        var els = setSec.querySelectorAll(sel);
+        els.forEach(function (el) {
+          el.style.display = 'none';
+          el.classList.add('p4-original-hidden');
+        });
+      });
+      /* hide the original .btn-group (Save Settings / Back / Reset All) —
+         the new Data & backup group has its own buttons */
+      var btnGroups = setSec.querySelectorAll('.btn-group');
+      btnGroups.forEach(function (bg) {
+        /* don't hide the new p4SettingsExtra's btn-group if any — but we
+           inserted p4SettingsExtra BEFORE the original .btn-group, so the
+           original .btn-group is the second one */
+        if (!bg.closest('#p4SettingsExtra')) {
+          bg.style.display = 'none';
+          bg.classList.add('p4-original-hidden');
+        }
+      });
+    } catch (e) {}
+  };
+
+  /* hook into the existing inject — call _hideOriginalSettings after inject runs */
+  var origInject = P4.SettingsUI.inject;
+  P4.SettingsUI.inject = function () {
+    origInject.apply(this, arguments);
+    P4.SettingsUI._hideOriginalSettings();
+  };
+
+  /* ============================================================
+     P0 #2 — WORKOUT CARDS: selector targets wrong class
+     createExerciseElement emits class "exercise-item", not "exercise-card"
+     or "chart-card". Re-override wrapCards with the correct selector.
+     ============================================================ */
+  if (P4.WorkoutCards) {
+    P4.WorkoutCards.wrapCards = function () {
+      var list = document.getElementById('exerciseList');
+      if (!list) return;
+      /* FIX: include .exercise-item (the actual workout page card class) */
+      var cards = list.querySelectorAll('.exercise-item:not(.p4-wc-wrapped), .exercise-card:not(.p4-wc-wrapped), .chart-card:not(.p4-wc-wrapped)');
+      if (!cards.length) return;
+
+      cards.forEach(function (card) {
+        card.classList.add('p4-wc-wrapped');
+        card.classList.add('p4-wc-collapsed');
+
+        /* extract exercise index — id is "exercise_N" */
+        var exId = card.getAttribute('data-index') || (card.id ? card.id.replace('exercise_', '') : '0');
+        var exIdx = parseInt(exId, 10);
+        if (isNaN(exIdx)) exIdx = 0;
+
+        /* find existing header content */
+        var nameEl = card.querySelector('h3, h4, .exercise-name, [class*="title"], strong, b');
+        var name = nameEl ? (nameEl.textContent || '').trim() : 'Exercise';
+        /* trim long names */
+        if (name.length > 50) name = name.slice(0, 50) + '…';
+        var diff = card.querySelector('.badge, .difficulty, [class*="badge"]');
+        var diffHTML = diff ? diff.outerHTML : '';
+
+        /* check if 1RM test is needed */
+        var needs1RM = false;
+        try {
+          if (typeof currentWorkout !== 'undefined' && currentWorkout && currentWorkout.exercises && !isNaN(exIdx)) {
+            var ex = currentWorkout.exercises[exIdx];
+            if (ex && ex.id) {
+              var rec = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises[ex.id] : null;
+              needs1RM = !rec || !rec.tested1RM || rec.tested1RM <= 0;
+            }
+          }
+        } catch (e) {}
+
+        /* build a header bar */
+        var header = document.createElement('div');
+        header.className = 'p4-wc-header';
+        header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-radius:8px;background:var(--gray-100, #f1f5f9);margin-bottom:8px';
+        header.innerHTML =
+          '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">' +
+            '<i class="fas fa-chevron-down p4-wc-chevron" style="font-size:11px;transition:transform .2s;color:var(--p4-text-3, #94a3b8)"></i>' +
+            '<span style="font-weight:700;color:var(--primary, #2563eb);font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (name || 'Exercise') + '</span>' +
+            (needs1RM ? '<span class="p4-wc-1rm-badge" style="font-size:10px;font-weight:700;color:var(--warning, #f59e0b);background:rgba(245,158,11,0.15);padding:2px 6px;border-radius:6px">Needs 1RM</span>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:6px;align-items:center">' + diffHTML + '</div>';
+
+        if (card.firstChild) card.insertBefore(header, card.firstChild);
+        else card.appendChild(header);
+
+        /* wrap the rest in a body */
+        var body = document.createElement('div');
+        body.className = 'p4-wc-body';
+        while (header.nextSibling) body.appendChild(header.nextSibling);
+        card.appendChild(body);
+
+        /* FIX: sibling-collapse selector uses .p4-wc-1rm-badge class
+           (not [style*="Needs 1RM"] which matches textContent not style) */
+        header.addEventListener('click', function (e) {
+          if (e.target.closest('button, input, select, label, a')) return;
+          var wasCollapsed = card.classList.contains('p4-wc-collapsed');
+          /* only collapse siblings that need 1RM test */
+          list.querySelectorAll('.p4-wc-wrapped').forEach(function (sib) {
+            if (sib !== card) {
+              var sibNeeds1RM = sib.querySelector('.p4-wc-1rm-badge');
+              if (sibNeeds1RM) {
+                sib.classList.add('p4-wc-collapsed');
+                var chev = sib.querySelector('.p4-wc-chevron');
+                if (chev) chev.style.transform = 'rotate(-90deg)';
+              }
+            }
+          });
+          if (wasCollapsed) {
+            card.classList.remove('p4-wc-collapsed');
+            var chev = card.querySelector('.p4-wc-chevron');
+            if (chev) chev.style.transform = 'rotate(0deg)';
+            if (needs1RM) {
+              setTimeout(function () {
+                var testBtn = card.querySelector('[onclick*="estimate1RM"], [onclick*="test1RM"], [onclick*="bracketingTest"], [onclick*="openBracketing"], [onclick*="openLogger"], button[onclick*="Log"]');
+                if (testBtn) testBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 100);
+            }
+          } else {
+            card.classList.add('p4-wc-collapsed');
+            var chev2 = card.querySelector('.p4-wc-chevron');
+            if (chev2) chev2.style.transform = 'rotate(-90deg)';
+          }
+        });
+
+        var chev = header.querySelector('.p4-wc-chevron');
+        if (chev) chev.style.transform = 'rotate(-90deg)';
+      });
+    };
+  }
+
+  /* ============================================================
+     P0 #3 — P4.Power.save() doesn't exist; should be saveSettings()
+     Re-override the power-toggle handler from stage-6 to use the right method,
+     plus add the dock-toggle reload behavior.
+     ============================================================ */
+  setTimeout(function () {
+    var toggles = [
+      ['p4OptRest', 'autoRest'],
+      ['p4OptHaptic', 'haptics'],
+      ['p4OptSwipe', 'swipe'],
+      ['p4OptDock', 'dock']
+    ];
+    toggles.forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (el && !el._p4FixedWired) {
+        el._p4FixedWired = true;
+        /* remove old listener by cloning */
+        var fresh = el.cloneNode(true);
+        el.parentNode.replaceChild(fresh, el);
+        fresh.addEventListener('change', function () {
+          try {
+            P4.Power.settings[pair[1]] = this.checked;
+            /* FIX: use saveSettings (not save) */
+            if (typeof P4.Power.saveSettings === 'function') P4.Power.saveSettings();
+            try { P4.toast((this.checked ? 'Enabled' : 'Disabled') + ' — saved', 'ok', 1500); } catch (e) {}
+            /* FIX: dock toggle reloads (dock built once at boot) */
+            if (pair[1] === 'dock') setTimeout(function () { location.reload(); }, 600);
+          } catch (e) {}
+        });
+      }
+    });
+  }, 2200);  /* run after stage-6's 600ms init + buffer */
+
+  /* ============================================================
+     P0 #4 — Paywall v2 missing showPanel
+     Studio calls P4.Paywall.showPanel('...') — add as alias.
+     ============================================================ */
+  if (P4.Paywall && !P4.Paywall.showPanel) {
+    P4.Paywall.showPanel = function (msg) {
+      try { return this.showFullPage(msg); } catch (e) {}
+    };
+  }
+
+  /* ============================================================
+     P0 #5 — bumpStreakAfterShare calls nested safeTextUpdate
+     Redefine to use direct DOM manipulation.
+     ============================================================ */
+  window.bumpStreakAfterShare = function () {
+    try {
+      if (typeof workoutData === 'undefined') return;
+      if (!workoutData.user) workoutData.user = {};
+      if (!workoutData.user.settings) workoutData.user.settings = {};
+      workoutData.user.settings.lastStreakRecoverAt = Date.now();
+      var today = new Date().toISOString().slice(0, 10);
+      if (!workoutData.workouts) workoutData.workouts = [];
+      var already = workoutData.workouts.some(function (w) {
+        return w && w.date && new Date(w.date).toISOString().slice(0, 10) === today;
+      });
+      if (!already) {
+        workoutData.workouts.push({
+          id: 'streak-recover-' + Date.now(),
+          date: today,
+          type: 'streak_recover',
+          exercises: [],
+          name: 'Streak recovery share'
+        });
+      }
+      if (typeof saveWorkoutData === 'function') saveWorkoutData();
+      var m = document.getElementById('p4StreakRecoverModal');
+      if (m && m.parentNode) m.parentNode.removeChild(m);
+      /* FIX: direct DOM update instead of nested safeTextUpdate */
+      var sc = document.getElementById('streakCount');
+      if (sc) sc.textContent = '1';
+      if (typeof updateStreakFire === 'function') updateStreakFire(1);
+      try { P4.toast('Fire relit 🔥 — keep it going tomorrow!', 'ok', 3000); } catch (e) {}
+      if (typeof renderDashboard === 'function') renderDashboard();
+    } catch (e) { console.warn('[bumpStreakAfterShare]', e); }
+  };
+
+  /* ============================================================
+     P1 #1 — 3D Wheel onSelect doesn't auto-advance
+     Re-override P4.Onboard.wire to mount the wheel WITH auto-advance.
+     ============================================================ */
+  if (P4.Onboard && P4.Wheel) {
+    var origWire2 = P4.Onboard.wire;
+    P4.Onboard.wire = function () {
+      origWire2.apply(this, arguments);
+      try {
+        var host = document.querySelector('.p4-wz');
+        if (!host) return;
+        if (P4.Onboard.step !== 3) return;
+        var wheelHost = document.getElementById('p4VocabWheel');
+        if (!wheelHost || wheelHost.dataset.mounted === '1') return;
+        wheelHost.dataset.mounted = '1';
+        var items = P4.VocabLevels.map(function (L) {
+          return { id: L.id, name: 'Level ' + L.id, desc: L.name };
+        });
+        P4.Wheel.create({
+          container: wheelHost,
+          items: items,
+          value: P4.Onboard.draftVocab,
+          onSelect: function (item) {
+            P4.Onboard.draftVocab = item.id;
+            var sel = document.getElementById('p4VocabSelected');
+            if (sel) sel.textContent = 'Level ' + item.id;
+            /* FIX: tap-to-advance after a brief delay so user sees the selection */
+            if (!P4.Onboard._wheelAdvanced) {
+              P4.Onboard._wheelAdvanced = true;
+              setTimeout(function () {
+                P4.Onboard.step = Math.max(P4.Onboard.step, 4);
+                P4.Onboard.render();
+              }, 350);
+            }
+          }
+        });
+      } catch (e) {}
+    };
+    /* reset the advanced flag on each render so user can re-pick */
+    var origRender = P4.Onboard.render;
+    if (origRender && !P4.Onboard._renderPatched) {
+      P4.Onboard._renderPatched = true;
+      P4.Onboard.render = function () {
+        if (P4.Onboard.step !== 3) P4.Onboard._wheelAdvanced = false;
+        return origRender.apply(this, arguments);
+      };
+    }
+  }
+
+  /* ============================================================
+     P1 #2 — expandAllGroups collapses instead of expanding
+     Re-override to set all keys to false explicitly.
+     ============================================================ */
+  window.expandAllGroups = function () {
+    try {
+      Object.keys(collapsedGroups).forEach(function (k) { collapsedGroups[k] = false; });
+      if (typeof saveLibraryCollapse === 'function') saveLibraryCollapse();
+      if (typeof refreshLibraryExpandCollapseButtons === 'function') refreshLibraryExpandCollapseButtons();
+      if (typeof renderLibrary === 'function') renderLibrary();
+    } catch (e) { console.warn('[expandAllGroups fix]', e); }
+  };
+
+  /* ============================================================
+     P1 #3 — Picker grid can't be reopened after close
+     Override P4.Picker.close to clear _openFlag.
+     ============================================================ */
+  if (P4.Picker) {
+    var origClose = P4.Picker.close;
+    P4.Picker.close = function () {
+      try { P4.Picker._openFlag = false; } catch (e) {}
+      return origClose.apply(this, arguments);
+    };
+  }
+
+  /* ============================================================
+     P1 #4 — mpEnhanceLibraryCards doesn't re-run on streamed cards
+     Hook into streamGroupCards to re-run enhance after each chunk.
+     ============================================================ */
+  if (typeof window._p4StreamGroupCards === 'function') {
+    var origStream = window._p4StreamGroupCards;
+    window._p4StreamGroupCards = function (groupKey) {
+      var result = origStream.apply(this, arguments);
+      /* after streaming completes, re-run enhance */
+      setTimeout(function () {
+        try {
+          if (typeof mpEnhanceLibraryCards === 'function') {
+            var contentEl = document.getElementById('group-' + groupKey.replace(/\s+/g, '_'));
+            if (contentEl) {
+              var cards = contentEl.querySelectorAll('.chart-card:not(.mp-enhanced)');
+              cards.forEach(function (c) {
+                c.classList.add('mp-enhanced');
+                /* light-touch enhance — call the function if it accepts a single card */
+                try { mpEnhanceLibraryCards(); } catch (e) {}
+              });
+            }
+          }
+        } catch (e) {}
+      }, 200);
+      return result;
+    };
+  }
+
+  /* ============================================================
+     P1 #6 — Plan state text never refreshes
+     Hook into P4.Paywall.refreshUI to also call syncPlanCard.
+     ============================================================ */
+  if (P4.Paywall && P4.Paywall.refreshUI) {
+    var origRefreshUI = P4.Paywall.refreshUI;
+    P4.Paywall.refreshUI = function () {
+      var result = origRefreshUI.apply(this, arguments);
+      try {
+        if (typeof P4.SettingsUI !== 'undefined' && P4.SettingsUI.syncPlanCard) {
+          P4.SettingsUI.syncPlanCard();
+        } else {
+          /* direct update — find #p4PlanState */
+          var planStateEl = document.getElementById('p4PlanState');
+          if (planStateEl) {
+            var plan = P4.Paywall;
+            var txt = plan.isPro() ? 'Pro — everything unlocked. Thank you!' :
+              plan.trialActive() ? 'Free trial: ' + plan.daysLeft() + ' day(s) left of full power.' :
+              'Free plan — apply for free access or subscribe.';
+            planStateEl.textContent = txt;
+          }
+        }
+      } catch (e) {}
+      return result;
+    };
+  }
+
+  /* ============================================================
+     P1 #7 — Cancel subscription button logic inverted under v2
+     Patch the settings inject to use the correct condition.
+     We can't easily edit the inline HTML, so we'll patch it post-render.
+     ============================================================ */
+  setTimeout(function () {
+    var planLegalCard = document.getElementById('p4PlanCard');
+    if (planLegalCard) {
+      /* find the cancel button — it currently shows when isPro() && !licenseValid() */
+      var cancelBtn = planLegalCard.querySelector('button[onclick*="cancelSubscription"]');
+      if (cancelBtn) {
+        var plan = P4.Paywall;
+        /* under v2: show cancel button only when there's an active subscription */
+        if (!plan.subActive()) {
+          cancelBtn.style.display = 'none';
+        } else {
+          cancelBtn.style.display = '';
+        }
+      }
+    }
+  }, 2500);
+
+  /* ============================================================
+     P1 #8 — Notifications card has 3 unwired toggles
+     Wire them to a localStorage-backed persistence layer.
+     ============================================================ */
+  setTimeout(function () {
+    var notifToggles = [
+      ['p4Opt1RMNotif', 'retest_reminder'],
+      ['p4OptDeloadNotif', 'deload_notice'],
+      ['p4OptPeriodNotif', 'period_notice']
+    ];
+    notifToggles.forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (el && !el._p4NotifWired) {
+        el._p4NotifWired = true;
+        /* load saved state */
+        try {
+          var saved = localStorage.getItem('p4_notif_' + pair[1]);
+          if (saved === 'false') el.checked = false;
+          else el.checked = true;  /* default true */
+        } catch (e) {}
+        el.addEventListener('change', function () {
+          try {
+            localStorage.setItem('p4_notif_' + pair[1], this.checked ? 'true' : 'false');
+            try { P4.toast((this.checked ? 'Showing' : 'Hiding') + ' ' + pair[1].replace(/_/g, ' '), 'ok', 1500); } catch (e) {}
+          } catch (e) {}
+        });
+      }
+    });
+  }, 2400);
+
+  /* expose a helper for showNotification to check before firing */
+  P4.notifAllowed = function (id) {
+    try {
+      var v = localStorage.getItem('p4_notif_' + id);
+      return v !== 'false';  /* default true */
+    } catch (e) { return true; }
+  };
+
+  /* ============================================================
+     P1 #9 — Sibling-collapse selector was using [style*="Needs 1RM"]
+     Already fixed in the P4.WorkoutCards.wrapCards override above
+     (uses .p4-wc-1rm-badge class now).
+     ============================================================ */
+
+  /* ============================================================
+     P2 #5 — P4.Auditor.report() has no UI button
+     Add a button to the Data & backup settings group post-render.
+     ============================================================ */
+  setTimeout(function () {
+    var dataCard = document.getElementById('p4DataCard');
+    if (dataCard && !document.getElementById('p4AuditorBtn')) {
+      var btn = document.createElement('button');
+      btn.id = 'p4AuditorBtn';
+      btn.className = 'btn';
+      btn.style.cssText = 'margin-top:8px;padding:8px 14px;background:transparent;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;cursor:pointer;font-size:13px;color:var(--p4-text-2, #475569)';
+      btn.innerHTML = '<i class="fas fa-magnifying-glass"></i> Audit my lifts for misalignments';
+      btn.addEventListener('click', function () {
+        try {
+          if (P4.Auditor && P4.Auditor.report) P4.Auditor.report();
+        } catch (e) {}
+      });
+      var body = dataCard.querySelector('.p4-settings-group-body');
+      if (body) body.appendChild(btn);
+    }
+  }, 2600);
+
+  /* ============================================================
+     P2 #6 — P4.Backup.quickSnapshot + exportToClipboard are dead
+     Add buttons to the Data & backup group.
+     ============================================================ */
+  setTimeout(function () {
+    var dataCard = document.getElementById('p4DataCard');
+    if (dataCard && !document.getElementById('p4QuickSnapBtn')) {
+      var body = dataCard.querySelector('.p4-settings-group-body');
+      if (body) {
+        var btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:8px';
+        btnRow.innerHTML =
+          '<button id="p4QuickSnapBtn" class="btn" style="padding:8px 14px;background:transparent;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;cursor:pointer;font-size:13px;color:var(--p4-text-2, #475569)"><i class="fas fa-camera"></i> Quick snapshot</button>' +
+          '<button id="p4ClipExportBtn" class="btn" style="padding:8px 14px;background:transparent;border:1px solid var(--gray-300, #cbd5e1);border-radius:8px;cursor:pointer;font-size:13px;color:var(--p4-text-2, #475569)"><i class="fas fa-clipboard"></i> Copy backup to clipboard</button>';
+        body.appendChild(btnRow);
+        document.getElementById('p4QuickSnapBtn').addEventListener('click', function () {
+          try { if (P4.Backup && P4.Backup.quickSnapshot) P4.Backup.quickSnapshot(); } catch (e) {}
+        });
+        document.getElementById('p4ClipExportBtn').addEventListener('click', function () {
+          try { if (P4.Backup && P4.Backup.exportToClipboard) P4.Backup.exportToClipboard(); } catch (e) {}
+        });
+      }
+    }
+  }, 2600);
+
+  /* ============================================================
+     P2 #9 — openThemes() references #p4ThemeCard (now #p4AppearanceCard)
+     ============================================================ */
+  if (P4.SettingsUI && P4.SettingsUI.openThemes) {
+    var origOpenThemes = P4.SettingsUI.openThemes;
+    P4.SettingsUI.openThemes = function () {
+      try {
+        /* open settings page first */
+        if (typeof showSection === 'function') showSection('settings');
+        setTimeout(function () {
+          /* find the Appearance group (was p4ThemeCard, now p4AppearanceCard) */
+          var card = document.getElementById('p4AppearanceCard') || document.getElementById('p4ThemeCard');
+          if (card) {
+            /* open the group */
+            var body = card.querySelector('.p4-settings-group-body');
+            if (body && body.style.display === 'none') {
+              var header = card.querySelector('.p4-settings-group-header');
+              if (header) header.click();
+            }
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 200);
+      } catch (e) {}
+    };
+  }
+
+  /* ============================================================
+     P2 #10 — Streak-recover fake workouts pollute history
+     Filter out type === 'streak_recover' from workout counts + Onboard.
+     ============================================================ */
+  if (P4.Onboard && P4.Onboard.needed) {
+    var origNeeded = P4.Onboard.needed;
+    P4.Onboard.needed = function () {
+      try {
+        if (store.get(P4.keys.onboard, false)) return false;
+        if (typeof workoutData !== 'undefined' && workoutData && workoutData.workouts) {
+          /* count only real workouts — exclude streak_recover entries */
+          var real = workoutData.workouts.filter(function (w) {
+            return w && w.type !== 'streak_recover';
+          });
+          if (real.length > 0) return false;
+        }
+      } catch (e) {}
+      return !store.get(P4.keys.onboard, false);
+    };
+  }
+
+  console.log('[P4 Stage-7] Audit fixes applied — 5 P0 + 9 P1 + key P2 items.');
+})();
+
+
+/* ============================================================================
+ * P4 STAGE-8 — unified export everything + cute Appearance settings
+ *
+ * 1) P4.Backup.exportEverything() — captures ALL app state (every p4_* localStorage
+ *    key + legacy keys + IndexedDB vault) into one comprehensive JSON file.
+ *    P4.Backup.importEverything() — restores from that file.
+ *    All "Export everything" / "Backup" buttons now point to these unified functions.
+ *
+ * 2) P4.themeUI.renderInto rewrite — remove redundant h3, cleaner layout,
+ *    cuter swatches, less hint clutter. "A cute place where you can get things done."
+ * ============================================================================ */
+(function () {
+  'use strict';
+  if (!window.P4) return;
+  var P4 = window.P4, SEC = P4.SEC, store = P4.store;
+
+  /* ============================================================
+     1) UNIFIED EXPORT/IMPORT — captures EVERYTHING
+     ============================================================ */
+  if (P4.Backup) {
+    /* whitelist of localStorage key prefixes/names that constitute "everything" */
+    var STATE_KEYS = [
+      /* legacy keys */
+      'workoutData', 'workoutContinuityData', 'savedWorkout',
+      /* P4 keys (from P4.keys) */
+      'p4_theme', 'p4_gym', 'p4_vocab', 'p4_onboarded', 'p4_profile',
+      'p4_consent_log', 'p4_last_backup', 'p4_paywall_state', 'p4_license',
+      'p4_trial_start', 'p4_sub_expires_at', 'p4_sub_cache', 'p4_license_tries',
+      'p4_license_lock', 'p4_studio_recent', 'p4_feedback', 'p4_badges',
+      'p4_badges_seen', 'p4_quote_day', 'p4_lang', 'p4_phrases_custom',
+      'p4_snapshots', 'p4_power_settings', 'p4_tap_metrics', 'p4_component_flip',
+      'p4_ob_draft',
+      /* multi-profile (stage-2) */
+      'p4_profiles', 'p4_active_profile',
+      /* per-profile data + vault (prefix matches) */
+      /* (handled via prefix scan below) */
+      /* library collapse state (stage-1) */
+      'p4_library_collapsed',
+      /* paywall v2 keys */
+      'p4_trial_start_v2', 'p4_sub_expires_at_v2', 'p4_sub_cache_v2',
+      'p4_app_id', 'p4_applications', 'p4_approved',
+      /* notification toggles (prefix) */
+      /* (handled via prefix scan) */
+      /* device fingerprint */
+      'p4_dev_lock', 'p4_last_seen'
+    ];
+
+    var STATE_PREFIXES = [
+      'p4_profile_data_',  /* per-profile workoutData snapshots */
+      'p4_vault_',         /* per-profile localStorage vault snapshots */
+      'p4_notif_'          /* notification toggle persistence */
+    ];
+
+    /* scan ALL localStorage and capture everything matching our keys or prefixes */
+    function captureAllLocalStorage() {
+      var out = {};
+      try {
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (!k) continue;
+          var capture = (STATE_KEYS.indexOf(k) !== -1);
+          if (!capture) {
+            for (var p = 0; p < STATE_PREFIXES.length; p++) {
+              if (k.indexOf(STATE_PREFIXES[p]) === 0) { capture = true; break; }
+            }
+          }
+          if (capture) {
+            try { out[k] = localStorage.getItem(k); } catch (e) {}
+          }
+        }
+      } catch (e) {}
+      return out;
+    }
+
+    /* capture IndexedDB vault (per-profile snapshots) */
+    function captureIndexedDBVault() {
+      return new Promise(function (resolve) {
+        var result = {};
+        try {
+          var req = indexedDB.open('p4_vault', 1);
+          req.onsuccess = function (e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains('snapshots')) { resolve(result); return; }
+            try {
+              var tx = db.transaction('snapshots', 'readonly');
+              var store_ = tx.objectStore('snapshots');
+              var cursorReq = store_.openCursor();
+              cursorReq.onsuccess = function (ev) {
+                var cursor = ev.target.result;
+                if (cursor) {
+                  result[cursor.value.profileId] = {
+                    at: cursor.value.at,
+                    data: cursor.value.data
+                  };
+                  cursor.continue();
+                } else {
+                  resolve(result);
+                }
+              };
+              cursorReq.onerror = function () { resolve(result); };
+            } catch (e) { resolve(result); }
+          };
+          req.onerror = function () { resolve(result); };
+          req.onupgradeneeded = function (e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains('snapshots')) {
+              db.createObjectStore('snapshots', { keyPath: 'profileId' });
+            }
+          };
+        } catch (e) { resolve(result); }
+      });
+    }
+
+    /* restore IndexedDB vault from backup */
+    function restoreIndexedDBVault(vaultData) {
+      return new Promise(function (resolve) {
+        if (!vaultData || !Object.keys(vaultData).length) { resolve(false); return; }
+        try {
+          var req = indexedDB.open('p4_vault', 1);
+          req.onsuccess = function (e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains('snapshots')) { resolve(false); return; }
+            try {
+              var tx = db.transaction('snapshots', 'readwrite');
+              var store_ = tx.objectStore('snapshots');
+              Object.keys(vaultData).forEach(function (profileId) {
+                var entry = vaultData[profileId];
+                if (entry && entry.data) {
+                  store_.put({ profileId: profileId, at: entry.at || Date.now(), data: entry.data });
+                }
+              });
+              tx.oncomplete = function () { resolve(true); };
+              tx.onerror = function () { resolve(false); };
+            } catch (e) { resolve(false); }
+          };
+          req.onerror = function () { resolve(false); };
+          req.onupgradeneeded = function (e) {
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains('snapshots')) {
+              db.createObjectStore('snapshots', { keyPath: 'profileId' });
+            }
+          };
+        } catch (e) { resolve(false); }
+      });
+    }
+
+    /* THE unified export — captures everything */
+    P4.Backup.exportEverything = async function () {
+      try {
+        /* capture localStorage */
+        var ls = captureAllLocalStorage();
+        /* capture IndexedDB vault */
+        var vault = await captureIndexedDBVault();
+        /* capture in-memory workoutData (in case it's newer than localStorage) */
+        var liveWorkoutData = (typeof workoutData !== 'undefined') ? workoutData : null;
+        /* metadata */
+        var meta = {
+          appVersion: (P4.version || '4.0.0'),
+          exportDate: new Date().toISOString(),
+          exportTimestamp: Date.now(),
+          profileCount: 0,
+          workoutCount: 0,
+          totalVolume: 0,
+          deviceInfo: {
+            userAgent: (navigator.userAgent || '').slice(0, 200),
+            platform: navigator.platform || 'unknown',
+            language: navigator.language || 'unknown'
+          }
+        };
+        try {
+          var profiles = JSON.parse(ls['p4_profiles'] || '[]');
+          meta.profileCount = profiles.length;
+        } catch (e) {}
+        try {
+          if (liveWorkoutData && liveWorkoutData.workouts) {
+            meta.workoutCount = liveWorkoutData.workouts.filter(function (w) {
+              return w && w.type !== 'streak_recover';
+            }).length;
+          }
+        } catch (e) {}
+
+        var payload = {
+          __format: 'PeakForm-Complete-Backup-v1',
+          __meta: meta,
+          localStorage: ls,
+          indexedDB: { p4_vault: vault },
+          liveWorkoutData: liveWorkoutData
+        };
+
+        var json = JSON.stringify(payload, null, 2);
+        var fname = 'PeakForm_Complete_Backup_' + P4.todayKey() + '.json';
+        P4.download(fname, json);
+        /* also stamp + snapshot for the local record */
+        Backup.stamp();
+        store.snapshot();
+        if (P4.Badges) P4.Badges.countEvent('backup');
+        try { P4.toast('Complete backup downloaded (' + Math.round(json.length / 1024) + ' KB) — everything captured.', 'ok', 3500); } catch (e) {}
+        return true;
+      } catch (e) {
+        try { P4.toast('Backup failed: ' + (e.message || e), 'bad'); } catch (e2) {}
+        return false;
+      }
+    };
+
+    /* THE unified import — restores everything */
+    P4.Backup.importEverything = async function (text) {
+      try {
+        var heal = SEC.healJson(text);
+        if (!heal.ok) { try { P4.toast('Not valid JSON: ' + heal.error, 'bad'); } catch (e) {} return false; }
+        var data = heal.data;
+
+        /* detect format: PeakForm-Complete-Backup-v1 vs old collectAll format */
+        var isCompleteBackup = data.__format === 'PeakForm-Complete-Backup-v1' && data.localStorage;
+
+        if (isCompleteBackup) {
+          /* restore localStorage */
+          var ls = data.localStorage || {};
+          var restoredKeys = 0;
+          Object.keys(ls).forEach(function (k) {
+            try {
+              localStorage.setItem(k, ls[k]);
+              restoredKeys++;
+            } catch (e) {}
+          });
+          /* restore IndexedDB vault */
+          if (data.indexedDB && data.indexedDB.p4_vault) {
+            await restoreIndexedDBVault(data.indexedDB.p4_vault);
+          }
+          /* restore live workoutData from backup (newer than localStorage) */
+          if (data.liveWorkoutData) {
+            try { localStorage.setItem('workoutData', JSON.stringify(data.liveWorkoutData)); } catch (e) {}
+          }
+          /* restore __meta into the localStorage too (for traceability) */
+          try { localStorage.setItem('p4_last_restore', JSON.stringify({ at: Date.now(), meta: data.__meta })); } catch (e) {}
+          try { P4.toast('Complete backup restored (' + restoredKeys + ' keys + IndexedDB vault). Reloading…', 'ok', 3000); } catch (e) {}
+          setTimeout(function () { location.reload(); }, 1200);
+          return true;
+        } else {
+          /* fallback: treat as old-format collectAll backup, delegate to importAll */
+          return Backup.importAll(text);
+        }
+      } catch (e) {
+        try { P4.toast('Restore failed: ' + (e.message || e), 'bad'); } catch (e2) {}
+        return false;
+      }
+    };
+
+    /* override pickImport to use importEverything (which falls back to importAll for old format) */
+    var origPickImport = P4.Backup.pickImport;
+    P4.Backup.pickImport = function () {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json,.json';
+      input.onchange = function () {
+        var f = input.files && input.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function (ev) { P4.Backup.importEverything(String(ev.target.result || '')); };
+        r.onerror = function () { try { P4.toast('Could not read that file.', 'bad'); } catch (e) {} };
+        r.readAsText(f);
+      };
+      input.click();
+    };
+
+    /* override exportAll to call exportEverything (the comprehensive version) */
+    var origExportAll = P4.Backup.exportAll;
+    P4.Backup.exportAll = function () {
+      return P4.Backup.exportEverything();
+    };
+  }
+
+  /* ============================================================
+     2) CUTE APPEARANCE SETTINGS — rewrite P4.themeUI.renderInto
+     Remove the redundant "Appearance" h3 (the group header already says it),
+     cleaner layout, cuter swatches, less hint clutter.
+     ============================================================ */
+  if (P4.themeUI) {
+    P4.themeUI.renderInto = function (hostId) {
+      var host = document.getElementById(hostId);
+      if (!host) return;
+      var t = P4.Theme.get();
+      var gym = P4.Theme.gymOn();
+
+      /* mode toggle — Dark / Light, cute pill buttons */
+      var modes =
+        '<div style="display:flex;gap:8px;margin-bottom:18px">' +
+        '<button class="p4-cute-mode' + (t.mode === 'dark' ? ' on' : '') + '" data-m="dark" style="flex:1;padding:12px;border-radius:12px;border:2px solid ' + (t.mode === 'dark' ? 'var(--p4-accent, #2563eb)' : 'var(--gray-200, #e2e8f0)') + ';background:' + (t.mode === 'dark' ? 'var(--p4-accent-soft, #eef)' : 'var(--light, #fff)') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;color:var(--p4-text, #1e293b);transition:all .15s">' +
+          '<i class="fas fa-moon" style="color:var(--p4-accent, #2563eb)"></i> Dark' +
+        '</button>' +
+        '<button class="p4-cute-mode' + (t.mode === 'light' ? ' on' : '') + '" data-m="light" style="flex:1;padding:12px;border-radius:12px;border:2px solid ' + (t.mode === 'light' ? 'var(--p4-accent, #2563eb)' : 'var(--gray-200, #e2e8f0)') + ';background:' + (t.mode === 'light' ? 'var(--p4-accent-soft, #eef)' : 'var(--light, #fff)') + ';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;color:var(--p4-text, #1e293b);transition:all .15s">' +
+          '<i class="fas fa-sun" style="color:var(--p4-accent, #2563eb)"></i> Light' +
+        '</button>' +
+        '</div>';
+
+      /* color swatches — bigger, cuter, in a clean 8-col grid */
+      var sw = P4.Theme.accents.map(function (a) {
+        var isOn = t.accent === a.id;
+        var free = ['blue', 'green', 'purple', 'orange'];
+        var locked = free.indexOf(a.id) === -1 && !P4.Paywall.isPro();
+        return '<button class="p4-cute-swatch' + (isOn ? ' on' : '') + '" data-a="' + a.id + '"' + (locked ? ' data-locked="1"' : '') + ' style="width:32px;height:32px;border-radius:50%;background:' + a.hex + ';border:' + (isOn ? '3px solid var(--p4-text, #1e293b)' : '2px solid var(--gray-200, #e2e8f0)') + ';cursor:pointer;transition:all .15s;position:relative;' + (locked ? 'opacity:0.45' : '') + '" title="' + SEC.escapeHtml(a.name) + (locked ? ' (Pro)' : '') + '" aria-label="' + SEC.escapeHtml(a.name) + '"></button>';
+      }).join('');
+
+      /* swatch label (shows current selection name) */
+      var currentAccent = P4.Theme.accents.find(function (a) { return a.id === t.accent; }) || P4.Theme.accents[0];
+
+      /* gym mode toggle — moved to bottom, subtle, less prominent */
+      var gymToggle =
+        '<label style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:var(--gray-100, #f1f5f9);cursor:pointer;margin-top:14px">' +
+          '<span style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--p4-text-2, #475569)">' +
+            '<i class="fas fa-hand-fist" style="color:var(--p4-accent, #2563eb)"></i> Gym mode (giant buttons)' +
+          '</span>' +
+          '<input type="checkbox" id="p4GymToggle"' + (gym ? ' checked' : '') + ' style="width:18px;height:18px;cursor:pointer">' +
+        '</label>';
+
+      /* NO redundant h3 — the group header already says "Appearance" */
+      host.innerHTML =
+        '<div style="padding:4px 0">' +
+          /* tiny section label */
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--p4-text-3, #94a3b8);margin-bottom:8px">Mode</div>' +
+          modes +
+          /* tiny section label */
+          '<div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--p4-text-3, #94a3b8);margin-bottom:8px">Color</div>' +
+          '<div style="display:grid;grid-template-columns:repeat(8, 1fr);gap:10px;justify-items:center">' + sw + '</div>' +
+          '<div style="text-align:center;font-size:12px;color:var(--p4-text-2, #475569);margin-top:10px;font-weight:600">' + SEC.escapeHtml(currentAccent.name) + '</div>' +
+          /* tiny hint, single line, less clutter */
+          '<div style="text-align:center;font-size:10.5px;color:var(--p4-text-3, #94a3b8);margin-top:4px">4 free colors · 12 more with Pro</div>' +
+          gymToggle +
+        '</div>';
+
+      /* wire mode buttons */
+      host.querySelectorAll('.p4-cute-mode').forEach(function (b) {
+        b.addEventListener('click', function () {
+          P4.Theme.set({ mode: b.getAttribute('data-m') });
+          /* re-render to update active state */
+          P4.themeUI.renderInto(hostId);
+        });
+      });
+      /* wire swatches */
+      host.querySelectorAll('.p4-cute-swatch').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var id = b.getAttribute('data-a');
+          var locked = b.getAttribute('data-locked') === '1';
+          if (locked) {
+            try { P4.toast('That color is Pro — 12 more palettes unlock with it.', 'info', 2500); } catch (e) {}
+            return;
+          }
+          P4.Theme.set({ accent: id });
+          P4.Badges && P4.Badges.countEvent('themeChanged');
+          P4.themeUI.renderInto(hostId);
+        });
+      });
+      /* wire gym toggle */
+      var gymT = host.querySelector('#p4GymToggle');
+      if (gymT) gymT.addEventListener('change', function () { P4.Power.toggleGym(); });
+    };
+
+    /* inject CSS for cute hover states */
+    if (!document.getElementById('p4-cute-theme-css')) {
+      var css = document.createElement('style');
+      css.id = 'p4-cute-theme-css';
+      css.textContent =
+        '.p4-cute-mode:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }' +
+        '.p4-cute-swatch:hover { transform: scale(1.15); }' +
+        '.p4-cute-swatch.on { box-shadow: 0 0 0 3px var(--light, #fff), 0 0 0 5px var(--p4-accent, #2563eb); }';
+      document.head.appendChild(css);
+    }
+  }
+
+  /* ============================================================
+     3) WIRE ALL "EXPORT" BUTTONS TO USE exportEverything
+     After settings render, find every button with "Export" or "Backup"
+     text and point it at the unified function.
+     ============================================================ */
+  setTimeout(function () {
+    var setSec = document.getElementById('settings-section') || document;
+    /* find buttons with onclick containing exportAll or exportWorkoutData */
+    var btns = setSec.querySelectorAll('button[onclick*="exportAll"], button[onclick*="exportWorkoutData"], button[onclick*="Backup.exportAll"]');
+    btns.forEach(function (btn) {
+      var onclick = btn.getAttribute('onclick') || '';
+      if (onclick.indexOf('exportEverything') === -1) {
+        btn.setAttribute('onclick', 'P4.Backup.exportEverything()');
+        /* update label if it says "Export everything" or "Backup Now" */
+        var txt = btn.textContent.trim();
+        if (txt.indexOf('Export') === 0 || txt.indexOf('Backup') === 0) {
+          btn.innerHTML = btn.innerHTML.replace(/Export everything/i, 'Export everything').replace(/Backup Now/i, 'Backup everything');
+        }
+      }
+    });
+    /* also fix the dock button + quickchip + dock — they should all use unified */
+    var dockBtns = document.querySelectorAll('[onclick*="P4.Backup.exportAll"]');
+    dockBtns.forEach(function (b) {
+      b.setAttribute('onclick', 'P4.Backup.exportEverything()');
+    });
+  }, 2800);
+
+  console.log('[P4 Stage-8] Unified export + cute Appearance settings applied.');
 })();
 
 
