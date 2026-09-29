@@ -63577,5 +63577,472 @@ P4.Wheel = (function () {
 <!-- P4 FIX #11b (reapplied): paywall template legal ids renamed at source -->
 <!-- P4 FIX #12  (reapplied): original nav resume id renamed to p4LegacyNavResumeBtn -->
 <!-- P4 FIX #13  (reapplied): legacy bottomNav has hidden+aria-hidden+inert -->
+<style id="p4-health-css">
+#p4HealthOverlay{position:fixed;inset:0;z-index:100020;background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;}
+#p4HealthOverlay.on{display:flex;}
+.p4-hs-card{width:100%;max-width:520px;max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;margin:auto;background:var(--p4-surface,#10141C);border:1px solid var(--p4-hairline,rgba(148,163,184,.14));border-radius:20px;padding:24px 22px;box-shadow:0 24px 72px -20px rgba(0,0,0,.6);box-sizing:border-box;}
+.p4-hs-card::-webkit-scrollbar{width:6px;}
+.p4-hs-card::-webkit-scrollbar-thumb{background:var(--p4-hairline-2,rgba(148,163,184,.26));border-radius:6px;}
+@media (max-width:520px){
+  #p4HealthOverlay{padding:12px 10px;}
+  .p4-hs-card{padding:20px 16px;border-radius:18px;max-height:calc(100dvh - 24px);}
+  .p4-hs-h1{font-size:18px;}
+  .p4-hs-q{padding:11px 12px;margin-bottom:7px;}
+  .p4-hs-jt{padding:9px 12px;font-size:12px;min-height:42px;}
+}
+@media (max-height:600px){
+  .p4-hs-card{padding:18px 16px;}
+  .p4-hs-q{padding:10px 12px;margin-bottom:6px;}
+  .p4-hs-lead{margin-bottom:12px;}
+}
+.p4-hs-h1{font-size:20px;font-weight:800;margin:0 0 6px;color:var(--p4-text,#F2F4F8);letter-spacing:-.02em;font-family:var(--p4-font-display,inherit);}
+.p4-hs-lead{font-size:13px;color:var(--p4-text-2,#B7BDC9);line-height:1.55;margin:0 0 16px;}
+.p4-hs-note{background:var(--p4-accent-soft,rgba(78,155,255,.14));border:1px solid var(--p4-accent-line,rgba(78,155,255,.38));color:var(--p4-accent,#4E9BFF);font-size:11.5px;font-weight:600;padding:9px 13px;border-radius:10px;margin-bottom:14px;}
+.p4-hs-q{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;margin-bottom:8px;border:1px solid var(--p4-hairline-2,rgba(148,163,184,.26));border-radius:12px;background:var(--p4-surface-2,#151B25);cursor:pointer;transition:.15s;}
+.p4-hs-q:hover{border-color:var(--p4-accent-line,rgba(78,155,255,.38));}
+.p4-hs-q.flag{border-color:var(--p4-warn,#FBBF24);background:rgba(251,191,36,.06);}
+.p4-hs-q.flag-red{border-color:var(--p4-bad,#F87171);background:rgba(248,113,113,.06);}
+.p4-hs-q input{margin-top:2px;width:17px;height:17px;accent-color:var(--p4-accent,#4E9BFF);flex-shrink:0;cursor:pointer;}
+.p4-hs-q span{font-size:13px;line-height:1.5;color:var(--p4-text-2,#B7BDC9);}
+.p4-hs-q span b{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px;color:var(--p4-text-3,#8A919E);}
+.p4-hs-q.flag-red span b{color:var(--p4-bad,#F87171);}
+.p4-hs-q.flag span b{color:var(--p4-warn,#FBBF24);}
+.p4-hs-jts{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px;}
+.p4-hs-jt{padding:10px 14px;border-radius:11px;border:1px solid var(--p4-hairline-2,rgba(148,163,184,.26));background:var(--p4-surface-2,#151B25);color:var(--p4-text-2,#B7BDC9);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;min-height:44px;}
+.p4-hs-jt:hover{border-color:var(--p4-accent-line,rgba(78,155,255,.38));color:var(--p4-accent,#4E9BFF);}
+.p4-hs-jt.on{background:var(--p4-accent-soft,rgba(78,155,255,.14));border-color:var(--p4-accent-line,rgba(78,155,255,.38));color:var(--p4-accent,#4E9BFF);}
+.p4-hs-actions{margin-top:16px;display:flex;flex-direction:column;gap:9px;}
+.p4-hs-btn{padding:13px;border-radius:13px;border:none;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:.15s;min-height:48px;}
+.p4-hs-btn.primary{background:var(--p4-accent,#4E9BFF);color:var(--p4-on-accent,#071018);}
+.p4-hs-btn.primary:hover{transform:translateY(-1px);}
+.p4-hs-btn.outline{background:transparent;color:var(--p4-text-2,#B7BDC9);border:1px solid var(--p4-hairline-2,rgba(148,163,184,.26));}
+.p4-hs-btn.outline:hover{border-color:var(--p4-text-3,#8A919E);color:var(--p4-text,#F2F4F8);}
+.p4-hs-btn.danger{background:var(--p4-bad,#F87171);color:#180404;}
+.p4-hs-btn.success{background:var(--p4-ok,#34D399);color:#04120C;}
+.p4-hs-btn[disabled]{opacity:.5;cursor:not-allowed;}
+.p4-hs-verdict{padding:16px 18px;border-radius:13px;border-left:4px solid;font-size:13px;line-height:1.55;margin-top:12px;}
+.p4-hs-verdict b{display:block;font-size:15px;margin-bottom:5px;font-family:var(--p4-font-display,inherit);}
+.p4-hs-verdict.ok{background:rgba(52,211,153,.08);border-color:var(--p4-ok,#34D399);}
+.p4-hs-verdict.ok b{color:var(--p4-ok,#34D399);}
+.p4-hs-verdict.warn{background:rgba(251,191,36,.08);border-color:var(--p4-warn,#FBBF24);}
+.p4-hs-verdict.warn b{color:var(--p4-warn,#FBBF24);}
+.p4-hs-verdict.bad{background:rgba(248,113,113,.08);border-color:var(--p4-bad,#F87171);}
+.p4-hs-verdict.bad b{color:var(--p4-bad,#F87171);}
+.p4-hs-tryagain{margin-top:10px;padding:11px 13px;border-radius:10px;background:var(--p4-surface-2,#151B25);border:1px dashed var(--p4-hairline-2,rgba(148,163,184,.26));font-size:12px;color:var(--p4-text-3,#8A919E);line-height:1.55;}
+.p4-hs-tryagain b{color:var(--p4-text-2,#B7BDC9);font-weight:600;}
+.p4-hs-legal{margin-top:14px;padding:11px 13px;border-radius:10px;background:var(--p4-surface-2,#151B25);border:1px solid var(--p4-hairline,rgba(148,163,184,.14));font-size:11.5px;color:var(--p4-text-3,#8A919E);line-height:1.55;}
+.p4-hs-legal b{color:var(--p4-text-2,#B7BDC9);}
+.p4-health-lock-note{margin:14px 0 0;padding:12px 14px;border-radius:10px;background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);font-size:12px;color:#F87171;line-height:1.5;}
+.p4-health-lock-note a{color:inherit;text-decoration:underline;font-weight:600;cursor:pointer;}
+.p4-health-mod-note{margin:14px 0 0;padding:12px 14px;border-radius:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);font-size:12px;color:#FBBF24;line-height:1.5;}
+.p4-hs-recommend{margin-top:10px;padding:13px 15px;border-radius:12px;background:rgba(78,155,255,.06);border:1px solid rgba(78,155,255,.22);font-size:12.5px;line-height:1.55;color:var(--p4-text-2,#B7BDC9);}
+.p4-hs-recommend b{display:block;color:var(--p4-accent,#4E9BFF);font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;}
+.p4-hs-consent{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;margin-top:12px;border:1px solid var(--p4-hairline-2,rgba(148,163,184,.26));border-radius:12px;background:var(--p4-surface-2,#151B25);cursor:pointer;font-size:12.5px;line-height:1.5;color:var(--p4-text-2,#B7BDC9);}
+.p4-hs-consent input{margin-top:2px;width:17px;height:17px;accent-color:var(--p4-accent,#4E9BFF);flex-shrink:0;cursor:pointer;}
+.p4-hs-consent a{color:var(--p4-accent,#4E9BFF);text-decoration:underline;cursor:pointer;font-weight:600;}
+</style>
+<script>
+/* P4 HEALTH SCREEN v2 — 10-physician panel edition, integrated */
+(function () {
+  'use strict';
+  if (window.__p4HealthV2) return;
+  window.__p4HealthV2 = true;
+  if (!window.P4) window.P4 = {};
+
+  var K = {
+    s: 'p4_health_screened_at', t: 'p4_health_tier',
+    g: 'p4_health_general', f: 'p4_health_followup',
+    j: 'p4_health_joints', u: 'p4_health_unlocked_at',
+    d: 'p4_health_declared'
+  };
+
+  var GEN = [
+    {id:'g1', r:1, t:'Has a doctor said you have a heart condition or high blood pressure?'},
+    {id:'g2', r:1, t:'Do you feel chest pain at rest or during activity?'},
+    {id:'g3', r:1, t:'Do you ever lose your balance from dizziness or faint?'},
+    {id:'g4', r:0, t:'Do you have a bone, joint, or back problem?'},
+    {id:'g5', r:0, t:'Do you take medication for blood pressure, heart, or blood thinning?'},
+    {id:'g6', r:0, t:'Are you pregnant, or have you given birth in the last 6 months?'},
+    {id:'g7', r:0, t:'Any other reason a doctor said you should not exercise?'}
+  ];
+  var JTS = ['Shoulder','Elbow','Wrist','Lower back','Hip','Knee','Ankle','Neck'];
+  var FUP = {
+    fu_heart: [['h1','Has your doctor limited your activity, or said your condition is not well-controlled?'],
+               ['h2','Have you had a heart attack, heart failure, or a cardiac procedure in the last 3 months?']],
+    fu_meds: [['m1','Have you started or changed this medication in the last month?']],
+    fu_preg: [['p1','Has your obstetric provider cleared you for moderate exercise?']]
+  };
+
+  var S = { phase:'general', gen:{}, fup:{}, jt:[], tier:null, why:[], ctx:null, onDone:null, reason:null };
+
+  function get(k, fb){ try { var v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch(e){ return fb; } }
+  function set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  function del(k){ try { localStorage.removeItem(k); } catch(e){} }
+  function esc(s){ return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function lastWorkoutDays(){
+    try {
+      if (typeof workoutData === 'undefined' || !workoutData || !workoutData.workouts) return null;
+      var ws = workoutData.workouts;
+      if (!ws.length) return null;
+      var last = 0;
+      ws.forEach(function(w){ var t = new Date(w.dateCompleted || w.date).getTime(); if (t > last) last = t; });
+      if (!last) return null;
+      return (Date.now() - last) / 86400000;
+    } catch(e){ return null; }
+  }
+
+  function shouldScreen(){
+    var screened = get(K.s, 0);
+    if (screened) {
+      var days = lastWorkoutDays();
+      if (days !== null && days > 90) return { show:true, reason:'layoff', days:Math.floor(days) };
+      var declared = get(K.d, []);
+      var saved = get(K.g, {});
+      for (var i = 0; i < declared.length; i++) if (!saved[declared[i]]) return { show:true, reason:'new-condition' };
+      return { show:false, reason:'complete' };
+    }
+    /* Never screened: fire once for anyone already using the app. */
+    var onboarded = get('p4_onboarded', false);
+    var hasHistory = false;
+    try {
+      if (typeof workoutData !== 'undefined' && workoutData && workoutData.workouts && workoutData.workouts.length > 0) hasHistory = true;
+    } catch(e) {}
+    if (onboarded || hasHistory) return { show:true, reason: hasHistory ? 'existing-history-no-screen' : 'existing-no-screen' };
+    return { show:false, reason:'pre-onboarding' };
+  }
+
+  function computeTier(){
+    var g = S.gen;
+    if (g.g2) return T('C','Chest pain at rest or during activity');
+    if (g.g3) return T('C','Dizziness or loss of consciousness');
+    if (g.g7) return T('C','Other physician restriction stated');
+    if (g.g1) {
+      if (S.fup.h1) return T('C','Physician has limited your activity');
+      if (S.fup.h2) return T('C','Recent cardiac event or procedure');
+      if (S.fup.h1 === false && S.fup.h2 === false) return T('B','Stable cardiac history — intensity ceiling applied');
+      return { next:'fu_heart' };
+    }
+    if (g.g4) {
+      if (S.jt.length === 0) return { next:'joints' };
+      return T('B','Joint modifications: ' + S.jt.join(', '));
+    }
+    if (g.g5) {
+      if (S.fup.m1) return T('C','Medication started or changed in the last month');
+      if (S.fup.m1 === false) return T('B','Medication-managed — intensity ceiling applied');
+      return { next:'fu_meds' };
+    }
+    if (g.g6) {
+      if (S.fup.p1) return T('B','Prenatal-safe programming active');
+      if (S.fup.p1 === false) return T('C','Obstetric clearance required before exercise');
+      return { next:'fu_preg' };
+    }
+    return T('A', null);
+  }
+  function T(tier, reason){ S.tier = tier; if (reason) S.why.push(reason); return { done:true }; }
+
+  function renderBody(){
+    if (S.tier) {
+      var titles = { A:'Clear to train', B:'Clear with modification', C:'Sign-off required' };
+      var kinds = { A:'ok', B:'warn', C:'bad' };
+      var desc = S.tier === 'A' ? 'No restrictions found. Full workout plan will be generated.' :
+                 S.tier === 'B' ? (S.why[0] || 'Modified plan active.') :
+                 (S.why[0] || "A doctor's sign-off is required before workout generation.");
+      var tierC = S.tier === 'C';
+      var h = '<div class="p4-hs-verdict ' + kinds[S.tier] + '"><b>' + titles[S.tier] + '</b>' + esc(desc) + '</div>';
+
+      if (!tierC) {
+        h += '<div class="p4-hs-recommend"><b>One last thing</b>This screen is not a medical exam and does not diagnose anything. If you feel unwell on the day, or if anything here leaves you with doubt, delay the workout and talk to your doctor — that is always a reasonable choice, even when nothing was flagged.</div>';
+      }
+
+      if (tierC) {
+        h += '<div class="p4-hs-tryagain"><b>Not locked out.</b> You can still browse the app. Two ways forward:<br>&bull; <b>Adjust answers</b> &mdash; if something wasn\'t quite right, try again now.<br>&bull; <b>Confirm clearance</b> &mdash; once a doctor signs you off, tap the unlock in Settings.</div>';
+      }
+
+      if (!tierC) {
+        var checked = S.consent ? ' checked' : '';
+        var dis = S.consent ? '' : ' disabled';
+        h += '<label class="p4-hs-consent"><input type="checkbox"' + checked + ' onchange="P4.Health.toggleConsent(this.checked)"><span>I accept the <a onclick="if(window.P4&&P4.Legal)P4.Legal.open(\'waiver\');return false;">Liability Waiver &amp; Assumption of Risk</a>, and I understand this screen is not a medical exam or a doctor\'s clearance.</span></label>';
+        h += '<div class="p4-hs-actions">';
+        h += '<button class="p4-hs-btn primary" id="p4HsContinue"' + dis + ' onclick="P4.Health.finish()">I accept &mdash; Continue</button>';
+        h += '</div>';
+      } else {
+        h += '<div class="p4-hs-legal"><b>This screen is not a diagnosis.</b> It routes you to appropriate activity. Training remains at your own risk.</div>';
+        h += '<div class="p4-hs-actions">';
+        h += '<button class="p4-hs-btn outline" onclick="P4.Health.tryAgain()">Adjust answers &amp; try again</button>';
+        h += '<button class="p4-hs-btn outline" onclick="P4.Health.finish()">Explore app until cleared</button>';
+        h += '</div>';
+      }
+
+      return h;
+    }
+
+    if (S.phase === 'joints') {
+      var html = '<h1 class="p4-hs-h1">Which joints?</h1>';
+      html += '<p class="p4-hs-lead">You flagged a joint issue. Pick the ones affected — we\'ll auto-skip movements that load them heavily.</p>';
+      html += '<div class="p4-hs-jts">';
+      JTS.forEach(function(j){
+        html += '<button class="p4-hs-jt' + (S.jt.indexOf(j) >= 0 ? ' on' : '') + '" onclick="P4.Health.toggleJoint(\'' + j + '\')">' + j + '</button>';
+      });
+      html += '</div>';
+      html += '<div class="p4-hs-actions"><button class="p4-hs-btn primary" onclick="P4.Health.submit()"' + (S.jt.length === 0 ? ' disabled' : '') + '>Continue</button></div>';
+      return html;
+    }
+
+    if (S.phase === 'fu_heart' || S.phase === 'fu_meds' || S.phase === 'fu_preg') {
+      var html = '<h1 class="p4-hs-h1">Follow-up</h1>';
+      html += '<p class="p4-hs-lead">One level of detail, then we stop asking.</p>';
+      FUP[S.phase].forEach(function(pair){
+        var id = pair[0], text = pair[1];
+        html += '<label class="p4-hs-q"><input type="checkbox"' + (S.fup[id] ? ' checked' : '') + ' onchange="P4.Health.toggleFollowUp(\'' + id + '\')"><span><b>Follow-up</b>' + esc(text) + '</span></label>';
+      });
+      html += '<div class="p4-hs-actions"><button class="p4-hs-btn primary" onclick="P4.Health.submit()">Continue</button></div>';
+      return html;
+    }
+
+    var html = '';
+    if (S.ctx === 'standalone' && S.reason !== 'fresh') {
+      html += '<div class="p4-hs-note">ℹ️ Quick one-time health check. Won\'t be asked again unless something changes.</div>';
+    }
+    html += '<h1 class="p4-hs-h1">Health check</h1>';
+    html += '<p class="p4-hs-lead">Tap the ones that apply to you, then continue. 7 questions, once.</p>';
+    GEN.forEach(function(q){
+      var flagged = S.gen[q.id] ? (q.r ? 'flag-red' : 'flag') : '';
+      html += '<label class="p4-hs-q ' + flagged + '"><input type="checkbox"' + (S.gen[q.id] ? ' checked' : '') + ' onchange="P4.Health.toggleGeneral(\'' + q.id + '\')"><span><b>' + (q.r ? 'Important' : 'Worth noting') + '</b>' + esc(q.t) + '</span></label>';
+    });
+    html += '<div class="p4-hs-actions"><button class="p4-hs-btn primary" onclick="P4.Health.submit()">Continue</button></div>';
+    return html;
+  }
+
+  function refresh(){
+    if (S.ctx === 'standalone') {
+      var host = document.getElementById('p4HealthOverlay');
+      if (host) {
+        var card = host.querySelector('.p4-hs-card');
+        if (card) card.innerHTML = renderBody();
+      }
+    } else if (S.ctx === 'wizard') {
+      if (window.P4 && P4.Onboard && typeof P4.Onboard.render === 'function') P4.Onboard.render();
+    }
+  }
+
+  var HS = P4.Health = {
+    _S: S,
+    shouldScreen: shouldScreen,
+    getTier: function(){ return get(K.t, 'A'); },
+    isGenerationLocked: function(){
+      if (get(K.t, 'A') !== 'C') return false;
+      return !get(K.u, 0);
+    },
+    open: function(reason, onDone){
+      S.phase = 'general'; S.gen = {}; S.fup = {}; S.jt = []; S.tier = null; S.why = [];
+      S.ctx = 'standalone'; S.reason = reason || 'existing'; S.onDone = onDone || null;
+      var host = document.getElementById('p4HealthOverlay');
+      if (!host) {
+        host = document.createElement('div');
+        host.id = 'p4HealthOverlay';
+        document.body.appendChild(host);
+      }
+      host.innerHTML = '<div class="p4-hs-card">' + renderBody() + '</div>';
+      host.classList.add('on');
+    },
+    renderWizardBody: function(){ S.ctx = 'wizard'; return renderBody(); },
+    close: function(){
+      var host = document.getElementById('p4HealthOverlay');
+      if (host) host.classList.remove('on');
+      S.ctx = null;
+    },
+    toggleGeneral: function(id){ S.gen[id] = !S.gen[id]; refresh(); },
+    toggleFollowUp: function(id){ S.fup[id] = !S.fup[id]; refresh(); },
+    toggleJoint: function(j){
+      var i = S.jt.indexOf(j);
+      if (i >= 0) S.jt.splice(i, 1); else S.jt.push(j);
+      refresh();
+    },
+    toggleConsent: function(checked){
+      S.consent = !!checked;
+      var btn = document.querySelector('#p4HsContinue');
+      if (btn) { btn.disabled = !S.consent; btn.style.opacity = S.consent ? '' : '.5'; }
+    },
+    submit: function(){
+      if (S.phase === 'joints' && S.jt.length === 0) return;
+      var r = computeTier();
+      if (r.next) { S.phase = r.next; refresh(); return; }
+      set(K.t, S.tier);
+      set(K.g, S.gen);
+      set(K.f, S.fup);
+      set(K.j, S.jt);
+      del(K.d);
+      refresh();
+    },
+    finish: function(){
+      if (!S.tier) return;
+      if (S.tier !== 'C' && !S.consent) {
+        if (P4.toast) P4.toast('Please accept the Liability Waiver to continue.', 'warn');
+        return;
+      }
+      set(K.s, Date.now());
+      try {
+        if (window.P4 && P4.Legal && P4.Legal.record && S.tier !== 'C') {
+          P4.Legal.record('waiver', 'Health screen ' + S.tier + ' \u2014 waiver re-accepted');
+        }
+      } catch(e) {}
+      if (S.ctx === 'standalone') {
+        HS.close();
+        if (typeof S.onDone === 'function') S.onDone(S.tier);
+        setTimeout(applyDashboardLock, 100);
+        return;
+      }
+      if (S.ctx === 'wizard') {
+        if (P4.Onboard) {
+          P4.Onboard._healthVerdictAccepted = true;
+          P4.Onboard._healthDone = true;
+        }
+        if (P4.Onboard && typeof P4.Onboard.render === 'function') P4.Onboard.render();
+        return;
+      }
+    },
+    tryAgain: function(){
+      S.phase = 'general'; S.gen = {}; S.fup = {}; S.jt = []; S.tier = null; S.why = [];
+      refresh();
+    },
+    confirmClearance: function(){
+      if (!confirm('Confirm your doctor has cleared you for exercise?')) return;
+      set(K.u, Date.now());
+      if (P4.toast) P4.toast('Clearance recorded. Workout generation unlocked.', 'ok');
+      setTimeout(function(){ location.reload(); }, 700);
+    },
+    reset: function(){
+      del(K.s); del(K.t); del(K.g); del(K.f); del(K.j); del(K.u);
+      HS.open('existing', function(){ location.reload(); });
+    }
+  };
+
+  /* ---- Wizard integration: intercept step 3 ---- */
+  function hookWizard(){
+    if (!window.P4 || !P4.Onboard) return;
+    if (P4.Onboard._healthHooked) return;
+    P4.Onboard._healthHooked = true;
+
+    var origS3 = P4.Onboard.s3;
+    if (typeof origS3 === 'function') {
+      P4.Onboard.s3 = function(){
+        if (!get(K.s, 0) && !P4.Onboard._healthDone && !P4.Onboard._healthVerdictAccepted) {
+          S.ctx = 'wizard';
+          if (!S._begun) {
+            S.phase = 'general'; S.gen = {}; S.fup = {}; S.jt = []; S.tier = null; S.why = [];
+            S._begun = true;
+          }
+          return HS.renderWizardBody();
+        }
+        return origS3.apply(this, arguments);
+      };
+    }
+
+    /* Consent reduction: drop obC2 from s5 */
+    var origS5 = P4.Onboard.s5;
+    if (typeof origS5 === 'function') {
+      P4.Onboard.s5 = function(){
+        var html = origS5.apply(this, arguments);
+        html = html.replace(/<label class="p4-wz-check"><input type="checkbox" id="obC2">[\s\S]*?<\/label>/, '');
+        return html;
+      };
+    }
+
+    /* Fix the finish check to not require obC2 */
+    var origWire = P4.Onboard.wire;
+    if (typeof origWire === 'function') {
+      P4.Onboard.wire = function(){
+        var r = origWire.apply(this, arguments);
+        var host = document.getElementById('p4WizardHost');
+        if (!host) return r;
+        var fin = host.querySelector('[data-nav="finish"]');
+        if (fin && !fin._p4healthFixed) {
+          fin._p4healthFixed = true;
+          var clone = fin.cloneNode(true);
+          fin.parentNode.replaceChild(clone, fin);
+          clone.addEventListener('click', function(e){
+            e.preventDefault();
+            var minor = P4.Onboard.profile.minor;
+            var need = minor ? 3 : 2;
+            var ok = 0;
+            ['obC1','obC3','obC4'].forEach(function(id){
+              var c = host.querySelector('#' + id);
+              if (c && c.checked) ok++;
+            });
+            if (ok < need) {
+              if (P4.toast) P4.toast('Please tick every box — each one protects you.', 'warn');
+              return;
+            }
+            P4.Onboard.finish();
+          });
+        }
+        return r;
+      };
+    }
+
+    var origFinish = P4.Onboard.finish;
+    if (typeof origFinish === 'function' && !P4.Onboard._healthFinishHooked) {
+      P4.Onboard._healthFinishHooked = true;
+      P4.Onboard.finish = function(){
+        var r = origFinish.apply(this, arguments);
+        setTimeout(applyDashboardLock, 200);
+        return r;
+      };
+    }
+  }
+
+  /* ---- Dashboard lock for Tier C ---- */
+  function applyDashboardLock(){
+    if (!HS.isGenerationLocked()) return;
+    var btn = document.querySelector('.btn-luxury-start');
+    if (!btn || btn._p4healthLocked) return;
+    btn._p4healthLocked = true;
+    btn.style.cssText += 'opacity:.55;filter:grayscale(.6);cursor:not-allowed;';
+    btn.innerHTML = '<i class="fas fa-lock"></i> <span>Locked — see note below</span>';
+    btn.onclick = function(e){ e.preventDefault(); if (P4.toast) P4.toast('Confirm doctor clearance in Settings to unlock.', 'info'); };
+    var parent = btn.parentNode;
+    if (parent && !parent.querySelector('.p4-health-lock-note')) {
+      var note = document.createElement('div');
+      note.className = 'p4-health-lock-note';
+      note.innerHTML = '<b>Workout generation is paused.</b> Your health screen flagged an item that needs a doctor\'s sign-off. You can still browse Library, History, and Settings. <a onclick="P4.Health.confirmClearance();">I\'ve been cleared</a>';
+      parent.appendChild(note);
+    }
+  }
+
+  /* ---- Boot ---- */
+  function boot(){
+    hookWizard();
+    var s = shouldScreen();
+    if (s.show) {
+      setTimeout(function(){ HS.open(s.reason); }, 900);
+    } else {
+      setTimeout(applyDashboardLock, 500);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 900); });
+  } else {
+    setTimeout(boot, 900);
+  }
+
+  /* Re-check lock on dashboard render */
+  if (typeof window.updateDashboard === 'function' && !window.updateDashboard._p4health) {
+    var origUpdate = window.updateDashboard;
+    window.updateDashboard = function(){
+      var r = origUpdate.apply(this, arguments);
+      setTimeout(applyDashboardLock, 100);
+      return r;
+    };
+    window.updateDashboard._p4health = true;
+  }
+
+  console.log('[P4 Health v2] 10-physician panel edition loaded. Migration boot armed.');
+})();
+</script>
+<!-- P4 HEALTH FIX #17: existing users with history but no onboarded flag now get screened -->
+<!-- P4 HEALTH FIX #18: overlay + card constrained to viewport, scrolls internally -->
+<!-- P4 HEALTH CONSENT: recommendation + required waiver on A/B verdict cards -->
 </body>
 </html>
