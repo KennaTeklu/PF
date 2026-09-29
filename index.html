@@ -58309,8 +58309,8 @@ window.__pfPaywall = { TRIAL_WORKOUTS: TRIAL_WORKOUTS, getTrialWorkoutsUsed: get
         var plat = Paywall.selectedPlatform ? SOCIALS.find(function (s) { return s.name === Paywall.selectedPlatform; }) : SOCIALS[0];
         var isOther = plat && plat.name === 'Other';
         var msg = isOther ?
-          ('Application ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.') :
-          ('Application ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.');
+          ('Pro ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.') :
+          ('Pro ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.');
         var action = isOther ? 'Open email' : ('Copy & DM on ' + plat.name);
         content =
           '<div class="pw-modal-inner" style="background:var(--light, #fff);border-radius:18px;padding:24px;max-width:460px;width:100%;position:relative">' +
@@ -58370,8 +58370,8 @@ window.__pfPaywall = { TRIAL_WORKOUTS: TRIAL_WORKOUTS, getTrialWorkoutsUsed: get
       var id = getApplicationId();
       var isOther = plat && plat.name === 'Other';
       var msg = isOther ?
-          ('Application ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.') :
-          ('Application ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.');
+          ('Pro ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.') :
+          ('Pro ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.');
       var msgEl = document.getElementById('p4AppMsg');
       var selectMsg = function () {
         if (!msgEl) return;
@@ -61833,7 +61833,7 @@ P4.Wheel = (function () {
           '</div>' +
           '<div class="pw-copy-block">' +
             '<div class="pw-copy-label">Your email message</div>' +
-            '<div class="pw-copy-message" id="appMessage">Application ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.</div>' +
+            '<div class="pw-copy-message" id="appMessage">Pro ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.</div>' +
             '<button class="pw-btn-primary" onclick="__pw_copyAndOpenDM()"><i class="fas fa-envelope"></i> Copy & Open Email</button>' +
             '<p style="margin-top:10px;text-align:center;font-size:12px;color:#8b9ab3;">Send to: <strong style="color:#94a3b8;">apply@try4ever.com</strong></p>' +
             '<button class="pw-btn-secondary" onclick="__pw_finishFreeApplication()">I\'ve sent the email →</button>' +
@@ -61846,7 +61846,7 @@ P4.Wheel = (function () {
         '<p>Copy the message, then click the button to open our DM on ' + platform.name + '. Paste the message there and send it.</p>' +
         '<div class="pw-copy-block">' +
           '<div class="pw-copy-label">Your application message</div>' +
-          '<div class="pw-copy-message" id="appMessage">Application ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.</div>' +
+          '<div class="pw-copy-message" id="appMessage">Pro ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.</div>' +
           '<button class="pw-btn-primary" onclick="__pw_copyAndOpenDM()"><i class="fas fa-copy"></i> Copy & DM us on ' + platform.name + '</button>' +
           '<a id="dmFallbackLink" href="' + platform.dmUrl + '" target="_blank" rel="noopener" style="display:none;margin-top:10px;text-align:center;font-size:13px;color:#2dd4bf;text-decoration:underline;word-break:break-all;">Open ' + platform.name + ' DM manually →</a>' +
           '<button class="pw-btn-secondary" onclick="__pw_finishFreeApplication()">I\'ve sent the DM →</button>' +
@@ -62010,7 +62010,7 @@ P4.Wheel = (function () {
   function copyApplicationId () {
     var id = getApplicationId();
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(id).then(function () { toast('Application ID copied.'); }).catch(function () { toast('Copy failed.'); });
+      navigator.clipboard.writeText(id).then(function () { toast('Pro ID copied.'); }).catch(function () { toast('Copy failed.'); });
     } else { toast('Please copy manually.'); }
   }
 
@@ -62538,7 +62538,7 @@ P4.Wheel = (function () {
 .p4-twm-num{font-size:28px;font-weight:800;color:var(--p4-text,#1e293b);line-height:1;font-variant-numeric:tabular-nums;}
 .p4-twm-unit{font-size:11px;color:var(--p4-text-3,#94a3b8);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
 .p4-twm-sub{font-size:11px;color:var(--p4-text-3,#94a3b8);margin-top:4px;}
-.p4-time-wiz-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:rgba(16,185,129,.08);border-left:3px solid var(--success,#10b981);border-radius:10px;margin-bottom:14px;font-size:12px;color:var(--p4-text-2,#475569);line-height:1.5;}
+
 .p4-time-wiz-note i{color:var(--success,#10b981);font-size:14px;margin-top:2px;flex-shrink:0;}
 .p4-time-wiz-note strong{color:var(--p4-text,#1e293b);}
 .p4-time-wiz-cancel{display:block;width:100%;padding:11px;background:transparent;border:1px solid var(--gray-300,#cbd5e1);border-radius:12px;color:var(--p4-text-3,#94a3b8);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
@@ -62679,9 +62679,7 @@ P4.Wheel = (function () {
           '<h3>How long do you have?</h3>' +
           '<p>We\'ll build your plan to fit. Warm-up, main lifts and cooldown are always kept.</p>' +
           '<div class="p4-time-wiz-grid">' + gridHtml + '</div>' +
-          '<div class="p4-time-wiz-note"><i class="fas fa-user-md"></i>' +
-            '<span><strong>Coach + physician approved:</strong> warm-up is preserved for injury prevention, cooldown for recovery, and at least 2 main lifts for adaptation.</span>' +
-          '</div>' +
+          '' +
           '<button class="p4-time-wiz-cancel">Cancel</button>' +
         '</div>';
       document.body.appendChild(modal);
@@ -63280,11 +63278,11 @@ P4.Wheel = (function () {
     var tplHTML = tpl.innerHTML;
     // Match the exact div we shipped in v3, swap ids to *PW
     tplHTML = tplHTML
-      .replace(/id="p4leGal"/gi,          'id="p4' + 'LegalPW"')
-      .replace(/id="p4LegalClose"/g,     'id="p4LegalPWClose"')
-      .replace(/id="p4LegalTabs"/g,      'id="p4LegalPWTabs"')
-      .replace(/id="p4LegalDoc"/g,       'id="p4LegalPWDoc"')
-      .replace(/id="p4ConsentLog"/g,     'id="p4ConsentLogPW"');
+      .replace(/id="p4leGal"/gi,          'id="p4LegalPW"')
+      .replace(/id="p4leGalClose"/gi,     'id="p4LegalPWClose"')
+      .replace(/id="p4leGalTabs"/gi,      'id="p4LegalPWTabs"')
+      .replace(/id="p4leGalDoc"/gi,       'id="p4LegalPWDoc"')
+      .replace(/id="p4ConsentLog"/gi,     'id="p4ConsentLogPW"');
     tpl.innerHTML = tplHTML;
     console.log('[P4 Fix #11] Template legal ids renamed to *PW.');
   }
@@ -63394,8 +63392,190 @@ P4.Wheel = (function () {
   console.log('[P4 Fix #11] Legal links inside paywall are now locally rendered + de-duplicated.');
 })();
 </script>
-<!-- P4 FIX #11b: source-level de-dup — paywall template legal ids renamed at rest -->
-<!-- P4 FIX #12: original #bottomNav Resume renamed to #p4LegacyNavResumeBtn; sheet keeps #bottomResumeWorkoutBtn -->
-<!-- P4 FIX #13: legacy #bottomNav retired (hidden + aria-hidden + inert) — DOM kept for syncResume chain, but not reachable by AT or tab order -->
+<style id="p4-fix15-css">
+.p4-replace-backdrop{position:fixed;inset:0;z-index:100010;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;animation:p4rcIn .22s ease;font-family:inherit;}
+@keyframes p4rcIn{from{opacity:0}to{opacity:1}}
+.p4-replace-card{background:var(--light,#fff);border-radius:20px;padding:26px 24px 22px;max-width:460px;width:100%;box-shadow:0 24px 72px rgba(0,0,0,.5);box-sizing:border-box;}
+.p4-replace-card h3{margin:0 0 8px;font-size:19px;font-weight:800;color:var(--p4-text,#1e293b);letter-spacing:-.2px;}
+.p4-replace-card p{margin:0 0 20px;font-size:13.5px;color:var(--p4-text-2,#475569);line-height:1.55;}
+.p4-replace-actions{display:flex;gap:10px;align-items:stretch;}
+.p4-replace-continue{flex:1.5;padding:15px 18px;border-radius:14px;border:none;background:linear-gradient(135deg,var(--p4-accent,#2563eb),color-mix(in srgb,var(--p4-accent,#2563eb) 55%,#7c3aed));color:#fff;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;transition:transform .15s;animation:p4ContGlow 2.4s ease-in-out infinite;}
+.p4-replace-continue:hover{transform:translateY(-1px);}
+.p4-replace-continue:active{transform:translateY(0) scale(.98);}
+@keyframes p4ContGlow{0%,100%{box-shadow:0 0 0 0 rgba(37,99,235,.45),0 6px 20px rgba(37,99,235,.35);}50%{box-shadow:0 0 0 14px rgba(37,99,235,0),0 10px 32px rgba(37,99,235,.6);}}
+.p4-replace-generate{flex:1;padding:15px 12px;border-radius:12px;background:transparent;color:var(--p4-text-3,#94a3b8);border:1px solid var(--gray-300,#cbd5e1);font-size:12.5px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.p4-replace-generate:hover{border-color:var(--p4-text-3,#94a3b8);color:var(--p4-text-2,#475569);background:var(--gray-50,#f8fafc);}
+.p4-replace-generate:active{transform:scale(.98);}
+@media (max-width:420px){.p4-replace-actions{flex-direction:column-reverse;}.p4-replace-continue,.p4-replace-generate{flex:1;width:100%;}}
+@media (prefers-reduced-motion:reduce){.p4-replace-continue{animation:none;}}
+</style>
+<script>
+/* P4 FIX #15 — Always-ask time wizard + Continue/Generate confirmation (glow) */
+(function () {
+  'use strict';
+  if (window.__p4Fix15) return;
+  window.__p4Fix15 = true;
+
+  var STORE_KEY = 'p4_time_budget';
+  var _p4BootDone = false;
+  setTimeout(function () { _p4BootDone = true; }, 2500);
+
+  function getBudget () {
+    try { var v = localStorage.getItem(STORE_KEY); return v ? parseInt(v, 10) : 0; } catch (e) { return 0; }
+  }
+  function setBudget (m) {
+    try { localStorage.setItem(STORE_KEY, String(m || 0)); } catch (e) {}
+    try { if (window.__p4TimeBudget && window.__p4TimeBudget.set) window.__p4TimeBudget.set(m); } catch (e) {}
+  }
+  function shouldSkipWizard () {
+    if (window.__p4SkipWizard) return true;
+    if (!_p4BootDone) return true;
+    return false;
+  }
+
+  function openReplaceConfirm (hasUnsaved) {
+    return new Promise(function (resolve) {
+      var ex = document.getElementById('p4ReplaceConfirm');
+      if (ex) ex.remove();
+      var modal = document.createElement('div');
+      modal.className = 'p4-replace-backdrop';
+      modal.id = 'p4ReplaceConfirm';
+      modal.innerHTML =
+        '<div class="p4-replace-card">' +
+          '<h3>You already have a workout</h3>' +
+          '<p>' + (hasUnsaved
+            ? 'You have unsaved progress. Continue it to keep your sets, or generate a fresh plan for today.'
+            : 'Your logged sets are already saved. Continue this workout, or generate a fresh plan for today.') +
+          '</p>' +
+          '<div class="p4-replace-actions">' +
+            '<button type="button" class="p4-replace-continue" data-choice="continue">' +
+              '<i class="fas fa-play"></i><span>Continue Workout</span>' +
+            '</button>' +
+            '<button type="button" class="p4-replace-generate" data-choice="generate">' +
+              '<i class="fas fa-rotate"></i><span>Generate New</span>' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(modal);
+      function cleanup (choice) { modal.remove(); resolve(choice); }
+      modal.querySelectorAll('[data-choice]').forEach(function (btn) {
+        btn.addEventListener('click', function () { cleanup(btn.getAttribute('data-choice')); });
+      });
+      modal.addEventListener('click', function (e) { if (e.target === modal) cleanup('continue'); });
+      document.addEventListener('keydown', function esc (e) {
+        if (e.key === 'Escape') { document.removeEventListener('keydown', esc); cleanup('continue'); }
+      });
+    });
+  }
+
+  function openTimeWizard () {
+    return new Promise(function (resolve) {
+      var ex = document.getElementById('p4TimeWizard');
+      if (ex) ex.remove();
+      var modal = document.createElement('div');
+      modal.className = 'p4-time-wiz-backdrop';
+      modal.id = 'p4TimeWizard';
+      var preselect = getBudget();
+      var opts = [
+        { v: 15, sub: 'Quick session' },
+        { v: 25, sub: 'Short & focused' },
+        { v: 40, sub: 'Standard' },
+        { v: 60, sub: 'Full session' },
+        { v: 90, sub: 'Extended' },
+        { v: 0,  sub: 'Full coach plan', unit: 'no limit', num: '\u221E' }
+      ];
+      var gridHtml = opts.map(function (o) {
+        var isActive = (preselect === o.v);
+        return '<button data-min="' + o.v + '"' + (isActive ? ' style="border-color:var(--p4-accent,#2563eb);background:var(--p4-accent-soft,#eef);"' : '') + '>' +
+          '<span class="p4-twm-num">' + (o.num || o.v) + '</span>' +
+          '<span class="p4-twm-unit">' + (o.unit || 'min') + '</span>' +
+          '<span class="p4-twm-sub">' + o.sub + '</span>' +
+        '</button>';
+      }).join('');
+      modal.innerHTML =
+        '<div class="p4-time-wiz">' +
+          '<h3>How long do you have?</h3>' +
+          '<p>We\'ll build your plan to fit. Warm-up, main lifts and cooldown are always kept.</p>' +
+          '<div class="p4-time-wiz-grid">' + gridHtml + '</div>' +
+          '<button type="button" class="p4-time-wiz-cancel">Cancel</button>' +
+        '</div>';
+      document.body.appendChild(modal);
+      function cleanup (result) { modal.remove(); resolve(result); }
+      modal.querySelectorAll('.p4-time-wiz-grid button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var min = parseInt(btn.getAttribute('data-min'), 10) || 0;
+          setBudget(min);
+          cleanup({ minutes: min || null });
+        });
+      });
+      modal.querySelector('.p4-time-wiz-cancel').addEventListener('click', function () { cleanup({ cancel: true }); });
+      modal.addEventListener('click', function (e) { if (e.target === modal) cleanup({ cancel: true }); });
+      document.addEventListener('keydown', function esc (e) {
+        if (e.key === 'Escape') { document.removeEventListener('keydown', esc); cleanup({ cancel: true }); }
+      });
+    });
+  }
+
+  async function generateWithWizard () {
+    var hasActive = (typeof currentWorkout !== 'undefined') && currentWorkout
+      && Array.isArray(currentWorkout.exercises) && currentWorkout.exercises.length > 0;
+    if (hasActive) {
+      var hasUnsaved = currentWorkout.exercises.some(function (ex) { return !ex.actual && !ex.skipped; });
+      var choice = await openReplaceConfirm(hasUnsaved);
+      if (choice === 'continue') {
+        try { if (typeof showSection === 'function') showSection('workout'); } catch (e) {}
+        try { if (typeof requestWakeLock === 'function') requestWakeLock(); } catch (e) {}
+        return;
+      }
+      try { window.currentWorkout = null; } catch (e) {}
+      try { if (typeof clearSavedWorkout === 'function') clearSavedWorkout(); } catch (e) {}
+    }
+    var t = await openTimeWizard();
+    if (t.cancel) return;
+    try { if (typeof showLoading === 'function') showLoading(true); } catch (e) {}
+    try {
+      if (typeof window.performGenerateWorkout === 'function') window.performGenerateWorkout();
+      if (currentWorkout) {
+        try { if (typeof requestWakeLock === 'function') requestWakeLock(); } catch (e) {}
+        try { if (typeof showSection === 'function') showSection('workout'); } catch (e) {}
+      } else {
+        try { if (typeof showNotification === 'function') showNotification('Could not generate workout. Please try again.', 'error'); } catch (e) {}
+      }
+    } catch (e) {
+      console.error('[P4 Fix #15] Generation error:', e);
+      try { if (typeof showNotification === 'function') showNotification('Workout generation failed.', 'error'); } catch (e2) {}
+    } finally {
+      try { if (typeof showLoading === 'function') showLoading(false); } catch (e) {}
+    }
+  }
+
+  if (typeof window.startOrGenerateWorkout === 'function' && !window.startOrGenerateWorkout.__p4fix15) {
+    window.startOrGenerateWorkout = async function () { return generateWithWizard(); };
+    window.startOrGenerateWorkout.__p4fix15 = true;
+  }
+  if (typeof window.generateNextWorkout === 'function' && !window.generateNextWorkout.__p4fix15) {
+    var _prevGen = window.generateNextWorkout;
+    window.generateNextWorkout = async function () {
+      if (shouldSkipWizard()) { return _prevGen.apply(this, arguments); }
+      return generateWithWizard();
+    };
+    window.generateNextWorkout.__p4fix15 = true;
+  }
+  if (typeof window.completeWorkout === 'function' && !window.completeWorkout.__p4fix15) {
+    var _prevComplete = window.completeWorkout;
+    window.completeWorkout = async function () {
+      window.__p4SkipWizard = true;
+      try { return await _prevComplete.apply(this, arguments); }
+      finally { window.__p4SkipWizard = false; }
+    };
+    window.completeWorkout.__p4fix15 = true;
+  }
+
+  console.log('[P4 Fix #15] Always-ask wizard + Continue/Generate confirmation armed.');
+})();
+</script>
+<!-- P4 FIX #11b (reapplied): paywall template legal ids renamed at source -->
+<!-- P4 FIX #12  (reapplied): original nav resume id renamed to p4LegacyNavResumeBtn -->
+<!-- P4 FIX #13  (reapplied): legacy bottomNav has hidden+aria-hidden+inert -->
 </body>
 </html>
