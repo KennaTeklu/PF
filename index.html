@@ -6236,7 +6236,7 @@ try {
 </div>
   
 <!-- BOTTOM NAVIGATION (visible only on computers) -->
-<div class="bottom-nav" id="bottomNav">
+<div class="bottom-nav" id="bottomNav" hidden aria-hidden="true" inert data-p4-retired="1" data-p4-fix13="1">
     <div class="bottom-nav-menu">
         <a href="#" class="bottom-nav-item" onclick="showSection('dashboard'); return false;">
             <i class="fas fa-home"></i>
@@ -6246,7 +6246,7 @@ try {
             <i class="fas fa-dumbbell"></i>
             <span>Workout</span>
         </a>
-        <a href="#" class="bottom-nav-item" id="bottomResumeWorkoutBtn" style="display: none;" onclick="resumeSavedWorkout(); return false;">
+        <a href="#" class="bottom-nav-item" id="p4LegacyNavResumeBtn" style="display: none;" onclick="resumeSavedWorkout(); return false;">
             <i class="fas fa-redo-alt"></i>
             <span>Resume</span>
         </a>
@@ -48103,93 +48103,6 @@ console.log('[MP] Masterpiece engine loaded — 11 components active, goal cycle
 <!-- ================= P4 LAYER: overlays, templates, hosts ================= -->
 <div id="p4LayerRoot">
 
-  <!-- ===== PAYWALL (template takeover, mirrors reference apps) ===== -->
-  <div id="p4Paywall" role="dialog" aria-modal="true" aria-label="Choose your plan">
-    <template id="p4PaywallTemplate">
-      <div class="pw-wrap">
-        <div class="pw-hero">
-          <span class="pw-badge"><i class="fas fa-bolt"></i> Fitness by try4ever</span>
-          <h1>Train like the app<br>is <em>reading your muscles</em>.</h1>
-          <p>Fiber-aware weights, 1,400+ exercises, all 11 fitness components, and a plan that rotates itself. Start free — keep your data forever.</p>
-          <div class="pw-trial-pill" id="pwTrialPill"><i class="fas fa-hourglass-half"></i> Trial status</div>
-        </div>
-
-        <div class="pw-plans">
-          <!-- FREE -->
-          <div class="pw-plan">
-            <h3>Free</h3>
-            <div class="pw-price">$0<span>/month</span></div>
-            <div class="pw-plan-desc">For movers who just need the basics. Apply for a free license below.</div>
-            <ul class="pw-feats">
-              <li><i class="fas fa-check"></i> Full workout engine — fiber-aware weight ranges</li>
-              <li><i class="fas fa-check"></i> Browse the complete exercise library</li>
-              <li><i class="fas fa-check"></i> History, streaks &amp; progress basics</li>
-              <li><i class="fas fa-check"></i> Add your own exercises by hand</li>
-              <li><i class="fas fa-check"></i> Local backups, always yours</li>
-              <li class="dim"><i class="fas fa-lock"></i> 4 core themes (dark &amp; light)</li>
-              <li class="dim"><i class="fas fa-lock"></i> Library Studio import &amp; AI helper</li>
-              <li class="dim"><i class="fas fa-lock"></i> Weekly generation capped at 3 sessions</li>
-            </ul>
-            <button class="pw-btn pw-btn-ghost" id="pwFreeApplyBtn"><i class="fas fa-key"></i> I have a free license</button>
-            <div class="pw-note" id="pwFreeBadge">Apply via license — instant once you have a key.</div>
-            <div class="pw-license" id="pwLicenseBox" style="display:none">
-              <div class="pw-license-box">
-                <input type="text" id="pwLicenseInput" placeholder="FTNS-XXXXX-XXXXX-XXXXX-XXXXX" autocomplete="off" spellcheck="false">
-                <button class="pw-btn pw-btn-main" style="width:auto;padding:0 18px" id="pwLicenseGo">Activate</button>
-              </div>
-              <div class="pw-note" id="pwLicenseNote">Keys look like FTNS-ABCDE-FGHJK-LMNPQ-STUVW. 5 wrong tries pauses activation for 10 minutes.</div>
-            </div>
-          </div>
-
-          <!-- PRO -->
-          <div class="pw-plan pro">
-            <span class="pw-ribbon">Most power</span>
-            <h3>Pro</h3>
-            <div class="pw-price">$19<span>/mo</span></div>
-            <div class="pw-plan-desc">The complete powerhouse. Cancel any time from inside the app.</div>
-            <ul class="pw-feats">
-              <li><i class="fas fa-check"></i> Everything in Free — unlimited sessions</li>
-              <li><i class="fas fa-check"></i> All 16 themes × dark &amp; light</li>
-              <li><i class="fas fa-check"></i> Library Studio: import &amp; merge JSON</li>
-              <li><i class="fas fa-check"></i> AI helper prompts built from your real library</li>
-              <li><i class="fas fa-check"></i> Full badge vault &amp; expert field notes</li>
-              <li><i class="fas fa-check"></i> Priority support from support@try4ever.com</li>
-            </ul>
-            <button class="pw-btn pw-btn-main" id="pwSubscribeBtn"><i class="fas fa-crown"></i> Subscribe — $19/mo</button>
-            <div class="pw-breakdown" id="pwBreakdown">
-              <div class="pw-row"><span>Subtotal</span><span>$19.00</span></div>
-              <div class="pw-row"><span>Tax</span><span>calculated at checkout</span></div>
-              <div class="pw-row total"><span>Total today</span><span id="pwTotal">$19.00 + tax</span></div>
-              <label class="pw-consent-row"><input type="checkbox" id="pwRenewConsent">
-                <span>I agree to automatic monthly renewal at $19/month until I cancel, and I have read the <span data-legal="terms">Terms</span> and <span data-legal="refunds">Refund Policy</span>. Cancel any time in Settings.</span></label>
-            </div>
-            <div class="pw-note" id="pwPayNote">We only ask for payment inside this app — never by email, DM, or a link someone sends you.</div>
-          </div>
-        </div>
-
-        <div class="pw-trust"><i class="fas fa-shield-halved"></i> No account needed. Your data lives in this app, on this device.</div>
-
-        <div class="pw-faq">
-          <details><summary>Is this really useful for a total beginner?</summary><p>Yes — the app picks weights from your muscle-fiber windows, counts your taps, and explains everything at your reading level. Start with the Start button and follow along.</p></details>
-          <details><summary>What happens when the trial ends?</summary><p>You keep your data and history forever. Free mode caps new sessions at 3 per week and hides Pro extras. A license or subscription re-opens everything instantly.</p></details>
-          <details><summary>How do backups work?</summary><p>Everything is stored on your device. One tap exports a full JSON backup. The app reminds you weekly and every evening if you trained but never backed up.</p></details>
-          <details><summary>Can I add my own exercises?</summary><p>Yes — hand-add is free. With Pro you can export the whole library, improve it with any AI using our generated prompt, and merge it back safely.</p></details>
-        </div>
-
-        <div class="pw-foot">
-          <span data-legal="terms">Terms</span>
-          <span data-legal="privacy">Privacy</span>
-          <span data-legal="waiver">Waiver</span>
-          <span data-legal="refunds">Refunds</span>
-          <span data-legal="cookies">Cookies &amp; Storage</span>
-          <span data-legal="contact">Contact</span>
-          <span>fitness.try4ever.com</span>
-        </div>
-        <div class="pw-gate-note">Locked out by accident? <span onclick="P4.Paywall.close()" style="cursor:pointer">Close this page</span> or contact support@try4ever.com.</div>
-      </div>
-    </template>
-  </div>
-
   <!-- ===== LEGAL CENTER ===== -->
   <div id="p4Legal" role="dialog" aria-modal="true" aria-label="Legal Center">
     <div class="p4-legal-card">
@@ -61268,5 +61181,2221 @@ P4.Wheel = (function () {
 })();
 
 /*P4:JS:END*/</script>
+<script>
+/* P4 FIX #1: every backup export hides the "Backup Now" banner + records the timestamp */
+(function () {
+  if (typeof window.exportWorkoutData !== 'function') return;
+  if (window.exportWorkoutData._bannerHooked) return;
+  var orig = window.exportWorkoutData;
+  window.exportWorkoutData = function () {
+    var r = orig.apply(this, arguments);
+    try {
+      if (window.P4 && P4.Backup) {
+        if (window.P4.store) P4.store.set(P4.keys.backup, Date.now());
+        P4.Backup.hideBanner();
+      }
+    } catch (e) {}
+    return r;
+  };
+  window.exportWorkoutData._bannerHooked = true;
+  console.log('[P4 Fix #1] exportWorkoutData now hides banner + stamps on success.');
+})();
+</script>
+<!-- ===== P4 PAYWALL v3 — 404-style takeover (21-workout trial) ===== -->
+<template id="p4PaywallTemplate404">
+<style>
+#paywall-overlay{position:fixed;inset:0;z-index:999990;background:rgba(0,0,0,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:block;padding:40px 24px;overflow-y:auto;-webkit-overflow-scrolling:touch;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;color:#f8fafc;}
+#paywall-overlay *{box-sizing:border-box;}
+.pw-shell{width:100%;max-width:1080px;margin:0 auto;background:rgba(12,14,20,0.96);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:40px 44px 36px;box-shadow:0 24px 80px rgba(0,0,0,0.7);}
+.pw-header{text-align:center;margin-bottom:28px;}
+.pw-header h1{font-size:26px;font-weight:800;letter-spacing:-0.3px;margin:0 0 8px;}
+.pw-header p{font-size:14px;color:#94a3b8;max-width:560px;margin:0 auto;line-height:1.6;}
+#paywall-trial-status{background:rgba(45,212,191,0.1);border:1px solid rgba(45,212,191,0.2);border-radius:40px;padding:0.4rem 1rem;font-size:0.75rem;color:#2dd4bf;font-weight:600;text-align:center;margin:0 auto 20px;width:fit-content;display:flex;align-items:center;gap:8px;}
+.pw-plans{display:flex;gap:20px;justify-content:center;align-items:stretch;padding:4px 0 24px;}
+.pw-card{position:relative;border-radius:18px;padding:28px 24px;transition:transform .25s,box-shadow .25s,border-color .25s;}
+.pw-card-free{flex:0 0 280px;background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.08);}
+.pw-card-free:hover{border-color:rgba(45,212,191,0.25);transform:translateY(-2px);}
+.pw-card-paid{flex:0 0 380px;background:linear-gradient(160deg,rgba(45,212,191,0.10) 0%,rgba(12,14,20,0.9) 60%);border:1.5px solid rgba(45,212,191,0.7);transform:scale(1.02);box-shadow:0 0 0 1px rgba(45,212,191,0.1),0 0 48px rgba(45,212,191,0.12),0 20px 48px rgba(0,0,0,0.5);}
+.pw-card-paid:hover{transform:scale(1.035);}
+.pw-ribbon{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:#2dd4bf;color:#000;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:5px 16px;border-radius:20px;white-space:nowrap;}
+.pw-plan-name{font-size:15px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.pw-card-paid .pw-plan-name{color:#2dd4bf;}
+.pw-price{font-size:42px;font-weight:800;line-height:1;letter-spacing:-1px;margin-bottom:6px;}
+.pw-price span{font-size:14px;font-weight:500;color:#94a3b8;letter-spacing:0;}
+.pw-tagline{font-size:13px;color:#94a3b8;margin-bottom:22px;}
+.pw-features{list-style:none;margin:0 0 24px;padding:18px 0 0 0;border-top:1px solid rgba(255,255,255,0.08);}
+.pw-features li{display:flex;align-items:center;font-size:13px;color:#cbd5e1;padding:7px 0;}
+.pw-features li i{margin-right:10px;font-size:12px;color:#2dd4bf;flex-shrink:0;width:14px;text-align:center;}
+.pw-features li.dim{color:#8b9ab3;}
+.pw-features li.dim i{color:#8b9ab3;}
+.pw-cta{display:block;width:100%;padding:14px;border-radius:40px;font-size:14px;font-weight:700;font-family:inherit;text-align:center;cursor:pointer;border:none;transition:background .15s,border-color .15s,color .15s;}
+.pw-cta-free{background:transparent;border:1px solid rgba(255,255,255,0.18);color:#f8fafc;}
+.pw-cta-free:hover{border-color:#2dd4bf;background:rgba(45,212,191,0.06);}
+.pw-cta-paid{background:#2dd4bf;color:#000;box-shadow:0 4px 16px rgba(45,212,191,0.25);}
+.pw-cta-paid:hover{background:#14b8a6;}
+.pw-cta-paid:disabled{opacity:.5;cursor:not-allowed;}
+.pw-fine{font-size:11px;color:#8b9ab3;text-align:center;margin-top:12px;}
+.pw-trust{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;padding:24px 0;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08);}
+.pw-trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;}
+.pw-trust-item i{color:#2dd4bf;font-size:14px;}
+.pw-faq-section{padding:32px 0 8px;}
+.pw-faq-section h2{text-align:center;font-size:18px;font-weight:700;margin:0 0 20px;}
+.faq-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 18px;margin-bottom:8px;}
+.faq-item:hover{border-color:rgba(255,255,255,0.15);}
+.faq-question{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;cursor:pointer;}
+.faq-question i{color:#94a3b8;font-size:12px;transition:transform .25s;}
+.faq-item.open .faq-question i{transform:rotate(180deg);}
+.faq-answer{display:none;margin-top:10px;font-size:13px;color:#94a3b8;line-height:1.6;}
+.faq-item.open .faq-answer{display:block;}
+.pw-bottom{text-align:center;padding:28px 0 0;}
+.pw-bottom h3{font-size:16px;font-weight:600;color:#94a3b8;margin:0 0 16px;}
+.pw-bottom .pw-cta{display:inline-block;width:auto;padding:12px 28px;margin:0 6px;}
+.pw-modal{position:fixed;inset:0;z-index:999991;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;justify-content:center;align-items:center;padding:20px;}
+.pw-modal.open{display:flex;}
+.pw-modal-inner{background:rgba(12,14,20,0.98);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 26px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);position:relative;color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;}
+.pw-modal-inner *{box-sizing:border-box;}
+.pw-modal-inner h3{font-size:18px;font-weight:700;margin:0 0 10px;}
+.pw-modal-inner p{font-size:13px;color:#94a3b8;line-height:1.6;margin:0 0 16px;}
+.pw-close-x{position:absolute;top:12px;right:16px;background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;line-height:1;padding:4px;z-index:2;}
+.pw-close-x:hover{color:#f8fafc;}
+.pw-dropdown-wrap{position:relative;margin-bottom:16px;}
+.pw-dropdown-input{width:100%;padding:12px 14px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);border-radius:12px;color:#f8fafc;font-size:14px;font-family:inherit;outline:none;}
+.pw-dropdown-input:focus{border-color:#2dd4bf;}
+.pw-dropdown-list{position:absolute;top:calc(100% + 4px);left:0;width:100%;max-height:220px;overflow-y:auto;background:rgba(12,14,20,0.98);border:1px solid rgba(255,255,255,0.08);border-radius:12px;z-index:20;display:none;box-shadow:0 12px 32px rgba(0,0,0,0.6);}
+.pw-dropdown-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:13px;color:#f8fafc;}
+.pw-dropdown-item:hover{background:rgba(45,212,191,0.1);}
+.pw-dropdown-item img{width:18px;height:18px;flex-shrink:0;}
+.pw-copy-block{background:rgba(0,0,0,0.3);border-left:3px solid #2dd4bf;border-radius:12px;padding:16px;margin-top:16px;position:relative;}
+.pw-copy-label{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.pw-copy-message{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:12px;font-family:'Fira Code',monospace;font-size:12px;color:#cbd5e1;line-height:1.6;margin-bottom:12px;word-break:break-word;white-space:pre-wrap;}
+.pw-btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#2dd4bf;color:#000;border:none;border-radius:40px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;}
+.pw-btn-primary:hover{background:#14b8a6;}
+.pw-btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.pw-btn-secondary{display:block;width:100%;padding:10px;background:transparent;color:#94a3b8;border:1px solid rgba(255,255,255,0.12);border-radius:40px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px;}
+.pw-btn-secondary:hover{border-color:#94a3b8;color:#f8fafc;}
+.pw-btn-danger{display:block;width:100%;padding:10px;background:transparent;color:#f43f5e;border:1px solid rgba(244,63,94,0.3);border-radius:40px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px;}
+.pw-btn-danger:hover{background:rgba(244,63,94,0.08);}
+.pw-loading{text-align:center;padding:24px 0;}
+.pw-loading-pct{font-size:28px;font-weight:800;color:#2dd4bf;margin-bottom:12px;font-family:'Fira Code',monospace;}
+.pw-loading-track{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-bottom:12px;}
+.pw-loading-fill{height:100%;width:0%;background:#2dd4bf;transition:width .15s linear;box-shadow:0 0 12px #2dd4bf;}
+.pw-loading-sub{font-size:12px;color:#94a3b8;}
+.pw-price-box{background:rgba(255,255,255,0.025);border-radius:14px;padding:16px;margin:16px 0;font-size:13px;}
+.pw-price-row{display:flex;justify-content:space-between;padding:5px 0;color:#94a3b8;}
+.pw-price-row.total{border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;padding-top:12px;font-size:15px;font-weight:700;color:#f8fafc;}
+#payment-element{padding:24px 0;min-height:60px;border-radius:12px;background:rgba(255,255,255,0.02);margin-bottom:12px;text-align:center;color:#94a3b8;font-size:13px;}
+#payment-error{color:#f87171;font-size:12px;min-height:16px;margin-bottom:4px;}
+#payment-status{color:#4ade80;font-size:13px;margin-top:10px;text-align:center;}
+#toast-container{position:fixed;bottom:24px;right:24px;z-index:999999;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{background:rgba(15,18,28,0.96);backdrop-filter:blur(20px);border-left:3px solid #2dd4bf;padding:12px 18px;border-radius:12px;font-size:13px;font-weight:600;color:#f8fafc;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-width:320px;}
+@media(max-width:800px){#paywall-overlay{padding:24px 16px;}.pw-shell{padding:28px 20px 24px;border-radius:20px;}.pw-plans{flex-direction:column;gap:16px;}.pw-card-free,.pw-card-paid{flex:none;transform:none;}.pw-card-paid:hover{transform:none;}.pw-header h1{font-size:22px;}.pw-price{font-size:34px;}.pw-bottom .pw-cta{display:block;width:100%;margin:6px 0;}.pw-trust{flex-direction:column;gap:10px;align-items:center;}}
+@media(max-width:480px){#paywall-overlay{padding:16px 12px;}.pw-shell{padding:22px 16px 20px;border-radius:16px;}.pw-header h1{font-size:20px;}.pw-price{font-size:30px;}.pw-modal-inner{padding:20px 16px;border-radius:16px;}}
+</style>
+
+<div id="paywall-overlay" role="dialog" aria-modal="true">
+  <div class="pw-shell">
+    <div id="paywall-trial-status" style="display:none;">
+      <i class="fas fa-dumbbell"></i>
+      <span><strong id="trial-workouts-left">21</strong> of <strong>21</strong> workouts remaining</span>
+    </div>
+    <div class="pw-header">
+      <h1 id="pwHeaderTitle">Choose your plan</h1>
+      <p id="pwHeaderSubtitle">$0/month with approval, or $19/month instant.</p>
+    </div>
+    <div class="pw-plans">
+      <div class="pw-card pw-card-free" id="freePlanCard">
+        <div class="pw-ribbon" id="freePlanBadge" style="display:none;background:#facc15;color:#000;">Pending review</div>
+        <div class="pw-plan-name">Free</div>
+        <div class="pw-price">$0<span>/month</span></div>
+        <div class="pw-tagline">Apply via DM · approval required</div>
+        <ul class="pw-features">
+          <li><i class="fas fa-check"></i> Full access to every tool</li>
+          <li><i class="fas fa-check"></i> No payment needed</li>
+          <li><i class="fas fa-check"></i> Short application via DM</li>
+          <li class="dim"><i class="fas fa-hourglass-half"></i> Wait for approval</li>
+        </ul>
+        <button class="pw-cta pw-cta-free" id="freePlanBtn">Apply for $0/month</button>
+        <div class="pw-fine">$0/month · adds to review queue</div>
+      </div>
+      <div class="pw-card pw-card-paid" id="paidPlanCard">
+        <div class="pw-ribbon" id="paidPlanRibbon">Instant</div>
+        <div class="pw-plan-name">Subscribe</div>
+        <div class="pw-price">$19<span>/mo</span></div>
+        <div class="pw-tagline" id="paidPlanSub">Instant access · no waiting</div>
+        <ul class="pw-features">
+          <li><i class="fas fa-check"></i> Full access to every tool</li>
+          <li><i class="fas fa-check"></i> No DM needed</li>
+          <li><i class="fas fa-check"></i> Instant activation</li>
+          <li><i class="fas fa-check"></i> Cancel any time</li>
+        </ul>
+        <button class="pw-cta pw-cta-paid" id="paidPlanBtn">Subscribe – $19/mo</button>
+        <div class="pw-fine" id="paidPlanFooter">Secure billing · cancel in one click</div>
+      </div>
+    </div>
+    <div class="pw-trust">
+      <div class="pw-trust-item"><i class="fas fa-lock"></i> Secure billing</div>
+      <div class="pw-trust-item"><i class="fas fa-rotate-left"></i> Cancel anytime</div>
+      <div class="pw-trust-item"><i class="fas fa-gift"></i> $0/month plan via DM</div>
+    </div>
+    <div class="pw-faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-item"><div class="faq-question" data-faq>How does the $0/month plan work? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer">Pick a platform, copy the message (it includes your application ID), send it as a DM, then wait for approval. You'll be added to the review queue. No charge, ever.</div></div>
+      <div class="faq-item"><div class="faq-question" data-faq>How long does approval take? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer">It depends on our workload. We'll respond to your DM when we reach your application. If you don't want to wait, the $19/month plan activates instantly.</div></div>
+      <div class="faq-item"><div class="faq-question" data-faq>Can I cancel my subscription anytime? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer">Yes. Cancel in one click from Settings and keep access until the end of the billing period.</div></div>
+    </div>
+    <div class="pw-bottom">
+      <h3>Two options: $0/month with approval, or $19/month instant.</h3>
+      <button class="pw-cta pw-cta-paid" id="pwBottomPaid">Subscribe – $19/mo</button>
+      <button class="pw-cta pw-cta-free" id="pwBottomFree">Apply for $0/month</button>
+    </div>
+    <div style="text-align:center;padding-top:24px;">
+      <a href="#" id="pwResetLink" style="font-size:11px;color:#8b9ab3;text-decoration:underline;">Having trouble? Reload</a>
+    </div>
+    <div style="text-align:center;padding-top:16px;font-size:11px;color:#8b9ab3;line-height:1.8;">
+      21-workout free trial · no card required · billing in USD via Stripe<br>
+      <a href="#" data-legal="terms" style="color:#8b9ab3;text-decoration:underline;">Terms</a> ·
+      <a href="#" data-legal="privacy" style="color:#8b9ab3;text-decoration:underline;">Privacy</a> ·
+      <a href="#" data-legal="refunds" style="color:#8b9ab3;text-decoration:underline;">Refunds</a> ·
+      <a href="#" data-legal="cookies" style="color:#8b9ab3;text-decoration:underline;">Cookies</a> ·
+      <a href="#" data-legal="contact" style="color:#8b9ab3;text-decoration:underline;">Contact</a>
+      <br>We only ask for payment inside this app — never by email, DM, or a link someone sends you.
+    </div>
+  </div>
+</div>
+
+<div id="p4LegalPW" style="position:fixed;inset:0;z-index:999992;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:none;padding:20px;overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Roboto,sans-serif;color:#f8fafc;">
+  <div style="max-width:780px;margin:0 auto;background:rgba(12,14,20,0.98);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 26px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="margin:0;font-size:18px;">Legal Center</h3>
+      <button id="p4LegalPWClose" style="background:none;border:none;color:#94a3b8;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div id="p4LegalPWTabs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+    <div id="p4LegalPWDoc" style="color:#cbd5e1;font-size:13px;line-height:1.7;"></div>
+    <div id="p4ConsentLogPW" style="margin-top:16px;color:#94a3b8;font-size:12px;"></div>
+  </div>
+</div>
+
+<div id="freeWizardModal" class="pw-modal" role="dialog" aria-modal="true">
+  <div class="pw-modal-inner">
+    <div id="freeWizardContent"></div>
+  </div>
+</div>
+
+<div id="paidModal" class="pw-modal" role="dialog" aria-modal="true">
+  <div class="pw-modal-inner">
+    <div id="stripe-loading">
+      <div class="pw-loading">
+        <div class="pw-loading-pct" id="loading-percent">0%</div>
+        <div class="pw-loading-track"><div class="pw-loading-fill" id="loading-bar-fill"></div></div>
+        <div class="pw-loading-sub">Loading secure payment…</div>
+      </div>
+    </div>
+    <div id="stripe-payment-content" style="display:none;">
+      <h3 style="text-align:center;margin-bottom:14px;">Subscribe — $19/mo</h3>
+      <div class="pw-price-box">
+        <div class="pw-price-row"><span>Subtotal</span><span>$19.00</span></div>
+        <div class="pw-price-row"><span>Tax (9.1%)</span><span>$1.73</span></div>
+        <div class="pw-price-row total"><span>Total</span><span>$20.73</span></div>
+      </div>
+      <div id="payment-element">Stripe Payment Element mounts here</div>
+      <div id="payment-error"></div>
+      <div id="pw-consent-row" style="margin:10px 0 2px;text-align:left;">
+        <label for="pw-renewal-consent" style="display:flex;gap:9px;align-items:flex-start;cursor:pointer;font-size:12px;color:#cbd5e1;line-height:1.55;">
+          <input type="checkbox" id="pw-renewal-consent" style="margin-top:2px;width:16px;height:16px;flex:none;accent-color:#2dd4bf;cursor:pointer;">
+          <span>I understand this is a <strong style="color:#f8fafc;">$19.00/month subscription that automatically renews</strong> until cancelled. Cancel anytime in Settings.</span>
+        </label>
+      </div>
+      <button id="paywall-submit-btn" class="pw-btn-primary" disabled>Subscribe — $20.73</button>
+      <div id="payment-status"></div>
+      <button class="pw-btn-secondary" id="pwPaidCancel" style="margin-top:16px;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="billing-manager-modal" class="pw-modal" role="dialog" aria-modal="true">
+  <div class="pw-modal-inner">
+    <button class="pw-close-x" id="billing-manager-close">✕</button>
+    <h3>💳 Subscription</h3>
+    <div id="billing-status-content"><p>Loading status…</p></div>
+    <button id="cancel-subscription-btn" class="pw-btn-danger" style="display:none;">Cancel Subscription</button>
+    <button id="renew-subscription-btn" class="pw-btn-primary" style="display:none;margin-top:8px;">Renew Subscription</button>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+</template>
+
+<script>
+/* ===== P4 PAYWALL v3 — 404-style takeover, 21-workout trial ===== */
+(function () {
+  'use strict';
+
+  var WORKER_URL      = 'https://brain-paywall.kennateklu.workers.dev';
+  var PUBLISHABLE_KEY = 'pk_live_51U06siR4dJL97DpZ0uQuPpLFU0pIVDejXI7VJA6oQIE7Yrkl9hOyaNVqFi5UmiNoGpqnO1zmVXMillPUIDmkDSqB00gfqAAvXi';
+  var WORKOUT_LIMIT   = 21;
+  var CACHE_TTL_MS    = 3 * 24 * 60 * 60 * 1000;
+  var REFRESH_COOLDOWN_S = 5;
+
+  var K_USER    = 'p4_pw_userId';
+  var K_APPID   = 'p4_pw_app_id';
+  var K_APPS    = 'p4_pw_applications';
+  var K_APPROV  = 'p4_pw_approved';
+  var K_SUBC    = 'p4_pw_sub_cache';
+  var K_SUBEXP  = 'p4_pw_sub_expires_at';
+  var K_WIZ     = 'p4_pw_wizard_state';
+  var K_WCOUNT  = 'p4_pw_workout_count';
+
+  var _paywallActive = false;
+  var _takeoverShown = false;
+  var freeStep = 1;
+  var selectedPlatform = null;
+
+  function $ (id) { return document.getElementById(id); }
+  function toast (msg) {
+    var c = $('toast-container');
+    if (!c) return;
+    var t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    c.appendChild(t);
+    setTimeout(function () { t.remove(); }, 3000);
+  }
+
+  function getUserId () {
+    try {
+      var u = localStorage.getItem(K_USER);
+      if (!u) {
+        u = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : 'u_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem(K_USER, u);
+      }
+      return u;
+    } catch (e) { return 'fb_' + Date.now(); }
+  }
+  function getApplicationId () {
+    try {
+      var id = localStorage.getItem(K_APPID);
+      if (!id) {
+        id = 'APP-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+        localStorage.setItem(K_APPID, id);
+      }
+      return id;
+    } catch (e) { return 'APP-FB-' + Date.now(); }
+  }
+
+  // ── Workout count ──
+  function workoutCount () {
+    try {
+      if (typeof workoutData !== 'undefined' && workoutData && Array.isArray(workoutData.workouts)) {
+        var n = workoutData.workouts.filter(function (w) { return w && w.type !== 'streak_recover'; }).length;
+        try { localStorage.setItem(K_WCOUNT, String(n)); } catch (e) {}
+        return n;
+      }
+    } catch (e) {}
+    try { return parseInt(localStorage.getItem(K_WCOUNT) || '0', 10) || 0; } catch (e) { return 0; }
+  }
+  function workoutsRemaining () { return Math.max(0, WORKOUT_LIMIT - workoutCount()); }
+  function isTrialActive () { return workoutCount() < WORKOUT_LIMIT; }
+
+  // ── Subscription ──
+  function getCachedStatus () {
+    try { var r = localStorage.getItem(K_SUBC); return r ? JSON.parse(r) : null; } catch (e) { return null; }
+  }
+  function setCachedStatus (s) {
+    try { localStorage.setItem(K_SUBC, JSON.stringify({ active: !!s.active, key: s.key || null, timestamp: Date.now() })); } catch (e) {}
+  }
+  async function checkStatus () {
+    var uid = getUserId();
+    try {
+      var res = await fetch(WORKER_URL + '/api/status?userId=' + encodeURIComponent(uid));
+      if (res.ok) { var d = await res.json(); setCachedStatus(d); return d; }
+    } catch (e) {}
+    var c = getCachedStatus();
+    if (c && (Date.now() - c.timestamp) < CACHE_TTL_MS) return { active: c.active };
+    return { active: false };
+  }
+  function getSubscriptionExpiry () { try { var r = localStorage.getItem(K_SUBEXP); return r ? parseInt(r, 10) : null; } catch (e) { return null; } }
+  function setSubscriptionExpiry (ts) { try { if (ts) localStorage.setItem(K_SUBEXP, String(ts)); else localStorage.removeItem(K_SUBEXP); } catch (e) {} }
+  function getSubscriptionDaysLeft () { var e = getSubscriptionExpiry(); if (!e) return null; return Math.max(0, Math.ceil((e - Date.now()) / 86400000)); }
+  function isApproved () { try { return localStorage.getItem(K_APPROV) === 'true'; } catch (e) { return false; } }
+  function isApprovedWithBacking () {
+    try {
+      if (localStorage.getItem(K_APPROV) !== 'true') return false;
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var existing = stored.find(function (a) { return a.id === getApplicationId(); });
+      if (!existing || existing.status !== 'approved') { localStorage.removeItem(K_APPROV); return false; }
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // ── Access rule ──
+  function isAllowedSync () {
+    if (isApprovedWithBacking()) return true;
+    var c = getCachedStatus();
+    if (c && c.active && (Date.now() - c.timestamp) < CACHE_TTL_MS) return true;
+    var exp = getSubscriptionExpiry();
+    if (exp && Date.now() < exp) return true;
+    if (workoutCount() >= WORKOUT_LIMIT) return false;
+    return true;
+  }
+  async function isAllowedAsync () {
+    if (isApprovedWithBacking()) return true;
+    var st = await checkStatus();
+    if (st && st.active) return true;
+    if (workoutCount() >= WORKOUT_LIMIT) return false;
+    return true;
+  }
+
+  // ── Socials ──
+  var socials = [
+    { name: "Instagram",   icon: "https://cdn.simpleicons.org/instagram",  dmUrl: "https://www.instagram.com/try4ever_com/" },
+    { name: "Twitter / X", icon: "https://cdn.simpleicons.org/x",          dmUrl: "https://x.com/try4everCom" },
+    { name: "TikTok",      icon: "https://cdn.simpleicons.org/tiktok",     dmUrl: "https://www.tiktok.com/@try4ever.com" },
+    { name: "LinkedIn",    icon: "https://cdn.simpleicons.org/linkedin",   dmUrl: "https://www.linkedin.com/company/try4ever-com" },
+    { name: "Snapchat",    icon: "https://cdn.simpleicons.org/snapchat",   dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Pinterest",   icon: "https://cdn.simpleicons.org/pinterest",  dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Reddit",      icon: "https://cdn.simpleicons.org/reddit",     dmUrl: "https://www.reddit.com/user/try4ever_com/" },
+    { name: "Discord",     icon: "https://cdn.simpleicons.org/discord",    dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Telegram",    icon: "https://cdn.simpleicons.org/telegram",   dmUrl: "https://t.me/try4ever_com" },
+    { name: "WhatsApp",    icon: "https://cdn.simpleicons.org/whatsapp",   dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Threads",     icon: "https://cdn.simpleicons.org/threads",    dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Mastodon",    icon: "https://cdn.simpleicons.org/mastodon",   dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Bluesky",     icon: "https://cdn.simpleicons.org/bluesky",    dmUrl: "mailto:apply@try4ever.com" },
+    { name: "YouTube",     icon: "https://cdn.simpleicons.org/youtube",    dmUrl: "https://www.youtube.com/@try4ever_com" },
+    { name: "Twitch",      icon: "https://cdn.simpleicons.org/twitch",     dmUrl: "mailto:apply@try4ever.com" },
+    { name: "Other",       icon: "https://cdn.simpleicons.org/whatever",   dmUrl: "mailto:apply@try4ever.com" }
+  ];
+
+  // ── Wizard state ──
+  function saveWizardState () { try { localStorage.setItem(K_WIZ, JSON.stringify({ freeStep: freeStep, selectedPlatform: selectedPlatform, ts: Date.now() })); } catch (e) {} }
+  function loadWizardState () { try { var r = localStorage.getItem(K_WIZ); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+  function clearWizardState () { try { localStorage.removeItem(K_WIZ); } catch (e) {} }
+  function sweepExpiredApplications () {
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var now = Date.now();
+      var next = stored.filter(function (a) { return !(a.status === 'pending' && a.expiresAt && a.expiresAt < now); });
+      if (next.length !== stored.length) { localStorage.setItem(K_APPS, JSON.stringify(next)); updateFreePlanBadge(); }
+    } catch (e) {}
+  }
+
+  // ══════════════════════════════════════════════════════
+  // TAKEOVER — replace body
+  // ══════════════════════════════════════════════════════
+  function showFullPage () {
+    if (_takeoverShown) return;
+    _takeoverShown = true;
+    _paywallActive = true;
+    window.__paywallActive = true;
+    try { window.__pw404Active = true; } catch (e) {}
+
+    var tpl = document.getElementById('p4PaywallTemplate404');
+    if (!tpl) { console.warn('[Paywall v3] template missing'); return; }
+    var html = tpl.innerHTML;
+
+    // scroll to top on replacement
+    try { window.scrollTo(0, 0); } catch (e) {}
+    document.documentElement.style.overflow = 'hidden';
+    document.body.className = '';
+    document.body.style.cssText = 'margin:0;padding:0;background:#030408;min-height:100vh;';
+
+    document.body.innerHTML = html;
+
+    wireUp();
+    updatePaywallHeader();
+    updatePaidPlanCard();
+    updateFreePlanBadge();
+
+    var leftEl = document.getElementById('trial-workouts-left');
+    if (leftEl) leftEl.textContent = workoutsRemaining();
+
+    preloadPaidFlow();
+
+    // block ESC / inspector shortcut for the takeover
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        // only let ESC close inner modals, never the paywall itself
+        var paid = document.getElementById('paidModal');
+        if (paid && paid.classList.contains('open')) { e.preventDefault(); closePaidModal(); return; }
+        var fw = document.getElementById('freeWizardModal');
+        if (fw && fw.classList.contains('open')) { e.preventDefault(); closeFreeWizard(); return; }
+        var bm = document.getElementById('billing-manager-modal');
+        if (bm && bm.classList.contains('open')) { e.preventDefault(); closeBillingManager(); return; }
+        e.preventDefault();
+      }
+    }, true);
+  }
+
+  function wireUp () {
+    var onFree = $('freePlanBtn'); if (onFree) onFree.addEventListener('click', openFreeWizard);
+    var onPaid = $('paidPlanBtn'); if (onPaid) {
+      onPaid.addEventListener('click', openPaidModal);
+      onPaid.addEventListener('mouseenter', function () { preloadPaymentIntent().catch(function () {}); }, { once: true });
+    }
+    var onBottomPaid = $('pwBottomPaid'); if (onBottomPaid) {
+      onBottomPaid.addEventListener('click', openPaidModal);
+      onBottomPaid.addEventListener('mouseenter', function () { preloadPaymentIntent().catch(function () {}); }, { once: true });
+    }
+    var onBottomFree = $('pwBottomFree'); if (onBottomFree) onBottomFree.addEventListener('click', openFreeWizard);
+    var onPaidCancel = $('pwPaidCancel'); if (onPaidCancel) onPaidCancel.addEventListener('click', closePaidModal);
+    var onConsent = $('pw-renewal-consent'); if (onConsent) onConsent.addEventListener('change', syncSubmitGate);
+    var onBillingClose = $('billing-manager-close'); if (onBillingClose) onBillingClose.addEventListener('click', closeBillingManager);
+    var onCancelSub = $('cancel-subscription-btn'); if (onCancelSub) onCancelSub.addEventListener('click', cancelSubscription);
+    var onRenewSub = $('renew-subscription-btn'); if (onRenewSub) onRenewSub.addEventListener('click', renewSubscription);
+    var onSubmit = $('paywall-submit-btn'); if (onSubmit) onSubmit.addEventListener('click', handlePayment);
+    var onResetLink = $('pwResetLink');
+    if (onResetLink) onResetLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { localStorage.removeItem(K_SUBC); } catch (err) {}
+      location.reload();
+    });
+    var onLegalClose = $('p4LegalClose');
+    if (onLegalClose) onLegalClose.addEventListener('click', function () {
+      var el = $('p4Legal'); if (el) el.style.display = 'none';
+    });
+
+    document.querySelectorAll('[data-faq]').forEach(function (el) {
+      el.addEventListener('click', function () { el.parentElement.classList.toggle('open'); });
+    });
+
+    ['paidModal','freeWizardModal','billing-manager-modal'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('click', function (e) {
+        if (e.target !== el) return;
+        if (id === 'paidModal') closePaidModal();
+        else if (id === 'freeWizardModal') closeFreeWizard();
+        else if (id === 'billing-manager-modal') closeBillingManager();
+      });
+    });
+
+    document.querySelectorAll('[data-legal]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        var id = el.getAttribute('data-legal');
+        if (window.P4 && P4.Legal && P4.Legal.open) P4.Legal.open(id);
+      });
+    });
+  }
+
+  function updateFreePlanBadge () {
+    var badge = $('freePlanBadge');
+    var btn = $('freePlanBtn');
+    if (!badge || !btn) return;
+    var status = 'none';
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var existing = stored.find(function (a) { return a.id === getApplicationId(); });
+      if (existing) status = existing.status || 'pending';
+    } catch (e) {}
+    badge.style.background = '#facc15'; badge.style.color = '#000'; badge.textContent = 'Pending review';
+    if (status === 'pending') { badge.style.display = 'block'; btn.textContent = 'View application →'; }
+    else if (status === 'rejected') { badge.style.display = 'block'; badge.style.background = '#f43f5e'; badge.style.color = '#fff'; badge.textContent = 'Not approved'; btn.textContent = 'Apply again →'; }
+    else if (status === 'approved') { badge.style.display = 'block'; badge.style.background = '#4ade80'; badge.style.color = '#000'; badge.textContent = 'Approved'; btn.textContent = 'Continue →'; }
+    else { badge.style.display = 'none'; btn.textContent = 'Apply for $0/month'; }
+  }
+
+  function updatePaywallHeader () {
+    var titleEl = $('pwHeaderTitle'); var subtitleEl = $('pwHeaderSubtitle'); var trialBadge = $('paywall-trial-status');
+    if (!titleEl || !subtitleEl) return;
+    var hasPending = false;
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var existing = stored.find(function (a) { return a.id === getApplicationId(); });
+      if (existing && existing.status === 'pending') hasPending = true;
+    } catch (e) {}
+    if (hasPending) {
+      titleEl.textContent = 'Your application is being reviewed';
+      subtitleEl.textContent = 'You can still subscribe for instant access.';
+      if (trialBadge) trialBadge.style.display = 'none';
+      return;
+    }
+    var count = workoutCount();
+    if (count >= WORKOUT_LIMIT) {
+      titleEl.textContent = '21 workouts in — keep going.';
+      subtitleEl.textContent = 'Choose your access path to continue training.';
+      if (trialBadge) trialBadge.style.display = 'none';
+      return;
+    }
+    titleEl.textContent = 'Choose your plan';
+    subtitleEl.textContent = '$0/month with approval, or $19/month instant.';
+    if (trialBadge) {
+      trialBadge.style.display = 'flex';
+      var left = workoutsRemaining();
+      var sp = $('trial-workouts-left'); if (sp) sp.textContent = left;
+    }
+  }
+
+  function updatePaidPlanCard () {
+    var ribbon = $('paidPlanRibbon'); var subEl = $('paidPlanSub'); var btn = $('paidPlanBtn'); var footer = $('paidPlanFooter');
+    if (!btn) return;
+    var c = getCachedStatus();
+    var isActive = !!(c && c.active);
+    var exp = getSubscriptionExpiry();
+    var days = getSubscriptionDaysLeft();
+    if (isActive && exp) {
+      var daysText = days !== null ? days + ' day' + (days === 1 ? '' : 's') + ' left' : '';
+      if (ribbon) ribbon.textContent = 'Active';
+      if (subEl) subEl.textContent = daysText ? 'Renews in ' + daysText : 'Active subscription';
+      if (btn) btn.textContent = 'Manage subscription';
+      if (footer) footer.textContent = 'Already subscribed';
+    } else {
+      if (ribbon) ribbon.textContent = 'Instant';
+      if (subEl) subEl.textContent = 'Instant access · no waiting';
+      if (btn) btn.textContent = 'Subscribe – $19/mo';
+      if (footer) footer.textContent = 'Secure billing · cancel in one click';
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // FREE WIZARD (3 steps)
+  // ══════════════════════════════════════════════════════
+  function openFreeWizard () {
+    sweepExpiredApplications();
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var existing = stored.find(function (a) { return a.id === getApplicationId(); });
+      if (existing) {
+        if (existing.status === 'approved') { localStorage.setItem(K_APPROV, 'true'); location.reload(); return; }
+        if (existing.status === 'pending' || existing.status === 'rejected') {
+          selectedPlatform = existing.platform || null;
+          freeStep = 3;
+          $('freeWizardModal').classList.add('open');
+          renderFreeStep();
+          return;
+        }
+      }
+    } catch (e) {}
+    var saved = loadWizardState();
+    if (saved && saved.freeStep && saved.freeStep > 1) {
+      freeStep = saved.freeStep; selectedPlatform = saved.selectedPlatform || null;
+      $('freeWizardModal').classList.add('open'); renderFreeStep(); return;
+    }
+    freeStep = 1; selectedPlatform = null;
+    $('freeWizardModal').classList.add('open');
+    renderFreeStep();
+  }
+
+  function closeFreeWizard (force) {
+    if (!force && freeStep === 2 && selectedPlatform) {
+      if (!confirm('Close without sending the DM? Your progress will be lost.')) return;
+    }
+    var el = $('freeWizardModal'); if (el) el.classList.remove('open');
+    freeStep = 1; selectedPlatform = null;
+    updateFreePlanBadge();
+  }
+
+  function renderFreeStep () {
+    saveWizardState();
+    var content = $('freeWizardContent');
+    if (!content) return;
+
+    if (freeStep === 1) {
+      content.innerHTML =
+        '<h3>Choose a platform</h3>' +
+        '<p>We\'ll open your DM to our account there.</p>' +
+        '<div class="pw-dropdown-wrap">' +
+          '<input type="text" id="platformSearch" class="pw-dropdown-input" placeholder="Search platform..." oninput="__pw_filterPlatforms(this.value)">' +
+          '<div id="platformList" class="pw-dropdown-list"></div>' +
+        '</div>' +
+        '<button id="nextFreeBtn" class="pw-btn-primary" disabled style="opacity:.5;">Next →</button>' +
+        '<button class="pw-btn-secondary" onclick="__pw_closeFreeWizard()">Cancel</button>';
+      var list = $('platformList');
+      list.innerHTML = socials.map(function (s, idx) {
+        return '<div class="pw-dropdown-item" data-idx="' + idx + '" onpointerdown="__pw_selectPlatform(' + idx + ')">' +
+          '<img src="' + s.icon + '" alt=""><span>' + s.name + '</span></div>';
+      }).join('');
+      var si = $('platformSearch');
+      si.addEventListener('focus', function () { list.style.display = 'block'; });
+      si.addEventListener('blur', function () {
+        setTimeout(function () {
+          if (!list.contains(document.activeElement)) list.style.display = 'none';
+        }, 200);
+      });
+      var nb = $('nextFreeBtn');
+      if (nb) nb.addEventListener('click', function () {
+        if (nb.disabled) return;
+        freeStep = 2; renderFreeStep();
+      });
+    } else if (freeStep === 2) {
+      var id = getApplicationId();
+      var platform = selectedPlatform ? socials.find(function (s) { return s.name === selectedPlatform; }) : socials[0];
+      var isOther = platform.name === 'Other';
+      if (isOther) {
+        content.innerHTML =
+          '<h3>Apply by email</h3>' +
+          '<p>Since no platform fit, we accept an organic video you create yourself.</p>' +
+          '<div style="background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.3);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#facc15;line-height:1.5;">' +
+            '<strong>Guidelines:</strong><br>• Video must be original, recorded by you<br>• No AI-generated content<br>• Any length is fine<br>• We post it with your permission' +
+          '</div>' +
+          '<div class="pw-copy-block">' +
+            '<div class="pw-copy-label">Your email message</div>' +
+            '<div class="pw-copy-message" id="appMessage">Application ID: ' + id + '\nI want free access.\nI will attach an organic video I made.\nI grant permission to post it on your channels.\nThis message wasn\'t edited.\nI will not send it twice.</div>' +
+            '<button class="pw-btn-primary" onclick="__pw_copyAndOpenDM()"><i class="fas fa-envelope"></i> Copy & Open Email</button>' +
+            '<p style="margin-top:10px;text-align:center;font-size:12px;color:#8b9ab3;">Send to: <strong style="color:#94a3b8;">apply@try4ever.com</strong></p>' +
+            '<button class="pw-btn-secondary" onclick="__pw_finishFreeApplication()">I\'ve sent the email →</button>' +
+            '<button class="pw-btn-secondary" onclick="__pw_goBack()" style="margin-top:8px;">← Choose a different option</button>' +
+          '</div>';
+        return;
+      }
+      content.innerHTML =
+        '<h3>DM us on ' + platform.name + '</h3>' +
+        '<p>Copy the message, then click the button to open our DM on ' + platform.name + '. Paste the message there and send it.</p>' +
+        '<div class="pw-copy-block">' +
+          '<div class="pw-copy-label">Your application message</div>' +
+          '<div class="pw-copy-message" id="appMessage">Application ID: ' + id + '\nI want free access.\nThis message wasn\'t edited.\nI will not send it twice.</div>' +
+          '<button class="pw-btn-primary" onclick="__pw_copyAndOpenDM()"><i class="fas fa-copy"></i> Copy & DM us on ' + platform.name + '</button>' +
+          '<a id="dmFallbackLink" href="' + platform.dmUrl + '" target="_blank" rel="noopener" style="display:none;margin-top:10px;text-align:center;font-size:13px;color:#2dd4bf;text-decoration:underline;word-break:break-all;">Open ' + platform.name + ' DM manually →</a>' +
+          '<button class="pw-btn-secondary" onclick="__pw_finishFreeApplication()">I\'ve sent the DM →</button>' +
+          '<button class="pw-btn-secondary" onclick="__pw_goBack()" style="margin-top:8px;">← Choose a different platform</button>' +
+        '</div>';
+    } else if (freeStep === 3) {
+      var id2 = getApplicationId();
+      var platform2 = selectedPlatform ? socials.find(function (s) { return s.name === selectedPlatform; }) : null;
+      var platformLine = platform2 ? 'You applied via <strong style="color:#f8fafc;">' + platform2.name + '</strong>.' : 'Your application was submitted.';
+      var isRejected = false;
+      try {
+        var stored2 = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+        var existing2 = stored2.find(function (a) { return a.id === id2; });
+        if (existing2 && existing2.status === 'rejected') isRejected = true;
+      } catch (e) {}
+      if (isRejected) {
+        content.innerHTML =
+          '<div style="text-align:center;padding:20px;">' +
+            '<div style="font-size:48px;">⚠️</div>' +
+            '<h3>Application not approved</h3>' +
+            '<p>' + platformLine + '<br>You can apply again with a different platform.</p>' +
+            '<button class="pw-btn-primary" onclick="__pw_reapply()" style="margin-bottom:8px;">Apply again</button>' +
+            '<button class="pw-btn-secondary" onclick="__pw_closeFreeWizard()">Close</button>' +
+          '</div>';
+        return;
+      }
+      content.innerHTML =
+        '<div style="text-align:center;padding:20px;">' +
+          '<div style="font-size:48px;">📬</div>' +
+          '<h3>Application received</h3>' +
+          '<p>' + platformLine + '<br>You\'ve been added to the review queue. We\'ll respond to your DM when we get to it.</p>' +
+          '<div class="pw-copy-block" style="text-align:left;">' +
+            '<div class="pw-copy-label">Your application ID (keep for reference)</div>' +
+            '<div class="pw-copy-message" id="applicationIdBox">' + id2 + '</div>' +
+            '<button class="pw-btn-secondary" onclick="__pw_copyAppId()">Copy ID</button>' +
+          '</div>' +
+          '<button class="pw-btn-secondary" id="refreshStatusBtn" onclick="__pw_refreshStatus()" style="margin-bottom:8px;">↻ Refresh status</button>' +
+          '<button class="pw-btn-primary" onclick="__pw_closeFreeWizard()">Close</button>' +
+          '<button class="pw-btn-danger" onclick="__pw_withdraw()">Withdraw application</button>' +
+        '</div>';
+    }
+  }
+
+  function filterPlatforms (q) {
+    var list = $('platformList');
+    if (!list) return;
+    var lower = q.toLowerCase();
+    list.innerHTML = socials.map(function (s, idx) {
+      if (s.name.toLowerCase().indexOf(lower) === -1) return '';
+      return '<div class="pw-dropdown-item" data-idx="' + idx + '" onpointerdown="__pw_selectPlatform(' + idx + ')">' +
+        '<img src="' + s.icon + '" alt=""><span>' + s.name + '</span></div>';
+    }).join('');
+    list.style.display = 'block';
+  }
+
+  function selectPlatform (idx) {
+    if (idx < 0 || idx >= socials.length) return;
+    selectedPlatform = socials[idx].name;
+    var s = $('platformSearch'); if (s) s.value = selectedPlatform;
+    var l = $('platformList'); if (l) l.style.display = 'none';
+    var n = $('nextFreeBtn');
+    if (n) { n.disabled = false; n.style.opacity = '1'; }
+    saveWizardState();
+  }
+
+  function copyAndOpenDM () {
+    var msgEl = $('appMessage');
+    if (!msgEl) return;
+    var msg = msgEl.innerText;
+    var platform = socials.find(function (s) { return s.name === selectedPlatform; }) || socials[0];
+    var selectMsg = function () {
+      var range = document.createRange();
+      range.selectNodeContents(msgEl);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    };
+    if (platform.name === 'Other') {
+      var id = getApplicationId();
+      var subject = encodeURIComponent('Free access application — ' + id);
+      var body = encodeURIComponent(msg);
+      var url = 'mailto:apply@try4ever.com?subject=' + subject + '&body=' + body;
+      var openEmail = function () { window.location.href = url; toast('Email client opened.'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(msg).then(openEmail).catch(function () { selectMsg(); toast('Copy failed — message selected.'); openEmail(); });
+      } else { selectMsg(); toast('Message selected — press Ctrl/Cmd + C.'); openEmail(); }
+      return;
+    }
+    var openDM = function () {
+      var w = window.open(platform.dmUrl, '_blank');
+      if (!w) {
+        var link = $('dmFallbackLink');
+        if (link) link.style.display = 'block';
+        toast('Popup blocked — tap the fallback link.');
+      }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(msg).then(openDM).catch(function () { selectMsg(); toast('Copy failed.'); openDM(); });
+    } else { selectMsg(); toast('Message selected — press Ctrl/Cmd + C.'); openDM(); }
+  }
+
+  function registerApplication () {
+    var id = getApplicationId();
+    var platform = selectedPlatform || 'pending';
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var existing = stored.find(function (a) { return a.id === id; });
+      if (existing) { existing.platform = platform; existing.updatedAt = Date.now(); }
+      else { stored.push({ id: id, platform: platform, status: 'pending', createdAt: Date.now(), expiresAt: Date.now() + 7 * 86400000 }); }
+      localStorage.setItem(K_APPS, JSON.stringify(stored));
+    } catch (e) {}
+    updateFreePlanBadge();
+  }
+
+  async function finishFreeApplication () {
+    registerApplication();
+    try {
+      var res = await fetch(WORKER_URL + '/api/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          applicationId: getApplicationId(),
+          userId: getUserId(),
+          platform: selectedPlatform || 'pending'
+        })
+      });
+      if (!res.ok) console.warn('[Paywall v3] /api/apply returned', res.status);
+    } catch (e) {
+      console.warn('[Paywall v3] /api/apply unreachable — application kept locally.');
+    }
+    clearWizardState();
+    freeStep = 3;
+    renderFreeStep();
+  }
+
+  function goBack () { freeStep = 1; selectedPlatform = null; clearWizardState(); renderFreeStep(); }
+  function withdrawApplication () {
+    var id = getApplicationId();
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      localStorage.setItem(K_APPS, JSON.stringify(stored.filter(function (a) { return a.id !== id; })));
+    } catch (e) {}
+    clearWizardState();
+    try { localStorage.removeItem(K_APPROV); } catch (e) {}
+    updateFreePlanBadge();
+    freeStep = 1; selectedPlatform = null;
+    closeFreeWizard(true);
+    toast('Application withdrawn.');
+  }
+  function reapplyFreeApplication () {
+    var id = getApplicationId();
+    try {
+      var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      localStorage.setItem(K_APPS, JSON.stringify(stored.filter(function (a) { return a.id !== id; })));
+    } catch (e) {}
+    try { localStorage.removeItem(K_APPROV); } catch (e) {}
+    freeStep = 1; selectedPlatform = null;
+    updateFreePlanBadge();
+    renderFreeStep();
+  }
+  function copyApplicationId () {
+    var id = getApplicationId();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(id).then(function () { toast('Application ID copied.'); }).catch(function () { toast('Copy failed.'); });
+    } else { toast('Please copy manually.'); }
+  }
+
+  var _refreshCooldownUntil = 0;
+  var _refreshTimer = null;
+  function startRefreshCooldown (seconds) {
+    _refreshCooldownUntil = Date.now() + seconds * 1000;
+    if (_refreshTimer) clearInterval(_refreshTimer);
+    var btn = $('refreshStatusBtn');
+    if (!btn) return;
+    var tick = function () {
+      var remaining = Math.ceil((_refreshCooldownUntil - Date.now()) / 1000);
+      if (remaining <= 0) { clearInterval(_refreshTimer); _refreshTimer = null; btn.disabled = false; btn.textContent = '↻ Refresh status'; return; }
+      btn.disabled = true; btn.textContent = '↻ Wait ' + remaining + 's';
+    };
+    tick();
+    _refreshTimer = setInterval(tick, 250);
+  }
+
+  async function refreshApplicationStatus () {
+    if (Date.now() < _refreshCooldownUntil) {
+      toast('Please wait ' + Math.ceil((_refreshCooldownUntil - Date.now()) / 1000) + 's.');
+      return;
+    }
+    startRefreshCooldown(REFRESH_COOLDOWN_S);
+    try {
+      var id = getApplicationId();
+      var res = await fetch(WORKER_URL + '/api/application-status?id=' + encodeURIComponent(id));
+      if (res.ok) {
+        var data = await res.json();
+        if (data && data.status) {
+          var stored = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+          var existing = stored.find(function (a) { return a.id === id; });
+          if (existing) {
+            existing.status = data.status;
+            localStorage.setItem(K_APPS, JSON.stringify(stored));
+            if (data.status === 'approved') localStorage.setItem(K_APPROV, 'true');
+          }
+        }
+      }
+    } catch (e) {}
+    var id2 = getApplicationId();
+    var status = 'pending';
+    try {
+      var stored2 = JSON.parse(localStorage.getItem(K_APPS) || '[]');
+      var ex2 = stored2.find(function (a) { return a.id === id2; });
+      if (ex2) status = ex2.status || 'pending';
+    } catch (e) {}
+    if (status === 'approved' || isApproved()) {
+      toast('Approved! Loading access…');
+      setTimeout(function () { location.reload(); }, 500);
+      return;
+    }
+    if (status === 'rejected') { toast('Not approved. You can apply again.'); renderFreeStep(); return; }
+    toast('Still pending. We\'ll approve as soon as we can.');
+  }
+
+  // ══════════════════════════════════════════════════════
+  // PAID MODAL (Stripe)
+  // ══════════════════════════════════════════════════════
+  var elementsInstance = null;
+  var clientSecret = null;
+  var _paidInitToken = 0;
+
+  function updateStripeProgress (pct) {
+    var p = $('loading-percent'); var b = $('loading-bar-fill');
+    var r = Math.round(pct);
+    if (p) p.textContent = r + '%';
+    if (b) b.style.width = pct + '%';
+  }
+
+  var _paidPreload = { stripeJSReady: false, piReady: false, clientSecret: null, stripeJsPromise: null, piPromise: null, error: null };
+
+  function preloadStripeJS () {
+    if (_paidPreload.stripeJSReady) return Promise.resolve();
+    if (_paidPreload.stripeJsPromise) return _paidPreload.stripeJsPromise;
+    if (typeof Stripe !== 'undefined') { _paidPreload.stripeJSReady = true; return Promise.resolve(); }
+    _paidPreload.stripeJsPromise = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://js.stripe.com/v3/';
+      s.onload = function () { _paidPreload.stripeJSReady = true; resolve(); };
+      s.onerror = function () { _paidPreload.error = 'stripe_js'; reject(new Error('Stripe.js failed')); };
+      document.head.appendChild(s);
+    });
+    return _paidPreload.stripeJsPromise;
+  }
+
+  function preloadPaymentIntent () {
+    if (_paidPreload.piReady) return Promise.resolve(_paidPreload.clientSecret);
+    if (_paidPreload.piPromise) return _paidPreload.piPromise;
+    _paidPreload.piPromise = (async function () {
+      var userId = getUserId();
+      var resp = await fetch(WORKER_URL + '/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userId })
+      });
+      if (!resp.ok) throw new Error('Failed to create PaymentIntent');
+      var data = await resp.json();
+      _paidPreload.clientSecret = data.clientSecret;
+      _paidPreload.piReady = true;
+      return data.clientSecret;
+    })();
+    return _paidPreload.piPromise;
+  }
+
+  function preloadPaidFlow () {
+    preloadStripeJS().catch(function () {});
+    setTimeout(function () { preloadPaymentIntent().catch(function () {}); }, 1200);
+  }
+
+  async function openPaidModal () {
+    var cached = getCachedStatus();
+    if (cached && cached.active) { openBillingManager(); return; }
+    $('paidModal').classList.add('open');
+
+    if (_paidPreload.piReady && _paidPreload.stripeJSReady) {
+      $('stripe-loading').style.display = 'none';
+      $('stripe-payment-content').style.display = 'block';
+      _paidInitToken++;
+      await mountPaymentElement(_paidInitToken);
+      return;
+    }
+    $('stripe-loading').style.display = 'block';
+    $('stripe-payment-content').style.display = 'none';
+    updateStripeProgress(0);
+    _paidInitToken++;
+    await mountPaymentElement(_paidInitToken);
+  }
+
+  async function mountPaymentElement (myToken) {
+    var isStale = function () { return myToken !== _paidInitToken; };
+    var modal = $('paidModal');
+    if (!modal) return;
+    var errorEl = modal.querySelector('#payment-error');
+    var submitBtn = modal.querySelector('#paywall-submit-btn');
+    var needsFetch = !(_paidPreload.piReady && _paidPreload.stripeJSReady);
+    var loadingTimer = null;
+    if (needsFetch) {
+      var pct = 0;
+      loadingTimer = setInterval(function () {
+        if (isStale()) { clearInterval(loadingTimer); return; }
+        pct = Math.min(85, pct + 8 + Math.random() * 8);
+        updateStripeProgress(pct);
+      }, 150);
+    }
+    try {
+      await Promise.all([preloadStripeJS(), preloadPaymentIntent()]);
+      clientSecret = _paidPreload.clientSecret;
+      if (isStale()) { if (loadingTimer) clearInterval(loadingTimer); return; }
+      var stripe = Stripe(PUBLISHABLE_KEY);
+      var elements = stripe.elements({
+        appearance: { theme: 'night', variables: { colorPrimary: '#2dd4bf', colorBackground: '#0a0c12', colorText: '#f8fafc', fontFamily: 'system-ui, sans-serif' } },
+        clientSecret: clientSecret
+      });
+      var paymentElement = elements.create('payment');
+      if (loadingTimer) clearInterval(loadingTimer);
+      updateStripeProgress(100);
+      $('stripe-loading').style.display = 'none';
+      $('stripe-payment-content').style.display = 'block';
+      var pe = $('payment-element');
+      if (pe) pe.innerHTML = '';
+      paymentElement.mount('#payment-element');
+      elementsInstance = elements;
+      if (errorEl) errorEl.textContent = '';
+      submitBtn.disabled = !pwConsentGranted();
+      submitBtn.textContent = 'Subscribe — $20.73';
+    } catch (err) {
+      if (loadingTimer) clearInterval(loadingTimer);
+      if (isStale()) return;
+      updateStripeProgress(100);
+      $('stripe-loading').style.display = 'none';
+      $('stripe-payment-content').style.display = 'block';
+      var pe2 = $('payment-element');
+      if (pe2) pe2.textContent = 'Secure payment unavailable.';
+      if (errorEl) errorEl.textContent = 'Payment system unavailable. You can still activate in demo mode.';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Activate (demo mode)';
+      submitBtn.dataset.demo = 'true';
+    }
+  }
+
+  function closePaidModal () {
+    var modal = $('paidModal');
+    if (modal) modal.classList.remove('open');
+    _paidInitToken++;
+    updateStripeProgress(0);
+    var btn = $('paywall-submit-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Subscribe — $20.73'; delete btn.dataset.demo; }
+    var cc = $('pw-renewal-consent'); if (cc) cc.checked = false;
+    var err = $('payment-error'); var st = $('payment-status');
+    if (err) err.textContent = ''; if (st) st.textContent = '';
+    if (elementsInstance) { try { elementsInstance.destroy(); } catch (e) {} elementsInstance = null; }
+    clientSecret = null;
+  }
+
+  function pwConsentGranted () { var cb = $('pw-renewal-consent'); return !!(cb && cb.checked); }
+  function syncSubmitGate () {
+    var btn = $('paywall-submit-btn');
+    if (!btn || btn.dataset.demo === 'true') return;
+    if (btn.querySelector('.loader')) return;
+    btn.disabled = !pwConsentGranted();
+  }
+
+  async function handlePayment () {
+    var submitBtn = $('paywall-submit-btn');
+    var modal = $('paidModal');
+    if (!submitBtn || !modal) return;
+    if (submitBtn.dataset.demo === 'true') {
+      var e1 = modal.querySelector('#payment-error'); if (e1) e1.textContent = '';
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span style="display:inline-block;width:18px;height:18px;border:2px solid #030408;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:8px;"></span> Activating…';
+      setTimeout(function () {
+        setCachedStatus({ active: true });
+        setSubscriptionExpiry(Date.now() + 30 * 86400000);
+        var s = $('payment-status'); if (s) s.textContent = '✅ Subscription active!';
+        toast('🎉 Subscription activated (demo)');
+        setTimeout(function () { location.reload(); }, 1200);
+      }, 1000);
+      return;
+    }
+    if (!elementsInstance || !clientSecret) return;
+    if (!pwConsentGranted()) {
+      var e2 = modal.querySelector('#payment-error'); if (e2) e2.textContent = 'Please tick the renewal consent above to continue.';
+      return;
+    }
+    var errorEl = modal.querySelector('#payment-error');
+    var statusEl = modal.querySelector('#payment-status');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Processing…';
+    if (errorEl) errorEl.textContent = '';
+    if (statusEl) statusEl.textContent = '';
+    var stripe = Stripe(PUBLISHABLE_KEY);
+    var result = await stripe.confirmPayment({
+      elements: elementsInstance,
+      confirmParams: { return_url: window.location.origin + window.location.pathname },
+      redirect: 'if_required'
+    });
+    if (result.error) {
+      if (errorEl) errorEl.textContent = result.error.message || 'Payment failed.';
+      submitBtn.disabled = !pwConsentGranted();
+      submitBtn.textContent = 'Subscribe — $20.73';
+      return;
+    }
+    try {
+      var verifyRes = await fetch(WORKER_URL + '/api/confirm-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: getUserId(), paymentIntentId: result.paymentIntent.id })
+      });
+      if (!verifyRes.ok) throw new Error('Verification failed');
+      var data = await verifyRes.json();
+      if (!data.active) throw new Error('Not active');
+      if (statusEl) statusEl.textContent = '✅ Subscription active!';
+      submitBtn.textContent = '✅ Subscribed';
+      setCachedStatus({ active: true });
+      setSubscriptionExpiry(Date.now() + 30 * 86400000);
+      setTimeout(function () { location.reload(); }, 1500);
+    } catch (err) {
+      if (errorEl) errorEl.textContent = 'Verification failed. Please contact support.';
+      submitBtn.disabled = !pwConsentGranted();
+      submitBtn.textContent = 'Subscribe — $20.73';
+    }
+  }
+
+  // ══════════════════════════════════════════════════════
+  // BILLING MANAGER
+  // ══════════════════════════════════════════════════════
+  async function openBillingManager () {
+    var modal = $('billing-manager-modal');
+    var content = $('billing-status-content');
+    if (!modal || !content) return;
+    modal.classList.add('open');
+    content.innerHTML = '<p>Fetching status…</p>';
+    try {
+      var status = await checkStatus();
+      if (status.active) {
+        var expiry = getSubscriptionExpiry();
+        var daysLeft = getSubscriptionDaysLeft();
+        var expiryText = expiry ? new Date(expiry).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'unknown';
+        var daysText = daysLeft !== null ? daysLeft + ' day' + (daysLeft === 1 ? '' : 's') + ' left' : '';
+        content.innerHTML =
+          '<p><strong style="color:#f8fafc;">Plan:</strong> Monthly ($19/mo)</p>' +
+          '<p><strong style="color:#f8fafc;">Status:</strong> <span style="color:#4ade80;">Active</span></p>' +
+          (daysText ? '<p><strong style="color:#f8fafc;">Renews:</strong> ' + expiryText + ' (' + daysText + ')</p>' : '');
+        $('cancel-subscription-btn').style.display = 'block';
+        $('renew-subscription-btn').style.display = 'none';
+      } else {
+        content.innerHTML =
+          '<p><strong style="color:#f8fafc;">Plan:</strong> None</p>' +
+          '<p><strong style="color:#f8fafc;">Status:</strong> <span style="color:#f43f5e;">Inactive</span></p>';
+        $('cancel-subscription-btn').style.display = 'none';
+        $('renew-subscription-btn').style.display = 'block';
+      }
+    } catch (e) {
+      content.innerHTML = '<p style="color:#f43f5e;">Error loading subscription.</p>';
+    }
+  }
+  function closeBillingManager () {
+    var m = $('billing-manager-modal'); if (m) m.classList.remove('open');
+  }
+  async function cancelSubscription () {
+    if (!confirm('Cancel your subscription? You will lose access immediately.')) return;
+    try {
+      var res = await fetch(WORKER_URL + '/api/cancel?userId=' + encodeURIComponent(getUserId()), { method: 'POST' });
+      if (res.ok) {
+        try { localStorage.removeItem(K_SUBC); localStorage.removeItem(K_SUBEXP); } catch (e) {}
+        toast('Subscription cancelled.');
+        openBillingManager();
+      } else { toast('Cancellation failed.'); }
+    } catch (e) { toast('Cancellation failed. Check your connection.'); }
+  }
+  function renewSubscription () {
+    closeBillingManager();
+    try { localStorage.removeItem(K_SUBC); } catch (e) {}
+    if (!_takeoverShown) showFullPage();
+    setTimeout(function () { openPaidModal(); }, 60);
+  }
+
+  // ══════════════════════════════════════════════════════
+  // REPLACE P4.Paywall
+  // ══════════════════════════════════════════════════════
+  var newPaywall = {
+    _v3: true,
+    isAllowed: function () { return isAllowedSync(); },
+    isAllowedAsync: isAllowedAsync,
+    showFullPage: showFullPage,
+    showPanel: function () { showFullPage(); },
+    close: function () { if (isAllowedSync()) location.reload(); },
+    workoutCount: workoutCount,
+    workoutsRemaining: workoutsRemaining,
+    WORKOUT_LIMIT: WORKOUT_LIMIT,
+    isTrialActive: isTrialActive,
+    isPro: function () { return isAllowedSync(); },
+    trialActive: isTrialActive,
+    daysLeft: function () { return workoutsRemaining(); },
+    ensureTrial: function () {},
+    subActive: function () { var e = getSubscriptionExpiry(); return !!(e && Date.now() < e); },
+    licenseValid: function () { return false; },
+    markSubscription: function (d) { setCachedStatus({ active: true }); setSubscriptionExpiry(Date.now() + (d || 30) * 86400000); },
+    cancelSubscription: cancelSubscription,
+    refreshUI: function () { try { updatePaidPlanCard(); updateFreePlanBadge(); } catch (e) {} },
+    init: function () {}
+  };
+  window.P4 = window.P4 || {};
+  // kill old watchdogs
+  try {
+    if (P4.Paywall && P4.Paywall._watchdog) clearInterval(P4.Paywall._watchdog);
+  } catch (e) {}
+  window.P4.Paywall = newPaywall;
+  window.__paywall = {
+    isAllowed: isAllowedAsync,
+    getStatus: checkStatus,
+    showFullPage: showFullPage,
+    showPanel: function () { showFullPage(); },
+    close: function () { if (isAllowedSync()) location.reload(); },
+    isTrialActive: isTrialActive,
+    workoutCount: workoutCount
+  };
+
+  // Global onclick handlers
+  window.__pw_filterPlatforms = filterPlatforms;
+  window.__pw_selectPlatform = selectPlatform;
+  window.__pw_copyAndOpenDM = copyAndOpenDM;
+  window.__pw_finishFreeApplication = finishFreeApplication;
+  window.__pw_goBack = goBack;
+  window.__pw_closeFreeWizard = closeFreeWizard;
+  window.__pw_copyAppId = copyApplicationId;
+  window.__pw_refreshStatus = refreshApplicationStatus;
+  window.__pw_withdraw = withdrawApplication;
+  window.__pw_reapply = reapplyFreeApplication;
+  window.__pw_nextFreeStep = function () {
+    var btn = $('nextFreeBtn');
+    if (!btn || btn.disabled) return;
+    freeStep = 2; renderFreeStep();
+  };
+  window.pwTestOpenBilling = openBillingManager;
+  window.resetPaywall = function () {
+    try {
+      [K_USER, K_APPID, K_APPS, K_APPROV, K_SUBC, K_SUBEXP, K_WIZ, K_WCOUNT].forEach(function (k) { localStorage.removeItem(k); });
+    } catch (e) {}
+    location.reload();
+  };
+
+  // ══════════════════════════════════════════════════════
+  // BOOT + HOOKS
+  // ══════════════════════════════════════════════════════
+  async function gateCheck (reason) {
+    if (!_takeoverShown && !isAllowedSync()) {
+      showFullPage();
+      return false;
+    }
+    // async re-verify in background
+    if (!_takeoverShown) {
+      var ok = await isAllowedAsync();
+      if (!ok && !_takeoverShown) { showFullPage(); return false; }
+    }
+    return true;
+  }
+
+  // Hook workout generation
+  if (typeof window.startOrGenerateWorkout === 'function' && !window.startOrGenerateWorkout.__pwV3) {
+    var origGen = window.startOrGenerateWorkout;
+    window.startOrGenerateWorkout = function () {
+      if (!isAllowedSync()) { showFullPage(); return; }
+      return origGen.apply(this, arguments);
+    };
+    window.startOrGenerateWorkout.__pwV3 = true;
+  }
+
+  // Hook completeWorkout — trigger on 21st completion
+  if (typeof window.completeWorkout === 'function' && !window.completeWorkout.__pwV3) {
+    var origComplete = window.completeWorkout;
+    window.completeWorkout = async function () {
+      var r = await origComplete.apply(this, arguments);
+      var count = workoutCount();
+      if (count >= WORKOUT_LIMIT && !isApprovedWithBacking() && !isAllowedSync()) {
+        setTimeout(function () { showFullPage(); }, 800);
+      }
+      return r;
+    };
+    window.completeWorkout.__pwV3 = true;
+  }
+
+  // Hook showSection
+  if (typeof window.showSection === 'function' && !window.showSection.__pwV3) {
+    var origShow = window.showSection;
+    window.showSection = function (sectionId, replaceState) {
+      if (!isAllowedSync() && !replaceState && ['workout', 'library', 'progress'].indexOf(sectionId) !== -1) {
+        showFullPage();
+        return;
+      }
+      return origShow.apply(this, arguments);
+    };
+    window.showSection.__pwV3 = true;
+  }
+
+  async function boot () {
+    if (isApprovedWithBacking()) return;
+    try {
+      var status = await checkStatus();
+      if (status && status.active) return;
+    } catch (e) {}
+    if (!isAllowedSync()) { showFullPage(); return; }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 300); });
+  } else {
+    setTimeout(boot, 300);
+  }
+
+  console.log('[Paywall v3] 404-style takeover ready — 21-workout trial, worker:', WORKER_URL);
+})();
+</script>
+<script>
+/* P4 FIX #4_5 — notification suppression + kill 1RM retest reminder */
+(function () {
+  'use strict';
+  if (window.__p4Fix45) return;
+  window.__p4Fix45 = true;
+
+  /* ── Fix #4: tick the checkbox → immediately record suppression + dismiss toast
+     (before: it only recorded if you ALSO clicked the toast body) ── */
+  var origShow = window.showNotification;
+  if (typeof origShow === 'function' && !origShow._suppressFixed) {
+    window.showNotification = function (message, type, notificationId, onClickAction) {
+      var id = notificationId || String(message || '').replace(/\s/g, '_').substring(0, 80);
+      var result = origShow.apply(this, arguments);
+      // Toastify renders synchronously, but give the DOM a beat to attach the input.
+      setTimeout(function () {
+        var boxes = document.querySelectorAll('input[id^="nsChk_"]');
+        var box = boxes[boxes.length - 1]; // the one we just rendered
+        if (!box || box._suppressWired) return;
+        box._suppressWired = true;
+        box.addEventListener('change', function () {
+          if (!box.checked) return;
+          try {
+            // Classic scripts share lexical scope — bare names resolve to the
+            // module-level Set and helper defined earlier in this file.
+            if (typeof suppressedNotifications !== 'undefined') {
+              suppressedNotifications.add(id);
+            }
+            if (typeof saveSuppressedNotifications === 'function') {
+              saveSuppressedNotifications();
+            }
+            console.log('[P4 Fix #4] Suppressed for today:', id);
+          } catch (e) { console.warn('[P4 Fix #4]', e); }
+          // Gracefully fade out the toast now that the user said "don't show today".
+          var toastEl = box.closest('.toastify') || box.closest('.toastify-js');
+          if (toastEl) {
+            toastEl.style.transition = 'opacity .3s ease, transform .3s ease';
+            toastEl.style.opacity = '0';
+            toastEl.style.transform = 'translateY(-14px)';
+            setTimeout(function () {
+              if (toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+            }, 320);
+          }
+        });
+      }, 100);
+      return result;
+    };
+    window.showNotification._suppressFixed = true;
+  }
+
+  /* ── Fix #5: kill the 1RM retest reminder entirely ──
+     1RM testing requires an active workout session. Reminding users when they
+     can't actually test is just friction — they'll test naturally next time
+     they do the exercise. ── */
+  window.checkAndRemindReTest = function () { return; /* no-op */ };
+  console.log('[P4 Fix #4_5] Notification suppression fixed + retest reminder disabled.');
+})();
+</script>
+<style id="p4-time-wiz-css">
+.p4-time-wiz-backdrop{position:fixed;inset:0;z-index:100001;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;animation:p4twIn .22s ease;}
+@keyframes p4twIn{from{opacity:0}to{opacity:1}}
+.p4-time-wiz{background:var(--light,#fff);border-radius:20px;padding:26px 22px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 24px 72px rgba(0,0,0,.45);box-sizing:border-box;font-family:inherit;}
+.p4-time-wiz *{box-sizing:border-box;}
+.p4-time-wiz h3{margin:0 0 8px;font-size:22px;font-weight:800;color:var(--p4-text,#1e293b);letter-spacing:-.3px;font-family:var(--p4-font-display,inherit);}
+.p4-time-wiz p{margin:0 0 18px;font-size:14px;color:var(--p4-text-2,#475569);line-height:1.5;}
+.p4-time-wiz-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+.p4-time-wiz-grid button{padding:14px 10px;border-radius:14px;border:2px solid var(--gray-200,#e2e8f0);background:var(--light,#fff);cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;font-family:inherit;min-height:78px;justify-content:center;}
+.p4-time-wiz-grid button:hover{border-color:var(--p4-accent,#2563eb);background:var(--p4-accent-soft,#eef);transform:translateY(-2px);box-shadow:0 6px 18px rgba(37,99,235,.12);}
+.p4-time-wiz-grid button:active{transform:translateY(0) scale(.98);}
+.p4-twm-num{font-size:28px;font-weight:800;color:var(--p4-text,#1e293b);line-height:1;font-variant-numeric:tabular-nums;}
+.p4-twm-unit{font-size:11px;color:var(--p4-text-3,#94a3b8);font-weight:700;letter-spacing:.05em;text-transform:uppercase;}
+.p4-twm-sub{font-size:11px;color:var(--p4-text-3,#94a3b8);margin-top:4px;}
+.p4-time-wiz-note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:rgba(16,185,129,.08);border-left:3px solid var(--success,#10b981);border-radius:10px;margin-bottom:14px;font-size:12px;color:var(--p4-text-2,#475569);line-height:1.5;}
+.p4-time-wiz-note i{color:var(--success,#10b981);font-size:14px;margin-top:2px;flex-shrink:0;}
+.p4-time-wiz-note strong{color:var(--p4-text,#1e293b);}
+.p4-time-wiz-cancel{display:block;width:100%;padding:11px;background:transparent;border:1px solid var(--gray-300,#cbd5e1);border-radius:12px;color:var(--p4-text-3,#94a3b8);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.p4-time-wiz-cancel:hover{border-color:var(--p4-text-3,#94a3b8);color:var(--p4-text,#1e293b);}
+@media (max-width:420px){.p4-time-wiz-grid{grid-template-columns:1fr;}.p4-twm-num{font-size:24px;}}
+</style>
+<script>
+/* P4 FIX #6 — Gym-time wizard + coach/physician-approved trimmer */
+(function () {
+  'use strict';
+  if (window.__p4Fix6) return;
+  window.__p4Fix6 = true;
+
+  var STORE_KEY = 'p4_time_budget';
+  var _p4TimeBudget = null;
+  try {
+    var s = localStorage.getItem(STORE_KEY);
+    if (s !== null) { var n = parseInt(s, 10); _p4TimeBudget = (n > 0) ? n : null; }
+  } catch (e) {}
+
+  /* ---------- Time estimator (per exercise, minutes) ---------- */
+  function estimateMin (ex, restSec) {
+    if (!ex) return 3;
+    if (ex.isWarmup) return 2;                                  // mobility block
+    if (ex.isCooldown) return 2;                                 // one stretch
+    if (ex.isComponentDrill || ex.noFatigue) {                  // athletic drill
+      var ds = (ex.prescribed && ex.prescribed.sets) || 3;
+      return ds * 0.75;
+    }
+    var sets = (ex.prescribed && ex.prescribed.sets) || 3;
+    return (sets * (50 + restSec) + 60) / 60;
+  }
+  function estimateWorkoutMin (workout, restSec) {
+    if (!workout || !workout.exercises) return 0;
+    return workout.exercises.reduce(function (s, e) { return s + estimateMin(e, restSec); }, 0);
+  }
+
+  /* ---------- Trimmer — coach + physician approved ----------
+     Non-negotiables:
+       • warm-up always kept (injury prevention)
+       • at least 2 main lifts kept (adaptation stimulus)
+       • at least 1 cooldown stretch kept (recovery)
+     Drop order: drills → accessory isolation → regular mains → extra cooldowns.
+     Sets floor: 2. Warm-up untouched. */
+  function trimWorkoutToBudget (workout, maxMinutes) {
+    if (!workout || !Array.isArray(workout.exercises) || !workout.exercises.length) return 0;
+    var restSec = (workoutData && workoutData.user && workoutData.user.settings && workoutData.user.settings.restTime) || 90;
+
+    // Classify with priority flags
+    workout.exercises.forEach(function (ex) {
+      if (ex.isWarmup) ex._prio = 100;                          // never drop
+      else if (ex.isCooldown) ex._prio = 70;                    // drop last, keep >=1
+      else if (ex.isComponentDrill) ex._prio = 20;              // drop first
+      else if (ex.noFatigue) ex._prio = 15;                     // other athletic
+      else if (ex.importance === 'core') ex._prio = 90;         // never drop (compound)
+      else if (ex.importance === 'accessory') ex._prio = 30;    // drop early
+      else ex._prio = 60;                                       // regular main
+    });
+
+    var totalMin = function () { return estimateWorkoutMin(workout, restSec); };
+    var mainCount = function () {
+      return workout.exercises.filter(function (e) { return !e.isWarmup && !e.isCooldown; }).length;
+    };
+    var dropLowest = function (maxPrio) {
+      var dropIdx = -1, dropPrio = Infinity;
+      workout.exercises.forEach(function (ex, i) {
+        if (ex._prio <= maxPrio && ex._prio < dropPrio) { dropPrio = ex._prio; dropIdx = i; }
+      });
+      if (dropIdx === -1) return false;
+      workout.exercises.splice(dropIdx, 1);
+      return true;
+    };
+
+    // Stage 1 — drop athletic drills (never touches warm-up/mains/cooldowns)
+    while (totalMin() > maxMinutes && dropLowest(25)) { /* loop */ }
+
+    // Stage 2 — reduce sets (floor 2), largest first, skip warm-up
+    while (totalMin() > maxMinutes) {
+      var target = null, targetSets = 2;
+      workout.exercises.forEach(function (ex) {
+        if (ex.isWarmup || ex.isCooldown) return;
+        var cnt = (ex.prescribed && ex.prescribed.sets) || 3;
+        if (cnt > targetSets) { targetSets = cnt; target = ex; }
+      });
+      if (!target) break;
+      target.prescribed.sets = targetSets - 1;
+    }
+
+    // Stage 3 — drop accessories, floor 2 mains
+    while (totalMin() > maxMinutes && mainCount() > 2 && dropLowest(40)) { /* loop */ }
+
+    // Stage 4 — drop regular main lifts, floor 2 mains
+    while (totalMin() > maxMinutes && mainCount() > 2 && dropLowest(60)) { /* loop */ }
+
+    // Stage 5 — last resort: drop extra cooldowns, floor 1 cooldown
+    while (totalMin() > maxMinutes) {
+      var coolCount = workout.exercises.filter(function (e) { return e.isCooldown; }).length;
+      if (coolCount <= 1) break;
+      var idx = -1;
+      workout.exercises.forEach(function (ex, i) { if (ex.isCooldown && idx === -1) idx = i; });
+      if (idx === -1) break;
+      workout.exercises.splice(idx, 1);
+    }
+
+    // Cleanup temp markers
+    workout.exercises.forEach(function (ex) { delete ex._prio; });
+    return workout.exercises.length;
+  }
+
+  /* ---------- Wizard UI ---------- */
+  function openTimeWizard () {
+    return new Promise(function (resolve) {
+      if (document.getElementById('p4TimeWizard')) {
+        document.getElementById('p4TimeWizard').remove();
+      }
+      var modal = document.createElement('div');
+      modal.className = 'p4-time-wiz-backdrop';
+      modal.id = 'p4TimeWizard';
+      var preselect = _p4TimeBudget;
+      var opts = [
+        { v: 15, sub: 'Quick session' },
+        { v: 25, sub: 'Short & focused' },
+        { v: 40, sub: 'Standard' },
+        { v: 60, sub: 'Full session' },
+        { v: 90, sub: 'Extended' },
+        { v: 0,  sub: 'Full coach plan', unit: 'no limit', num: '\u221E' }
+      ];
+      var gridHtml = opts.map(function (o) {
+        var isActive = (preselect === o.v) || (preselect === null && o.v === 0);
+        return '<button data-min="' + o.v + '"' + (isActive ? ' style="border-color:var(--p4-accent,#2563eb);background:var(--p4-accent-soft,#eef);"' : '') + '>' +
+          '<span class="p4-twm-num">' + (o.num || o.v) + '</span>' +
+          '<span class="p4-twm-unit">' + (o.unit || 'min') + '</span>' +
+          '<span class="p4-twm-sub">' + o.sub + '</span>' +
+        '</button>';
+      }).join('');
+      modal.innerHTML =
+        '<div class="p4-time-wiz">' +
+          '<h3>How long do you have?</h3>' +
+          '<p>We\'ll build your plan to fit. Warm-up, main lifts and cooldown are always kept.</p>' +
+          '<div class="p4-time-wiz-grid">' + gridHtml + '</div>' +
+          '<div class="p4-time-wiz-note"><i class="fas fa-user-md"></i>' +
+            '<span><strong>Coach + physician approved:</strong> warm-up is preserved for injury prevention, cooldown for recovery, and at least 2 main lifts for adaptation.</span>' +
+          '</div>' +
+          '<button class="p4-time-wiz-cancel">Cancel</button>' +
+        '</div>';
+      document.body.appendChild(modal);
+
+      modal.querySelectorAll('.p4-time-wiz-grid button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var min = parseInt(btn.getAttribute('data-min'), 10);
+          try { localStorage.setItem(STORE_KEY, String(min)); } catch (e) {}
+          modal.remove();
+          resolve({ minutes: min > 0 ? min : null });
+        });
+      });
+      modal.querySelector('.p4-time-wiz-cancel').addEventListener('click', function () {
+        modal.remove();
+        resolve({ cancel: true });
+      });
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) { modal.remove(); resolve({ cancel: true }); }
+      });
+    });
+  }
+
+  /* ---------- Hook: startOrGenerateWorkout (fresh generation only) ---------- */
+  if (typeof window.startOrGenerateWorkout === 'function' && !window.startOrGenerateWorkout.__p4tw) {
+    var origStart = window.startOrGenerateWorkout;
+    window.startOrGenerateWorkout = async function () {
+      var hasActive = (typeof currentWorkout !== 'undefined') && currentWorkout
+        && Array.isArray(currentWorkout.exercises) && currentWorkout.exercises.length > 0;
+      if (hasActive) return origStart.apply(this, arguments);   // resuming — no wizard
+      var result = await openTimeWizard();
+      if (result.cancel) return;
+      _p4TimeBudget = result.minutes;
+      return origStart.apply(this, arguments);
+    };
+    window.startOrGenerateWorkout.__p4tw = true;
+  }
+
+  /* ---------- Hook: performGenerateWorkout (apply trim after gen) ---------- */
+  if (typeof window.performGenerateWorkout === 'function' && !window.performGenerateWorkout.__p4tw) {
+    var origPerform = window.performGenerateWorkout;
+    window.performGenerateWorkout = function () {
+      var r = origPerform.apply(this, arguments);
+      if (_p4TimeBudget && currentWorkout && Array.isArray(currentWorkout.exercises)) {
+        var beforeCount = currentWorkout.exercises.length;
+        var beforeMin = Math.round(estimateWorkoutMin(currentWorkout,
+          (workoutData.user.settings && workoutData.user.settings.restTime) || 90));
+        var afterCount = trimWorkoutToBudget(currentWorkout, _p4TimeBudget);
+        var afterMin = Math.round(estimateWorkoutMin(currentWorkout,
+          (workoutData.user.settings && workoutData.user.settings.restTime) || 90));
+        try { saveCurrentWorkoutToStorage(); } catch (e) {}
+        try { if (typeof updateTodaysWorkout === 'function') updateTodaysWorkout(); } catch (e) {}
+        try { if (typeof updateWorkoutHeader === 'function') updateWorkoutHeader(); } catch (e) {}
+        if (typeof showNotification === 'function') {
+          var msg = afterCount < beforeCount
+            ? 'Trimmed to fit ' + _p4TimeBudget + ' min (' + beforeCount + '→' + afterCount + ' exercises, ~' + afterMin + ' min). Warm-up, main lifts, and cooldown kept.'
+            : 'Fits your ' + _p4TimeBudget + ' min budget (~' + afterMin + ' min).';
+          showNotification(msg, 'info', 'time_trim_' + Date.now());
+        }
+        console.log('[P4 Fix #6] trim:', beforeCount, '→', afterCount, '| est', beforeMin, '→', afterMin, 'min');
+      }
+      return r;
+    };
+    window.performGenerateWorkout.__p4tw = true;
+  }
+
+  /* Public API for testing / future UI */
+  window.__p4TimeBudget = {
+    get: function () { return _p4TimeBudget; },
+    set: function (m) {
+      _p4TimeBudget = (m && m > 0) ? m : null;
+      try { localStorage.setItem(STORE_KEY, String(_p4TimeBudget || 0)); } catch (e) {}
+    },
+    openWizard: openTimeWizard,
+    estimate: estimateWorkoutMin,
+    trim: trimWorkoutToBudget
+  };
+
+  console.log('[P4 Fix #6] Time wizard armed. Budget:', _p4TimeBudget || 'unlimited');
+})();
+</script>
+<script>
+/* P4 LEGACY PAYWALL GUARD — block any residual v2/v1 modal from appearing */
+(function () {
+  'use strict';
+  if (window.__p4LegacyPaywallGuard) return;
+  window.__p4LegacyPaywallGuard = true;
+  var BLOCKED = { 'p4PaywallModal': 1, 'p4Paywall': 1 };
+  var oA = Node.prototype.appendChild;
+  Node.prototype.appendChild = function (el) {
+    if (el && el.id && BLOCKED[el.id]) { console.log('[P4 Guard] Blocked append #' + el.id); return el; }
+    return oA.apply(this, arguments);
+  };
+  var oI = Node.prototype.insertBefore;
+  Node.prototype.insertBefore = function (el, ref) {
+    if (el && el.id && BLOCKED[el.id]) { console.log('[P4 Guard] Blocked insert #' + el.id); return el; }
+    return oI.apply(this, arguments);
+  };
+  var hide = function () { var e = document.getElementById('p4Paywall'); if (e) e.style.display = 'none'; };
+  if (document.readyState !== 'loading') hide(); else document.addEventListener('DOMContentLoaded', hide);
+  console.log('[P4 Guard] Legacy paywall surface blocked.');
+})();
+</script>
+<style id="p4-wc-css">
+.p4-wc-collapsed > .p4-wc-body { display: none !important; }
+.p4-wc-wrapped > .p4-wc-header { transition: background .15s ease; }
+.p4-wc-wrapped > .p4-wc-header:hover { background: var(--gray-100, #f1f5f9); }
+.p4-wc-wrapped.p4-wc-collapsed { padding: 12px 16px !important; }
+.p4-wc-chevron { transition: transform .2s ease; }
+</style>
+<script>
+/* P4 FIX #7 — workout page cards: collapsed by default, one open at a time */
+(function () {
+  'use strict';
+  if (window.__p4Fix7) return;
+  window.__p4Fix7 = true;
+
+  if (!window.P4) window.P4 = {};
+  if (!P4.WorkoutCards) P4.WorkoutCards = {};
+
+  /* Final override of wrapCards — always collapses ALL siblings when one opens */
+  P4.WorkoutCards.wrapCards = function () {
+    var list = document.getElementById('exerciseList');
+    if (!list) return;
+    var cards = list.querySelectorAll(
+      '.exercise-item:not(.p4-wc-wrapped),' +
+      '.exercise-card:not(.p4-wc-wrapped),' +
+      '.chart-card:not(.p4-wc-wrapped)'
+    );
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      card.classList.add('p4-wc-wrapped');
+      card.classList.add('p4-wc-collapsed');   // collapsed by default
+
+      /* Extract index from "exercise_N" or data-index */
+      var exIdx = parseInt(card.getAttribute('data-index') || (card.id ? card.id.replace('exercise_', '') : '0'), 10);
+      if (isNaN(exIdx)) exIdx = 0;
+
+      /* Name + difficulty */
+      var nameEl = card.querySelector('.exercise-title, h3, h4, .exercise-name, [class*="title"], strong, b');
+      var name = nameEl ? (nameEl.textContent || '').trim() : 'Exercise';
+      if (name.length > 60) name = name.slice(0, 60) + '…';
+      var diff = card.querySelector('.badge, .difficulty, [class*="badge"]');
+      var diffHTML = diff ? diff.outerHTML : '';
+
+      /* Does this exercise still need a 1RM test? */
+      var needs1RM = false;
+      try {
+        if (typeof currentWorkout !== 'undefined' && currentWorkout
+            && Array.isArray(currentWorkout.exercises) && currentWorkout.exercises[exIdx]) {
+          var ex = currentWorkout.exercises[exIdx];
+          if (ex && ex.id) {
+            var rec = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises[ex.id] : null;
+            needs1RM = !rec || !rec.tested1RM || rec.tested1RM <= 0;
+          }
+        }
+      } catch (e) {}
+
+      /* Build the always-visible header bar */
+      var header = document.createElement('div');
+      header.className = 'p4-wc-header';
+      header.style.cssText =
+        'display:flex;justify-content:space-between;align-items:center;gap:10px;' +
+        'padding:10px 12px;cursor:pointer;border-radius:8px;background:var(--gray-100, #f1f5f9);margin-bottom:8px';
+      header.innerHTML =
+        '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">' +
+          '<i class="fas fa-chevron-down p4-wc-chevron" style="font-size:11px;color:var(--p4-text-3,#94a3b8);transform:rotate(-90deg);"></i>' +
+          '<span style="font-weight:700;color:var(--primary,#2563eb);font-size:1rem;' +
+            'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + (name || 'Exercise') + '</span>' +
+          (needs1RM ? '<span class="p4-wc-1rm-badge" style="font-size:10px;font-weight:700;color:#f59e0b;' +
+            'background:rgba(245,158,11,0.15);padding:2px 6px;border-radius:6px">Needs 1RM</span>' : '') +
+        '</div>' +
+        '<div style="display:flex;gap:6px;align-items:center">' + diffHTML + '</div>';
+
+      if (card.firstChild) card.insertBefore(header, card.firstChild);
+      else card.appendChild(header);
+
+      /* Move all following siblings into a body wrapper */
+      var body = document.createElement('div');
+      body.className = 'p4-wc-body';
+      while (header.nextSibling) body.appendChild(header.nextSibling);
+      card.appendChild(body);
+
+      /* Click toggles — collapses ALL siblings, not just 1RM-needing ones */
+      header.addEventListener('click', function (e) {
+        if (e.target.closest('button, input, select, label, a, textarea')) return;
+        var wasCollapsed = card.classList.contains('p4-wc-collapsed');
+
+        list.querySelectorAll('.p4-wc-wrapped').forEach(function (sib) {
+          if (sib === card) return;
+          sib.classList.add('p4-wc-collapsed');
+          var chev = sib.querySelector('.p4-wc-chevron');
+          if (chev) chev.style.transform = 'rotate(-90deg)';
+        });
+
+        if (wasCollapsed) {
+          card.classList.remove('p4-wc-collapsed');
+          var chev2 = card.querySelector('.p4-wc-chevron');
+          if (chev2) chev2.style.transform = 'rotate(0deg)';
+          if (needs1RM) {
+            setTimeout(function () {
+              var btn = card.querySelector('[onclick*="test"], [onclick*="1RM"], button');
+              if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 120);
+          }
+        } else {
+          card.classList.add('p4-wc-collapsed');
+          var chev3 = card.querySelector('.p4-wc-chevron');
+          if (chev3) chev3.style.transform = 'rotate(-90deg)';
+        }
+      });
+    });
+  };
+
+  /* MutationObserver — re-wrap every time the exercise list re-renders */
+  function bind () {
+    var list = document.getElementById('exerciseList');
+    if (!list) { setTimeout(bind, 800); return; }
+    if (list._p4wcObs) { try { list._p4wcObs.disconnect(); } catch (e) {} }
+    var mo = new MutationObserver(function () {
+      if (window.__p4wcTimer) clearTimeout(window.__p4wcTimer);
+      window.__p4wcTimer = setTimeout(function () {
+        try { P4.WorkoutCards.wrapCards(); } catch (e) {}
+      }, 100);
+    });
+    try { mo.observe(list, { childList: true }); } catch (e) {}
+    list._p4wcObs = mo;
+    try { P4.WorkoutCards.wrapCards(); } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(bind, 800); });
+  } else {
+    setTimeout(bind, 800);
+  }
+  setTimeout(bind, 2500);
+
+  console.log('[P4 Fix #7] Workout cards: collapsed by default, one open at a time.');
+})();
+</script>
+<script>
+/* P4 FIX #8 — sheet cleanup: one Backup, one Import. No duplicate exports. */
+(function () {
+  'use strict';
+  if (window.__p4Fix8) return;
+  window.__p4Fix8 = true;
+  if (!window.P4 || !P4.Nav) { console.warn('[P4 Fix #8] P4.Nav missing'); return; }
+
+  /* ---------- 1. Sheet grid: drop duplicate Export, rename Backup, insert Import ---------- */
+  function cleanGrid () {
+    var sheet = document.getElementById('p4Sheet');
+    if (!sheet) return false;
+    if (sheet._p4gCleaned) return true;
+    var grid = sheet.querySelector('.p4-sheet-grid');
+    if (!grid) return false;
+    sheet._p4gCleaned = true;
+
+    // Locate cells by label text
+    var cells = Array.prototype.slice.call(grid.querySelectorAll('.p4-sheet-cell'));
+    var exportCell = null, backupCell = null;
+    cells.forEach(function (cell) {
+      var span = cell.querySelector('span');
+      if (!span) return;
+      var t = (span.textContent || '').trim();
+      if (t === 'Export')  exportCell = cell;
+      if (t === 'Backup')  backupCell = cell;
+    });
+
+    // Remove the duplicate "Export" cell entirely
+    if (exportCell && exportCell.parentNode) exportCell.parentNode.removeChild(exportCell);
+
+    // Rename Backup → "Backup JSON" and point at the unified exporter
+    if (backupCell) {
+      var bspan = backupCell.querySelector('span');
+      if (bspan) bspan.textContent = 'Backup JSON';
+      backupCell.setAttribute('onclick', 'P4.Backup.exportEverything(); P4.Nav.closeSheet(); return false;');
+    }
+
+    // Insert "Import JSON" right after Backup (skip if already there)
+    if (backupCell && !grid.querySelector('[data-p4-import]')) {
+      var imp = document.createElement('a');
+      imp.href = '#';
+      imp.className = 'p4-sheet-cell';
+      imp.setAttribute('data-p4-import', '1');
+      imp.setAttribute('onclick', 'importWorkoutData(); P4.Nav.closeSheet(); return false;');
+      imp.innerHTML = '<i class="fas fa-cloud-arrow-up"></i><span>Import JSON</span>';
+      backupCell.insertAdjacentElement('afterend', imp);
+    }
+    console.log('[P4 Fix #8] sheet grid cleaned.');
+    return true;
+  }
+
+  // Try now, and once more after the DOM settles / P4.Nav.build has run
+  setTimeout(cleanGrid, 800);
+  setTimeout(cleanGrid, 2000);
+  setTimeout(cleanGrid, 4000);
+
+  /* ---------- 2. Quickchip row: rename Export → Backup, append Import ---------- */
+  if (P4.Nav.syncQuick && !P4.Nav.syncQuick.__p4fix8) {
+    var origSync = P4.Nav.syncQuick;
+    P4.Nav.syncQuick = function () {
+      var r = origSync.apply(this, arguments);
+      try {
+        var quick = document.getElementById('p4SheetQuick');
+        if (!quick) return r;
+
+        // Rename the "Export JSON" chip → "Backup"; wire to unified exporter
+        quick.querySelectorAll('.p4-quickchip').forEach(function (chip) {
+          var html = chip.innerHTML || '';
+          if (html.indexOf('Export JSON') !== -1) {
+            chip.innerHTML = html.replace('Export JSON', 'Backup');
+            chip.setAttribute('onclick', 'P4.Backup.exportEverything(); P4.Nav.syncQuick();');
+          }
+        });
+
+        // Append Import chip once
+        if (!quick.querySelector('[data-p4-import-chip]')) {
+          var imp = document.createElement('span');
+          imp.className = 'p4-quickchip';
+          imp.setAttribute('data-p4-import-chip', '1');
+          imp.setAttribute('onclick', 'importWorkoutData();');
+          imp.innerHTML = '<i class="fas fa-cloud-arrow-up"></i>Import';
+          quick.appendChild(imp);
+        }
+      } catch (e) {}
+      return r;
+    };
+    P4.Nav.syncQuick.__p4fix8 = true;
+  }
+
+  /* ---------- 3. Bind a MutationObserver in case the sheet is rebuilt ---------- */
+  function bindObserver () {
+    var sheet = document.getElementById('p4Sheet');
+    if (!sheet) { setTimeout(bindObserver, 800); return; }
+    if (sheet._p4gObs) { try { sheet._p4gObs.disconnect(); } catch (e) {} }
+    var mo = new MutationObserver(function () {
+      if (window.__p4g8Timer) clearTimeout(window.__p4g8Timer);
+      window.__p4g8Timer = setTimeout(cleanGrid, 120);
+    });
+    try { mo.observe(sheet, { childList: true, subtree: true }); } catch (e) {}
+    sheet._p4gObs = mo;
+  }
+  bindObserver();
+
+  console.log('[P4 Fix #8] sheet: one Backup, one Import. Duplicates removed.');
+})();
+</script>
+<script>
+/* P4 FIX #9 — Dock: insert Import button between Backup and Gym Mode */
+(function () {
+  'use strict';
+  if (window.__p4Fix9) return;
+  window.__p4Fix9 = true;
+
+  function rebuild () {
+    var dock = document.getElementById('p4Dock');
+    if (!dock) { setTimeout(rebuild, 800); return; }
+    if (dock._p4dRebuilt) return;
+    dock._p4dRebuilt = true;
+
+    // Replace entire dock innerHTML — deterministic order, no reliance on
+    // parsing existing buttons or their positions.
+    dock.innerHTML =
+      '<button class="p4-dock-btn" title="Rest timer" aria-label="Rest timer" onclick="P4.Power.restStart()">' +
+        '<i class="fas fa-stopwatch"></i>' +
+      '</button>' +
+      '<button class="p4-dock-btn" title="Backup JSON" aria-label="Backup now" onclick="P4.Backup.exportEverything()">' +
+        '<i class="fas fa-cloud-arrow-down"></i>' +
+      '</button>' +
+      '<button class="p4-dock-btn" title="Import JSON" aria-label="Import backup" onclick="importWorkoutData()">' +
+        '<i class="fas fa-cloud-arrow-up"></i>' +
+      '</button>' +
+      '<button class="p4-dock-btn" title="Gym Mode: giant buttons" aria-label="Gym mode" onclick="P4.Power.toggleGym()">' +
+        '<i class="fas fa-hand-fist"></i>' +
+      '</button>' +
+      '<button class="p4-dock-btn" title="Top of page" aria-label="Scroll to top" onclick="P4.Power.toTop()">' +
+        '<i class="fas fa-arrow-up"></i>' +
+      '</button>';
+
+    console.log('[P4 Fix #9] Dock rebuilt — Backup + Import + Gym Mode + Top.');
+  }
+
+  setTimeout(rebuild, 800);
+  setTimeout(rebuild, 2500);
+
+  // Re-run if anything wipes the dock
+  var obs = new MutationObserver(function () {
+    var dock = document.getElementById('p4Dock');
+    if (dock && !dock._p4dRebuilt) {
+      if (window.__p4d9Timer) clearTimeout(window.__p4d9Timer);
+      window.__p4d9Timer = setTimeout(rebuild, 100);
+    }
+  });
+  try { obs.observe(document.body, { childList: true, subtree: true }); } catch (e) {}
+
+  console.log('[P4 Fix #9] Dock manager armed.');
+})();
+</script>
+<script>
+/* P4 FIX #10 — animal-emoji avatar picker (selection only, no typing) */
+(function () {
+  'use strict';
+  if (window.__p4Fix10) return;
+  window.__p4Fix10 = true;
+  if (!window.P4) window.P4 = {};
+
+  var ANIMALS = [
+    '\uD83D\uDC36','\uD83D\uDC31','\uD83D\uDC2D','\uD83D\uDC39',
+    '\uD83D\uDC30','\uD83E\uDD8A','\uD83D\uDC3B','\uD83D\uDC3C',
+    '\uD83D\uDC28','\uD83D\uDC2F','\uD83E\uDD81','\uD83D\uDC2E',
+    '\uD83D\uDC37','\uD83D\uDC38','\uD83D\uDC35','\uD83D\uDC14',
+    '\uD83D\uDC27','\uD83D\uDC26','\uD83D\uDC24','\uD83E\uDD86',
+    '\uD83E\uDD85','\uD83E\uDD89','\uD83E\uDD87','\uD83D\uDC3A',
+    '\uD83D\uDC17','\uD83D\uDC34','\uD83E\uDD84','\uD83D\uDC1D',
+    '\uD83D\uDC1B','\uD83E\uDD8B','\uD83D\uDC0C','\uD83D\uDC1E',
+    '\uD83D\uDC1C','\uD83E\uDD97','\uD83D\uDD77','\uD83E\uDD82',
+    '\uD83D\uDC22','\uD83D\uDC0D','\uD83E\uDD8E','\uD83D\uDC19',
+    '\uD83E\uDD91','\uD83E\uDD90','\uD83E\uDD80','\uD83D\uDC21',
+    '\uD83D\uDC20','\uD83D\uDC1F','\uD83D\uDC2C','\uD83D\uDC33',
+    '\uD83D\uDC0B','\uD83E\uDD88','\uD83D\uDC0A','\uD83D\uDC06',
+    '\uD83E\uDD93','\uD83E\uDD8D','\uD83D\uDC18','\uD83E\uDD8F',
+    '\uD83E\uDD9B','\uD83D\uDC2A','\uD83E\uDD92','\uD83D\uDC03',
+    '\uD83D\uDC02','\uD83D\uDC04','\uD83D\uDC0E','\uD83D\uDC10'
+  ];
+
+  /* Replace the (broken) emoji generator with a real curated list */
+  P4.Emoji = {
+    ANIMALS: ANIMALS,
+    pick: function () { return ANIMALS[Math.floor(Math.random() * ANIMALS.length)]; }
+  };
+
+  /* ---------- helpers ---------- */
+  function currentProfile () {
+    try { return (P4.Profiles && P4.Profiles.current) ? P4.Profiles.current() : null; } catch (e) { return null; }
+  }
+  function isRealEmoji (s) {
+    if (!s || typeof s !== 'string') return false;
+    var cp = s.codePointAt(0);
+    return cp && cp >= 0x2600;
+  }
+  function ensureEmoji () {
+    var p = currentProfile();
+    if (!p) return;
+    if (!isRealEmoji(p.emoji)) {
+      var fresh = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+      try { P4.Profiles.update(p.id, { emoji: fresh }); } catch (e) {}
+    }
+  }
+  function syncAvatarEmoji () {
+    try {
+      var p = currentProfile();
+      var avatar = document.getElementById('navUserAvatar');
+      if (!avatar) return;
+      var emoji = (p && isRealEmoji(p.emoji)) ? p.emoji : ANIMALS[0];
+      avatar.textContent = emoji;
+      avatar.style.fontFamily = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","EmojiOne Color",sans-serif';
+      avatar.style.fontSize = '1.35rem';
+      avatar.style.lineHeight = '1';
+      avatar.style.display = 'flex';
+      avatar.style.alignItems = 'center';
+      avatar.style.justifyContent = 'center';
+    } catch (e) {}
+  }
+
+  /* ---------- picker UI ---------- */
+  P4.EmojiPicker = {
+    open: function () {
+      var existing = document.getElementById('p4EmojiBackdrop');
+      if (existing) existing.parentNode.removeChild(existing);
+
+      var host = document.createElement('div');
+      host.id = 'p4EmojiBackdrop';
+      host.style.cssText = 'position:fixed;inset:0;z-index:100004;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);';
+      host.addEventListener('click', function (e) { if (e.target === host) host.parentNode.removeChild(host); });
+
+      var p = currentProfile();
+      var cur = (p && isRealEmoji(p.emoji)) ? p.emoji : null;
+
+      var gridHtml = ANIMALS.map(function (a) {
+        var isCur = (a === cur);
+        return '<button type="button" data-emoji="' + a + '" aria-label="Pick animal" style="' +
+          'aspect-ratio:1;display:flex;align-items:center;justify-content:center;' +
+          'font-size:22px;line-height:1;padding:0;cursor:pointer;' +
+          'border-radius:12px;border:2px solid ' + (isCur ? 'var(--p4-accent,#2563eb)' : 'var(--gray-200,#e2e8f0)') + ';' +
+          'background:' + (isCur ? 'var(--p4-accent-soft,#eef)' : 'var(--light,#fff)') + ';' +
+          'transition:transform .12s,border-color .12s,background .12s;' +
+          'font-family:\'Apple Color Emoji\',\'Segoe UI Emoji\',\'Noto Color Emoji\',sans-serif;">' + a + '</button>';
+      }).join('');
+
+      host.innerHTML =
+        '<div style="background:var(--light,#fff);border-radius:20px;padding:22px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 24px 72px rgba(0,0,0,.4);font-family:inherit;box-sizing:border-box;">' +
+          '<button type="button" id="p4EmojiClose" aria-label="Close" style="position:absolute;top:10px;right:12px;background:transparent;border:none;font-size:20px;cursor:pointer;color:#94a3b8;line-height:1;padding:6px;">\u2715</button>' +
+          '<h3 style="margin:0 0 4px;font-size:18px;font-weight:800;color:var(--p4-text,#1e293b);letter-spacing:-.2px;">Pick your animal</h3>' +
+          '<p style="margin:0 0 16px;font-size:12.5px;color:var(--p4-text-2,#475569);line-height:1.5;">Your avatar. Tap any animal \u2014 only the grid, no typing.</p>' +
+          '<div style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px;">' + gridHtml + '</div>' +
+        '</div>';
+
+      document.body.appendChild(host);
+
+      host.querySelector('#p4EmojiClose').addEventListener('click', function () { host.parentNode.removeChild(host); });
+
+      host.querySelectorAll('[data-emoji]').forEach(function (btn) {
+        btn.addEventListener('mouseenter', function () { btn.style.transform = 'scale(1.12)'; });
+        btn.addEventListener('mouseleave', function () { btn.style.transform = ''; });
+        btn.addEventListener('click', function () {
+          var e = btn.getAttribute('data-emoji');
+          P4.EmojiPicker.commit(e);
+          host.parentNode.removeChild(host);
+        });
+      });
+
+      document.addEventListener('keydown', function esc(e) {
+        if (e.key === 'Escape') { host.parentNode && host.parentNode.removeChild(host); document.removeEventListener('keydown', esc); }
+      });
+    },
+    commit: function (emoji) {
+      try {
+        var p = currentProfile();
+        if (p) {
+          P4.Profiles.update(p.id, { emoji: emoji });
+        } else {
+          // No profile yet — try creating one silently
+          if (P4.Profiles && P4.Profiles.create) {
+            var fresh = P4.Profiles.create('You');
+            P4.Profiles.update(fresh.id, { emoji: emoji });
+          }
+        }
+        syncAvatarEmoji();
+        // Also refresh the name display so its inline emoji matches
+        try { if (P4.Picker && P4.Picker.refreshNavbar) P4.Picker.refreshNavbar(); } catch (e) {}
+        if (typeof P4.toast === 'function') P4.toast('Avatar set to ' + emoji, 'ok', 1600);
+      } catch (err) { console.warn('[P4 Fix #10]', err); }
+    }
+  };
+
+  /* ---------- wire avatar click → open picker ---------- */
+  function wireAvatar () {
+    var avatar = document.getElementById('navUserAvatar');
+    if (!avatar) { setTimeout(wireAvatar, 800); return; }
+    if (avatar._p4EmojiWired) return;
+    avatar._p4EmojiWired = true;
+    avatar.style.cursor = 'pointer';
+    avatar.setAttribute('title', 'Change avatar');
+    // Replace existing inline onclick (showSection('settings'))
+    avatar.onclick = function (ev) {
+      if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+      P4.EmojiPicker.open();
+      return false;
+    };
+  }
+
+  /* ---------- keep the emoji in sync whenever the name refreshes ---------- */
+  var origUpdate = window.updateHeaderNameAndStreak;
+  if (typeof origUpdate === 'function' && !origUpdate._p4EmojiHooked) {
+    var hooked = function () {
+      var r = origUpdate.apply(this, arguments);
+      try { setTimeout(syncAvatarEmoji, 0); } catch (e) {}
+      return r;
+    };
+    hooked._p4EmojiHooked = true;
+    window.updateHeaderNameAndStreak = hooked;
+  }
+
+  /* ---------- boot ---------- */
+  function boot () {
+    ensureEmoji();
+    wireAvatar();
+    syncAvatarEmoji();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(boot, 700);
+      setTimeout(syncAvatarEmoji, 2000);
+      setTimeout(syncAvatarEmoji, 4000);
+    });
+  } else {
+    setTimeout(boot, 700);
+    setTimeout(syncAvatarEmoji, 2000);
+    setTimeout(syncAvatarEmoji, 4000);
+  }
+
+  console.log('[P4 Fix #10] Emoji avatar picker armed \u2014 ' + ANIMALS.length + ' animals available.');
+})();
+</script>
+<script>
+/* P4 FIX #11 — Rename paywall template's legal ids to *PW, wire them locally.
+   Fixes: duplicate #p4Legal in source + legal popup unable to display inside takeover. */
+(function () {
+  'use strict';
+  if (window.__p4Fix11) return;
+  window.__p4Fix11 = true;
+
+  /* ---------- 1. Rename ids inside the paywall template (source) ---------- */
+  var tpl = document.getElementById('p4PaywallTemplate404');
+  if (tpl) {
+    var tplHTML = tpl.innerHTML;
+    // Match the exact div we shipped in v3, swap ids to *PW
+    tplHTML = tplHTML
+      .replace(/id="p4leGal"/gi,          'id="p4' + 'LegalPW"')
+      .replace(/id="p4LegalClose"/g,     'id="p4LegalPWClose"')
+      .replace(/id="p4LegalTabs"/g,      'id="p4LegalPWTabs"')
+      .replace(/id="p4LegalDoc"/g,       'id="p4LegalPWDoc"')
+      .replace(/id="p4ConsentLog"/g,     'id="p4ConsentLogPW"');
+    tpl.innerHTML = tplHTML;
+    console.log('[P4 Fix #11] Template legal ids renamed to *PW.');
+  }
+
+  /* ---------- 2. Local legal renderer used when the paywall is on screen ---------- */
+  function openLegalPW (docId) {
+    var el = document.getElementById('p4LegalPW');
+    if (!el) { console.warn('[P4 Fix #11] #p4LegalPW not present'); return; }
+    el.style.display = 'block';
+
+    var tabs = document.getElementById('p4LegalPWTabs');
+    var doc  = document.getElementById('p4LegalPWDoc');
+    var log  = document.getElementById('p4ConsentLogPW');
+    var DOCS = window.P4_LEGAL_DOCS || [];
+    if (!tabs || !doc) return;
+
+    // Style the tabs inline so they render on-brand even without the old CSS
+    tabs.innerHTML = DOCS.map(function (d) {
+      return '<span class="p4-legal-tab" data-doc="' + d.id + '" ' +
+        'style="display:inline-block;margin:2px 6px 6px 0;padding:7px 14px;border-radius:20px;' +
+        'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);' +
+        'color:#cbd5e1;font-size:12px;font-weight:600;cursor:pointer;">' + d.short + '</span>';
+    }).join('');
+
+    function render (id) {
+      var found = null;
+      for (var i = 0; i < DOCS.length; i++) { if (DOCS[i].id === id) { found = DOCS[i]; break; } }
+      if (!found) found = DOCS[0];
+      if (!found) { doc.innerHTML = '<p>Legal documents not loaded.</p>'; return; }
+      var html = '<h4 style="margin:18px 0 8px;color:#f8fafc;font-size:15px;">' + found.title + '</h4>';
+      (found.sections || []).forEach(function (s) {
+        html += '<h4 style="margin:16px 0 6px;color:#f8fafc;font-size:14px;">' + s.h + '</h4>';
+        (s.p || []).forEach(function (p) { html += '<p style="margin:0 0 8px;">' + p + '</p>'; });
+        (s.ul || []).forEach(function (li) { html += '<p style="margin:2px 0 2px 14px;">• ' + li + '</p>'; });
+      });
+      doc.innerHTML = html;
+      doc.scrollTop = 0;
+      tabs.querySelectorAll('[data-doc]').forEach(function (t) {
+        var on = t.getAttribute('data-doc') === found.id;
+        t.style.background = on ? 'rgba(45,212,191,0.15)' : 'rgba(255,255,255,0.05)';
+        t.style.borderColor = on ? 'rgba(45,212,191,0.5)' : 'rgba(255,255,255,0.12)';
+        t.style.color = on ? '#2dd4bf' : '#cbd5e1';
+      });
+    }
+
+    tabs.querySelectorAll('[data-doc]').forEach(function (t) {
+      t.addEventListener('click', function () { render(t.getAttribute('data-doc')); });
+    });
+    render(docId || (DOCS[0] && DOCS[0].id));
+
+    var close = document.getElementById('p4LegalPWClose');
+    if (close && !close._p4w) {
+      close._p4w = true;
+      close.addEventListener('click', function () { el.style.display = 'none'; });
+    }
+
+    // Consent log (short summary)
+    if (log) {
+      var consents = [];
+      try { consents = JSON.parse(localStorage.getItem('p4_consent_log') || '[]'); } catch (e) {}
+      log.innerHTML = consents.length
+        ? '<div style="margin-top:14px;font-size:11px;color:#8b9ab3;">' +
+            'Your consent history (' + consents.length + ' records, on this device)<br>' +
+            consents.slice(0, 3).map(function (c) {
+              return '· ' + new Date(c.at).toLocaleString();
+            }).join('<br>') + '</div>'
+        : '';
+    }
+  }
+  window.__pw_openLegalPW = openLegalPW;
+
+  /* ---------- 3. Rewire all [data-legal] clicks that exist today ---------- */
+  function rewireLegalLinks (root) {
+    (root || document).querySelectorAll('[data-legal]').forEach(function (el) {
+      if (el._p4legalPW) return;
+      el._p4legalPW = true;
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var id = el.getAttribute('data-legal');
+        // If we're inside the paywall takeover, use the PW renderer.
+        if (document.getElementById('p4LegalPW')) {
+          openLegalPW(id);
+          return;
+        }
+        // Otherwise fall back to the original P4.Legal (unaffected layers).
+        if (window.P4 && P4.Legal && P4.Legal.open) P4.Legal.open(id);
+      }, true); // capture phase — beats any other listener
+    });
+  }
+  rewireLegalLinks();
+  setTimeout(function () { rewireLegalLinks(); }, 800);
+  setTimeout(function () { rewireLegalLinks(); }, 2500);
+
+  /* Re-apply after the paywall takeover replaces the body */
+  var origShow = window.P4 && window.P4.Paywall && window.P4.Paywall.showFullPage;
+  if (typeof origShow === 'function' && !origShow._p4legalRewired) {
+    var wrapped = function () {
+      var r = origShow.apply(this, arguments);
+      setTimeout(function () { rewireLegalLinks(); }, 120);
+      return r;
+    };
+    wrapped._p4legalRewired = true;
+    window.P4.Paywall.showFullPage = wrapped;
+  }
+
+  console.log('[P4 Fix #11] Legal links inside paywall are now locally rendered + de-duplicated.');
+})();
+</script>
+<!-- P4 FIX #11b: source-level de-dup — paywall template legal ids renamed at rest -->
+<!-- P4 FIX #12: original #bottomNav Resume renamed to #p4LegacyNavResumeBtn; sheet keeps #bottomResumeWorkoutBtn -->
+<!-- P4 FIX #13: legacy #bottomNav retired (hidden + aria-hidden + inert) — DOM kept for syncResume chain, but not reachable by AT or tab order -->
 </body>
 </html>
