@@ -56653,7 +56653,7 @@ window.P4_PHRASE_STARTERS = {
  * P4 PAYWALL — $0 (license) vs $19/mo (subscription), 7-day trial,
  * template takeover, offline license validation (SHA-256 checksum),
  * optional worker mode (mirrors reference apps), rate limiting.
- * Escape hatch for the owner: or localStorage.p4_devbypass.
+ * Escape hatch for the owner: or localStorage.p4_developer.
  * ============================================================================ */
 (function () {
   'use strict';
@@ -56752,7 +56752,7 @@ window.P4_PHRASE_STARTERS = {
       if (Paywall.workoutThresholdMet()) return true;
       return false;
     },
-    _devbypass: function () {
+    _developer: function () {
       /* permanently disabled — paywall enforced for all devices, including admin */
       return false;
     },
@@ -58208,9 +58208,9 @@ host.innerHTML =
 
     function bypass() {
       try {
-        if (localStorage.getItem('p4_devbypass') === 'true') return true;
-        if (/[?&]devbypass=true/.test(location.search)) {
-          localStorage.setItem('p4_devbypass', 'true');
+        if (localStorage.getItem('p4_developer') === 'true') return true;
+        if (/[?&]developer=true/.test(location.search)) {
+          localStorage.setItem('p4_developer', 'true');
           return true;
         }
       } catch (e) {}
