@@ -61602,7 +61602,7 @@ P4.Wheel = (function () {
           '<div style="display:grid;grid-template-columns:repeat(8, 1fr);gap:10px;justify-items:center">' + sw + '</div>' +
           '<div style="text-align:center;font-size:12px;color:var(--p4-text-2, #475569);margin-top:10px;font-weight:600">' + SEC.escapeHtml(currentAccent.name) + '</div>' +
           /* tiny hint, single line, less clutter */
-          '<div style="text-align:center;font-size:10.5px;color:var(--p4-text-3, #94a3b8);margin-top:4px">4 free colors · 12 more with Pro</div>' +
+          '<div style="text-align:center;font-size:10.5px;color:var(--p4-text-3, #94a3b8);margin-top:4px">All 16 colors available</div>' +
           gymToggle +
         '</div>';
 
@@ -65496,6 +65496,164 @@ P4.Wheel = (function () {
   } catch(e){}
 
   log('reconcile armed — five sources, one truth');
+})();
+</script>
+<script id="p4-unlock-all-js">
+(function(){
+  'use strict';
+  if (window.__p4UnlockAll) return;
+  window.__p4UnlockAll = true;
+  if (!window.P4 || !P4.Paywall) return;
+
+  P4.Paywall.isPro = function(){ return true; };
+  P4.Paywall.isAllowed = function(){ return true; };
+  P4.Paywall.subActive = function(){ return true; };
+  P4.Paywall.trialActive = function(){ return true; };
+  P4.Paywall.daysLeft = function(){ return 999; };
+  P4.Paywall.ensureTrial = function(){};
+  P4.Paywall.showFullPage = function(){ try { console.log('[P4] Paywall suppressed — everything is free'); } catch(e){} };
+  P4.Paywall.showPanel = function(){ try { console.log('[P4] Paywall panel suppressed'); } catch(e){} };
+  P4.Paywall.gate = function(){ return true; };
+
+  try { console.log('[P4] All features unlocked — no gate, no color lock, nothing'); } catch(e){}
+})();
+</script>
+<script id="p4-wizard-guard-js">
+(function(){
+  'use strict';
+  if (window.__p4WizardGuard) return;
+  window.__p4WizardGuard = true;
+  if (!window.P4) window.P4 = {};
+
+  function log(m){ try { console.log('[P4 Wizard Guard]', m); } catch(e){} }
+
+  function hasAnyUserData(){
+    try {
+      if (typeof workoutData !== 'undefined' && workoutData) {
+        if (workoutData.workouts && workoutData.workouts.length > 0) return 'memory.workouts';
+        if (workoutData.exercises && Object.keys(workoutData.exercises).length > 0) return 'memory.exercises';
+        if (workoutData.user && (workoutData.user.name || workoutData.user.birthDate)) return 'memory.user';
+      }
+      try {
+        var raw = localStorage.getItem('workoutData');
+        if (raw) {
+          var o = JSON.parse(raw);
+          if (o && ((o.workouts && o.workouts.length > 0) || (o.user && o.user.name))) return 'localStorage.workoutData';
+        }
+      } catch(e){}
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('p4_profile_data_') === 0) {
+          try {
+            var pd = JSON.parse(localStorage.getItem(k));
+            if (pd && (pd.user || (pd.workouts && pd.workouts.length > 0))) return 'profileData';
+          } catch(e){}
+        }
+      }
+      try {
+        var profs = JSON.parse(localStorage.getItem('p4_profiles') || '[]');
+        for (var j = 0; j < profs.length; j++) {
+          var nm = (profs[j].name || '').trim().toLowerCase();
+          if (nm && nm !== 'you' && nm !== 'user' && nm !== 'new profile') return 'profileMeta.name';
+        }
+      } catch(e){}
+      try {
+        var op = JSON.parse(localStorage.getItem('p4_profile') || 'null');
+        if (op && op.name) return 'onboardProfile';
+      } catch(e){}
+      try { if (localStorage.getItem('p4_onboarded') === 'true') return 'p4_onboarded'; } catch(e){}
+      try { if (localStorage.getItem('p4_health_screened_at')) return 'p4_health_screened_at'; } catch(e){}
+      try { if (localStorage.getItem('p4_last_backup')) return 'p4_last_backup'; } catch(e){}
+    } catch(e){}
+    return null;
+  }
+
+  function killWizard(reason){
+    try {
+      var host = document.getElementById('p4WizardHost');
+      if (host && host.innerHTML.trim()) {
+        host.innerHTML = '';
+        document.body.style.overflow = '';
+        log('killed wizard (' + reason + ')');
+      }
+      if (P4.Onboard) {
+        P4.Onboard._healthDone = true;
+        P4.Onboard._healthVerdictAccepted = true;
+        try { localStorage.setItem('p4_onboarded', 'true'); } catch(e){}
+      }
+    } catch(e){}
+  }
+
+  function shouldSkipWizard(){
+    var signal = hasAnyUserData();
+    if (signal) { log('data detected (' + signal + ') — wizard suppressed'); return true; }
+    return false;
+  }
+
+  function patchNeeded(){
+    if (!P4.Onboard || P4.Onboard._guardPatched) return;
+    P4.Onboard._guardPatched = true;
+    var orig = P4.Onboard.needed;
+    P4.Onboard.needed = function(){
+      if (shouldSkipWizard()) return false;
+      try { return orig.apply(this, arguments); } catch(e){ return false; }
+    };
+    log('P4.Onboard.needed patched');
+  }
+
+  function patchStart(){
+    if (!P4.Onboard || P4.Onboard._guardStartPatched) return;
+    P4.Onboard._guardStartPatched = true;
+    var orig = P4.Onboard.start;
+    P4.Onboard.start = function(){
+      if (shouldSkipWizard()) { killWizard('start-blocked'); return; }
+      return orig.apply(this, arguments);
+    };
+    log('P4.Onboard.start patched');
+  }
+
+  function watchDOM(){
+    try {
+      var mo = new MutationObserver(function(){
+        var host = document.getElementById('p4WizardHost');
+        if (host && host.innerHTML.trim() && shouldSkipWizard()) {
+          killWizard('dom-watch');
+        }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    } catch(e){}
+  }
+
+  function hookAppReady(){
+    var tries = 0;
+    var iv = setInterval(function(){
+      tries++;
+      if (typeof window.appReady === 'function' && !window.appReady._p4WizardGuard) {
+        var orig = window.appReady;
+        window.appReady = function(){
+          var r = orig.apply(this, arguments);
+          setTimeout(function(){ if (shouldSkipWizard()) killWizard('appReady'); }, 50);
+          return r;
+        };
+        window.appReady._p4WizardGuard = true;
+        clearInterval(iv);
+      }
+      if (tries > 40) clearInterval(iv);
+    }, 100);
+  }
+
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden && shouldSkipWizard()) killWizard('visibility');
+  });
+
+  setTimeout(function(){
+    patchNeeded(); patchStart(); watchDOM(); hookAppReady();
+    if (shouldSkipWizard()) killWizard('boot');
+  }, 300);
+  setTimeout(function(){ if (shouldSkipWizard()) killWizard('boot-late'); }, 2500);
+  setTimeout(function(){ if (shouldSkipWizard()) killWizard('boot-settled'); }, 5500);
+
+  log('armed');
 })();
 </script>
 </body>
