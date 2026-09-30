@@ -64543,7 +64543,7 @@ P4.Wheel = (function () {
     var screened = get(K.s, 0);
     if (screened) {
       var days = lastWorkoutDays();
-      if (days !== null && days > 90) return { show:true, reason:'layoff', days:Math.floor(days) };
+      if (days !== null && days > 90 && screened < (Date.now() - (days - 90) * 86400000)) return { show:true, reason:'layoff', days:M
       var declared = get(K.d, []);
       var saved = get(K.g, {});
       for (var i = 0; i < declared.length; i++) if (!saved[declared[i]]) return { show:true, reason:'new-condition' };
