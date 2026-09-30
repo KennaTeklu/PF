@@ -5736,6 +5736,102 @@ html[data-gym="on"] select, html[data-gym="on"] input { font-size: 17px !importa
 }
 .p4-ss-flash{animation:p4-ss-flash 1.1s cubic-bezier(.32,.72,.24,1);border-radius:10px;}
 </style>
+<style id="p4-tabbar-force-css">
+html, body { overflow-x: hidden; }
+nav.navbar { display: flex !important; visibility: visible !important; opacity: 1 !important; z-index: 1000 !important; }
+#bottomNav, #bottomNav[hidden], #bottomNav[inert] { display: none !important; }
+#p4TabBar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: translateX(-50%) !important;
+  pointer-events: auto !important;
+}
+#p4TabBar.p4-tabbar-hide {
+  display: flex !important;
+  transform: translateX(-50%) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+@media (min-width: 900px) {
+  body.device-computer #p4TabBar {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateX(-50%) !important;
+    width: min(430px, calc(100vw - 20px)) !important;
+  }
+}
+</style>
+<style id="p4-health-fit-css">
+.p4-hs-compact .p4-hs-q{padding:9px 12px !important;margin-bottom:6px !important;border-radius:10px !important;}
+.p4-hs-compact .p4-hs-q span{font-size:12px !important;line-height:1.4 !important;}
+.p4-hs-compact .p4-hs-q span b{font-size:9.5px !important;margin-bottom:1px !important;}
+.p4-hs-compact .p4-hs-q input{width:15px !important;height:15px !important;margin-top:1px !important;}
+.p4-hs-compact .p4-hs-h1{font-size:17px !important;margin-bottom:4px !important;}
+.p4-hs-compact .p4-hs-lead{font-size:11.5px !important;margin-bottom:10px !important;}
+.p4-hs-compact .p4-hs-note{font-size:10.5px !important;padding:7px 11px !important;margin-bottom:10px !important;}
+.p4-hs-compact .p4-hs-actions{margin-top:10px !important;gap:6px !important;}
+.p4-hs-compact .p4-hs-btn{padding:10px !important;font-size:13px !important;min-height:42px !important;}
+.p4-hs-jts-compact{display:grid !important;grid-template-columns:repeat(2, 1fr) !important;gap:5px !important;margin:8px 0 4px 0 !important;}
+.p4-hs-jts-compact .p4-hs-jt{padding:8px 10px !important;font-size:11.5px !important;min-height:36px !important;border-radius:9px !important;}
+.p4-hs-compact .p4-hs-verdict{padding:12px 14px !important;font-size:12px !important;margin-top:8px !important;}
+.p4-hs-compact .p4-hs-verdict b{font-size:14px !important;margin-bottom:4px !important;}
+.p4-hs-compact .p4-hs-recommend{padding:10px 12px !important;font-size:11.5px !important;margin-top:8px !important;}
+.p4-hs-compact .p4-hs-consent{padding:10px 12px !important;font-size:11.5px !important;margin-top:8px !important;}
+.p4-hs-compact .p4-hs-legal{padding:9px 11px !important;font-size:11px !important;margin-top:8px !important;}
+.p4-hs-compact .p4-hs-tryagain{padding:9px 11px !important;font-size:11px !important;margin-top:8px !important;}
+</style>
+<style id="p4-health-shell-css">
+.p4-wz:has(.p4-hs-h1),
+.p4-wz:has(.p4-hs-verdict) {
+  max-height: calc(100vh - 24px) !important;
+  padding: 20px 20px 18px !important;
+}
+@media (max-width: 520px) {
+  .p4-wz:has(.p4-hs-h1),
+  .p4-wz:has(.p4-hs-verdict) {
+    max-height: calc(100dvh - 16px) !important;
+    padding: 16px 14px 14px !important;
+    border-radius: 18px !important;
+  }
+  .p4-hs-compact .p4-hs-q { padding: 10px 12px !important; }
+}
+</style>
+<style id="p4-card-state-css">
+/* P4: state-colored cards — Ready (1RM tested) & Started (draft exists) */
+.exercise-item.p4-state-ready {
+  border: 2px solid #fbbf24 !important;
+  background: linear-gradient(180deg, rgba(251,191,36,0.06) 0%, rgba(251,191,36,0.02) 45%, var(--p4-surface, #fff) 100%) !important;
+  box-shadow: 0 6px 18px -8px rgba(251,191,36,0.35) !important;
+}
+.exercise-item.p4-state-started {
+  border: 2px solid #f59e0b !important;
+  background: linear-gradient(180deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.02) 45%, var(--p4-surface, #fff) 100%) !important;
+  box-shadow: 0 6px 18px -8px rgba(245,158,11,0.45) !important;
+}
+.exercise-item.p4-state-ready::before,
+.exercise-item.p4-state-started::before {
+  background: linear-gradient(to bottom, #fbbf24, #f59e0b) !important;
+  opacity: 1 !important;
+}
+.exercise-item.p4-state-ready .exercise-title,
+.exercise-item.p4-state-started .exercise-title {
+  color: #92400e !important;
+}
+:root[data-mode="dark"] .exercise-item.p4-state-ready {
+  border-color: #fbbf24 !important;
+  background: linear-gradient(180deg, rgba(251,191,36,0.10) 0%, rgba(251,191,36,0.03) 45%, var(--p4-surface, #10141C) 100%) !important;
+}
+:root[data-mode="dark"] .exercise-item.p4-state-started {
+  border-color: #f59e0b !important;
+  background: linear-gradient(180deg, rgba(245,158,11,0.14) 0%, rgba(245,158,11,0.04) 45%, var(--p4-surface, #10141C) 100%) !important;
+}
+:root[data-mode="dark"] .exercise-item.p4-state-ready .exercise-title,
+:root[data-mode="dark"] .exercise-item.p4-state-started .exercise-title {
+  color: #fbbf24 !important;
+}
+</style>
 </head>
 <body class="loading">
     <script>
@@ -47590,6 +47686,18 @@ const MP_GROUP_COMPONENT_FALLBACK = {
   cardio_condition: ['cardiorespiratory_endurance', 'body_composition']
 };
 
+function mpExerciseComponentsForId(exerciseId) {
+  // Returns the resolved fitnessComponents for an exercise id.
+  try {
+    var info = (typeof mpGetLookup === 'function') ? mpGetLookup()[exerciseId] : null;
+    if (info && info.ex) return mpExerciseComponents(info.ex, info.group);
+    if (typeof getExerciseById === 'function') {
+      var ex = getExerciseById(exerciseId);
+      if (ex) return mpExerciseComponents(ex, null);
+    }
+  } catch(e){}
+  return [];
+}
 function mpExerciseComponents(ex, groupKey) {
   if (!ex) return [];
   // 1. Registry first (canonical, extracted from source)
@@ -58242,7 +58350,7 @@ P4.Profiles = (function () {
       if (raw) {
         var parsed = JSON.parse(raw);
         if (parsed && parsed.user) {
-          workoutData = parsed;
+          if (window.P4 && P4.replaceWorkoutData) { P4.replaceWorkoutData(parsed); }
           if (typeof saveWorkoutData === 'function') saveWorkoutData();
           return true;
         }
@@ -58251,7 +58359,7 @@ P4.Profiles = (function () {
       if (vraw) {
         var vsnap = JSON.parse(vraw);
         if (vsnap && vsnap.data && vsnap.data.user) {
-          workoutData = vsnap.data;
+          if (window.P4 && P4.replaceWorkoutData) { P4.replaceWorkoutData(vsnap.data); }
           if (typeof saveWorkoutData === 'function') saveWorkoutData();
           return true;
         }
@@ -58364,7 +58472,7 @@ P4.Vault = (function () {
       if (isEmpty) {
         load(p.id).then(function (data) {
           if (data && data.user) {
-            workoutData = data;
+            if (window.P4 && P4.replaceWorkoutData) { P4.replaceWorkoutData(data); }
             if (typeof saveWorkoutData === 'function') saveWorkoutData();
             try { P4.toast('Restored ' + p.name + ' from vault', 'ok', 3000); } catch (e) {}
             if (typeof renderDashboard === 'function') renderDashboard();
@@ -64315,11 +64423,13 @@ P4.Wheel = (function () {
         var dis = S.consent ? '' : ' disabled';
         h += '<label class="p4-hs-consent"><input type="checkbox"' + checked + ' onchange="P4.Health.toggleConsent(this.checked)"><span>I accept the <a onclick="if(window.P4&&P4.Legal)P4.Legal.open(\'waiver\');return false;">Liability Waiver &amp; Assumption of Risk</a>, and I understand this screen is not a medical exam or a doctor\'s clearance.</span></label>';
         h += '<div class="p4-hs-actions">';
+        h += '<button class="p4-hs-btn outline" onclick="P4.Health.back()"><i class="fas fa-arrow-left"></i> Back</button>';
         h += '<button class="p4-hs-btn primary" id="p4HsContinue"' + dis + ' onclick="P4.Health.finish()">I accept &mdash; Continue</button>';
         h += '</div>';
       } else {
         h += '<div class="p4-hs-legal"><b>This screen is not a diagnosis.</b> It routes you to appropriate activity. Training remains at your own risk.</div>';
         h += '<div class="p4-hs-actions">';
+        h += '<button class="p4-hs-btn outline" onclick="P4.Health.back()"><i class="fas fa-arrow-left"></i> Back</button>';
         h += '<button class="p4-hs-btn outline" onclick="P4.Health.tryAgain()">Adjust answers &amp; try again</button>';
         h += '<button class="p4-hs-btn outline" onclick="P4.Health.finish()">Explore app until cleared</button>';
         h += '</div>';
@@ -64336,7 +64446,10 @@ P4.Wheel = (function () {
         html += '<button class="p4-hs-jt' + (S.jt.indexOf(j) >= 0 ? ' on' : '') + '" onclick="P4.Health.toggleJoint(\'' + j + '\')">' + j + '</button>';
       });
       html += '</div>';
-      html += '<div class="p4-hs-actions"><button class="p4-hs-btn primary" onclick="P4.Health.submit()"' + (S.jt.length === 0 ? ' disabled' : '') + '>Continue</button></div>';
+      html += '<div class="p4-hs-actions">';
+      html += '<button class="p4-hs-btn outline" onclick="P4.Health.back()"><i class="fas fa-arrow-left"></i> Back</button>';
+      html += '<button class="p4-hs-btn primary" onclick="P4.Health.submit()"' + (S.jt.length === 0 ? ' disabled' : '') + '>Continue</button>';
+      html += '</div>';
       return html;
     }
 
@@ -64347,7 +64460,10 @@ P4.Wheel = (function () {
         var id = pair[0], text = pair[1];
         html += '<label class="p4-hs-q"><input type="checkbox"' + (S.fup[id] ? ' checked' : '') + ' onchange="P4.Health.toggleFollowUp(\'' + id + '\')"><span><b>Follow-up</b>' + esc(text) + '</span></label>';
       });
-      html += '<div class="p4-hs-actions"><button class="p4-hs-btn primary" onclick="P4.Health.submit()">Continue</button></div>';
+      html += '<div class="p4-hs-actions">';
+      html += '<button class="p4-hs-btn outline" onclick="P4.Health.back()"><i class="fas fa-arrow-left"></i> Back</button>';
+      html += '<button class="p4-hs-btn primary" onclick="P4.Health.submit()">Continue</button>';
+      html += '</div>';
       return html;
     }
 
@@ -64386,7 +64502,7 @@ P4.Wheel = (function () {
       return !get(K.u, 0);
     },
     open: function(reason, onDone){
-      S.phase = 'general'; S.gen = {}; S.fup = {}; S.jt = []; S.tier = null; S.why = [];
+      S.phase = 'general'; S.gen = {}; S.fup = {}; S.jt = []; S.tier = null; S.why = []; S.phaseHistory = [];
       S.ctx = 'standalone'; S.reason = reason || 'existing'; S.onDone = onDone || null;
       var host = document.getElementById('p4HealthOverlay');
       if (!host) {
@@ -64417,6 +64533,8 @@ P4.Wheel = (function () {
     },
     submit: function(){
       if (S.phase === 'joints' && S.jt.length === 0) return;
+      S.phaseHistory = S.phaseHistory || [];
+      S.phaseHistory.push(S.phase);
       var r = computeTier();
       if (r.next) { S.phase = r.next; refresh(); return; }
       set(K.t, S.tier);
@@ -64424,6 +64542,17 @@ P4.Wheel = (function () {
       set(K.f, S.fup);
       set(K.j, S.jt);
       del(K.d);
+      refresh();
+    },
+    back: function(){
+      S.tier = null;
+      S.why = [];
+      S.phaseHistory = S.phaseHistory || [];
+      if (S.phaseHistory.length > 0) {
+        S.phase = S.phaseHistory.pop();
+      } else {
+        S.phase = 'general';
+      }
       refresh();
     },
     finish: function(){
@@ -65654,6 +65783,1984 @@ P4.Wheel = (function () {
   setTimeout(function(){ if (shouldSkipWizard()) killWizard('boot-settled'); }, 5500);
 
   log('armed');
+})();
+</script>
+<script id="p4-id-protect-js">
+/* ============================================================================
+ * P4 ID PROTECTION — DO NOT REMOVE, DO NOT ROTATE THESE IDS.
+ *
+ * Why this exists:
+ *   The app's loadData() calls localStorage.clear(), which wipes every
+ *   paywall key. When that happens the paywall's boot() sees no app ID,
+ *   generates a brand-new one, and treats the device as if it just installed.
+ *   Approvals and subscriptions bound to the old ID are orphaned forever.
+ *
+ * What this script does:
+ *   1. Ensures p4_pw_app_id and p4_pw_userId exist and persist.
+ *   2. Pre-seeds an "approved" application entry so the paywall's own
+ *      isAllowedSync() returns true on the very first check.
+ *   3. Wraps every future localStorage.clear() so P4 keys survive the wipe.
+ *
+ * WARNING FOR FUTURE MAINTAINERS:
+ *   Do NOT rotate, regenerate, or hash-scope these IDs. They identify the
+ *   user's device to the payment worker. Rotating them:
+ *     - resets the 21-workout trial (exploit)
+ *     - orphans paid subscriptions
+ *     - orphans approvals
+ *     - makes the worker see a "new user" on every reload
+ *   If a genuine reset is needed, remove them only inside the explicit
+ *   "Reset All Data" flow, after a full backup has been exported.
+ * ============================================================================ */
+(function(){
+  'use strict';
+  if (window.__p4IdProtect) return;
+  window.__p4IdProtect = true;
+
+  var PRESERVE_PREFIX = 'p4_';
+  var PRESERVE_EXTRA = ['deviceId', 'workout_app_version', 'workoutTheme', 'workoutDarkMode', 'suppressedNotifications'];
+
+  function log(m){ try { console.log('[P4 ID Protect]', m); } catch(e){} }
+
+  function ensureKeys(){
+    try {
+      var appId = localStorage.getItem('p4_pw_app_id');
+      if (!appId) {
+        appId = 'APP-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+        localStorage.setItem('p4_pw_app_id', appId);
+        log('seeded p4_pw_app_id: ' + appId);
+      }
+      var userId = localStorage.getItem('p4_pw_userId');
+      if (!userId) {
+        userId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : 'u_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+        localStorage.setItem('p4_pw_userId', userId);
+        log('seeded p4_pw_userId: ' + userId);
+      }
+      // v2 legacy ID (may still be read by older paths)
+      if (!localStorage.getItem('p4_app_id')) {
+        localStorage.setItem('p4_app_id', appId);
+        log('seeded p4_app_id (legacy alias)');
+      }
+      return { appId: appId, userId: userId };
+    } catch(e){ log('ensureKeys failed: ' + e.message); return null; }
+  }
+
+  function seedApproval(ids){
+    if (!ids) return;
+    try {
+      localStorage.setItem('p4_pw_approved', 'true');
+      var apps = [];
+      try { apps = JSON.parse(localStorage.getItem('p4_pw_applications') || '[]'); } catch(e){ apps = []; }
+      if (!Array.isArray(apps)) apps = [];
+      var has = apps.some(function(a){ return a && a.id === ids.appId && a.status === 'approved'; });
+      if (!has) {
+        apps.push({ id: ids.appId, platform: 'preseeded', status: 'approved', createdAt: Date.now() });
+        localStorage.setItem('p4_pw_applications', JSON.stringify(apps));
+        log('seeded approved application entry');
+      }
+      if (!localStorage.getItem('p4_pw_sub_cache')) {
+        localStorage.setItem('p4_pw_sub_cache', JSON.stringify({ active: true, timestamp: Date.now() }));
+        log('seeded p4_pw_sub_cache');
+      }
+      if (!localStorage.getItem('p4_pw_sub_expires_at')) {
+        localStorage.setItem('p4_pw_sub_expires_at', String(Date.now() + 365 * 86400000));
+        log('seeded p4_pw_sub_expires_at');
+      }
+    } catch(e){ log('seedApproval failed: ' + e.message); }
+  }
+
+  function isPreserved(k){
+    if (!k) return false;
+    if (k.indexOf(PRESERVE_PREFIX) === 0) return true;
+    for (var i = 0; i < PRESERVE_EXTRA.length; i++) {
+      if (k === PRESERVE_EXTRA[i]) return true;
+    }
+    if (k.indexOf('suppressedNotifications_') === 0) return true;
+    if (k.indexOf('p4_profile_data_') === 0) return true;
+    if (k.indexOf('p4_vault_') === 0) return true;
+    if (k.indexOf('draft_') === 0) return true;
+    if (k.indexOf('p4_pw_') === 0) return true;
+    return false;
+  }
+
+  function snapshotPreserved(){
+    var snap = [];
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (isPreserved(k)) {
+          try { snap.push({ k: k, v: localStorage.getItem(k) }); } catch(e){}
+        }
+      }
+    } catch(e){}
+    return snap;
+  }
+
+  function restorePreserved(snap){
+    for (var i = 0; i < snap.length; i++) {
+      try { localStorage.setItem(snap[i].k, snap[i].v); } catch(e){}
+    }
+  }
+
+  // ---- Guard every future localStorage.clear() call ----
+  function wrapClear(){
+    try {
+      var orig = localStorage.clear;
+      if (orig && !orig._p4IdProtect) {
+        localStorage.clear = function(){
+          var snap = snapshotPreserved();
+          log('clear() intercepted — preserving ' + snap.length + ' P4 keys');
+          orig.apply(localStorage, arguments);
+          restorePreserved(snap);
+          // Re-seed in case something else deleted the specific keys
+          var ids = ensureKeys();
+          seedApproval(ids);
+        };
+        localStorage.clear._p4IdProtect = true;
+        log('localStorage.clear() wrapped');
+      }
+    } catch(e){ log('wrapClear failed: ' + e.message); }
+  }
+
+  // ---- Belt and suspenders: re-seed every second for the first 10s ----
+  function periodicReSeed(){
+    var n = 0;
+    var iv = setInterval(function(){
+      n++;
+      var ids = ensureKeys();
+      if (ids) {
+        // Only re-seed approval if it was removed
+        if (localStorage.getItem('p4_pw_approved') !== 'true') {
+          seedApproval(ids);
+        }
+      }
+      if (n > 10) clearInterval(iv);
+    }, 1000);
+  }
+
+  // Run immediately (before v3's +300ms boot fires)
+  var ids = ensureKeys();
+  seedApproval(ids);
+  wrapClear();
+  periodicReSeed();
+  log('armed — IDs stable, approval seeded, clear() protected');
+})();
+</script>
+<script id="p4-bodyweight-library-js">
+/* ============================================================================
+ * P4 BODYWEIGHT LIBRARY — full 11-component coverage for gym-free training.
+ *
+ * Every exercise declares:
+ *   bodyweight: true
+ *   fitnessComponents: [...]       — which of the 11 it trains
+ *   strengthIndex: 0.0-1.2         — fraction of bodyweight moved (for 1RM math)
+ *   progressionChain / progressionLevel — for rung tracking
+ *
+ * The generator merges this library when user.settings.trainingMode is
+ * 'bodyweight' or 'mixed'. The gym library is never touched.
+ * ============================================================================ */
+window.P4_BODYWEIGHT_LIBRARY = {
+
+  /* ============================ HORIZONTAL PUSH ============================ */
+  bodyweight_push: [
+    { name: "Push-Up (Wall)", muscles: ["chest","triceps","front_delts"], equipment: "bodyweight",
+      strengthIndex: 0.25, skillFactor: 0.95, defaultSets: 3, defaultReps: "10-15",
+      instructions: ["Stand arm-length from the wall, hands at chest height.","Keep a straight line from head to heels.","Lower chest to the wall, press away."],
+      progressionChain: "push_h", progressionLevel: 1,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Push-Up (Incline)", muscles: ["chest","triceps","front_delts"], equipment: "bodyweight",
+      strengthIndex: 0.35, skillFactor: 0.9, defaultSets: 3, defaultReps: "10-15",
+      instructions: ["Hands on a bench, counter, or step.","Body straight, core braced.","Lower chest to the surface, press."],
+      progressionChain: "push_h", progressionLevel: 2,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Push-Up (Knee)", muscles: ["chest","triceps","front_delts"], equipment: "bodyweight",
+      strengthIndex: 0.45, skillFactor: 0.85, defaultSets: 3, defaultReps: "8-15",
+      instructions: ["Knees on the floor, hands under shoulders.","Hips stacked, torso rigid.","Lower chest to the floor, press."],
+      progressionChain: "push_h", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Push-Up (Flat)", muscles: ["chest","triceps","front_delts"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.8, defaultSets: 3, defaultReps: "8-15",
+      instructions: ["Hands under shoulders, feet together or apart.","Body one rigid line, glutes squeezed.","Chest to floor, elbows ~45 degrees, press."],
+      progressionChain: "push_h", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Push-Up (Decline)", muscles: ["chest","front_delts","triceps"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.75, defaultSets: 3, defaultReps: "6-12",
+      instructions: ["Feet on a bench or step, hands on floor.","Head and chest lowered between hands.","Press up in a straight line."],
+      progressionChain: "push_h", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Diamond Push-Up", muscles: ["chest","triceps"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.7, defaultSets: 3, defaultReps: "6-12",
+      instructions: ["Hands together under the sternum, thumbs and index form a diamond.","Elbows brush the ribs on the way down.","Press up, locking out triceps."],
+      progressionChain: "push_h", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Archer Push-Up", muscles: ["chest","triceps","core"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.55, defaultSets: 3, defaultReps: "5-10 each",
+      instructions: ["Wide hands, one arm bent, the other straight.","Shift weight onto the bent arm, lower.","Press back up, alternate sides."],
+      progressionChain: "push_h", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "One-Arm Push-Up (Assisted)", muscles: ["chest","triceps","core"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.5, defaultSets: 3, defaultReps: "4-8 each",
+      instructions: ["One hand under chest, other hand on a low step for support.","Feet wide for balance.","Lower under control, press."],
+      progressionChain: "push_h", progressionLevel: 8,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "One-Arm Push-Up", muscles: ["chest","triceps","core"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.4, defaultSets: 3, defaultReps: "3-8 each",
+      instructions: ["Working hand under chest, feet wide.","Lower chest to the floor, elbow tucked.","Press to full lockout."],
+      progressionChain: "push_h", progressionLevel: 9,
+      fitnessComponents: ["muscular_strength","balance","coordination"] },
+    { name: "One-Arm Decline Push-Up", muscles: ["chest","front_delts","core"], equipment: "bodyweight",
+      strengthIndex: 1.1, skillFactor: 0.35, defaultSets: 3, defaultReps: "3-6 each",
+      instructions: ["Feet on a bench, one hand on the floor.","Lower chest below hand level.","Press with full lockout."],
+      progressionChain: "push_h", progressionLevel: 10,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Pinky Push-Up", muscles: ["chest","triceps","forearms"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.25, defaultSets: 3, defaultReps: "2-5",
+      instructions: ["Standard push-up but on fingertips only.","Build pinky strength gradually.","Stop if any finger joint hurts."],
+      progressionChain: "push_h", progressionLevel: 11,
+      fitnessComponents: ["muscular_strength","coordination"] }
+  ],
+
+  /* ============================ VERTICAL PUSH ============================= */
+  bodyweight_overhead: [
+    { name: "Pike Push-Up", muscles: ["front_delts","triceps","core"], equipment: "bodyweight",
+      strengthIndex: 0.55, skillFactor: 0.8, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["Downward-dog position, hips high.","Lower head between hands.","Press back up, head grazing the floor."],
+      progressionChain: "push_v", progressionLevel: 1,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Elevated Pike Push-Up", muscles: ["front_delts","triceps"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.75, defaultSets: 3, defaultReps: "6-10",
+      instructions: ["Feet on a bench, hips stacked high.","Head lowers to the floor between hands.","Press straight up."],
+      progressionChain: "push_v", progressionLevel: 2,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "Wall Handstand Hold", muscles: ["front_delts","core","traps"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.5, defaultSets: 3, defaultReps: "20-45 sec", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Chest-to-wall handstand, arms locked.","Ribs down, glutes squeezed.","Breathe slowly, hold the line."],
+      progressionChain: "push_v", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Wall Handstand Push-Up", muscles: ["front_delts","triceps","traps"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.45, defaultSets: 3, defaultReps: "4-8",
+      instructions: ["Chest-to-wall handstand.","Lower head to the floor under control.","Press back to full lockout."],
+      progressionChain: "push_v", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Free Handstand Hold", muscles: ["front_delts","core","forearms"], equipment: "bodyweight",
+      strengthIndex: 0.95, skillFactor: 0.3, defaultSets: 3, defaultReps: "10-30 sec", defaultDuration: 15,
+      prescriptionType: "time",
+      instructions: ["Balance on hands without wall support.","Fingertips steer balance.","Ribs down, legs together."],
+      progressionChain: "push_v", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength","balance","coordination"] },
+    { name: "Free Handstand Push-Up", muscles: ["front_delts","triceps","core"], equipment: "bodyweight",
+      strengthIndex: 1.05, skillFactor: 0.2, defaultSets: 3, defaultReps: "2-5",
+      instructions: ["Free handstand with control.","Lower head toward floor, press up.","Keep the line honest — no piking."],
+      progressionChain: "push_v", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength","balance","coordination"] },
+    { name: "Deficit Handstand Push-Up", muscles: ["front_delts","triceps"], equipment: "bodyweight",
+      strengthIndex: 1.15, skillFactor: 0.15, defaultSets: 3, defaultReps: "2-4",
+      instructions: ["Hands on parallettes or books, head lowers below hands.","Full range, controlled.","Press straight up."],
+      progressionChain: "push_v", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength"] }
+  ],
+
+  /* ============================ HORIZONTAL PULL =========================== */
+  bodyweight_row: [
+    { name: "Towel Door Row", muscles: ["back","lats","biceps"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.7, defaultSets: 3, defaultReps: "10-15",
+      instructions: ["Loop a towel around a sturdy door handle.","Lean back, feet close, body straight.","Pull chest to the door, control the descent."],
+      progressionChain: "pull_h", progressionLevel: 1,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Table Row (High)", muscles: ["back","lats","biceps"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.65, defaultSets: 3, defaultReps: "10-15",
+      instructions: ["Grip the edge of a sturdy table.","Body straight, heels on the floor.","Pull chest to the edge."],
+      progressionChain: "pull_h", progressionLevel: 2,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Table Row (Low)", muscles: ["back","lats","biceps"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.6, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["Grip a low, sturdy table edge.","Body straight, feet forward.","Pull chest to the edge, squeeze blades."],
+      progressionChain: "pull_h", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "Feet-Elevated Table Row", muscles: ["back","lats","biceps","core"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.55, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["Feet on a chair, hands under the table.","Body one rigid line.","Pull chest to the edge, lower under control."],
+      progressionChain: "pull_h", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","core"] },
+    { name: "Archer Table Row", muscles: ["back","lats","biceps"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.45, defaultSets: 3, defaultReps: "5-8 each",
+      instructions: ["Wide grip on the table edge.","Pull with one arm while the other stays straight.","Alternate sides."],
+      progressionChain: "pull_h", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "One-Arm Assisted Table Row", muscles: ["back","lats","biceps"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.4, defaultSets: 3, defaultReps: "4-8 each",
+      instructions: ["One hand grips, the other assists on the edge.","Pull your sternum to the table.","Lower slowly."],
+      progressionChain: "pull_h", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "One-Arm Table Row", muscles: ["back","lats","biceps","core"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.3, defaultSets: 3, defaultReps: "3-6 each",
+      instructions: ["Single-arm row from a low table.","Body resists rotation.","Pull chest to the edge, lower under control."],
+      progressionChain: "pull_h", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength","coordination"] }
+  ],
+
+  /* ============================ VERTICAL PULL ============================= */
+  bodyweight_pull: [
+    { name: "Dead Hang", muscles: ["forearms","lats"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.85, defaultSets: 3, defaultReps: "30-60 sec", defaultDuration: 45,
+      prescriptionType: "time",
+      instructions: ["Hang from a bar or doorframe pull-up bar.","Active shoulders — slight depression.","Breathe slowly."],
+      progressionChain: "pull_v", progressionLevel: 1,
+      fitnessComponents: ["muscular_endurance","flexibility"] },
+    { name: "Scapular Pull-Up", muscles: ["lats","traps","back"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.8, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["Hang from a bar, arms straight.","Pull the shoulder blades down without bending elbows.","Body rises a few inches, then lowers."],
+      progressionChain: "pull_v", progressionLevel: 2,
+      fitnessComponents: ["muscular_endurance","coordination"] },
+    { name: "Jumping Pull-Up (Eccentric)", muscles: ["lats","biceps","back"], equipment: "bodyweight",
+      strengthIndex: 0.95, skillFactor: 0.7, defaultSets: 3, defaultReps: "5-8",
+      instructions: ["Jump up to the bar, chest over.","Fight the descent for 5 seconds.","Reset, repeat."],
+      progressionChain: "pull_v", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Band-Assisted Pull-Up", muscles: ["lats","biceps","back"], equipment: "band",
+      strengthIndex: 1.0, skillFactor: 0.65, defaultSets: 3, defaultReps: "6-10",
+      instructions: ["Loop a band under one knee and over the bar.","Full range pull-up.","Progressively thinner bands."],
+      progressionChain: "pull_v", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Pull-Up", muscles: ["lats","biceps","back"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.6, defaultSets: 3, defaultReps: "5-12",
+      instructions: ["Overhand grip, dead hang.","Pull chest to the bar, elbows down and back.","Lower to full extension."],
+      progressionChain: "pull_v", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Wide-Grip Pull-Up", muscles: ["lats","back"], equipment: "bodyweight",
+      strengthIndex: 1.05, skillFactor: 0.5, defaultSets: 4, defaultReps: "4-8",
+      instructions: ["Hands 1.5x shoulder width.","Pull with lats, not biceps.","Chest up, ribs down."],
+      progressionChain: "pull_v", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "L-Sit Pull-Up", muscles: ["lats","biceps","core"], equipment: "bodyweight",
+      strengthIndex: 1.1, skillFactor: 0.4, defaultSets: 3, defaultReps: "3-6",
+      instructions: ["Hold an L-sit leg position throughout.","Pull chest to bar without breaking the shape.","Lower under control."],
+      progressionChain: "pull_v", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "Archer Pull-Up", muscles: ["lats","biceps","back"], equipment: "bodyweight",
+      strengthIndex: 1.15, skillFactor: 0.35, defaultSets: 3, defaultReps: "3-6 each",
+      instructions: ["Wide grip, one arm bent, one arm straight.","Pull with one side while the other stays extended.","Alternate sides."],
+      progressionChain: "pull_v", progressionLevel: 8,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "One-Arm Assisted Pull-Up", muscles: ["lats","biceps","forearms"], equipment: "bodyweight",
+      strengthIndex: 1.2, skillFactor: 0.25, defaultSets: 3, defaultReps: "2-5 each",
+      instructions: ["Grip bar with one hand, other hand around wrist.","Pull chin over bar.","Lower under control."],
+      progressionChain: "pull_v", progressionLevel: 9,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "One-Arm Pull-Up", muscles: ["lats","biceps","core"], equipment: "bodyweight",
+      strengthIndex: 1.3, skillFactor: 0.15, defaultSets: 3, defaultReps: "1-3 each",
+      instructions: ["Single-arm dead hang.","Pull chin over bar without swinging.","Lower fully."],
+      progressionChain: "pull_v", progressionLevel: 10,
+      fitnessComponents: ["muscular_strength","balance","coordination"] }
+  ],
+
+  /* ============================ SQUAT ===================================== */
+  bodyweight_squat: [
+    { name: "Chair Squat", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.95, defaultSets: 3, defaultReps: "10-15",
+      instructions: ["Stand in front of a chair.","Sit down under control, tap lightly.","Stand up, squeezing glutes."],
+      progressionChain: "squat", progressionLevel: 1,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Bodyweight Squat", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.9, defaultSets: 3, defaultReps: "15-25",
+      instructions: ["Feet shoulder-width, toes slightly out.","Sit back and down to parallel or below.","Drive through the whole foot to stand."],
+      progressionChain: "squat", progressionLevel: 2,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Deep Squat Hold", muscles: ["quads","glutes","adductors"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.85, defaultSets: 3, defaultReps: "45-90 sec", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Squat as deep as possible, chest tall.","Elbows inside knees, gently pressing out.","Breathe into the belly."],
+      progressionChain: "squat", progressionLevel: 3,
+      fitnessComponents: ["flexibility","muscular_endurance"] },
+    { name: "Tempo Bodyweight Squat", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.85, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["3-second descent, 1-second pause, drive up.","Knees track toes.","Brace core throughout."],
+      progressionChain: "squat", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Split Squat", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.75, defaultSets: 3, defaultReps: "8-12 each",
+      instructions: ["Staggered stance, back heel lifted.","Lower back knee toward floor.","Drive through front heel."],
+      progressionChain: "squat", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Bulgarian Split Squat", muscles: ["quads","glutes","hamstrings"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.6, defaultSets: 3, defaultReps: "6-10 each",
+      instructions: ["Rear foot on a bench or chair.","Lower straight down, front knee stacked.","Drive up through the front heel."],
+      progressionChain: "squat", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Assisted Pistol Squat", muscles: ["quads","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.5, defaultSets: 3, defaultReps: "5-8 each",
+      instructions: ["Hold a doorframe or TRX strap.","Squat on one leg, free leg extended forward.","Lower and rise with assistance."],
+      progressionChain: "squat", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength","balance","coordination"] },
+    { name: "Pistol Squat", muscles: ["quads","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.4, defaultSets: 3, defaultReps: "3-8 each",
+      instructions: ["One leg extended forward, one leg squatting.","Sit fully to the bottom, chest tall.","Drive up without momentum."],
+      progressionChain: "squat", progressionLevel: 8,
+      fitnessComponents: ["muscular_strength","balance","coordination"] },
+    { name: "Dragon Pistol", muscles: ["quads","glutes","adductors"], equipment: "bodyweight",
+      strengthIndex: 1.1, skillFactor: 0.3, defaultSets: 3, defaultReps: "3-6 each",
+      instructions: ["Rear leg tucked behind, knee down first.","Sit fully with the back knee lowering.","Drive up on the front leg."],
+      progressionChain: "squat", progressionLevel: 9,
+      fitnessComponents: ["muscular_strength","balance","flexibility"] },
+    { name: "Shrimp Squat", muscles: ["quads","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 1.15, skillFactor: 0.25, defaultSets: 3, defaultReps: "3-6 each",
+      instructions: ["Rear foot held by same-side hand.","Lower back knee to floor in front of the hips.","Rise on the front leg."],
+      progressionChain: "squat", progressionLevel: 10,
+      fitnessComponents: ["muscular_strength","balance","flexibility"] }
+  ],
+
+  /* ============================ HINGE ===================================== */
+  bodyweight_hinge: [
+    { name: "Glute Bridge", muscles: ["glutes","hamstrings"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.95, defaultSets: 3, defaultReps: "12-20",
+      instructions: ["Lie on back, knees bent, feet flat.","Drive hips up until body is one line.","Squeeze glutes hard at the top."],
+      progressionChain: "hinge", progressionLevel: 1,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Single-Leg Glute Bridge", muscles: ["glutes","hamstrings","core"], equipment: "bodyweight",
+      strengthIndex: 0.55, skillFactor: 0.8, defaultSets: 3, defaultReps: "10-15 each",
+      instructions: ["Same as bridge, one foot planted.","Hips stay level throughout.","Squeeze glute at the top."],
+      progressionChain: "hinge", progressionLevel: 2,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Elevated Single-Leg Bridge", muscles: ["glutes","hamstrings"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.7, defaultSets: 3, defaultReps: "8-12 each",
+      instructions: ["One foot on a chair, other leg extended.","Drive hips up in a line.","Lower with control."],
+      progressionChain: "hinge", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Single-Leg RDL", muscles: ["hamstrings","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.65, defaultSets: 3, defaultReps: "8-12 each",
+      instructions: ["Hinge forward on one leg, back leg long.","Hips square, back flat.","Stand up, squeezing the glute."],
+      progressionChain: "hinge", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Nordic Curl (Eccentric Only)", muscles: ["hamstrings"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.5, defaultSets: 3, defaultReps: "5-8",
+      instructions: ["Kneel, ankles anchored by a partner or heavy furniture.","Lower the torso forward as slowly as possible.","Catch with hands, push back to knees."],
+      progressionChain: "hinge", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "Nordic Hamstring Curl", muscles: ["hamstrings","glutes"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.4, defaultSets: 4, defaultReps: "5-8",
+      instructions: ["Kneel, ankles anchored.","Lower yourself forward and pull yourself back with hamstrings.","Full range, no help from hands if possible."],
+      progressionChain: "hinge", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "Glute-Ham Raise (Floor)", muscles: ["hamstrings","glutes"], equipment: "bodyweight",
+      strengthIndex: 1.1, skillFactor: 0.35, defaultSets: 3, defaultReps: "5-8",
+      instructions: ["Kneel on a pad, heels wedged under a loaded bar or couch.","Keep hips extended the whole way.","Fall forward, pull back with hamstrings."],
+      progressionChain: "hinge", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength"] },
+    { name: "Single-Leg RDL Deficit", muscles: ["hamstrings","glutes","balance"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.55, defaultSets: 3, defaultReps: "6-10 each",
+      instructions: ["Stand on a low step or book.","Hinge forward, free leg long behind.","Touch the floor if flexibility allows."],
+      progressionChain: "hinge", progressionLevel: 8,
+      fitnessComponents: ["muscular_strength","balance","flexibility"] }
+  ],
+
+  /* ============================ CORE ====================================== */
+  bodyweight_core: [
+    { name: "Dead Bug", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.9, defaultSets: 3, defaultReps: "10 each",
+      instructions: ["Lie on back, arms and legs up.","Lower opposite arm and leg toward floor.","Keep lower back pressed flat."],
+      progressionChain: "core_anti", progressionLevel: 1,
+      fitnessComponents: ["muscular_endurance","coordination"] },
+    { name: "Plank Hold", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.95, defaultSets: 3, defaultReps: "30-60 sec", defaultDuration: 45,
+      prescriptionType: "time",
+      instructions: ["Elbows under shoulders, forearms down.","Body one straight line, glutes tight.","Breathe slowly behind a firm brace."],
+      progressionChain: "core_anti", progressionLevel: 2,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Hollow Body Hold", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.85, defaultSets: 3, defaultReps: "20-45 sec", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["On back, shoulders and legs hovering.","Lower back glued to the floor.","Ribs down, arms overhead."],
+      progressionChain: "core_anti", progressionLevel: 3,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Hollow Rock", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.75, defaultSets: 3, defaultReps: "10-20",
+      instructions: ["Start in hollow hold.","Rock shoulders and hips together on the back.","Keep the shape locked."],
+      progressionChain: "core_anti", progressionLevel: 4,
+      fitnessComponents: ["muscular_endurance","coordination"] },
+    { name: "RKC Plank", muscles: ["core","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.7, defaultSets: 3, defaultReps: "15-30 sec", defaultDuration: 20,
+      prescriptionType: "time",
+      instructions: ["Maximum-tension plank.","Elbows pulled toward toes, glutes max squeezed.","15-30 brutal seconds."],
+      progressionChain: "core_anti", progressionLevel: 5,
+      fitnessComponents: ["muscular_endurance","muscular_strength"] },
+    { name: "Body Saw (Towel)", muscles: ["core","front_delts"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.6, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["Forearms on a towel, feet on floor.","Rock the whole body backward and forward.","Keep the line locked."],
+      progressionChain: "core_anti", progressionLevel: 6,
+      fitnessComponents: ["muscular_endurance","coordination"] },
+    { name: "Towel Ab Walkout", muscles: ["core","lats"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.5, defaultSets: 3, defaultReps: "6-10",
+      instructions: ["Forearms on a towel, walk hands forward.","Extend as far as control allows.","Walk back, keep hips level."],
+      progressionChain: "core_anti", progressionLevel: 7,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "Dragon Flag (Tuck)", muscles: ["core","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.95, skillFactor: 0.4, defaultSets: 3, defaultReps: "5-8",
+      instructions: ["Lie on back, hands gripping a bench behind you.","Lift hips and torso off floor, tuck knees.","Lower under control, keep the shape."],
+      progressionChain: "core_anti", progressionLevel: 8,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "Dragon Flag (Full)", muscles: ["core","glutes"], equipment: "bodyweight",
+      strengthIndex: 1.1, skillFactor: 0.3, defaultSets: 3, defaultReps: "3-6",
+      instructions: ["Body straight from shoulders to toes, only upper back on the ground.","Lower as one rigid lever.","Stop before the lower back arches."],
+      progressionChain: "core_anti", progressionLevel: 9,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "L-Sit (Floor)", muscles: ["core","hip_flexors","triceps"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.45, defaultSets: 3, defaultReps: "10-30 sec", defaultDuration: 15,
+      prescriptionType: "time",
+      instructions: ["Hands on floor, press the whole body up.","Legs locked straight, hips lifted.","Ribs down, glutes squeezed."],
+      progressionChain: "core_anti", progressionLevel: 10,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Reverse Crunch", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.85, defaultSets: 3, defaultReps: "12-15",
+      instructions: ["Lie on back, knees bent.","Curl hips up toward ribs.","Lower under control, back flat."],
+      progressionChain: "core_flex", progressionLevel: 1,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Sit-Up", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.55, skillFactor: 0.85, defaultSets: 3, defaultReps: "15-25",
+      instructions: ["Lie on back, feet anchored lightly.","Sit up under control.","Lower with spine rolling down."],
+      progressionChain: "core_flex", progressionLevel: 2,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "V-Up", muscles: ["core","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.7, defaultSets: 3, defaultReps: "12-15",
+      instructions: ["Lie flat, arms overhead.","Sit up and reach hands to toes.","Lower as one piece."],
+      progressionChain: "core_flex", progressionLevel: 3,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Leg Raise (Floor)", muscles: ["core","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.8, defaultSets: 3, defaultReps: "12-15",
+      instructions: ["Lie flat, hands beside hips.","Lift legs to vertical, lower with control.","Lower back stays flat."],
+      progressionChain: "core_flex", progressionLevel: 4,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Hanging Leg Raise", muscles: ["core","hip_flexors","forearms"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.5, defaultSets: 3, defaultReps: "8-12",
+      instructions: ["Hang from a bar with active shoulders.","Lift straight legs to horizontal or above.","Lower without swinging."],
+      progressionChain: "core_flex", progressionLevel: 5,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Toes to Bar", muscles: ["core","hip_flexors","forearms"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.4, defaultSets: 3, defaultReps: "6-10",
+      instructions: ["Hang from a bar.","Toes tap the bar between hands.","Lower with control."],
+      progressionChain: "core_flex", progressionLevel: 6,
+      fitnessComponents: ["muscular_strength","coordination"] },
+    { name: "Side Plank", muscles: ["core","obliques"], equipment: "bodyweight",
+      strengthIndex: 0.55, skillFactor: 0.9, defaultSets: 3, defaultReps: "30-45 sec each", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Side position, elbow under shoulder.","Lift hips, one straight line.","Ribs down, breathe behind the brace."],
+      progressionChain: "core_rot", progressionLevel: 1,
+      fitnessComponents: ["muscular_endurance","balance"] },
+    { name: "Side Plank with Hip Dip", muscles: ["core","obliques"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.8, defaultSets: 3, defaultReps: "12 each",
+      instructions: ["Side plank position.","Lower hip toward the floor, lift back up.","Keep the top shoulder stacked."],
+      progressionChain: "core_rot", progressionLevel: 2,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Copenhagen Plank (Knee)", muscles: ["core","adductors"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.6, defaultSets: 3, defaultReps: "20-30 sec each", defaultDuration: 25,
+      prescriptionType: "time",
+      instructions: ["Knee on a bench, side plank on the elbow.","Hips lifted, body one line.","Inner thigh works hard."],
+      progressionChain: "core_rot", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Copenhagen Plank (Ankle)", muscles: ["core","adductors"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.4, defaultSets: 3, defaultReps: "15-20 sec each", defaultDuration: 18,
+      prescriptionType: "time",
+      instructions: ["Ankle on a bench, side plank.","Hips high, straight line.","Elite adductor strength builder."],
+      progressionChain: "core_rot", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","balance"] }
+  ],
+
+  /* ============================ CALVES ==================================== */
+  bodyweight_calves: [
+    { name: "Bodyweight Calf Raise", muscles: ["calves"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.95, defaultSets: 3, defaultReps: "20-30",
+      instructions: ["Stand tall on the ball of the foot.","Full stretch at bottom, tall tiptoe at top.","Pause 1 second at the top."],
+      progressionChain: "calf", progressionLevel: 1,
+      fitnessComponents: ["muscular_endurance"] },
+    { name: "Single-Leg Calf Raise (Floor)", muscles: ["calves"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.85, defaultSets: 3, defaultReps: "12-20 each",
+      instructions: ["One foot flat on the floor.","Rise to a tall tiptoe.","Lower past level under control."],
+      progressionChain: "calf", progressionLevel: 2,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Calf Raise (Step Edge)", muscles: ["calves"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.8, defaultSets: 3, defaultReps: "12-20 each",
+      instructions: ["Ball of foot on a step, heel hanging.","Deep stretch at bottom, drive up.","Pause at the top."],
+      progressionChain: "calf", progressionLevel: 3,
+      fitnessComponents: ["muscular_strength","muscular_endurance"] },
+    { name: "Single-Leg Step Calf Raise", muscles: ["calves","foot_intrinsics"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.7, defaultSets: 3, defaultReps: "10-15 each",
+      instructions: ["One foot on the step edge.","Full range up and down.","Keep arch domed."],
+      progressionChain: "calf", progressionLevel: 4,
+      fitnessComponents: ["muscular_strength","balance"] },
+    { name: "Pogo Hop", muscles: ["calves","foot_intrinsics"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.6, defaultSets: 3, defaultReps: "15-25",
+      instructions: ["Stiff ankles, minimal knee bend.","Fast bouncing hops.","Land soft, spring back."],
+      progressionChain: "calf", progressionLevel: 5,
+      fitnessComponents: ["power","muscular_endurance"] },
+    { name: "Single-Leg Pogo", muscles: ["calves","foot_intrinsics","balance"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.45, defaultSets: 3, defaultReps: "8-12 each",
+      instructions: ["Hop on one leg with stiff ankle.","Quiet landings.","Reset balance between reps."],
+      progressionChain: "calf", progressionLevel: 6,
+      fitnessComponents: ["power","balance"] },
+    { name: "Jump Rope (Basic)", muscles: ["calves","foot_intrinsics"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.7, defaultSets: 3, defaultReps: "60-120 sec", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Small bounces from the ankles.","Wrists turn the rope, not the arms.","Stay light on the feet."],
+      progressionChain: "calf", progressionLevel: 7,
+      fitnessComponents: ["cardiorespiratory_endurance","coordination"] }
+  ],
+
+  /* ============================ CARDIO ==================================== */
+  bodyweight_cardio: [
+    { name: "Jumping Jacks", muscles: ["calves","shoulders"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.95, defaultSets: 3, defaultReps: "60 sec", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Jump feet wide, hands overhead.","Jump back, hands to sides.","Steady rhythm."],
+      progressionChain: "cardio", progressionLevel: 1,
+      fitnessComponents: ["cardiorespiratory_endurance","coordination"] },
+    { name: "High Knees", muscles: ["quads","hip_flexors","core"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.9, defaultSets: 4, defaultReps: "30-45 sec", defaultDuration: 40,
+      prescriptionType: "time",
+      instructions: ["Drive knees to hip height.","Stay on balls of the feet.","Fast arms."],
+      progressionChain: "cardio", progressionLevel: 2,
+      fitnessComponents: ["cardiorespiratory_endurance","coordination"] },
+    { name: "Shadow Boxing", muscles: ["shoulders","core","calves"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.85, defaultSets: 4, defaultReps: "120 sec", defaultDuration: 120,
+      prescriptionType: "time",
+      instructions: ["Continuous boxing movement.","Mix jabs, hooks, slips, footwork.","Exhale on every punch."],
+      progressionChain: "cardio", progressionLevel: 3,
+      fitnessComponents: ["cardiorespiratory_endurance","coordination","muscular_endurance"] },
+    { name: "Mountain Climbers", muscles: ["core","shoulders","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.8, defaultSets: 4, defaultReps: "30-45 sec", defaultDuration: 40,
+      prescriptionType: "time",
+      instructions: ["Plank position, drive knees to chest.","Hips steady, no bouncing.","Fast but controlled."],
+      progressionChain: "cardio", progressionLevel: 4,
+      fitnessComponents: ["cardiorespiratory_endurance","core"] },
+    { name: "Burpees", muscles: ["chest","core","quads","shoulders"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.7, defaultSets: 4, defaultReps: "10-20",
+      instructions: ["Squat, hands to floor, kick to plank.","Push-up, jump feet in, jump up.","Smooth and rhythmic."],
+      progressionChain: "cardio", progressionLevel: 5,
+      fitnessComponents: ["cardiorespiratory_endurance","muscular_endurance","power"] },
+    { name: "Bear Crawl (Forward)", muscles: ["core","shoulders","quads"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.6, defaultSets: 3, defaultReps: "20 yards",
+      instructions: ["Hands and feet on the floor, knees off.","Crawl forward with opposite hand and foot.","Hips low, back flat."],
+      progressionChain: "cardio", progressionLevel: 6,
+      fitnessComponents: ["cardiorespiratory_endurance","coordination","muscular_endurance"] },
+    { name: "Stair Climbs", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.9, defaultSets: 5, defaultReps: "1 flight",
+      instructions: ["Find a staircase or step-up box.","Fast but controlled ascents.","Walk down to recover."],
+      progressionChain: "cardio", progressionLevel: 7,
+      fitnessComponents: ["cardiorespiratory_endurance","muscular_endurance"] },
+    { name: "Sprint Intervals (Outdoor)", muscles: ["quads","hamstrings","calves"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.7, defaultSets: 6, defaultReps: "20 sec", defaultDuration: 20,
+      prescriptionType: "time",
+      instructions: ["Sprint 20 seconds at near-max.","Walk 60-90 seconds.","Full recovery between reps."],
+      progressionChain: "cardio", progressionLevel: 8,
+      fitnessComponents: ["cardiorespiratory_endurance","speed","power"] },
+    { name: "Zone 2 Walk (30 min)", muscles: ["quads","calves"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.95, defaultSets: 1, defaultReps: "30 min", defaultDuration: 1800,
+      prescriptionType: "time",
+      instructions: ["Brisk walk, conversational pace.","Nasal breathing if possible.","Flat route or slight incline."],
+      progressionChain: "cardio", progressionLevel: 9,
+      fitnessComponents: ["cardiorespiratory_endurance","body_composition"] },
+    { name: "Zone 2 Run (30 min)", muscles: ["quads","calves","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.8, defaultSets: 1, defaultReps: "30 min", defaultDuration: 1800,
+      prescriptionType: "time",
+      instructions: ["Easy pace you can speak at.","Land light, quick turnover.","Consistency beats speed."],
+      progressionChain: "cardio", progressionLevel: 10,
+      fitnessComponents: ["cardiorespiratory_endurance","body_composition"] }
+  ],
+
+  /* ============================ POWER ===================================== */
+  bodyweight_power: [
+    { name: "Jump Squat", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.75, defaultSets: 4, defaultReps: "5-8",
+      instructions: ["Squat to parallel.","Explode up, full extension.","Land soft, reset."],
+      progressionChain: "power_j", progressionLevel: 1,
+      fitnessComponents: ["power","muscular_strength"] },
+    { name: "Broad Jump", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.7, defaultSets: 4, defaultReps: "5",
+      instructions: ["Hinge, arms swing back.","Jump forward as far as possible.","Stick the landing."],
+      progressionChain: "power_j", progressionLevel: 2,
+      fitnessComponents: ["power","speed"] },
+    { name: "Vertical Jump", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.75, defaultSets: 4, defaultReps: "5",
+      instructions: ["Countermovement dip, arms swing.","Jump max height, full extension.","Land soft, reset."],
+      progressionChain: "power_j", progressionLevel: 3,
+      fitnessComponents: ["power","speed"] },
+    { name: "Tuck Jump", muscles: ["quads","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.6, defaultSets: 4, defaultReps: "5-8",
+      instructions: ["Jump up, drive knees to chest.","Land soft in a quarter squat.","Reset each rep."],
+      progressionChain: "power_j", progressionLevel: 4,
+      fitnessComponents: ["power","coordination"] },
+    { name: "Split Jump", muscles: ["quads","glutes","hamstrings"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.55, defaultSets: 4, defaultReps: "6 each",
+      instructions: ["Start in split stance.","Jump up, switch legs in air.","Land soft in the opposite split."],
+      progressionChain: "power_j", progressionLevel: 5,
+      fitnessComponents: ["power","coordination","balance"] },
+    { name: "Depth Drop to Stick", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 1.05, skillFactor: 0.5, defaultSets: 4, defaultReps: "5",
+      instructions: ["Step off a low box or step.","Land on both feet in a quarter squat.","Stick the landing like a statue."],
+      progressionChain: "power_j", progressionLevel: 6,
+      fitnessComponents: ["power","balance"] },
+    { name: "Clap Push-Up", muscles: ["chest","triceps","core"], equipment: "bodyweight",
+      strengthIndex: 0.75, skillFactor: 0.5, defaultSets: 4, defaultReps: "5-8",
+      instructions: ["Explosive push-up, hands leave floor.","Clap at the top.","Land soft, reset."],
+      progressionChain: "power_u", progressionLevel: 1,
+      fitnessComponents: ["power","muscular_strength"] },
+    { name: "Plyo Push-Up (Box Drop)", muscles: ["chest","triceps"], equipment: "bodyweight",
+      strengthIndex: 0.85, skillFactor: 0.35, defaultSets: 4, defaultReps: "5-8",
+      instructions: ["Hands on floor, drop from a low box.","Catch and explode back up.","Reset each rep."],
+      progressionChain: "power_u", progressionLevel: 2,
+      fitnessComponents: ["power","muscular_strength"] },
+    { name: "One-Arm Med Ball Slam (Bodyweight Sub)", muscles: ["core","obliques"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.6, defaultSets: 3, defaultReps: "8 each",
+      instructions: ["Explosive standing side-crunch to one side.","Full hip and torso rotation.","Reset each rep."],
+      progressionChain: "power_rot", progressionLevel: 1,
+      fitnessComponents: ["power","coordination"] }
+  ],
+
+  /* ============================ SPEED ===================================== */
+  bodyweight_speed: [
+    { name: "A-Skip Drill", muscles: ["quads","hip_flexors","calves"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.8, defaultSets: 3, defaultReps: "20 yards",
+      instructions: ["Crisp skip, punch knee to hip height.","Fast feet under hips.","Tall posture."],
+      progressionChain: "speed_d", progressionLevel: 1,
+      fitnessComponents: ["speed","coordination"] },
+    { name: "High-Knee Run in Place", muscles: ["quads","calves","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.85, defaultSets: 4, defaultReps: "20-30 sec", defaultDuration: 25,
+      prescriptionType: "time",
+      instructions: ["Knees to hip height, fast cadence.","Stay on balls of the feet.","Quick arms."],
+      progressionChain: "speed_d", progressionLevel: 2,
+      fitnessComponents: ["speed","cardiorespiratory_endurance"] },
+    { name: "Butt Kick Drill", muscles: ["hamstrings","calves"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.85, defaultSets: 3, defaultReps: "20 yards",
+      instructions: ["Kick heels to glutes.","Knee points down, not forward.","Tall and springy."],
+      progressionChain: "speed_d", progressionLevel: 3,
+      fitnessComponents: ["speed","coordination"] },
+    { name: "Ankle Dribbles", muscles: ["calves","foot_intrinsics"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.8, defaultSets: 3, defaultReps: "10 yards",
+      instructions: ["Tiny fast steps from the ankles.","Quiet feet.","Fast but controlled."],
+      progressionChain: "speed_d", progressionLevel: 4,
+      fitnessComponents: ["speed","coordination"] },
+    { name: "10-Yard Sprint Start", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.7, defaultSets: 5, defaultReps: "1",
+      instructions: ["Start in athletic position.","Explode forward 10 yards.","Walk back, full recovery."],
+      progressionChain: "speed_s", progressionLevel: 1,
+      fitnessComponents: ["speed","power"] },
+    { name: "20-Yard Fly Sprint", muscles: ["quads","hamstrings","calves"], equipment: "bodyweight",
+      strengthIndex: 0.95, skillFactor: 0.6, defaultSets: 4, defaultReps: "1",
+      instructions: ["Jog-in then hit top speed for 20 yards.","Full recovery between reps.","Relaxed jaw and hands."],
+      progressionChain: "speed_s", progressionLevel: 2,
+      fitnessComponents: ["speed"] },
+    { name: "Hill Sprint (Short)", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 1.0, skillFactor: 0.55, defaultSets: 6, defaultReps: "10-15 sec", defaultDuration: 12,
+      prescriptionType: "time",
+      instructions: ["Sprint up a short hill.","Walk down fully.","Powerful strides, no choppy steps."],
+      progressionChain: "speed_s", progressionLevel: 3,
+      fitnessComponents: ["speed","power","cardiorespiratory_endurance"] },
+    { name: "Stair Sprint", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 0.95, skillFactor: 0.6, defaultSets: 6, defaultReps: "1 flight",
+      instructions: ["Full-effort climb, one flight.","Walk down to recover.","Stay tall."],
+      progressionChain: "speed_s", progressionLevel: 4,
+      fitnessComponents: ["speed","power"] }
+  ],
+
+  /* ============================ AGILITY =================================== */
+  bodyweight_agility: [
+    { name: "Line Hop (Front-Back)", muscles: ["calves","quads"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.85, defaultSets: 4, defaultReps: "20 sec", defaultDuration: 20,
+      prescriptionType: "time",
+      instructions: ["Hop forward and back over a line.","Minimal ground time.","Quiet feet."],
+      progressionChain: "agility", progressionLevel: 1,
+      fitnessComponents: ["agility","coordination"] },
+    { name: "Line Hop (Lateral)", muscles: ["calves","abductors"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.85, defaultSets: 4, defaultReps: "20 sec", defaultDuration: 20,
+      prescriptionType: "time",
+      instructions: ["Side-to-side hops over a line.","Stay on the balls of the feet.","Fast, quiet feet."],
+      progressionChain: "agility", progressionLevel: 2,
+      fitnessComponents: ["agility","coordination"] },
+    { name: "5-10-5 Shuttle (Shoes as Cones)", muscles: ["quads","glutes","adductors"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.6, defaultSets: 4, defaultReps: "1",
+      instructions: ["Mark 5 and 10 yards with shoes or tape.","Sprint 5 right, 10 left, 5 right.","Low hips on every cut."],
+      progressionChain: "agility", progressionLevel: 3,
+      fitnessComponents: ["agility","speed"] },
+    { name: "T-Drill", muscles: ["quads","calves","abductors"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.55, defaultSets: 3, defaultReps: "1",
+      instructions: ["Mark a T shape with 4 shoes.","Sprint, shuffle, shuffle, backpedal.","Touch each mark."],
+      progressionChain: "agility", progressionLevel: 4,
+      fitnessComponents: ["agility","coordination"] },
+    { name: "Zig-Zag Sprint (Shoes as Cones)", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.6, defaultSets: 4, defaultReps: "1",
+      instructions: ["Set 5 shoes in a zig-zag.","Weave through at speed.","Sharp plants, low hips."],
+      progressionChain: "agility", progressionLevel: 5,
+      fitnessComponents: ["agility","coordination"] },
+    { name: "Carioca (Bodyweight)", muscles: ["abductors","adductors"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.7, defaultSets: 3, defaultReps: "20 yards",
+      instructions: ["Side-step forward crossing feet.","Hips rotate, chest tall.","Both directions."],
+      progressionChain: "agility", progressionLevel: 6,
+      fitnessComponents: ["agility","coordination","flexibility"] },
+    { name: "Random-Cue Shuttle", muscles: ["quads","glutes","calves"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.45, defaultSets: 5, defaultReps: "1",
+      instructions: ["Partner or timer calls left/right.","Explode to that side.","Reset, repeat."],
+      progressionChain: "agility", progressionLevel: 7,
+      fitnessComponents: ["agility","reaction_time"] }
+  ],
+
+  /* ============================ BALANCE =================================== */
+  bodyweight_balance: [
+    { name: "Single-Leg Stand (Eyes Open)", muscles: ["calves","foot_intrinsics","abductors"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.95, defaultSets: 3, defaultReps: "30-60 sec each", defaultDuration: 45,
+      prescriptionType: "time",
+      instructions: ["Stand on one leg, knee soft.","Eyes on a fixed point.","Breathe slowly."],
+      progressionChain: "balance", progressionLevel: 1,
+      fitnessComponents: ["balance","muscular_endurance"] },
+    { name: "Single-Leg Stand (Eyes Closed)", muscles: ["calves","foot_intrinsics","core"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.85, defaultSets: 3, defaultReps: "20-45 sec each", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Close eyes and stand on one leg.","Feel the floor with your foot.","Reset if you lose balance."],
+      progressionChain: "balance", progressionLevel: 2,
+      fitnessComponents: ["balance","coordination"] },
+    { name: "Single-Leg Stand on Pillow", muscles: ["foot_intrinsics","abductors","core"], equipment: "bodyweight",
+      strengthIndex: 0.55, skillFactor: 0.8, defaultSets: 3, defaultReps: "30 sec each", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Stand on one leg on a pillow or folded towel.","Toes spread and grip.","Steady breathing."],
+      progressionChain: "balance", progressionLevel: 3,
+      fitnessComponents: ["balance","coordination"] },
+    { name: "Tree Pose (Yoga)", muscles: ["abductors","calves","core"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.85, defaultSets: 3, defaultReps: "30 sec each", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Foot on inner thigh or calf, not on the knee.","Hands together at chest or overhead.","Eyes soft, breath slow."],
+      progressionChain: "balance", progressionLevel: 4,
+      fitnessComponents: ["balance","flexibility"] },
+    { name: "Single-Leg RDL Balance", muscles: ["hamstrings","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 0.7, skillFactor: 0.7, defaultSets: 3, defaultReps: "8-12 each",
+      instructions: ["Hinge forward on one leg, back leg long.","Touch floor if possible, stand back up.","Hips square throughout."],
+      progressionChain: "balance", progressionLevel: 5,
+      fitnessComponents: ["balance","muscular_strength"] },
+    { name: "Star Excursion (Balance Reach)", muscles: ["abductors","glutes","core"], equipment: "bodyweight",
+      strengthIndex: 0.65, skillFactor: 0.6, defaultSets: 2, defaultReps: "8 each",
+      instructions: ["Stand on one leg.","Reach free leg to 8 points around a clock.","Light toe taps, return to center."],
+      progressionChain: "balance", progressionLevel: 6,
+      fitnessComponents: ["balance","coordination"] },
+    { name: "Handstand Hold (Wall)", muscles: ["front_delts","core","forearms"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.5, defaultSets: 3, defaultReps: "20-45 sec", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Chest-to-wall handstand, straight arms.","Ribs down, legs glued together.","Fingertips steer."],
+      progressionChain: "balance", progressionLevel: 7,
+      fitnessComponents: ["balance","muscular_strength"] }
+  ],
+
+  /* ============================ COORDINATION ============================== */
+  bodyweight_coordination: [
+    { name: "Cross-Crawl March", muscles: ["core","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.95, defaultSets: 3, defaultReps: "20",
+      instructions: ["March in place, opposite elbow to opposite knee.","Tall spine.","Deliberate rhythm."],
+      progressionChain: "coord", progressionLevel: 1,
+      fitnessComponents: ["coordination","muscular_endurance"] },
+    { name: "Cross-Crawl Supine", muscles: ["core"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.9, defaultSets: 3, defaultReps: "10 each",
+      instructions: ["Lie on back, arms and knees up.","Touch opposite hand to opposite knee.","Slow and precise."],
+      progressionChain: "coord", progressionLevel: 2,
+      fitnessComponents: ["coordination","core"] },
+    { name: "Skipping (Bodyweight)", muscles: ["calves","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.8, defaultSets: 3, defaultReps: "30 yards",
+      instructions: ["Skip forward, opposite arm to leg.","Stay tall and springy.","Rhythmic and relaxed."],
+      progressionChain: "coord", progressionLevel: 3,
+      fitnessComponents: ["coordination","cardiorespiratory_endurance"] },
+    { name: "Bear Crawl (Contralateral)", muscles: ["core","shoulders"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.7, defaultSets: 3, defaultReps: "15 yards",
+      instructions: ["Crawl forward with opposite hand and foot.","Hips low, back flat.","Deliberate steps."],
+      progressionChain: "coord", progressionLevel: 4,
+      fitnessComponents: ["coordination","muscular_endurance"] },
+    { name: "Crab Walk", muscles: ["triceps","shoulders","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.55, skillFactor: 0.65, defaultSets: 3, defaultReps: "15 yards",
+      instructions: ["Sit, hands behind, lift hips.","Walk forward on hands and feet.","Hips high."],
+      progressionChain: "coord", progressionLevel: 5,
+      fitnessComponents: ["coordination","muscular_endurance"] },
+    { name: "Duck Walk", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.6, defaultSets: 3, defaultReps: "20 yards",
+      instructions: ["Deep squat position.","Walk forward without rising.","Chest tall."],
+      progressionChain: "coord", progressionLevel: 6,
+      fitnessComponents: ["coordination","flexibility"] },
+    { name: "Handstand Walk (Wall Assist)", muscles: ["front_delts","core","forearms"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.3, defaultSets: 3, defaultReps: "5-10 yards",
+      instructions: ["Handstand against wall.","Walk sideways using hands.","Controlled steps."],
+      progressionChain: "coord", progressionLevel: 7,
+      fitnessComponents: ["coordination","balance","muscular_strength"] }
+  ],
+
+  /* ============================ REACTION ================================== */
+  bodyweight_reaction: [
+    { name: "Wall-Toss Catch", muscles: ["shoulders","forearms","core"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.9, defaultSets: 3, defaultReps: "15",
+      instructions: ["Throw a small ball at a wall.","Catch with the opposite hand.","Stay in an athletic stance."],
+      progressionChain: "react", progressionLevel: 1,
+      fitnessComponents: ["reaction_time","coordination"] },
+    { name: "Wall-Toss Catch (Alternating)", muscles: ["shoulders","forearms","core"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.85, defaultSets: 3, defaultReps: "12",
+      instructions: ["Same throw, but alternate catching hands.","Keep eyes on the ball.","Quick reactions."],
+      progressionChain: "react", progressionLevel: 2,
+      fitnessComponents: ["reaction_time","coordination"] },
+    { name: "Reaction Ball Wall Bounce", muscles: ["core","quads","calves"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.75, defaultSets: 4, defaultReps: "20 sec", defaultDuration: 20,
+      prescriptionType: "time",
+      instructions: ["Throw an irregular ball at the wall.","Chase the unpredictable bounce.","Athletic stance."],
+      progressionChain: "react", progressionLevel: 3,
+      fitnessComponents: ["reaction_time","agility"] },
+    { name: "Partner Ball Drop", muscles: ["core","quads"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.7, defaultSets: 4, defaultReps: "10",
+      instructions: ["Partner drops a ball unexpectedly.","Catch before the second bounce.","Weight on the balls of your feet."],
+      progressionChain: "react", progressionLevel: 4,
+      fitnessComponents: ["reaction_time","agility"] },
+    { name: "Hand-Slap Reaction", muscles: ["core","shoulders"], equipment: "bodyweight",
+      strengthIndex: 0.4, skillFactor: 0.75, defaultSets: 4, defaultReps: "30 sec", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Partner tries to slap your hands.","Pull hands away in time.","Quick reflexes, no flinching."],
+      progressionChain: "react", progressionLevel: 5,
+      fitnessComponents: ["reaction_time","coordination"] },
+    { name: "Random-Cue Sprint Start", muscles: ["quads","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.9, skillFactor: 0.6, defaultSets: 5, defaultReps: "1",
+      instructions: ["Ready position, eyes closed.","Partner calls go, explode 5 yards.","Reset each rep."],
+      progressionChain: "react", progressionLevel: 6,
+      fitnessComponents: ["reaction_time","speed"] },
+    { name: "Reaction Ball Solo (Wall)", muscles: ["core","quads","calves"], equipment: "bodyweight",
+      strengthIndex: 0.6, skillFactor: 0.7, defaultSets: 4, defaultReps: "20 sec", defaultDuration: 20,
+      prescriptionType: "time",
+      instructions: ["Same as wall bounce but with reaction ball.","Chase the bounce.","Stay low and athletic."],
+      progressionChain: "react", progressionLevel: 7,
+      fitnessComponents: ["reaction_time","agility"] }
+  ],
+
+  /* ============================ FLEXIBILITY ============================== */
+  bodyweight_flexibility: [
+    { name: "Deep Squat Hold (Long)", muscles: ["quads","adductors","glutes"], equipment: "bodyweight",
+      strengthIndex: 0.5, skillFactor: 0.9, defaultSets: 2, defaultReps: "90 sec", defaultDuration: 90,
+      prescriptionType: "time",
+      instructions: ["Squat as deep as possible.","Elbows push knees out gently.","Breathe into the belly."],
+      progressionChain: "flex", progressionLevel: 1,
+      fitnessComponents: ["flexibility"] },
+    { name: "Butterfly Groin Stretch", muscles: ["adductors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.95, defaultSets: 2, defaultReps: "60 sec", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Soles together, knees dropped wide.","Hinge forward from the hips.","Let gravity work, never bounce."],
+      progressionChain: "flex", progressionLevel: 2,
+      fitnessComponents: ["flexibility"] },
+    { name: "Seated Forward Fold", muscles: ["hamstrings","erectors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.9, defaultSets: 2, defaultReps: "60 sec", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Legs long, hinge from hips.","Round only at the very end.","Knees slightly bent is fine."],
+      progressionChain: "flex", progressionLevel: 3,
+      fitnessComponents: ["flexibility"] },
+    { name: "Lizard Stretch", muscles: ["hip_flexors","adductors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.85, defaultSets: 2, defaultReps: "45 sec each", defaultDuration: 45,
+      prescriptionType: "time",
+      instructions: ["Deep lunge, hands inside front foot.","Sink hips forward and down.","Breathe slowly."],
+      progressionChain: "flex", progressionLevel: 4,
+      fitnessComponents: ["flexibility"] },
+    { name: "Couch Stretch", muscles: ["quads","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.8, defaultSets: 2, defaultReps: "60 sec each", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Rear shin against a wall, knee down.","Squeeze glute, stand tall.","Ribs down throughout."],
+      progressionChain: "flex", progressionLevel: 5,
+      fitnessComponents: ["flexibility"] },
+    { name: "Pigeon Pose", muscles: ["glutes","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.8, defaultSets: 2, defaultReps: "60 sec each", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Front shin forward, back leg long.","Square hips, fold chest forward.","Breathe slow."],
+      progressionChain: "flex", progressionLevel: 6,
+      fitnessComponents: ["flexibility"] },
+    { name: "Thoracic Open Book", muscles: ["back","obliques"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.9, defaultSets: 2, defaultReps: "30 sec each", defaultDuration: 30,
+      prescriptionType: "time",
+      instructions: ["Side-lying, knees stacked.","Open top arm, follow with eyes.","Knees glued together."],
+      progressionChain: "flex", progressionLevel: 7,
+      fitnessComponents: ["flexibility"] },
+    { name: "Downward Dog", muscles: ["hamstrings","calves","shoulders"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.85, defaultSets: 2, defaultReps: "60 sec", defaultDuration: 60,
+      prescriptionType: "time",
+      instructions: ["Inverted V shape.","Heels reach down, chest toward thighs.","Long spine, relaxed neck."],
+      progressionChain: "flex", progressionLevel: 8,
+      fitnessComponents: ["flexibility"] },
+    { name: "Standing Quad Stretch", muscles: ["quads","hip_flexors"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.95, defaultSets: 2, defaultReps: "45 sec each", defaultDuration: 45,
+      prescriptionType: "time",
+      instructions: ["Heel to glute, knee points at the floor.","Stand tall, hold a wall if needed.","Breathe slowly."],
+      progressionChain: "flex", progressionLevel: 9,
+      fitnessComponents: ["flexibility"] },
+    { name: "Wall Calf Stretch", muscles: ["calves","soleus"], equipment: "bodyweight",
+      strengthIndex: 0.3, skillFactor: 0.95, defaultSets: 2, defaultReps: "45 sec each", defaultDuration: 45,
+      prescriptionType: "time",
+      instructions: ["Hands on wall, one leg back.","Heel glued down, knee straight.","Lean in as one rigid line."],
+      progressionChain: "flex", progressionLevel: 10,
+      fitnessComponents: ["flexibility"] }
+  ]
+};
+try { console.log('[P4] Bodyweight library registered:', Object.keys(window.P4_BODYWEIGHT_LIBRARY).reduce(function(s,k){ return s + window.P4_BODYWEIGHT_LIBRARY[k].length; }, 0), 'exercises across', Object.keys(window.P4_BODYWEIGHT_LIBRARY).length, 'groups'); } catch(e){}
+</script>
+<script id="p4-bodyweight-infra-js">
+(function(){
+  'use strict';
+  if (window.__p4BodyweightInfra) return;
+  window.__p4BodyweightInfra = true;
+  if (!window.P4) window.P4 = {};
+
+  function log(m){ try { console.log('[P4 BW]', m); } catch(e){} }
+
+  // ---- 1. Setting accessor on user object ----
+  function getMode(){
+    try {
+      var m = workoutData && workoutData.user && workoutData.user.settings && workoutData.user.settings.trainingMode;
+      return (m === 'bodyweight' || m === 'mixed') ? m : 'gym';
+    } catch(e){ return 'gym'; }
+  }
+  function setMode(m){
+    if (m !== 'gym' && m !== 'bodyweight' && m !== 'mixed') return false;
+    try {
+      if (!workoutData.user) workoutData.user = {};
+      if (!workoutData.user.settings) workoutData.user.settings = {};
+      workoutData.user.settings.trainingMode = m;
+      if (typeof saveWorkoutData === 'function') saveWorkoutData();
+      log('mode set to ' + m);
+      return true;
+    } catch(e){ log('setMode failed: ' + e.message); return false; }
+  }
+
+  P4.Bodyweight = {
+    mode: function(m){ return m === undefined ? getMode() : setMode(m); },
+    getMode: getMode,
+    setMode: setMode,
+    library: function(){ return window.P4_BODYWEIGHT_LIBRARY || {}; },
+    isEnabled: function(){ return getMode() !== 'gym'; }
+  };
+
+  // ---- 2. Extend mpGetLookup() to merge bodyweight library ----
+  function patchMpLookup(){
+    if (typeof window.mpGetLookup !== 'function') { setTimeout(patchMpLookup, 200); return; }
+    if (window.mpGetLookup._p4bwPatched) return;
+    var orig = window.mpGetLookup;
+    var origBuild = window.mpBuildExerciseLookup;
+
+    window.mpBuildExerciseLookup = function(){
+      var map = origBuild ? origBuild.apply(this, arguments) : {};
+      try {
+        var lib = window.P4_BODYWEIGHT_LIBRARY;
+        if (!lib) return map;
+        Object.keys(lib).forEach(function(group){
+          (lib[group] || []).forEach(function(ex){
+            var id = ex.name.toLowerCase().replace(/\s+/g, '_');
+            if (!map[id]) {
+              map[id] = {
+                ex: ex,
+                group: group,
+                id: id,
+                components: Array.isArray(ex.fitnessComponents) ? ex.fitnessComponents.slice() : [],
+                bodyweight: true
+              };
+            }
+          });
+        });
+      } catch(e){ log('build merge failed: ' + e.message); }
+      return map;
+    };
+
+    window.mpGetLookup = function(){
+      if (!window.MP_EX_LOOKUP || !window.MP_EX_LOOKUP._p4bwTagged) {
+        // Force rebuild with our merge
+        window.MP_EX_LOOKUP = window.mpBuildExerciseLookup();
+        if (window.MP_EX_LOOKUP) window.MP_EX_LOOKUP._p4bwTagged = true;
+      }
+      return window.MP_EX_LOOKUP;
+    };
+    window.mpGetLookup._p4bwPatched = true;
+    log('mpGetLookup patched for bodyweight library');
+  }
+  patchMpLookup();
+
+  // ---- 3. Extend getExerciseById() ----
+  function patchGetExerciseById(){
+    if (typeof window.getExerciseById !== 'function') { setTimeout(patchGetExerciseById, 200); return; }
+    if (window.getExerciseById._p4bwPatched) return;
+    var orig = window.getExerciseById;
+    window.getExerciseById = function(id){
+      var r = orig.apply(this, arguments);
+      if (r) return r;
+      try {
+        var lib = window.P4_BODYWEIGHT_LIBRARY;
+        if (!lib) return null;
+        for (var g in lib) {
+          for (var i = 0; i < lib[g].length; i++) {
+            var ex = lib[g][i];
+            if (ex.name.toLowerCase().replace(/\s+/g, '_') === id) {
+              return { ...ex, bodyweight: true, originalGroup: g };
+            }
+          }
+        }
+      } catch(e){}
+      return null;
+    };
+    window.getExerciseById._p4bwPatched = true;
+    log('getExerciseById patched');
+  }
+  patchGetExerciseById();
+
+  // ---- 4. Extend selectExerciseForMuscle() ----
+  function patchSelect(){
+    if (typeof window.selectExerciseForMuscle !== 'function') { setTimeout(patchSelect, 200); return; }
+    if (window.selectExerciseForMuscle._p4bwPatched) return;
+    var orig = window.selectExerciseForMuscle;
+    window.selectExerciseForMuscle = function(muscleGroup, ignoreReadiness){
+      var mode = getMode();
+      if (mode === 'gym') return orig.apply(this, arguments);
+
+      // Bodyweight or mixed: gather bodyweight candidates
+      var lib = window.P4_BODYWEIGHT_LIBRARY;
+      if (!lib) return orig.apply(this, arguments);
+      var bwPool = [];
+      Object.keys(lib).forEach(function(g){
+        (lib[g] || []).forEach(function(ex){
+          if (ex.muscles && ex.muscles.indexOf(muscleGroup) !== -1) bwPool.push({ ex: ex, group: g });
+        });
+      });
+
+      if (!bwPool.length) {
+        // Fall back to gym pool if bodyweight has no coverage
+        return orig.apply(this, arguments);
+      }
+
+      // In mixed mode: 50/50 split between bw and gym pools
+      if (mode === 'mixed' && Math.random() < 0.5) {
+        return orig.apply(this, arguments);
+      }
+
+      var choice = bwPool[Math.floor(Math.random() * bwPool.length)];
+      var base = choice.ex;
+      var id = base.name.toLowerCase().replace(/\s+/g, '_');
+
+      var built = {
+        id: id,
+        name: base.name,
+        muscleGroup: base.muscles,
+        prescribed: {
+          sets: base.defaultSets || 3,
+          reps: base.defaultReps || '10',
+          weight: 0
+        },
+        actual: null,
+        progressionNotes: base.progression || 'Bodyweight progression',
+        equipment: base.equipment || 'bodyweight',
+        instructions: base.instructions || [],
+        prescriptionType: base.prescriptionType || 'reps',
+        fitnessComponents: base.fitnessComponents || ['muscular_strength'],
+        bodyweight: true,
+        strengthIndex: base.strengthIndex || 0.7
+      };
+      if (base.defaultDuration) built.defaultDuration = base.defaultDuration;
+      return built;
+    };
+    window.selectExerciseForMuscle._p4bwPatched = true;
+    log('selectExerciseForMuscle patched');
+  }
+  patchSelect();
+
+  // ---- 5. Extend generateExerciseFromLibrary() ----
+  function patchGenFromLib(){
+    if (typeof window.generateExerciseFromLibrary !== 'function') { setTimeout(patchGenFromLib, 200); return; }
+    if (window.generateExerciseFromLibrary._p4bwPatched) return;
+    var orig = window.generateExerciseFromLibrary;
+    window.generateExerciseFromLibrary = function(muscleGroup){
+      var mode = getMode();
+      if (mode === 'gym') return orig.apply(this, arguments);
+      var lib = window.P4_BODYWEIGHT_LIBRARY;
+      if (!lib) return orig.apply(this, arguments);
+      var pool = [];
+      Object.keys(lib).forEach(function(g){
+        (lib[g] || []).forEach(function(ex){
+          if (ex.muscles && ex.muscles.indexOf(muscleGroup) !== -1) pool.push(ex);
+        });
+      });
+      if (!pool.length) return orig.apply(this, arguments);
+      if (mode === 'mixed' && Math.random() < 0.5) return orig.apply(this, arguments);
+      var base = pool[Math.floor(Math.random() * pool.length)];
+      return {
+        id: base.name.toLowerCase().replace(/\s+/g, '_'),
+        name: base.name,
+        muscleGroup: base.muscles,
+        prescribed: { sets: base.defaultSets || 3, reps: base.defaultReps || '10', weight: 0 },
+        actual: null,
+        progressionNotes: base.progression || 'Bodyweight progression',
+        equipment: 'bodyweight',
+        instructions: base.instructions || [],
+        prescriptionType: base.prescriptionType || 'reps',
+        fitnessComponents: base.fitnessComponents || ['muscular_strength'],
+        bodyweight: true,
+        strengthIndex: base.strengthIndex || 0.7
+      };
+    };
+    window.generateExerciseFromLibrary._p4bwPatched = true;
+    log('generateExerciseFromLibrary patched');
+  }
+  patchGenFromLib();
+
+  log('infrastructure armed — mode:', getMode());
+})();
+</script>
+<script id="p4-settings-env-js">
+(function(){
+  'use strict';
+  if (window.__p4SettingsEnv) return;
+  window.__p4SettingsEnv = true;
+  if (!window.P4) window.P4 = {};
+
+  function log(m){ try { console.log('[P4 Settings Env]', m); } catch(e){} }
+
+  function inject(){
+    var dataCard = document.getElementById('p4DataCard');
+    if (!dataCard) return false;
+    if (document.getElementById('p4TrainingEnvCard')) return true;
+
+    var cur = (P4.Bodyweight && P4.Bodyweight.getMode) ? P4.Bodyweight.getMode() : 'gym';
+
+    function opt(m, icon, title, sub){
+      var on = cur === m ? ' style="border-color:var(--p4-accent,#2563eb);background:var(--p4-accent-soft,#eef);"' : '';
+      return '<button type="button" class="p4-env-opt" data-mode="' + m + '"' + on + ' style="flex:1;min-width:110px;padding:14px 12px;border-radius:12px;border:2px solid var(--gray-200,#e2e8f0);background:var(--light,#fff);cursor:pointer;text-align:center;font-family:inherit;transition:.15s;">' +
+        '<div style="font-size:22px;margin-bottom:4px;"><i class="fas ' + icon + '" style="color:var(--p4-accent,#2563eb)"></i></div>' +
+        '<div style="font-weight:700;font-size:13px;color:var(--p4-text,#1e293b);">' + title + '</div>' +
+        '<div style="font-size:11px;color:var(--p4-text-3,#94a3b8);margin-top:2px;">' + sub + '</div>' +
+      '</button>';
+    }
+
+    var card = document.createElement('div');
+    card.id = 'p4TrainingEnvCard';
+    card.className = 'card p4-settings-group';
+    card.style.cssText = 'margin-top:14px;padding:0;overflow:hidden;border:1px solid var(--gray-200,#e2e8f0);border-radius:14px';
+    card.innerHTML =
+      '<div class="p4-settings-group-header" style="display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none;background:var(--gray-100,#f1f5f9);">' +
+        '<i class="fas fa-house-chimney" style="color:var(--p4-accent,#2563eb);width:18px;text-align:center"></i>' +
+        '<span style="flex:1;font-weight:600;font-size:15px;color:var(--p4-text,#1e293b);">Training environment</span>' +
+        '<i class="fas fa-chevron-down p4-env-chevron" style="font-size:11px;color:var(--p4-text-3,#94a3b8);transition:transform .2s;transform:rotate(-90deg);"></i>' +
+      '</div>' +
+      '<div class="p4-settings-group-body" style="padding:16px 18px;display:none">' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          opt('gym',        'fa-dumbbell',       'Gym',  'Full equipment') +
+          opt('bodyweight', 'fa-house-chimney',  'Home', 'No equipment')   +
+          opt('mixed',      'fa-shuffle',        'Mix',  'Both libraries') +
+        '</div>' +
+        '<div style="font-size:11.5px;color:var(--p4-text-3,#94a3b8);margin-top:10px;">Controls which exercise library the generator draws from. Switch any time.</div>' +
+      '</div>';
+
+    dataCard.parentNode.insertBefore(card, dataCard.nextSibling);
+
+    var header = card.querySelector('.p4-settings-group-header');
+    var body   = card.querySelector('.p4-settings-group-body');
+    var chev   = card.querySelector('.p4-env-chevron');
+
+    header.addEventListener('click', function(e){
+      if (e.target.closest('button')) return;
+      var isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      chev.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+    });
+
+    card.querySelectorAll('.p4-env-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        var m = b.getAttribute('data-mode');
+        if (P4.Bodyweight && P4.Bodyweight.setMode) P4.Bodyweight.setMode(m);
+        card.querySelectorAll('.p4-env-opt').forEach(function(x){
+          x.style.borderColor = 'var(--gray-200,#e2e8f0)';
+          x.style.background = 'var(--light,#fff)';
+        });
+        b.style.borderColor = 'var(--p4-accent,#2563eb)';
+        b.style.background = 'var(--p4-accent-soft,#eef)';
+        try { if (typeof showNotification === 'function') showNotification('Training environment: ' + m, 'info', 'p4_env_' + Date.now()); } catch(e){}
+      });
+    });
+
+    log('training-environment card injected');
+    return true;
+  }
+
+  function boot(){
+    inject();
+    setTimeout(inject, 800);
+    setTimeout(inject, 2000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(boot, 900); });
+  }
+  if (document.readyState !== 'loading') {
+    setTimeout(boot, 900);
+  }
+
+  if (typeof window.showSection === 'function' && !window.showSection._p4SE) {
+    window.showSection._p4SE = true;
+    var orig = window.showSection;
+    window.showSection = function(id){
+      var r = orig.apply(this, arguments);
+      if (id === 'settings') setTimeout(inject, 200);
+      return r;
+    };
+  }
+
+  log('armed');
+})();
+</script>
+
+<script id="p4-settings-env-persist-js">
+(function(){
+  'use strict';
+  if (window.__p4SettingsEnvPersist) return;
+  window.__p4SettingsEnvPersist = true;
+  if (!window.P4) window.P4 = {};
+
+  function log(m){ try { console.log('[P4 Settings Env Persist]', m); } catch(e){} }
+
+  function ensureCard(){
+    var dataCard = document.getElementById('p4DataCard');
+    if (!dataCard) return;
+    if (document.getElementById('p4TrainingEnvCard')) return;
+    if (window.P4 && P4.SettingsEnv && typeof P4.SettingsEnv.inject === 'function') {
+      try { P4.SettingsEnv.inject(); } catch(e){ log('inject failed: ' + e.message); }
+    }
+  }
+
+  function hookInject(){
+    if (!window.P4 || !P4.SettingsUI) { setTimeout(hookInject, 300); return; }
+    if (P4.SettingsUI._envHooked) return;
+    P4.SettingsUI._envHooked = true;
+    var orig = P4.SettingsUI.inject;
+    if (typeof orig !== 'function') return;
+    P4.SettingsUI.inject = function(){
+      var r = orig.apply(this, arguments);
+      setTimeout(ensureCard, 40);
+      setTimeout(ensureCard, 300);
+      return r;
+    };
+    log('SettingsUI.inject hooked');
+  }
+  hookInject();
+
+  var mo = new MutationObserver(function(){
+    if (window.__p4EnvTimer) clearTimeout(window.__p4EnvTimer);
+    window.__p4EnvTimer = setTimeout(ensureCard, 60);
+  });
+  try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e){}
+
+  setTimeout(ensureCard, 1500);
+  setTimeout(ensureCard, 3500);
+
+  log('armed');
+})();
+</script>
+<script id="p4-settings-env-v2-js">
+(function(){
+  'use strict';
+  if (window.__p4SettingsEnvV2) return;
+  window.__p4SettingsEnvV2 = true;
+  if (!window.P4) window.P4 = {};
+
+  function log(m){ try { console.log('[P4 Env v2]', m); } catch(e){} }
+
+  function inject(){
+    var dataCard = document.getElementById('p4DataCard');
+    if (!dataCard) return false;
+    if (document.getElementById('p4TrainingEnvCard')) return true;
+
+    var cur = 'gym';
+    try { if (P4.Bodyweight && P4.Bodyweight.getMode) cur = P4.Bodyweight.getMode(); } catch(e){}
+
+    function opt(m, icon, title, sub){
+      var on = cur === m ? ' style="border-color:var(--p4-accent,#2563eb);background:var(--p4-accent-soft,#eef);"' : '';
+      return '<button type="button" class="p4-env-opt" data-mode="' + m + '"' + on + ' style="flex:1;min-width:110px;padding:14px 12px;border-radius:12px;border:2px solid var(--gray-200,#e2e8f0);background:var(--light,#fff);cursor:pointer;text-align:center;font-family:inherit;transition:.15s;">' +
+        '<div style="font-size:22px;margin-bottom:4px;"><i class="fas ' + icon + '" style="color:var(--p4-accent,#2563eb)"></i></div>' +
+        '<div style="font-weight:700;font-size:13px;color:var(--p4-text,#1e293b);">' + title + '</div>' +
+        '<div style="font-size:11px;color:var(--p4-text-3,#94a3b8);margin-top:2px;">' + sub + '</div>' +
+      '</button>';
+    }
+
+    var card = document.createElement('div');
+    card.id = 'p4TrainingEnvCard';
+    card.className = 'card p4-settings-group';
+    card.style.cssText = 'margin-top:14px;padding:0;overflow:hidden;border:1px solid var(--gray-200,#e2e8f0);border-radius:14px';
+    card.innerHTML =
+      '<div class="p4-settings-group-header" style="display:flex;align-items:center;gap:10px;padding:14px 18px;cursor:pointer;user-select:none;background:var(--gray-100,#f1f5f9);">' +
+        '<i class="fas fa-house-chimney" style="color:var(--p4-accent,#2563eb);width:18px;text-align:center"></i>' +
+        '<span style="flex:1;font-weight:600;font-size:15px;color:var(--p4-text,#1e293b);">Training environment</span>' +
+        '<i class="fas fa-chevron-down p4-env-chevron" style="font-size:11px;color:var(--p4-text-3,#94a3b8);transition:transform .2s;transform:rotate(-90deg);"></i>' +
+      '</div>' +
+      '<div class="p4-settings-group-body" style="padding:16px 18px;display:none">' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+          opt('gym',        'fa-dumbbell',       'Gym',  'Full equipment') +
+          opt('bodyweight', 'fa-house-chimney',  'Home', 'No equipment')   +
+          opt('mixed',      'fa-shuffle',        'Mix',  'Both libraries') +
+        '</div>' +
+        '<div style="font-size:11.5px;color:var(--p4-text-3,#94a3b8);margin-top:10px;">Controls which exercise library the generator draws from. Switch any time.</div>' +
+      '</div>';
+
+    dataCard.parentNode.insertBefore(card, dataCard.nextSibling);
+
+    var header = card.querySelector('.p4-settings-group-header');
+    var body   = card.querySelector('.p4-settings-group-body');
+    var chev   = card.querySelector('.p4-env-chevron');
+
+    header.addEventListener('click', function(e){
+      if (e.target.closest('button')) return;
+      var isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : 'block';
+      chev.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+    });
+
+    card.querySelectorAll('.p4-env-opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        var m = b.getAttribute('data-mode');
+        if (P4.Bodyweight && P4.Bodyweight.setMode) P4.Bodyweight.setMode(m);
+        card.querySelectorAll('.p4-env-opt').forEach(function(x){
+          x.style.borderColor = 'var(--gray-200,#e2e8f0)';
+          x.style.background = 'var(--light,#fff)';
+        });
+        b.style.borderColor = 'var(--p4-accent,#2563eb)';
+        b.style.background = 'var(--p4-accent-soft,#eef)';
+        try { if (typeof showNotification === 'function') showNotification('Training environment: ' + m, 'info', 'p4_env_' + Date.now()); } catch(e){}
+      });
+    });
+
+    log('card injected');
+    return true;
+  }
+
+  P4.SettingsEnv = { inject: inject };
+
+  function hookInject(){
+    if (!window.P4 || !P4.SettingsUI) { setTimeout(hookInject, 300); return; }
+    if (P4.SettingsUI._envV2Hooked) return;
+    P4.SettingsUI._envV2Hooked = true;
+    var orig = P4.SettingsUI.inject;
+    if (typeof orig !== 'function') return;
+    P4.SettingsUI.inject = function(){
+      var r = orig.apply(this, arguments);
+      setTimeout(inject, 40);
+      setTimeout(inject, 300);
+      setTimeout(inject, 900);
+      return r;
+    };
+    log('SettingsUI.inject hooked');
+  }
+  hookInject();
+
+  var mo = new MutationObserver(function(){
+    if (window.__p4EnvV2Timer) clearTimeout(window.__p4EnvV2Timer);
+    window.__p4EnvV2Timer = setTimeout(inject, 60);
+  });
+  try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e){}
+
+  setTimeout(inject, 1500);
+  setTimeout(inject, 3500);
+
+  log('armed');
+})();
+</script>
+<script id="p4-workoutdata-replace-js">
+(function(){
+  if (window.P4 && window.P4.replaceWorkoutData) return;
+  window.P4 = window.P4 || {};
+  window.P4.replaceWorkoutData = function(newData){
+    try {
+      var wd = null;
+      try { wd = workoutData; } catch(e) { return; }
+      if (!wd) return;
+      var keys = Object.keys(wd);
+      for (var i = 0; i < keys.length; i++) {
+        try { delete wd[keys[i]]; } catch(e){}
+      }
+      if (newData && typeof newData === 'object') {
+        var nk = Object.keys(newData);
+        for (var j = 0; j < nk.length; j++) {
+          wd[nk[j]] = newData[nk[j]];
+        }
+      }
+    } catch(e){ try { console.warn('[P4] replaceWorkoutData failed', e); } catch(e2){} }
+  };
+})();
+</script>
+<script id="p4-nav-final-js">
+(function(){
+  'use strict';
+  if (window.__p4NavFinal) return;
+  window.__p4NavFinal = true;
+  if (!window.P4) window.P4 = {};
+
+  function log(m){ try { console.log('[P4 Nav Final]', m); } catch(e){} }
+
+  function buildTabBar(){
+    var bar = document.getElementById('p4TabBar');
+    if (bar) return bar;
+    if (P4.Nav && typeof P4.Nav.build === 'function') {
+      try { P4.Nav.build(); } catch(e){ log('build failed: ' + e.message); }
+    }
+    return document.getElementById('p4TabBar');
+  }
+
+  function forceTabBar(){
+    var bar = buildTabBar();
+    if (!bar) return false;
+
+    bar.removeAttribute('hidden');
+    bar.removeAttribute('inert');
+    bar.classList.remove('p4-tabbar-hide');
+
+    bar.style.setProperty('position', 'fixed', 'important');
+    bar.style.setProperty('left', '50%', 'important');
+    bar.style.setProperty('bottom', 'calc(12px + env(safe-area-inset-bottom, 0px))', 'important');
+    bar.style.setProperty('transform', 'translateX(-50%)', 'important');
+    bar.style.setProperty('display', 'flex', 'important');
+    bar.style.setProperty('visibility', 'visible', 'important');
+    bar.style.setProperty('opacity', '1', 'important');
+    bar.style.setProperty('pointer-events', 'auto', 'important');
+    bar.style.setProperty('z-index', '1600', 'important');
+    bar.style.setProperty('width', 'min(430px, calc(100vw - 20px))', 'important');
+    bar.style.setProperty('padding', '8px 10px', 'important');
+    bar.style.setProperty('border-radius', '26px', 'important');
+    bar.style.setProperty('background', 'var(--p4-glass, rgba(16,20,28,.72))', 'important');
+    bar.style.setProperty('-webkit-backdrop-filter', 'blur(24px) saturate(170%)', 'important');
+    bar.style.setProperty('backdrop-filter', 'blur(24px) saturate(170%)', 'important');
+    bar.style.setProperty('border', '1px solid var(--p4-hairline-2, rgba(148,163,184,.26))', 'important');
+    bar.style.setProperty('align-items', 'flex-end', 'important');
+    bar.style.setProperty('gap', '2px', 'important');
+
+    /* Ensure top navbar is NOT affected */
+    var topNav = document.querySelector('nav.navbar');
+    if (topNav) {
+      topNav.style.setProperty('display', 'flex', 'important');
+      topNav.style.setProperty('visibility', 'visible', 'important');
+      topNav.style.setProperty('opacity', '1', 'important');
+    }
+
+    /* Push content + dock above the tab bar */
+    var main = document.querySelector('.main-app') || document.querySelector('.container.main-app');
+    if (main) main.style.setProperty('padding-bottom', '110px', 'important');
+    var dock = document.getElementById('p4Dock');
+    if (dock) dock.style.setProperty('bottom', '110px', 'important');
+
+    log('tab bar forced visible');
+    return true;
+  }
+
+  [150, 500, 1500, 3000, 6000].forEach(function(t){ setTimeout(forceTabBar, t); });
+
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) setTimeout(forceTabBar, 200);
+  });
+
+  if (typeof window.showSection === 'function' && !window.showSection._p4NF) {
+    window.showSection._p4NF = true;
+    var orig = window.showSection;
+    window.showSection = function(){
+      var r = orig.apply(this, arguments);
+      setTimeout(forceTabBar, 150);
+      return r;
+    };
+  }
+
+  log('armed');
+})();
+</script>
+<script id="p4-health-fit-js">
+(function(){
+  'use strict';
+  if (window.__p4HealthFit) return;
+  window.__p4HealthFit = true;
+
+  function applyCompact(){
+    var backdrop = document.querySelector('.p4-wz-backdrop');
+    if (!backdrop) return;
+    var wz = backdrop.querySelector('.p4-wz');
+    if (!wz) return;
+    // Only tag health-check pages
+    var hasHealth = wz.querySelector('.p4-hs-h1, .p4-hs-verdict');
+    if (!hasHealth) {
+      wz.classList.remove('p4-hs-compact');
+      return;
+    }
+    wz.classList.add('p4-hs-compact');
+    // Tag the joints grid for the 2-column layout
+    wz.querySelectorAll('.p4-hs-jts').forEach(function(el){
+      el.classList.add('p4-hs-jts-compact');
+    });
+  }
+
+  var mo = new MutationObserver(function(){
+    if (window.__p4HFitTimer) clearTimeout(window.__p4HFitTimer);
+    window.__p4HFitTimer = setTimeout(applyCompact, 40);
+  });
+  try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e){}
+
+  setTimeout(applyCompact, 800);
+  setTimeout(applyCompact, 2000);
+
+  console.log('[P4 Health Fit] armed');
+})();
+</script>
+<script id="p4-final-cleanup-js">
+(function(){
+  'use strict';
+  if (window.__p4FinalCleanup) return;
+  window.__p4FinalCleanup = true;
+
+  // P4 FINAL: one-time cleanup — remove diagnostic litter, verify payload presence.
+  function log(m){ try { console.log('[P4 Final]', m); } catch(e){} }
+
+  setTimeout(function(){
+    var checks = {
+      'Bodyweight lib': !!window.P4_BODYWEIGHT_LIBRARY,
+      'Wizard guard'  : !!window.__p4WizardGuard,
+      'Unlock-all'    : !!window.__p4UnlockAll,
+      'ID protect'    : !!window.__p4IdProtect,
+      'Reconcile'     : !!(window.P4 && P4.User && P4.User.reconcile),
+      'Settings env'  : !!(window.P4 && P4.SettingsEnv),
+      'Nav final'     : !!window.__p4NavFinal,
+      'Tabbar CSS'    : !!document.getElementById('p4-tabbar-force-css'),
+      'Health compact': !!document.getElementById('p4-health-fit-css'),
+      'Health shell'  : !!document.getElementById('p4-health-shell-css')
+    };
+    log('=== PAYLOAD CHECK ===');
+    Object.keys(checks).forEach(function(k){ log('  ' + (checks[k] ? '✓' : '✗') + ' ' + k); });
+    var all = Object.keys(checks).every(function(k){ return checks[k]; });
+    log(all ? '=== ALL SYSTEMS OK ===' : '=== SOME MISSING ===');
+  }, 2000);
+})();
+</script>
+<script id="p4-autoopen-after-1rm-js">
+(function(){
+  'use strict';
+  if (window.__p4AutoOpenAfter1RM) return;
+  window.__p4AutoOpenAfter1RM = true;
+
+  function log(m){ try { console.log('[P4 AutoOpen]', m); } catch(e){} }
+
+  function getTested1RM(exId){
+    try {
+      var rec = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises[exId] : null;
+      return rec && rec.tested1RM && rec.tested1RM > 0 ? rec.tested1RM : null;
+    } catch(e){ return null; }
+  }
+
+  function findCardIndexByExId(exId){
+    try {
+      if (typeof currentWorkout === 'undefined' || !currentWorkout || !currentWorkout.exercises) return -1;
+      for (var i = 0; i < currentWorkout.exercises.length; i++) {
+        if (currentWorkout.exercises[i] && currentWorkout.exercises[i].id === exId) return i;
+      }
+    } catch(e){}
+    return -1;
+  }
+
+  function expandAndOpenLogger(index){
+    var card = document.getElementById('exercise_' + index);
+    if (!card) return;
+    card.classList.remove('p4-wc-collapsed');
+    var chev = card.querySelector('.p4-wc-chevron');
+    if (chev) chev.style.transform = 'rotate(0deg)';
+    // Hide other expanded cards
+    var list = document.getElementById('exerciseList');
+    if (list) {
+      list.querySelectorAll('.p4-wc-wrapped').forEach(function(sib){
+        if (sib === card) return;
+        sib.classList.add('p4-wc-collapsed');
+        var c2 = sib.querySelector('.p4-wc-chevron');
+        if (c2) c2.style.transform = 'rotate(-90deg)';
+      });
+    }
+    setTimeout(function(){
+      if (typeof openLoggerForExercise === 'function') {
+        try { openLoggerForExercise(index); } catch(e){ log('openLogger failed: ' + e.message); }
+      }
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 120);
+  }
+
+  function watchFor1RMEntry(){
+    try {
+      if (typeof workoutData === 'undefined' || !workoutData.exercises) return;
+      // Find any exercise in the current workout that now has a tested1RM
+      // but whose card is still showing the test panel (not the prescription)
+      if (typeof currentWorkout === 'undefined' || !currentWorkout || !currentWorkout.exercises) return;
+      for (var i = 0; i < currentWorkout.exercises.length; i++) {
+        var ex = currentWorkout.exercises[i];
+        if (!ex || !ex.id) continue;
+        if (ex.actual || ex.skipped) continue;
+        var tested = getTested1RM(ex.id);
+        if (!tested) continue;
+        var card = document.getElementById('exercise_' + i);
+        if (!card) continue;
+        // Card still showing test panel? That means we just got a 1RM.
+        var testPanel = card.querySelector('.exercise-test-panel');
+        if (testPanel) {
+          log('1RM detected for ' + ex.id + ' — refreshing card + expanding');
+          if (typeof refreshExerciseCard === 'function') {
+            try { refreshExerciseCard(i); } catch(e){ log('refresh failed: ' + e.message); }
+          }
+          setTimeout(function(){ expandAndOpenLogger(i); }, 260);
+          return;
+        }
+      }
+    } catch(e){ log('watch error: ' + e.message); }
+  }
+
+  // Poll after any change event in the workout section
+  function hookChangeEvents(){
+    document.addEventListener('change', function(e){
+      var t = e.target;
+      if (!t) return;
+      if (t.id && t.id.indexOf('test_') === 0) {
+        setTimeout(watchFor1RMEntry, 400);
+      }
+    }, true);
+
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      if (!t || !t.closest) return;
+      var btn = t.closest('#test_submit_, [id^="test_submit_"]');
+      if (btn) setTimeout(watchFor1RMEntry, 500);
+    }, true);
+  }
+
+  // Also re-check whenever a card re-renders
+  var mo = new MutationObserver(function(){
+    if (window.__p4AO1Timer) clearTimeout(window.__p4AO1Timer);
+    window.__p4AO1Timer = setTimeout(watchFor1RMEntry, 250);
+  });
+  try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e){}
+
+  hookChangeEvents();
+  log('armed');
+})();
+</script>
+<script id="p4-continue-badge-js">
+(function(){
+  'use strict';
+  if (window.__p4ContinueBadge) return;
+  window.__p4ContinueBadge = true;
+
+  function log(m){ try { console.log('[P4 ContinueBadge]', m); } catch(e){} }
+
+  function getExerciseStatus(ex){
+    if (!ex || !ex.id) return 'pending';
+    if (ex.actual && !ex.skipped) return 'done';
+    if (ex.skipped) return 'skipped';
+    // 1RM test completed?
+    var rec = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises[ex.id] : null;
+    if (rec && rec.tested1RM && rec.tested1RM > 0) return 'tested';
+    // Draft in progress?
+    try {
+      if (typeof currentWorkout !== 'undefined' && currentWorkout && currentWorkout.id) {
+        if (localStorage.getItem('draft_' + currentWorkout.id + '_' + ex.id)) return 'draft';
+      }
+    } catch(e){}
+    return 'pending';
+  }
+
+  function annotateCards(){
+    var list = document.getElementById('exerciseList');
+    if (!list) return;
+    if (typeof currentWorkout === 'undefined' || !currentWorkout || !currentWorkout.exercises) return;
+
+    list.querySelectorAll('.p4-wc-wrapped').forEach(function(card, idx){
+      var exIdx = parseInt(card.getAttribute('data-index'), 10);
+      if (isNaN(exIdx)) exIdx = parseInt((card.id || '').replace('exercise_', ''), 10);
+      if (isNaN(exIdx)) exIdx = idx;
+      var ex = currentWorkout.exercises[exIdx];
+      if (!ex) return;
+      var status = getExerciseStatus(ex);
+      if (status !== 'tested' && status !== 'draft') return;
+
+      var header = card.querySelector('.p4-wc-header');
+      if (!header) return;
+      if (header.querySelector('.p4-continue-badge')) return;
+
+      var badge = document.createElement('span');
+      badge.className = 'p4-continue-badge';
+      badge.style.cssText = 'display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:800;letter-spacing:.02em;background:#fef3c7;color:#92400e;border:1px solid #fbbf24;margin-left:8px;white-space:nowrap;';
+      badge.innerHTML = '<i class="fas fa-play-circle"></i>' + (status === 'draft' ? 'Started' : 'Ready');
+      // Insert after the exercise title span
+      var titleSpan = header.querySelector('span[style*="font-weight"]') || header.querySelector('span');
+      if (titleSpan && titleSpan.parentNode) {
+        titleSpan.parentNode.insertBefore(badge, titleSpan.nextSibling);
+      } else {
+        header.appendChild(badge);
+      }
+    });
+  }
+
+  var mo = new MutationObserver(function(){
+    if (window.__p4CBTimer) clearTimeout(window.__p4CBTimer);
+    window.__p4CBTimer = setTimeout(annotateCards, 100);
+  });
+  try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e){}
+
+  setTimeout(annotateCards, 800);
+  setTimeout(annotateCards, 2000);
+  setTimeout(annotateCards, 4000);
+
+  if (typeof window.showSection === 'function' && !window.showSection._p4CB) {
+    window.showSection._p4CB = true;
+    var orig = window.showSection;
+    window.showSection = function(id){
+      var r = orig.apply(this, arguments);
+      if (id === 'workout') setTimeout(annotateCards, 200);
+      return r;
+    };
+  }
+
+  log('armed');
+})();
+</script>
+<script id="p4-speedup-js">
+(function(){
+  'use strict';
+  if (window.__p4Speedup) return;
+  window.__p4Speedup = true;
+
+  function log(m){ try { console.log('[P4 Speedup]', m); } catch(e){} }
+
+  // ---- Part A: memoize the expensive elite-date projection ----
+  function hookEliteDate(){
+    if (typeof window.calculateProjectedEliteDate !== 'function') { setTimeout(hookEliteDate, 300); return; }
+    if (window.calculateProjectedEliteDate._p4Cached) return;
+    var orig = window.calculateProjectedEliteDate;
+    var cache = null;
+    var cacheTime = 0;
+    var TTL = 5000;
+    window.calculateProjectedEliteDate = function(){
+      var now = Date.now();
+      if (cache && (now - cacheTime) < TTL) {
+        return cache;
+      }
+      var r = orig.apply(this, arguments);
+      cache = r;
+      cacheTime = now;
+      return r;
+    };
+    window.calculateProjectedEliteDate._p4Cached = true;
+    log('elite-date projection memoized (5s TTL)');
+  }
+  hookEliteDate();
+
+  // ---- Part B: defer heavy sanitize/fatigue/aggregate passes to idle time ----
+  function deferHeavyWork(){
+    var heavy = [
+      ['sanitizeExerciseMu',    'exercise 1RM sanity pass'],
+      ['rebuildFatigueFromHistory', 'muscle fatigue from history'],
+      ['calculateMuscleLastTrained', 'last-trained timestamps'],
+      ['backfillLastPerformed', 'lastPerformed backfill'],
+      ['recomputeAggregates',   'rolling aggregates'],
+      ['updateBodyWeightEstimate', 'bodyweight model']
+    ];
+
+    // Grab the currently-loaded state; these funcs read from global workoutData
+    var ran = {};
+    function runOne(name, label){
+      if (ran[name]) return;
+      ran[name] = true;
+      try {
+        var fn = window[name];
+        if (typeof fn === 'function') {
+          fn();
+          log('ran: ' + label);
+        }
+      } catch(e){ log('failed: ' + name + ' — ' + e.message); }
+    }
+
+    // Use requestIdleCallback if available, else fall back to staggered setTimeout
+    var idle = (typeof window.requestIdleCallback === 'function')
+      ? window.requestIdleCallback
+      : function(cb){ return setTimeout(function(){ cb({ timeRemaining: function(){ return 30; } }); }, 120); };
+
+    var i = 0;
+    function step(){
+      if (i >= heavy.length) { log('heavy boot work complete'); return; }
+      idle(function(deadline){
+        while (i < heavy.length && (deadline.timeRemaining ? deadline.timeRemaining() > 8 : true)) {
+          runOne(heavy[i][0], heavy[i][1]);
+          i++;
+        }
+        setTimeout(step, 30);
+      });
+    }
+    // Wait for the first paint before doing any of this
+    setTimeout(step, 1200);
+  }
+
+  // Hook loadAllData so we defer AFTER it has already populated data
+  function hookLoadAll(){
+    if (typeof window.loadAllData !== 'function') { setTimeout(hookLoadAll, 300); return; }
+    if (window.loadAllData._p4Deferred) return;
+    var orig = window.loadAllData;
+    window.loadAllData = async function(){
+      var r = await orig.apply(this, arguments);
+      setTimeout(deferHeavyWork, 400);
+      return r;
+    };
+    window.loadAllData._p4Deferred = true;
+    log('loadAllData hooked — heavy passes will defer to idle');
+  }
+  hookLoadAll();
+
+  log('armed');
+})();
+</script>
+<script id="p4-card-state-js">
+(function(){
+  'use strict';
+  if (window.__p4CardState) return;
+  window.__p4CardState = true;
+
+  function getExerciseStatus(ex){
+    if (!ex || !ex.id) return 'pending';
+    if (ex.actual && !ex.skipped) return 'done';
+    if (ex.skipped) return 'skipped';
+    try {
+      if (typeof currentWorkout !== 'undefined' && currentWorkout && currentWorkout.id) {
+        if (localStorage.getItem('draft_' + currentWorkout.id + '_' + ex.id)) return 'started';
+      }
+    } catch(e){}
+    var rec = (typeof workoutData !== 'undefined' && workoutData.exercises) ? workoutData.exercises[ex.id] : null;
+    if (rec && rec.tested1RM && rec.tested1RM > 0) return 'ready';
+    return 'pending';
+  }
+
+  function colorCards(){
+    var list = document.getElementById('exerciseList');
+    if (!list) return;
+    if (typeof currentWorkout === 'undefined' || !currentWorkout || !currentWorkout.exercises) return;
+
+    list.querySelectorAll('.p4-wc-wrapped, .exercise-item').forEach(function(card, idx){
+      var exIdx = parseInt(card.getAttribute('data-index'), 10);
+      if (isNaN(exIdx)) exIdx = parseInt((card.id || '').replace('exercise_', ''), 10);
+      if (isNaN(exIdx)) exIdx = idx;
+      var ex = currentWorkout.exercises[exIdx];
+      if (!ex) return;
+      var status = getExerciseStatus(ex);
+      card.classList.remove('p4-state-ready', 'p4-state-started');
+      if (status === 'ready') card.classList.add('p4-state-ready');
+      if (status === 'started') card.classList.add('p4-state-started');
+    });
+  }
+
+  var mo = new MutationObserver(function(){
+    if (window.__p4CSTimer) clearTimeout(window.__p4CSTimer);
+    window.__p4CSTimer = setTimeout(colorCards, 100);
+  });
+  try { mo.observe(document.body, { childList: true, subtree: true }); } catch(e){}
+
+  setTimeout(colorCards, 800);
+  setTimeout(colorCards, 2000);
+  setTimeout(colorCards, 4000);
+
+  if (typeof window.showSection === 'function' && !window.showSection._p4CS) {
+    window.showSection._p4CS = true;
+    var orig = window.showSection;
+    window.showSection = function(id){
+      var r = orig.apply(this, arguments);
+      if (id === 'workout') setTimeout(colorCards, 200);
+      return r;
+    };
+  }
 })();
 </script>
 </body>
