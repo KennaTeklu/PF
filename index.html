@@ -5832,7 +5832,156 @@ nav.navbar { display: flex !important; visibility: visible !important; opacity: 
   color: #fbbf24 !important;
 }
 </style>
-</head>
+    <!-- ============================================================= -->
+    <!-- P4 FIX: bottom tab bar is ALWAYS visible on EVERY viewport   -->
+    <!-- mobile · tablet · desktop · phone · apk-shell · iframe        -->
+    <!-- Do not remove: the navigation depends on it                   -->
+    <!-- ============================================================= -->
+    <style id="p4-tabbar-lock-visible">
+    /* Neutralize every known rule that could hide the tab bar */
+    #p4TabBar,
+    #p4TabBar.p4-tabbar-hide,
+    #p4TabBar.p4-tabbar-hide.force-show,
+    body.device-computer #p4TabBar,
+    body.device-computer #p4TabBar.p4-tabbar-hide,
+    html[data-gym="on"] #p4TabBar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: translateX(-50%) !important;
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+        z-index: 1600 !important;
+    }
+
+    /* Mobile / narrow screens: reserve space so content is never hidden */
+    @media (max-width: 899px) {
+        .main-app {
+            padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        /* Raise floating buttons above the always-on bar */
+        .fab {
+            bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+        }
+        /* Slightly tighter bar on tiny screens */
+        #p4TabBar {
+            width: min(430px, calc(100vw - 16px)) !important;
+        }
+    }
+
+    /* Desktop: keep bar centred and readable */
+    @media (min-width: 900px) {
+        #p4TabBar {
+            width: min(430px, calc(100vw - 20px)) !important;
+        }
+    }
+    </style>
+        <!-- ============================================================= -->
+    <!-- P4 STEP 7: compact navbar + content scrolls between bars     -->
+    <!-- ============================================================= -->
+    <style id="p4-navbar-compact-lock">
+    :root { --nav-height: 56px; }
+
+    /* Compact top bar: fixed height, no overflow */
+    .navbar {
+        padding: 0 14px !important;
+        height: var(--nav-height) !important;
+        min-height: var(--nav-height) !important;
+        max-height: var(--nav-height) !important;
+        overflow: hidden !important;
+    }
+    .nav-brand { flex-shrink: 0; }
+
+    /* Top-right user chip: avatar + name + stats (opens nav menu) */
+    .navbar .mobile-menu-btn.nav-user-trigger {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        background: transparent !important;
+        border: none !important;
+        cursor: pointer !important;
+        padding: 4px 10px !important;
+        border-radius: 40px !important;
+        color: inherit !important;
+        font-family: inherit !important;
+        transition: background .18s ease, transform .1s ease !important;
+    }
+    .navbar .mobile-menu-btn.nav-user-trigger:hover {
+        background: rgba(127,127,127,.10) !important;
+    }
+    .navbar .mobile-menu-btn.nav-user-trigger:active {
+        transform: scale(.97) !important;
+    }
+
+    .navbar .nav-user-trigger .user-avatar {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.2rem !important;
+        flex-shrink: 0 !important;
+        background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+        color: #fff !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+        font-weight: 700 !important;
+    }
+
+    .navbar .nav-user-trigger .nav-user-text {
+        display: flex !important;
+        flex-direction: column !important;
+        text-align: left !important;
+        line-height: 1.15 !important;
+        max-width: 170px !important;
+        overflow: hidden !important;
+    }
+    .navbar .nav-user-trigger .nav-user-text #navUserName {
+        font-size: .85rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        color: var(--dark, #0f172a) !important;
+    }
+    .navbar .nav-user-trigger .nav-user-text #navUserStats {
+        font-size: .65rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        opacity: .72 !important;
+    }
+
+    /* Very narrow phones: avatar only, hide the name/stats text */
+    @media (max-width: 560px) {
+        .navbar .nav-user-trigger .nav-user-text { display: none !important; }
+    }
+
+    /* Belt: if a stale .nav-user is re-injected into nav-menu, hide it */
+    .navbar .nav-menu .nav-user { display: none !important; }
+
+    /* Content padding: clears compact navbar up top and tab bar at bottom */
+    .main-app {
+        padding-top: calc(var(--nav-height) + 8px) !important;
+        padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    /* ---------- MOBILE / TABLET: dropdown menu stays as before ---------- */
+    @media (max-width: 1100px) {
+        .navbar .nav-menu {
+            top: var(--nav-height) !important;
+            max-height: calc(100vh - var(--nav-height) - 8px) !important;
+            overflow-y: auto !important;
+        }
+    }
+    </style>
+        <!-- P4 STEP 9-SLIM: chart height lock — stops the dashboard cascade -->
+    <style id="p4-chart-height-lock">
+    .chart-container { min-height: 220px; }
+    @media (max-width: 768px) {
+        .chart-container { min-height: 160px; }
+    }
+    </style>
+    </head>
 <body class="loading">
     <script>
 window.STORAGE_ENABLED = false;
@@ -5908,8 +6057,13 @@ try {
             </button>
         </div>
 
-        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-            <i class="fas fa-bars"></i>
+        <!-- P4 STEP 7: hamburger replaced with avatar+name+stats user chip (top-right) -->
+        <button class="mobile-menu-btn nav-user-trigger" onclick="showSection('settings'); return false;" aria-label="Open settings" title="Open settings">
+            <div class="user-avatar" id="navUserAvatar">U</div>
+            <div class="nav-user-text">
+                <div id="navUserName">User</div>
+                <div id="navUserStats">Beginner • Day 0 Streak</div>
+            </div>
         </button>
         
         <div class="nav-menu" id="navMenu">
@@ -5942,6 +6096,16 @@ try {
                 <span>Settings</span>
             </a>
             
+            <!-- ============ P4-APK-LATER:BEGIN ==============================
+                 nav-user block inside nav-menu is HIDDEN on purpose.
+                 Reason: emoji avatar + name now live in the top-right
+                 trigger (they replaced the hamburger). Duplicate IDs
+                 would otherwise break layout and JS listeners.
+                 To re-enable for a future APK build:
+                   remove the line containing only   LT-BANG-DASH-DASH
+                   remove the line containing only   DASH-DASH-GT
+                 ============================================================== -->
+            <!--
             <div class="nav-user">
                 <div class="user-avatar" id="navUserAvatar" onclick="showSection('settings')">U</div>
                 <div>
@@ -5949,6 +6113,8 @@ try {
                     <div style="font-size: 0.85rem; color: var(--gray-500);" id="navUserStats">Beginner • Day 0 Streak</div>
                 </div>
             </div>
+            -->
+            <!-- ============ P4-APK-LATER:END ================================ -->
         </div>
     </nav>
     
@@ -58611,7 +58777,16 @@ P4.Picker = (function () {
   }
   function init() {
     setTimeout(function () {
-      /* profile name (userNameDisplay) opens the picker */
+      /* ============ P4-APK-LATER:BEGIN ==============================
+         Name tap -> Profile Picker (ADD-NEW) is DISABLED on purpose.
+         Reason: name tap should fall through to .nav-brand <a>,
+         which routes to Dashboard.
+         To re-enable for a future APK build:
+           remove the line containing only   slash-star
+           remove the line containing only   star-slash
+         ============================================================== */
+      /*
+      // profile name (userNameDisplay) opens the picker
       var nameEl = document.getElementById('userNameDisplay');
       if (nameEl) {
         nameEl.style.cursor = 'pointer';
@@ -58621,6 +58796,8 @@ P4.Picker = (function () {
           open();
         });
       }
+      */
+      /* ============ P4-APK-LATER:END ================================ */
       /* streak fire + count opens the dashboard (home page) */
       var streakEl = document.querySelector('.streak-fire');
       if (streakEl) {
@@ -63882,12 +64059,23 @@ P4.Wheel = (function () {
     avatar._p4EmojiWired = true;
     avatar.style.cursor = 'pointer';
     avatar.setAttribute('title', 'Change avatar');
+    /* ============ P4-APK-LATER:BEGIN ==============================
+       Avatar tap -> Emoji Picker is DISABLED on purpose.
+       Reason: avatar tap should fall through to inline HTML
+       onclick=showSection('settings') so it opens Settings.
+       To re-enable for a future APK build:
+         remove the line containing only   slash-star
+         remove the line containing only   star-slash
+       ============================================================== */
+    /*
     // Replace existing inline onclick (showSection('settings'))
     avatar.onclick = function (ev) {
       if (ev) { ev.preventDefault(); ev.stopPropagation(); }
       P4.EmojiPicker.open();
       return false;
     };
+    */
+    /* ============ P4-APK-LATER:END ================================ */
   }
 
   /* ---------- keep the emoji in sync whenever the name refreshes ---------- */
