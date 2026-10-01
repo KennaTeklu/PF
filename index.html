@@ -5981,7 +5981,153 @@ nav.navbar { display: flex !important; visibility: visible !important; opacity: 
         .chart-container { min-height: 160px; }
     }
     </style>
-    </head>
+    <style id="__P4_BROWSER_FIX__">
+/* Universal .main-app padding fix — body already reserves navbar height via NavPadding.
+   This removes the redundant 76px void and reserves proper bottom space for the tab bar. */
+.main-app, .container.main-app {
+  padding-top: 8px !important;
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)) !important;
+}
+/* Keep floating tabbar off the very bottom edge */
+#p4TabBar, #bottomNav { bottom: 12px !important; }
+</style><style id="p4ReduceMotion">
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style><script id="p4AntiDebugV2">
+(function(){
+  'use strict';
+  if (window.__p4AntiDebug) return;
+  window.__p4AntiDebug = true;
+
+  /* --- developer bypass (append ?p4_nodebug=1 or set localStorage) --- */
+  try {
+    if (localStorage.getItem('p4_nodebug') === '1') return;
+    if (/[?&]p4_nodebug=1/.test(location.search)) return;
+  } catch(e){}
+
+  /* --- 1. device + screen + viewport detection --- */
+  var ua = navigator.userAgent || '';
+  var isElectron = !!window.__proDesktop || /Electron/i.test(ua);
+  var isAndroid  = /Android/i.test(ua);
+  var isIOS      = /iPhone|iPad|iPod/i.test(ua);
+  var isWebView  = /; wv)/i.test(ua) || (isAndroid && /Version/[d.]+/i.test(ua));
+  var isDesktopBrowser = !isElectron && !isAndroid && !isIOS && !isWebView;
+
+  window.__p4ScreenInfo = {
+    ua: ua,
+    dpr: window.devicePixelRatio || 1,
+    screenW: screen.width, screenH: screen.height,
+    innerW: window.innerWidth, innerH: window.innerHeight,
+    outerW: window.outerWidth || 0, outerH: window.outerHeight || 0,
+    platform: navigator.platform || '',
+    isElectron: isElectron, isAndroid: isAndroid, isIOS: isIOS,
+    isWebView: isWebView, isDesktopBrowser: isDesktopBrowser
+  };
+
+  /* skip Electron — native guard already covers it */
+  if (isElectron) return;
+
+  /* --- 2. basic key + contextmenu block --- */
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    var ctrl = e.ctrlKey || e.metaKey;
+    var shift = e.shiftKey;
+    if (k === 'f12' ||
+        (ctrl && shift && (k === 'i' || k === 'j' || k === 'c')) ||
+        (ctrl && k === 'u')) {
+      e.preventDefault(); e.stopPropagation();
+      return false;
+    }
+  }, true);
+
+  document.addEventListener('contextmenu', function(e){
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    e.preventDefault();
+  }, true);
+
+  /* --- 3. detection + freeze --- */
+  var detected = false;
+  function freeze(){
+    if (detected) return;
+    detected = true;
+    /* kill timers */
+    try {
+      var hi = setTimeout(function(){}, 0);
+      for (var i = 0; i <= hi; i++) clearTimeout(i);
+      var hj = setInterval(function(){}, 9999);
+      for (var j = 0; j <= hj; j++) clearInterval(j);
+    } catch(e){}
+    /* blank the page */
+    try {
+      document.documentElement.innerHTML = '<html><head><title>Pro</title></head><body style="background:#0b0e14;color:#cbd5e1;font-family:system-ui;display:flex;align-items:center;justify-content:center;height:100vh;margin:0"><div style="text-align:center;opacity:0.75"><div style="font-size:32px;font-weight:700;letter-spacing:-0.5px">Pro</div><div style="font-size:13px;margin-top:8px">Session ended. Reload to continue.</div></div></body></html>';
+    } catch(e){}
+    /* try to close (works only if tab was opened by script) */
+    try { window.close(); } catch(e){}
+    /* keep hammering it */
+    try {
+      setInterval(function(){
+        try {
+          if (document.body && document.body.innerHTML.indexOf('Session ended') === -1) {
+            document.documentElement.innerHTML = '<html><body style="background:#0b0e14"></body></html>';
+          }
+        } catch(e){}
+      }, 400);
+    } catch(e){}
+  }
+
+  /* --- 3a. toString/getter trap (desktop only) --- */
+  if (isDesktopBrowser) {
+    try {
+      var probe = document.createElement('div');
+      var fired = false;
+      Object.defineProperty(probe, 'id', {
+        get: function(){
+          if (fired) return 'p4';
+          fired = true;
+          setTimeout(function(){
+            /* verify with timing before nuking */
+            var t0 = performance.now();
+            try { (function(){ debugger; })(); } catch(e){}
+            if (performance.now() - t0 > 60) freeze();
+          }, 80);
+          return 'p4';
+        }
+      });
+      for (var n = 0; n < 3; n++) try { console.log(probe); } catch(e){}
+      try { console.warn(probe); } catch(e){}
+    } catch(e){}
+  }
+
+  /* --- 3b. debugger timing loop (works everywhere, aggressiveness scales) --- */
+  var threshold = isDesktopBrowser ? 90 : 220;
+  setInterval(function(){
+    if (detected) return;
+    var t0 = performance.now();
+    try { (function(){ debugger; })(); } catch(e){}
+    if (performance.now() - t0 > threshold) freeze();
+  }, isDesktopBrowser ? 1200 : 2400);
+
+  /* --- 3c. docked-devTools size delta (desktop only) --- */
+  if (isDesktopBrowser) {
+    setInterval(function(){
+      if (detected) return;
+      var dw = Math.abs((window.outerWidth  || 0) - (window.innerWidth  || 0));
+      var dh = Math.abs((window.outerHeight || 0) - (window.innerHeight || 0));
+      if (dw > 240 || dh > 240) freeze();
+    }, 1400);
+  }
+
+  /* --- 4. silence verbose logs (after probes have run) --- */
+  try { var noop = function(){}; console.log = console.info = console.debug = noop; } catch(e){}
+})();
+</script></head>
 <body class="loading">
     <script>
 window.STORAGE_ENABLED = false;
@@ -67949,6 +68095,113 @@ try { console.log('[P4] Bodyweight library registered:', Object.keys(window.P4_B
       return r;
     };
   }
+})();
+</script>
+<div id="p4CommandPalette" style="position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.55);display:none;align-items:flex-start;justify-content:center;padding-top:14vh;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div id="p4CpCard" style="width:min(560px,92vw);background:#0f1219;border:1px solid rgba(78,155,255,0.22);border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,0.65);overflow:hidden;font-family:'Space Grotesk','Inter',system-ui,sans-serif">
+    <input id="p4CpInput" type="text" placeholder="Type a command…" autocomplete="off" style="width:100%;padding:16px 18px;background:transparent;border:0;border-bottom:1px solid rgba(148,163,184,0.14);color:#e5e7eb;font-size:15px;outline:none" aria-label="Command">
+    <div id="p4CpList" style="max-height:52vh;overflow:auto;padding:6px" role="listbox"></div>
+    <div style="padding:10px 14px;border-top:1px solid rgba(148,163,184,0.14);color:#64748b;font-size:11px;display:flex;justify-content:space-between">
+      <span>Tap a command · Esc closes</span>
+      <span>Ctrl K</span>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  function ready(fn){ if(document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function(){
+    var pal = document.getElementById('p4CommandPalette');
+    var input = document.getElementById('p4CpInput');
+    var list = document.getElementById('p4CpList');
+    if (!pal || !input || !list) return;
+
+    var actions = [
+      { id:'nav.dashboard',  label:'Go to Dashboard',  run:function(){ try{ showSection('dashboard'); }catch(e){} } },
+      { id:'nav.workout',    label:'Start / Continue Workout', run:function(){ try{ showSection('workout'); }catch(e){} } },
+      { id:'nav.history',    label:'View History',     run:function(){ try{ showSection('history'); }catch(e){} } },
+      { id:'nav.progress',   label:'View Progress',    run:function(){ try{ showSection('progress'); }catch(e){} } },
+      { id:'nav.settings',   label:'Open Settings',    run:function(){ try{ showSection('settings'); }catch(e){} } },
+      { id:'profile.new',    label:'New Profile',      run:function(){ try{ P4.Picker.open(); }catch(e){} } },
+      { id:'profile.switch', label:'Switch Profile',   run:function(){ try{ P4.Picker.open(); }catch(e){} } }
+    ];
+
+    var filtered = actions.slice();
+    var cursor = 0;
+
+    function render(){
+      list.innerHTML = filtered.map(function(a, i){
+        var sel = i === cursor;
+        return '<div class="p4-cp-item" data-i="'+i+'" role="option" style="padding:14px 16px;border-radius:9px;cursor:pointer;color:#e5e7eb;font-size:15px;'+(sel?'background:rgba(78,155,255,0.20)':'')+'">'+a.label+'</div>';
+      }).join('') || '<div style="padding:14px;color:#64748b;font-size:13px">No matches.</div>';
+    }
+    function open(){ pal.style.display='flex'; input.value=''; filtered=actions.slice(); cursor=0; render(); setTimeout(function(){ input.focus(); },30); }
+    function close(){ pal.style.display='none'; }
+    function run(i){ var a = filtered[i]; if (!a) return; close(); setTimeout(function(){ try { a.run(); } catch(e){} }, 40); }
+
+    input.addEventListener('input', function(){ var q = input.value.toLowerCase().trim(); filtered = actions.filter(function(a){ return !q || a.label.toLowerCase().indexOf(q) !== -1; }); cursor=0; render(); });
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowDown'){ e.preventDefault(); cursor = Math.min(cursor+1, filtered.length-1); render(); }
+      else if (e.key === 'ArrowUp'){ e.preventDefault(); cursor = Math.max(cursor-1, 0); render(); }
+      else if (e.key === 'Enter'){ e.preventDefault(); run(cursor); }
+      else if (e.key === 'Escape'){ e.preventDefault(); close(); }
+    });
+    list.addEventListener('click', function(e){ var it = e.target.closest('.p4-cp-item'); if (!it) return; run(parseInt(it.getAttribute('data-i'),10)); });
+    pal.addEventListener('click', function(e){ if (e.target === pal) close(); });
+    document.addEventListener('keydown', function(e){
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault(); pal.style.display === 'flex' ? close() : open();
+      }
+    });
+  });
+})();
+</script>
+<script id="p4DataSchemaJs">
+(function(){
+  'use strict';
+  window.P4_DATA_SCHEMA = 2;
+  function allLocal(){
+    var out = {};
+    try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); out[k] = localStorage.getItem(k); } } catch(e){}
+    return out;
+  }
+  function exportBundle(){
+    return { _schema: window.P4_DATA_SCHEMA, _app: 'Pro', _appId: 'com.peakform.fitness', _exportedAt: new Date().toISOString(), localStorage: allLocal() };
+  }
+  function migrate(bundle){ if (!bundle || typeof bundle !== 'object') throw new Error('invalid bundle'); return bundle; }
+  function importBundle(bundle, opts){
+    opts = opts || {};
+    var b = migrate(bundle);
+    var ls = b.localStorage || {};
+    if (opts.wipe) { try { localStorage.clear(); } catch(e){} }
+    for (var k in ls) if (Object.prototype.hasOwnProperty.call(ls, k)) { try { localStorage.setItem(k, ls[k]); } catch(e){} }
+    return true;
+  }
+  function saveToDisk(){
+    try {
+      var blob = new Blob([JSON.stringify(exportBundle(), null, 2)], { type: 'application/json' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'pro-backup-' + Date.now() + '.json';
+      a.click();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 2000);
+      return Promise.resolve({ ok: true });
+    } catch (e) { return Promise.resolve({ ok: false, error: String(e) }); }
+  }
+  function loadFromDisk(){
+    return new Promise(function(resolve){
+      var inp = document.createElement('input');
+      inp.type = 'file'; inp.accept = '.json,application/json';
+      inp.onchange = function(){
+        var f = inp.files[0]; if (!f) return resolve({ ok: false });
+        var r = new FileReader();
+        r.onload = function(){ try { importBundle(JSON.parse(r.result), { wipe: false }); resolve({ ok: true }); } catch(e){ resolve({ ok: false, error: String(e) }); } };
+        r.readAsText(f);
+      };
+      inp.click();
+    });
+  }
+  window.P4Backup = { export: saveToDisk, import: loadFromDisk, bundle: exportBundle, migrate: migrate };
 })();
 </script>
 </body>
