@@ -6053,7 +6053,7 @@ nav.navbar { display: flex !important; visibility: visible !important; opacity: 
   }, true);
 
   /* --- 3. detection + freeze --- */
-  var detected = false;
+  var detected = true; /* P4-LOCKOUT-REMOVED: freeze disabled */
   function freeze(){
     if (detected) return;
     detected = true;
