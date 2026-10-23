@@ -55168,14 +55168,7 @@ window.P4_PHRASE_STARTERS = {
   SEC.integrityOk = function () { return P4_MAGIC === (0xDEADBEEF ^ 0x55AA55AA); };
 
   /* Domain gate: production domains only; local/dev hosts pass through. */
-  SEC.domainAllowed = function () {
-    try {
-      var h = String(window.location.hostname || '').toLowerCase();
-      if (!h) return true; // file:// and about: contexts
-      return h === 'try4ever.com' || h.endsWith('.try4ever.com') ||
-             h === 'localhost' || h === '127.0.0.1' || h === '0.0.0.0' || h.endsWith('.local');
-    } catch (e) { return true; }
-  };
+  SEC.domainAllowed = function () { /* P4-LOCKOUT-REMOVED: domain gate */ return true; };
 
   /* ============================ STORAGE HELPERS =========================== */
   var store = P4.store = {};
@@ -58350,6 +58343,7 @@ host.innerHTML =
   (function () {
     'use strict';
     var LOCK_KEY = 'p4_dev_lock';
+  try { P4.store.del(LOCK_KEY); } catch (e) {} /* P4-LOCKOUT-REMOVED: lock key cleared */
     var SEEN_KEY = 'p4_last_seen';
 
     function bypass() {
@@ -58389,6 +58383,7 @@ host.innerHTML =
       /* ---------- escalating lockout ---------- */
       lockState: function () { return P4.store.get(LOCK_KEY, { until: 0, mult: 1 }); },
       lock: function () {
+        return; /* P4-LOCKOUT-REMOVED: Guard.lock */
         var st = Guard.lockState();
         var mult = Math.min(st.mult || 1, 32);
         var until = Date.now() + 60 * mult * 1000;
@@ -58396,6 +58391,7 @@ host.innerHTML =
         Guard.showOverlay(until);
       },
       showOverlay: function (until) {
+        return; /* P4-LOCKOUT-REMOVED: Guard.showOverlay */
         var el = document.getElementById('p4Lock');
         if (!el) {
           el = document.createElement('div');
