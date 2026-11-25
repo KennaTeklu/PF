@@ -6016,7 +6016,7 @@ nav.navbar { display: flex !important; visibility: visible !important; opacity: 
   var isElectron = !!window.__proDesktop || /Electron/i.test(ua);
   var isAndroid  = /Android/i.test(ua);
   var isIOS      = /iPhone|iPad|iPod/i.test(ua);
-  var isWebView  = /; wv)/i.test(ua) || (isAndroid && /Version/[d.]+/i.test(ua));
+  var isWebView  = /; wv\)/i.test(ua) || (isAndroid && /Version\/[\d.]+/i.test(ua));
   var isDesktopBrowser = !isElectron && !isAndroid && !isIOS && !isWebView;
 
   window.__p4ScreenInfo = {
@@ -37710,8 +37710,10 @@ async function processImport() {
             throw new Error('Imported data must be a JSON object.');
         }
 
-        // Use your existing loadData function (clears everything and loads new data)
-        loadData(importData);
+        // loadData() wipes Dexie, localStorage and in-memory state before
+        // overwriting with the imported data. Await it so the reset fully
+        // completes before the UI refreshes (prevents stale/duplicate data).
+        await loadData(importData);
 
         // Clear the form fields for next time
         fileInput.value = '';
@@ -37743,6 +37745,19 @@ async function processImport() {
 }
 
 async function processExerciseImport() {
+    // Ask how the import should treat existing data: replace (default) or merge.
+    const { value: mode } = await Swal.fire({
+        title: 'Import Exercises',
+        text: 'Replace will reset the library before importing (removes existing custom exercises). Merge keeps everything and adds on top.',
+        icon: 'question',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Replace (reset first)',
+        denyButtonText: 'Merge with existing',
+        cancelButtonText: 'Cancel'
+    });
+    if (mode === undefined) return; // cancelled
+
     const fileInput = document.getElementById('exerciseFile');
     const jsonInput = document.getElementById('exerciseJson').value;
     showLoading(true);
@@ -37753,10 +37768,11 @@ async function processExerciseImport() {
         reader.onload = async function(e) {
             try {
                 const data = JSON.parse(e.target.result);
-                importExerciseLibrary(data);
+                importExerciseLibrary(data, mode === true);
                 showLoading(false);
                 showNotification("Exercise library imported successfully!");
                 closeModal('importExerciseModal');
+                fileInput.value = '';
             } catch (error) {
                 showLoading(false);
                 await Swal.fire({
@@ -37771,10 +37787,11 @@ async function processExerciseImport() {
     } else if (jsonInput) {
         try {
             const data = JSON.parse(jsonInput);
-            importExerciseLibrary(data);
+            importExerciseLibrary(data, mode === true);
             showLoading(false);
             showNotification("Exercise library imported successfully!");
             closeModal('importExerciseModal');
+            document.getElementById('exerciseJson').value = '';
         } catch (error) {
             showLoading(false);
             await Swal.fire({
@@ -37795,9 +37812,19 @@ async function processExerciseImport() {
     }
 }
 
-    function importExerciseLibrary(data) {
+    async function importExerciseLibrary(data, replace = true) {
+        if (!data || typeof data !== 'object' || Array.isArray(data)) {
+            showNotification('Invalid exercise library JSON: expected an object keyed by exercise id.', 'error');
+            return;
+        }
+        if (replace) {
+            // RESET FIRST: clear the current library, then load the imported
+            // one. Import now replaces instead of adding on top of what was.
+            workoutProgram.exercises = {};
+            try { localStorage.removeItem('p4_custom_ex'); } catch (e) {}
+        }
         Object.assign(workoutProgram.exercises, data);
-        showNotification(`Imported ${Object.keys(data).length} exercises`);
+        showNotification(`Imported ${Object.keys(data).length} exercises (${replace ? 'replaced existing library' : 'merged into existing library'})`);
         saveToLocalStorage();
     }
 
@@ -37823,10 +37850,21 @@ async function resetExerciseLibrary() {
         confirmButtonText: 'Yes, reset',
         cancelButtonText: 'Cancel'
     });
-    
+
     if (result.isConfirmed) {
-        // TODO: Implement actual reset logic (reload defaults)
-        showNotification("Exercise reset functionality would reload defaults here", "info");
+        // Clear imported/custom exercises from the active program library
+        workoutProgram.exercises = {};
+        // Clear persisted custom exercises (Library Studio additions)
+        try { localStorage.removeItem('p4_custom_ex'); } catch (e) {}
+        // Reset the custom exercise list held by the Library Studio, if loaded
+        try {
+            if (window.P4 && P4.Studio) {
+                var store = P4.store;
+                if (store && typeof store.set === 'function') store.set('p4_custom_ex', []);
+            }
+        } catch (e) {}
+        await saveToLocalStorage();
+        showNotification("Exercise library reset to defaults.", "success");
     }
 }
 
