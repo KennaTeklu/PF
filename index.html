@@ -7631,9 +7631,11 @@ function computeNextWeight(exerciseId) {
     if (!ex) return null;
     const exercise = getExerciseById(exerciseId);
     if (!exercise) return null;
+    // Timed / noFatigue work has no load engine — nothing to predict
+    if (classifyExerciseForCoach(exercise) === 'timed') return null;
 
     const last = ex.history?.slice().reverse().find(h => !h.skipped);
-    if (!last) return null;
+    if (!last || !(last.weight > 0)) return null;
     const W = last.weight;
     const mu = ex.mu;
     const r = last.reps ? Math.max(...last.reps) : 0;
@@ -7691,10 +7693,27 @@ function postWorkoutUpdate(workout) {
     updateBodyWeightEstimate();
 
     Object.keys(workoutData.exercises).forEach(exId => {
+        // Coach stall tracking: consecutive sessions without e1RM progress
+        const rec = workoutData.exercises[exId];
+        rec.stallSessions = computeExerciseStallSessions(exId);
         const next = computeNextWeight(exId);
         if (next) {
-            workoutData.exercises[exId].nextWeight = next.weight;
-            workoutData.exercises[exId].nextWeightConfidence = next.confidence;
+            const coach = getExerciseCoach(getExerciseById(exId));
+            let w = next.weight;
+            if (coach) {
+                // Envelope cap from the coach (relative to the Kalman estimate)
+                if (coach.envelope && coach.envelope.maxPct1RM && rec.mu > 0) {
+                    w = Math.min(w, coach.envelope.maxPct1RM * rec.mu);
+                }
+                // Per-coach deloadTrigger — stalled lifts pull back ~10%
+                if (coach.stallSessionsForDeload && rec.stallSessions >= coach.stallSessionsForDeload && w > 0) {
+                    w = roundToNearest(w * coach.deloadFactor, 2.5);
+                }
+            }
+            if (w > 0) {
+                workoutData.exercises[exId].nextWeight = w;
+                workoutData.exercises[exId].nextWeightConfidence = next.confidence;
+            }
         }
     });
 
@@ -8884,6 +8903,10 @@ function checkAndRemindReTest() {
     for (const exId in workoutData.exercises) {
         const record = workoutData.exercises[exId];
         if (record.tested1RM && record.testDate) {
+            // Timed, bodyweight and isolation exercises never need a 1RM —
+            // their coaches declare needs1RM: false, so don't nag for re-tests.
+            const exMeta = getExerciseById(exId);
+            if (exMeta && getExerciseCoach(exMeta).needs1RM === false) continue;
             const testDate = new Date(record.testDate);
             if (testDate < sixWeeksAgo) {
                 // Found an exercise with a test older than 6 weeks
@@ -35262,6 +35285,225 @@ function humpSets(intensity, muscleType, workouts, express) {
     return sets;
 }
 
+// ==================== PER-EXERCISE COACH SYSTEM (ported from automatic-spork) ====================
+// Every exercise resolves to exactly one coach. The coach declares whether the
+// exercise ever needs a 1RM (a plank never does), caps the prescription inside an
+// envelope, scales how fast load may progress, and can force a deload when its
+// lift stalls. Coaches adjust the engine only — never the UI.
+//
+// Machines & isolation inherit a working 1RM from the nearest trained compound
+// via the existing STRENGTH_RATIOS map (see enhanceExerciseWithDerivation), so
+// they never need their own 1RM test.
+
+// Bodyweight-only movements: load is leverage, not plates. Their coach drives
+// rep progression and only adds external load once the athlete already trains
+// with added weight.
+function isBodyweightOnlyExercise(exercise) {
+    if (!exercise) return false;
+    if ((exercise.equipment || '').toLowerCase() === 'bodyweight') return true;
+    const id = exercise.id || (exercise.name || '').toLowerCase().replace(/\s/g, '_');
+    return /^(bodyweight|pull_up|chin_up|push_up|dip|plank|hanging|assisted)/.test(id);
+}
+
+function classifyExerciseForCoach(exercise) {
+    if (!exercise) return 'weighted';
+    if (exercise.noFatigue || exercise.prescriptionType === 'time') return 'timed';
+    if (isBodyweightOnlyExercise(exercise)) return 'bodyweight';
+    const id = exercise.id || (exercise.name || '').toLowerCase().replace(/\s/g, '_');
+    const eq = (exercise.equipment || '').toLowerCase();
+    if (eq === 'barbell' || /barbell/.test(id)) return 'barbell';
+    if (/machine|cable|band|smith/.test(eq)) return 'machine';
+    if (/dumbbell/.test(eq)) return 'dumbbell';
+    return 'weighted';
+}
+
+// Category coaches — the fallback ladder ends here (mirrors the spork engines).
+const EXERCISE_COACH_CATEGORIES = {
+    barbell: {
+        id: 'compound-barbell-coach', voice: 'Compound coach',
+        needs1RM: true, progressionFactor: 1.0,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 12, maxPct1RM: 0.95, minLoad: 20 },
+        note: 'Add load only when every set lands inside the range.'
+    },
+    machine: {
+        id: 'machine-isolation-coach', voice: 'Isolation coach',
+        needs1RM: false, progressionFactor: 0.8,
+        stallSessionsForDeload: 4, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 5, maxReps: 20, maxPct1RM: 0.80, minLoad: 2.5 },
+        note: 'Light and controlled — 1-2 reps shy of failure on the last set.'
+    },
+    dumbbell: {
+        id: 'dumbbell-coach', voice: 'Dumbbell coach',
+        needs1RM: false, progressionFactor: 0.9,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 20, maxPct1RM: 0.85, minLoad: 5 },
+        note: 'Match the weaker arm — stabilizer lag is normal.'
+    },
+    bodyweight: {
+        id: 'bodyweight-coach', voice: 'Bodyweight coach',
+        needs1RM: false, progressionFactor: 1.0,
+        stallSessionsForDeload: 4, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 15, minLoad: 0 },
+        note: 'Progress reps first; add external load only after clearing the top of the range with ease.'
+    },
+    timed: {
+        id: 'timed-quality-coach', voice: 'Timed-work coach',
+        needs1RM: false, progressionFactor: 1.0,
+        stallSessionsForDeload: 99, deloadFactor: 0.85,
+        envelope: { minSets: 2, maxSets: 5 },
+        note: 'Quality holds over quantity — end each set with form intact.'
+    },
+    weighted: {
+        id: 'generic-weighted-coach', voice: 'Coach',
+        needs1RM: true, progressionFactor: 1.0,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 7, maxReps: 20, maxPct1RM: 0.95, minLoad: 5 },
+        note: 'Log RPE honestly so the coach can steer the next session.'
+    }
+};
+
+// Authored per-exercise coaches — override the category defaults for the main
+// lifts (sourced rules: Rippetoe novice volumes, Prilepin set bands, Sommer
+// leverage tiers, Israetel RIR targets).
+const EXERCISE_COACHES = {
+    squat: {
+        id: 'authored-squat-coach', voice: 'Squat coach',
+        needs1RM: true, progressionFactor: 1.0,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 12, maxPct1RM: 0.95, minLoad: 20 },
+        note: 'Depth before load — hit depth on every rep before adding plates.'
+    },
+    deadlift: {
+        id: 'authored-deadlift-coach', voice: 'Deadlift coach',
+        needs1RM: true, progressionFactor: 0.8,
+        stallSessionsForDeload: 4, deloadFactor: 0.90,
+        envelope: { minSets: 1, maxSets: 5, maxReps: 8, maxPct1RM: 0.95, minLoad: 20 },
+        note: 'Low volume, heavy intent — one clean top set beats five sloppy ones.'
+    },
+    bench_press: {
+        id: 'authored-bench-coach', voice: 'Bench coach',
+        needs1RM: true, progressionFactor: 1.0,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 12, maxPct1RM: 0.95, minLoad: 20 },
+        note: 'Legs planted, bar path consistent — then chase the plates.'
+    },
+    overhead_press: {
+        id: 'authored-ohp-coach', voice: 'Press coach',
+        needs1RM: true, progressionFactor: 0.9,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 12, maxPct1RM: 0.95, minLoad: 20 },
+        note: 'The press stalls first and recovers slow — small steps are still progress.'
+    },
+    barbell_row: {
+        id: 'authored-row-coach', voice: 'Row coach',
+        needs1RM: true, progressionFactor: 1.0,
+        stallSessionsForDeload: 3, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 15, maxPct1RM: 0.90, minLoad: 20 },
+        note: 'Pull to the lower ribs, no torso english — the back grows on control.'
+    },
+    pull_up: {
+        id: 'authored-pullup-coach', voice: 'Pull-up coach',
+        needs1RM: false, progressionFactor: 1.0,
+        stallSessionsForDeload: 4, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 6, maxReps: 15, minLoad: 0 },
+        note: 'Leverage is your barbell: full hang to chin-over, then add load only after clearing the top of the range.'
+    },
+    plank: {
+        id: 'authored-plank-coach', voice: 'Core coach',
+        needs1RM: false, progressionFactor: 1.0,
+        stallSessionsForDeload: 99, deloadFactor: 0.85,
+        envelope: { minSets: 2, maxSets: 5 },
+        note: 'Brace like you mean it — stop the set the moment hips sag.'
+    },
+    lateral_raise: {
+        id: 'authored-lateral-raise-coach', voice: 'Lateral coach',
+        needs1RM: false, progressionFactor: 0.7,
+        stallSessionsForDeload: 4, deloadFactor: 0.90,
+        envelope: { minSets: 2, maxSets: 5, maxReps: 20, maxPct1RM: 0.60, minLoad: 2.5 },
+        note: 'This muscle grows on reps and tension, not heavy swings — keep it light and strict.'
+    }
+};
+
+// Resolution order: authored (longest name match wins) → category → generic.
+function getExerciseCoach(exercise) {
+    if (!exercise) return EXERCISE_COACH_CATEGORIES.weighted;
+    const id = exercise.id || (exercise.name || '').toLowerCase().replace(/\s/g, '_');
+    let bestKey = null, bestLen = 0;
+    for (const key in EXERCISE_COACHES) {
+        if (id === key) return EXERCISE_COACHES[key];
+        if (id.includes(key) && key.length > bestLen) { bestKey = key; bestLen = key.length; }
+    }
+    if (bestKey) return EXERCISE_COACHES[bestKey];
+    return EXERCISE_COACH_CATEGORIES[classifyExerciseForCoach(exercise)] || EXERCISE_COACH_CATEGORIES.weighted;
+}
+
+function exerciseNeeds1RM(exercise) {
+    return getExerciseCoach(exercise).needs1RM !== false;
+}
+
+// Inherit a working 1RM for machines/isolation from the nearest trained
+// compound, so only the big lifts ever need a real test.
+function derive1RMFromAnchors(exercise) {
+    if (!exercise) return null;
+    const id = exercise.id || (exercise.name || '').toLowerCase().replace(/\s/g, '_');
+    // Existing map shape: { base: { target: ratio } } (STRENGTH_RATIOS)
+    let baseKey = null, ratio = null, bestLen = 0;
+    for (const base in STRENGTH_RATIOS) {
+        for (const target in STRENGTH_RATIOS[base]) {
+            if (id.includes(target) && target.length > bestLen) {
+                baseKey = base; ratio = STRENGTH_RATIOS[base][target]; bestLen = target.length;
+            }
+        }
+    }
+    if (!baseKey) return null;
+    // Exact record key first; else pick the most-trained id that contains the
+    // base name (e.g. "barbell_back_squat" anchors leg_press when no "squat"
+    // record exists — most history entries wins).
+    let rec = workoutData.exercises[baseKey];
+    if (!rec) {
+        let bestCount = -1;
+        for (const cand in workoutData.exercises) {
+            if (!cand.includes(baseKey)) continue;
+            const h = workoutData.exercises[cand].history;
+            const n = Array.isArray(h) ? h.filter(x => x && !x.skipped).length : 0;
+            if (n > bestCount) { bestCount = n; rec = workoutData.exercises[cand]; }
+        }
+    }
+    if (!rec) return null;
+    // Best available anchor: tested 1RM → Kalman estimate → Epley of last session
+    let base1RM = (rec.tested1RM && rec.tested1RM > 0) ? rec.tested1RM : (rec.mu && rec.mu > 0 ? rec.mu : null);
+    if (!base1RM) {
+        const last = rec.history && rec.history.slice().reverse().find(h => h && !h.skipped && h.weight > 0);
+        if (last) {
+            const reps = Array.isArray(last.reps) ? Math.max(...last.reps) : last.reps;
+            if (reps > 0) base1RM = last.weight * (1 + reps / 30);
+        }
+    }
+    if (!base1RM || base1RM <= 0) return null;
+    return base1RM * ratio;
+}
+
+// Per-exercise stall detection: consecutive sessions whose best e1RM failed to
+// beat the previous best by ≥1%. Feeds each coach's deloadTrigger.
+function computeExerciseStallSessions(exerciseId) {
+    const rec = workoutData.exercises[exerciseId];
+    if (!rec || !Array.isArray(rec.history)) return 0;
+    const sessions = rec.history.filter(h => h && !h.skipped && h.weight > 0 && h.reps);
+    if (sessions.length < 4) return 0;
+    const e1rm = s => {
+        const r = Array.isArray(s.reps) ? Math.max(...s.reps) : s.reps;
+        return s.weight * (1 + (r || 0) / 30);
+    };
+    let flat = 0;
+    for (let i = sessions.length - 1; i >= 1; i--) {
+        const bestPrior = Math.max(...sessions.slice(0, i).map(e1rm));
+        if (e1rm(sessions[i]) < bestPrior * 1.01) flat++;
+        else break;
+    }
+    return flat;
+}
+
 // Helper to get the primary muscle type for an exercise (strictest among its muscles)
 function getExerciseMuscleType(exercise) {
     if (!exercise.muscleGroup || exercise.muscleGroup.length === 0) return 'medium';
@@ -35419,18 +35661,25 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
             if (exercise.prescriptionType === 'time' || exercise.defaultDuration) {
                 exercise.prescribed.duration = exercise.defaultDuration || 45;
             }
-            exercise.progressionNotes = exercise.progression || 'Quality over quantity — crisp reps, steady breathing.';
-            return exercise;
-        }
-        let estimated1RM;
-        // First check if we have a tested 1RM from the bracketing test
-        const exRecord = workoutData.exercises[exId];
-        if (exRecord && exRecord.tested1RM && exRecord.tested1RM > 0) {
-            estimated1RM = exRecord.tested1RM;
+        exercise.progressionNotes = exercise.progression || 'Quality over quantity — crisp reps, steady breathing.';
+        return exercise;
+    }
+    const coach = getExerciseCoach(exercise);
+    let estimated1RM;
+    // First check if we have a tested 1RM from the bracketing test
+    const exRecord = workoutData.exercises[exId];
+    if (exRecord && exRecord.tested1RM && exRecord.tested1RM > 0) {
+        estimated1RM = exRecord.tested1RM;
+    } else {
+        // Next best: inherit from the nearest trained compound via strength
+        // ratios — machines and isolation never need their own 1RM test.
+        const derived1RM = derive1RMFromAnchors(exercise);
+        if (derived1RM) {
+            estimated1RM = derived1RM;
         } else {
             // Fallback to body weight and muscle‑group averaged strength index
             const userWeight = user.weight || 150;
-            
+
             // Compute average strength index for the exercise's primary muscle groups
             const targetMuscles = exercise.muscleGroup || [];
             let strengthIndex = 0;
@@ -35453,7 +35702,7 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
             } else {
                 strengthIndex = exercise.strengthIndex || 0.7;
             }
-            
+
             if (user.birthDate) {
                 const age = calculateAge(user.birthDate);
                 if (age > 60) strengthIndex *= 0.7;
@@ -35463,6 +35712,7 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
             estimated1RM = userWeight * strengthIndex * phaseMultiplier;
             if (isNaN(estimated1RM) || estimated1RM < 20) estimated1RM = 50;
         }
+    }
         
         // ---- NEW: Muscle‑specific maturity factor ----
         const targetMuscles = exercise.muscleGroup || [];
@@ -35495,15 +35745,19 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
         prescribedWeight = roundToNearest(prescribedWeight, 2.5);
         if (isNaN(prescribedWeight) || prescribedWeight < 5) prescribedWeight = 5;
         exercise._fiberMax = firstFiberRange ? firstFiberRange.max : null;
-        
+
+        // Bodyweight coach: load is leverage — first session is bodyweight only,
+        // external load comes later through rep progression.
+        if (coach && coach.id === 'bodyweight-coach') prescribedWeight = 0;
+
         // Fixed high rep range (17-20)
         const repLow = 17;
         const repHigh = 20;
-        
+
         // ---- NEW: define intensity for humpSets ----
         const intensity = startingIntensity;
         // --------------------------------------------
-        
+
         const totalWorkouts = workoutData.workouts.length;
         const expressMode = user.settings?.expressMode || false;
         const muscleType = getExerciseMuscleType(exercise);
@@ -35511,7 +35765,11 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
         // Ensure sets are valid
         if (isNaN(targetSets) || targetSets < 2) targetSets = 3;
         targetSets = Math.min(7, Math.max(2, targetSets));
-        
+        // Coach envelope keeps the first session inside the coach's set band
+        if (coach && coach.envelope) {
+            targetSets = Math.min(coach.envelope.maxSets ?? 7, Math.max(coach.envelope.minSets ?? 2, targetSets));
+        }
+
         exercise.prescribed = {
             sets: targetSets,
             reps: `${repLow}-${repHigh}`,
@@ -35523,7 +35781,8 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
             exercise.prescribed.duration = exercise.defaultDuration || 60;
         }
         const fiberNoteFirst = firstFiberRange ? ` Fiber window ${firstFiberRange.lowPct}-${firstFiberRange.maxPct}% 1RM.` : '';
-        exercise.progressionNotes = `First time for this muscle group! Starting with higher reps (17-20). Aim for ${repHigh} reps before increasing weight.${fiberNoteFirst}`;
+        const coachNoteFirst = coach && coach.note ? ` [${coach.voice}] ${coach.note}` : '';
+        exercise.progressionNotes = `First time for this muscle group! Starting with higher reps (17-20). Aim for ${repHigh} reps before increasing weight.${fiberNoteFirst}${coachNoteFirst}`;
         return exercise;
     }
 
@@ -35610,9 +35869,19 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
         oneRM = lastSession.weight * (1 + lastRepsFor1RM / 30);
     }
     if (!oneRM || oneRM <= 0) {
+        // inherit from the nearest trained compound — machines/isolation never
+        // need their own 1RM test
+        oneRM = derive1RMFromAnchors(exercise);
+    }
+    if (!oneRM || oneRM <= 0) {
         // fallback to prior
         oneRM = workoutData.user._cache.effectiveBodyWeight * (exercise.strengthIndex || 0.7);
     }
+
+    // Coach layer: this exercise's coach drives progression speed, envelope
+    // caps and stall deloads below.
+    const coach = getExerciseCoach(exercise);
+    const stallSessions = computeExerciseStallSessions(exercise.id);
     
     // ---- 5. Weight DERIVED from the rep/sets prescription (reps drive weight) ----
     // The rep/sets curve decides how many reps you do; Epley converts those
@@ -35631,7 +35900,9 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     // RPE steers an extra increment (grinding -> ease off; cruising -> add).
     const lastRPEStep = (Array.isArray(lastSession.rpe) ? lastSession.rpe[0] : lastSession.rpe) || 7;
     let newWeight = lastSession.weight;
-    const maxStep = Math.min(7.5, Math.max(2.5, lastSession.weight * 0.10));
+    // Coach scales how fast load may move toward the target: isolation moves
+    // slower than compounds (progressionFactor from the coach).
+    const maxStep = Math.min(7.5, Math.max(2.5, lastSession.weight * 0.10)) * ((coach && coach.progressionFactor) || 1.0);
     if (targetWeight > newWeight) newWeight = newWeight + Math.min(maxStep, targetWeight - newWeight);
     else if (targetWeight < newWeight - 2.5) newWeight = newWeight - Math.min(maxStep, newWeight - targetWeight);
     newWeight = roundToNearest(newWeight, 2.5);
@@ -35642,7 +35913,10 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     // Hard caps: fiber ceiling if known, else classic limits
     if (fiberRange && fiberRange.max) newWeight = Math.min(newWeight, fiberRange.max);
     newWeight = Math.min(oneRM * 0.95, lastSession.weight * 1.10, newWeight);
-    if (newWeight < 20) newWeight = 20;
+    // Coach-aware load floor: a 20 lb floor breaks lateral raises and small-
+    // muscle isolation, so the coach's envelope decides the minimum.
+    const coachMinLoad = (coach && coach.envelope && coach.envelope.minLoad !== undefined) ? coach.envelope.minLoad : 20;
+    if (newWeight < coachMinLoad) newWeight = coachMinLoad;
 
     // ---- 6. Rep range wraps the reps the curve decided (weight followed reps) ----
     const muscleRepFloor = getExerciseRepFloor(exercise);
@@ -35663,6 +35937,38 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
     setChange = Math.min(1, Math.max(-1, setChange));
     newSets = lastSession.sets + setChange;
     newSets = Math.min(7, Math.max(2, Math.round(newSets)));
+
+    // ---- 8. Coach envelope + per-coach stall deload ----
+    let coachDeloadNote = '';
+    if (coach && coach.envelope) {
+        newSets = Math.min(coach.envelope.maxSets ?? 7, Math.max(coach.envelope.minSets ?? 2, newSets));
+        if (coach.envelope.maxReps) {
+            repHigh = Math.min(repHigh, coach.envelope.maxReps);
+            if (repLow > repHigh - 1) repLow = Math.max(1, repHigh - 1);
+            if (repLow === repHigh) repHigh = Math.min(20, repHigh + 1);
+        }
+        if (coach.envelope.maxPct1RM && oneRM > 0 && lastSession.weight > 0) {
+            newWeight = Math.min(newWeight, coach.envelope.maxPct1RM * oneRM);
+            newWeight = roundToNearest(newWeight, 2.5);
+            if (newWeight < coachMinLoad) newWeight = coachMinLoad;
+        }
+    }
+    // Bodyweight movements: reps are the progression — never invent added load
+    // unless the athlete already trains with added weight.
+    if (coach && coach.id === 'bodyweight-coach' && !lastSession.weight) {
+        newWeight = 0;
+    }
+    // Per-coach deloadTrigger: flat e1RM for N sessions pulls the load (or the
+    // rep target for bodyweight work) back ~10% to restart the climb.
+    if (coach && coach.stallSessionsForDeload && stallSessions >= coach.stallSessionsForDeload) {
+        if (coach.id === 'bodyweight-coach') {
+            repHigh = Math.max(repLow + 1, Math.round(repHigh * coach.deloadFactor));
+        } else if (newWeight > 0) {
+            newWeight = roundToNearest(newWeight * coach.deloadFactor, 2.5);
+            if (newWeight < coachMinLoad) newWeight = coachMinLoad;
+        }
+        coachDeloadNote = `[${coach.voice}] ${stallSessions} sessions without progress — backing off ${Math.round((1 - coach.deloadFactor) * 100)}% to restart the climb. `;
+    }
 
     // ---- 8. Build prescription ----
     if (exercise.prescriptionType === 'time') {
@@ -35699,6 +36005,8 @@ function generateExercisePrescription(exercise, phaseMultiplier = 1.0) {
         notes += `Fiber window ${fiberRange.lowPct}-${fiberRange.maxPct}% 1RM — today's cap ${fiberRange.max} lbs. `;
         if (fiberRange.note) notes += fiberRange.note;
     }
+    if (coachDeloadNote) notes += coachDeloadNote;
+    if (coach && coach.note) notes += `[${coach.voice}] ${coach.note} `;
     exercise.progressionNotes = notes;
 
     return exercise;
@@ -40489,6 +40797,16 @@ function saveExercisePerformance(index) {
             const bestReps = Math.max(...repsArray);
             updateRecursive1RM(exercise.id, weight, bestReps, rpeArray[0]);
         }
+        // Per-set RIR estimate (engine data — feeds stall/trend analysis and
+        // history views; previously read but never written)
+        try {
+            if (typeof computeRIR === 'function' && repsArray.length > 0 && weight > 0) {
+                actual.rirs = repsArray.map((r, i) => {
+                    const val = computeRIR(exercise.id, weight, r, rpeArray[i] || 7, i + 1);
+                    return typeof val === 'number' && isFinite(val) ? val : null;
+                });
+            }
+        } catch (e) {}
     }
 
     exercise.actual = actual;
