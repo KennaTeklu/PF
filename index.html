@@ -60823,7 +60823,10 @@ P4.Wheel = (function () {
         '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
         '<button class="btn btn-success" onclick="exportWorkoutData()"><i class="fas fa-download"></i> Export JSON</button>' +
         '<button class="btn" onclick="importWorkoutData()"><i class="fas fa-upload"></i> Import JSON</button>' +
+        '<button class="btn btn-danger" onclick="resetAllData()"><i class="fas fa-trash-can"></i> Delete all data</button>' +
+        '<button class="btn" onclick="resetExerciseLibrary()"><i class="fas fa-rotate-left"></i> Reset exercise library</button>' +
         '</div>' +
+        '<div class="p4-wz-hint" style="margin-top:8px">Import JSON resets your data first and replaces everything with the file\'s contents — it does not add on top. "Delete all data" wipes workouts, profile and settings (a backup prompt is shown first). "Reset exercise library" removes custom/imported exercises and restores the defaults.</div>' +
         (snaps.length ? '<div class="p4-wz-hint" style="margin-top:10px">Automatic safety snapshots: ' +
           snaps.map(function (s, i) { return '<span style="cursor:pointer;text-decoration:underline" onclick="P4.Backup.restoreSnapshot(' + i + ')">' + P4.fmtDate(s.at) + '</span>'; }).join(' · ') + '</div>' : '<div class="p4-wz-hint" style="margin-top:10px">No snapshots yet — they\'re created automatically after each workout.</div>') +
         '<div class="p4-wz-hint" style="margin-top:8px"><i class="fas fa-shield-halved"></i> Per-profile vault: every save writes a snapshot to IndexedDB. Survives clear-cache.</div>';
