@@ -43953,13 +43953,31 @@ async function resetAllData() {
 }
 async function loadData(data) {
     // ========== 1. WIPE DEXIE (IndexedDB) ==========
-    try {
-        await db.workouts.clear();
-        await db.exercises.clear();
-        await db.user.clear();
-        await db.savedWorkout.clear();
-    } catch (e) {
-        console.warn('[loadData] Dexie clear error:', e);
+    // Verify the wipe actually happened. saveWorkoutData() uses bulkPut
+    // (add-or-update, never deletes), so if old records survived the clear
+    // they would be MERGED with the import instead of replaced. Abort loudly
+    // rather than silently corrupting the import.
+    const tables = [db.workouts, db.exercises, db.user, db.savedWorkout];
+    for (const table of tables) {
+        let cleared = false;
+        for (let attempt = 0; attempt < 2 && !cleared; attempt++) {
+            try {
+                await table.clear();
+                cleared = ((await table.count()) === 0);
+            } catch (e) {
+                console.warn('[loadData] Dexie clear error (' + table.name + ', attempt ' + (attempt + 1) + '):', e);
+            }
+        }
+        if (!cleared) {
+            showLoading(false);
+            await Swal.fire({
+                title: 'Import Aborted',
+                text: 'Could not fully clear existing data in "' + table.name + '" (storage may be busy or locked). Nothing was overwritten, so your current data is intact. Close other tabs of this app and try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            throw new Error('[loadData] Failed to clear Dexie table: ' + table.name);
+        }
     }
 
     // ========== 2. WIPE ALL LOCALSTORAGE ==========
